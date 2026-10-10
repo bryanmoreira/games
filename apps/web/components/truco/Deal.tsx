@@ -15,9 +15,9 @@ const POS: Pos[] = ["bottom", "right", "top", "left"];
 // Destino de cada carta, relativo à mesa
 const TARGET: Record<Pos, { x: string; y: string; rot: string }> = {
   bottom: { x: "50%", y: "118%", rot: "0deg" },
-  top: { x: "56%", y: "4%", rot: "180deg" },
-  left: { x: "6%", y: "40%", rot: "90deg" },
-  right: { x: "94%", y: "40%", rot: "-90deg" },
+  top: { x: "50%", y: "12%", rot: "180deg" },
+  left: { x: "8%", y: "50%", rot: "90deg" },
+  right: { x: "92%", y: "50%", rot: "-90deg" },
 };
 
 export interface DealState {

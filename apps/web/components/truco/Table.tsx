@@ -72,8 +72,8 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
         </div>
       </header>
 
-      <section className="relative mx-3 mb-2 mt-3 flex-1 sm:mx-10">
-        <div className="felt absolute inset-0 rounded-[48px]" />
+      <section className="relative mx-auto mb-3 mt-8 w-[calc(100%-1.5rem)] max-w-[1100px] flex-1 sm:mt-10 lg:mt-11 sm:w-[calc(100%-7rem)]">
+        <div className="felt absolute inset-0 rounded-[48px] sm:rounded-[120px]" />
 
         {(["top", "left", "right"] as const).map((pos) => (
           <Opponent key={pos} pos={pos} seat={seatAt(pos)} room={room} view={view} count={visible(seatAt(pos))} />
@@ -81,7 +81,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
         {!deal && <Vira view={view} />}
 
-        <div className="absolute left-1/2 top-[55%] h-[min(34vh,320px)] w-[min(62vw,360px)] -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-[55%] h-[min(34vh,320px)] w-[44vw] sm:w-[min(62vw,360px)] -translate-x-1/2 -translate-y-1/2">
           {round.plays.map((p, i) => (
             <PlayedCard
               key={`${view.handNo}-${view.rounds.length}-${p.seat}`}
@@ -183,43 +183,83 @@ function HandInfo({ view }: { view: PlayerView }) {
   );
 }
 
-const OPP_POS: Record<Exclude<Pos, "bottom">, string> = {
-  top: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/3 flex-row-reverse gap-3",
-  left: "left-3 top-1/2 -translate-y-1/2 flex-col sm:left-6",
-  right: "right-3 top-1/2 -translate-y-1/2 flex-col sm:right-6",
+// Assentos na borda da mesa; as cartas de cada um ficam viradas para o centro
+const SEAT_POS: Record<Exclude<Pos, "bottom">, string> = {
+  // centro do avatar sobre a borda (meio avatar: 24/28/32px)
+  top: "left-1/2 top-0 -translate-x-1/2 -translate-y-6 flex-col sm:-translate-y-7 lg:-translate-y-8",
+  left: "left-1 top-1/2 -translate-y-1/2 flex-row sm:left-0 sm:-translate-x-[30%]",
+  right: "right-1 top-1/2 -translate-y-1/2 flex-row-reverse sm:right-0 sm:translate-x-[30%]",
 };
 
 function Opponent({ pos, seat, room, view, count }: { pos: Exclude<Pos, "bottom">; seat: Seat; room: RoomInfo; view: PlayerView; count: number }) {
   const info = room.seats[seat];
   const partner = teamOf(seat) === teamOf(view.seat);
-  const turn = (view.phase === "playing" && !view.bet && view.turn === seat) || (view.bet && teamOf(seat) !== view.bet.team && view.phase === "playing");
+  const turn =
+    view.phase === "playing" && (view.bet ? teamOf(seat) !== view.bet.team : view.turn === seat);
 
   return (
-    <div className={`absolute z-10 flex items-center gap-1 ${OPP_POS[pos]}`}>
-      <div className="flex h-10 justify-center sm:h-14">
-        {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="-mx-2 w-7 sm:w-10" style={{ transform: `rotate(${(i - (count - 1) / 2) * 10}deg)` }}>
-            <CardBack className="!border-2" />
-          </div>
-        ))}
-      </div>
-      <div className={`flex flex-col items-center ${info.connected ? "" : "opacity-40"}`}>
+    <div className={`absolute z-10 flex items-center gap-1.5 sm:gap-2 ${SEAT_POS[pos]}`}>
+      <div className={`relative flex flex-col items-center ${info.connected ? "" : "opacity-40"}`}>
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-full font-display text-lg sm:h-12 sm:w-12 ${
-            partner ? "bg-gold text-stone-900" : "bg-stone-700 text-white"
+          className={`flex h-12 w-12 items-center justify-center rounded-full border-[3px] font-display text-xl shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
+            partner ? "border-gold bg-gold text-stone-900" : "border-red-400/80 bg-stone-800 text-white"
           } ${turn ? "turn-glow" : ""}`}
         >
           {info.kind === "bot" ? "🤖" : info.name.slice(0, 1).toUpperCase()}
         </div>
-        <span className="mt-0.5 max-w-20 truncate rounded bg-black/40 px-1.5 text-xs">{info.name}</span>
+        <span className="relative -mt-2 max-w-24 truncate rounded-full bg-stone-950/90 px-2 py-0.5 text-[11px] font-semibold lg:text-xs ring-1 ring-white/10">
+          {info.name}
+        </span>
+        {view.dealer === seat && <DealerChip className="absolute -right-1.5 -top-1" />}
       </div>
+      <Fan count={count} vertical={pos !== "top"} />
+    </div>
+  );
+}
+
+function DealerChip({ className = "" }: { className?: string }) {
+  return (
+    <span
+      title="Deu as cartas"
+      className={`flex h-5 w-5 items-center justify-center rounded-full bg-white font-display text-[10px] text-stone-900 shadow ring-2 ring-stone-900 ${className}`}
+    >
+      D
+    </span>
+  );
+}
+
+function Fan({ count, vertical }: { count: number; vertical: boolean }) {
+  const angle = (i: number) => (i - (count - 1) / 2) * 12;
+  if (vertical) {
+    return (
+      <div className="flex min-h-14 flex-col items-center justify-center">
+        {Array.from({ length: count }).map((_, i) => (
+          <div key={i} className="relative h-3.5 w-10 sm:h-4 sm:w-12 lg:h-5 lg:w-14">
+            <div
+              className="absolute left-1/2 top-1/2 w-6 sm:w-7 lg:w-9"
+              style={{ transform: `translate(-50%, -50%) rotate(${90 + angle(i)}deg)` }}
+            >
+              <CardBack className="!border-2" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="flex min-h-10 justify-center">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="-mx-1.5 w-6 origin-top sm:w-7 lg:-mx-2 lg:w-9" style={{ transform: `rotate(${-angle(i)}deg)` }}>
+          <CardBack className="!border-2" />
+        </div>
+      ))}
     </div>
   );
 }
 
 function Vira({ view }: { view: PlayerView }) {
   return (
-    <div className="absolute bottom-5 left-6 z-0 flex items-end gap-1 sm:bottom-8 sm:left-10">
+    <div className="absolute bottom-4 left-[14%] z-0 flex items-end gap-1 sm:bottom-6">
       <div className="relative w-10 sm:w-16">
         <CardBack />
         <div className="absolute left-1/2 top-0 w-full -translate-y-2 translate-x-[-10%] rotate-12">
@@ -244,7 +284,7 @@ function PlayedCard({ play, pos, order, winning, mine }: { play: Play; pos: Pos;
   const p = PLAY_POS[pos];
   return (
     <div
-      className={`played absolute w-[clamp(48px,min(12vw,12vh),84px)] ${p.cls} ${winning ? "[&>*]:outline-4 [&>*]:outline-offset-2 [&>*]:outline-gold" : ""}`}
+      className={`played absolute w-[clamp(48px,min(12vw,12vh),100px)] ${p.cls} ${winning ? "[&>*]:outline-4 [&>*]:outline-offset-2 [&>*]:outline-gold" : ""}`}
       style={{ "--to": p.to, "--from": p.from, transform: p.to, zIndex: winning ? 20 : order } as React.CSSProperties}
     >
       {play.hidden && !mine ? (
@@ -287,9 +327,9 @@ function CenterStatus({ view }: { view: PlayerView }) {
 
 const SHOUT_POS: Record<Pos, string> = {
   bottom: "left-1/2 bottom-4",
-  top: "left-1/2 top-16",
-  left: "left-[22%] top-[30%]",
-  right: "left-[78%] top-[30%]",
+  top: "left-1/2 top-[22%]",
+  left: "left-[18%] top-[34%]",
+  right: "left-[82%] top-[34%]",
 };
 
 function ShoutBubble({ text, pos }: { text: string; pos: Pos }) {
@@ -397,6 +437,7 @@ function MyArea({ view, room, visible, dealing }: { view: PlayerView; room: Room
       >
         {myTurn && <span className="h-2 w-2 animate-pulse rounded-full bg-gold" />}
         {myInfo.name}
+        {view.dealer === view.seat && <DealerChip className="ml-1" />}
       </span>
     </section>
   );
