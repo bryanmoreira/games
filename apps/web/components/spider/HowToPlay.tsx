@@ -1,7 +1,7 @@
 import { isRed, SUIT_SETS, type Card, type Suit, type SuitCount } from "@truco/spider";
 import { CardBack } from "@/components/cards/Card";
 import { Section } from "@/components/ui/HowToSection";
-import { HintIcon, UndoIcon } from "./icons";
+import { HintIcon, UndoIcon } from "@/components/ui/icons";
 import { SpiderCard, SuitIcon } from "./SpiderCard";
 
 const c = (rank: number, suit: Suit): Card => ({ id: rank * 10 + suit.length, rank, suit });

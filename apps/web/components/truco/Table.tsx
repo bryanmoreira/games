@@ -8,7 +8,8 @@ import { TRUCO_PATH } from "@/lib/truco/paths";
 import { CardBack, CardImg } from "@/components/cards/Card";
 import { DealAnimation, dealtTo, useDeal } from "./Deal";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
-import { ExitButton, HelpButton, MuteButton, TipsButton, useTips, XIcon } from "@/components/ui/buttons";
+import { HelpButton, MuteButton, TipsButton, useTips } from "@/components/ui/buttons";
+import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { HowToPlay } from "./HowToPlay";
 import { CardInfo } from "./CardInfo";
 import { playCardSound, useAudioUnlock } from "@/lib/sound";
@@ -41,10 +42,8 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   const them = view.scores[1 - myTeam];
   const round = view.rounds[view.rounds.length - 1];
 
-  // confirmação na própria página: confirm() nativo pode ser bloqueado (navegador embutido)
   const [leaving, setLeaving] = useState(false);
-  const leave = (confirmed = false) => {
-    if (view.phase !== "gameOver" && !confirmed) return setLeaving((v) => !v);
+  const leave = () => {
     send({ t: "leave" });
     router.push(TRUCO_PATH);
   };
@@ -87,27 +86,8 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
           <HelpButton onClick={() => setHelp(true)} />
           <TipsButton on={tips} onClick={toggleTips} />
           <MuteButton />
-          <ExitButton onClick={() => leave()} />
+          <ExitConfirm onExit={leave} ask={view.phase !== "gameOver"} onOpenChange={setLeaving} />
         </div>
-        {leaving && (
-          <div className="banner absolute right-2 top-full z-50 mt-1 flex items-center gap-2 rounded-2xl bg-stone-950/90 py-2 pl-4 pr-2 font-display shadow-2xl ring-1 ring-white/10 sm:right-6">
-            <span className="text-sm text-white/70">SAIR?</span>
-            <button
-              onClick={() => setLeaving(false)}
-              aria-label="Cancelar"
-              title="Cancelar"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/80 transition hover:bg-white/20 hover:text-white"
-            >
-              <XIcon />
-            </button>
-            <button
-              onClick={() => leave(true)}
-              className="rounded-xl bg-red-500 px-4 py-2 text-sm text-white shadow-[0_3px_0_#991b1b] active:translate-y-0.5 active:shadow-none"
-            >
-              SAIR
-            </button>
-          </div>
-        )}
         {tips && hoveredCard && !leaving && (
           <div className="pointer-events-none absolute right-2 top-full mt-1 sm:right-6 [@media(hover:none)]:hidden">
             <CardInfo card={hoveredCard} manilha={view.manilha} />
@@ -148,7 +128,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
       <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} onHover={setHovered} />
 
-      {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={() => leave(true)} />}
+      {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={leave} />}
       {help && (
         <HowToPlayModal game="TRUCO PAULISTA" onClose={() => setHelp(false)}>
           <HowToPlay />

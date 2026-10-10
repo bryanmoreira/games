@@ -49,6 +49,20 @@ export function useAudioUnlock() {
   }, []);
 }
 
+/** Nota curta com ataque rápido e decaimento exponencial. */
+export function tone(ac: AudioContext, freq: number, at: number, dur: number, gain: number, type: OscillatorType = "triangle") {
+  const o = ac.createOscillator();
+  o.type = type;
+  o.frequency.value = freq;
+  const g = ac.createGain();
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(gain, at + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.001, at + dur);
+  o.connect(g).connect(ac.destination);
+  o.start(at);
+  o.stop(at + dur + 0.02);
+}
+
 export function playCardSound() {
   const ac = audio();
   if (!ac) return;

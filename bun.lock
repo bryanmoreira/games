@@ -23,6 +23,7 @@
       "dependencies": {
         "@truco/game": "workspace:*",
         "@truco/spider": "workspace:*",
+        "@truco/sudoku": "workspace:*",
         "next": "^16.4.0",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
@@ -41,6 +42,9 @@
     },
     "packages/spider": {
       "name": "@truco/spider",
+    },
+    "packages/sudoku": {
+      "name": "@truco/sudoku",
     },
   },
   "packages": {
@@ -167,6 +171,8 @@
     "@truco/server": ["@truco/server@workspace:apps/server"],
 
     "@truco/spider": ["@truco/spider@workspace:packages/spider"],
+
+    "@truco/sudoku": ["@truco/sudoku@workspace:packages/sudoku"],
 
     "@truco/web": ["@truco/web@workspace:apps/web"],
 

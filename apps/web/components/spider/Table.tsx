@@ -15,7 +15,8 @@ import {
   type Action,
   type GameState,
 } from "@truco/spider";
-import { ExitButton, HelpButton, IconButton, MuteButton, TipsButton, useTips } from "@/components/ui/buttons";
+import { HelpButton, IconButton, MuteButton, TipsButton, useTips } from "@/components/ui/buttons";
+import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { playCardSound, useAudioUnlock } from "@/lib/sound";
 import { playCompleteSound, playDealSound, playWinSound } from "@/lib/spider/sound";
@@ -23,7 +24,7 @@ import { loadGame, saveGame } from "@/lib/spider/storage";
 import { SPIDER_PATH } from "@/lib/spider/paths";
 import { COMPACT_BELOW, SpiderCard, SuitIcon } from "./SpiderCard";
 import { HowToPlay } from "./HowToPlay";
-import { HintIcon, UndoIcon } from "./icons";
+import { HintIcon, TrophyIcon, UndoIcon } from "@/components/ui/icons";
 
 const RATIO = 726 / 500;
 const MOVE_MS = 260;
@@ -415,7 +416,7 @@ export function Table() {
           <HelpButton onClick={() => setHelp(true)} />
           <TipsButton on={tips} onClick={toggleTips} />
           <MuteButton />
-          <ExitButton onClick={() => router.push(SPIDER_PATH)} />
+          <ExitConfirm onExit={() => router.push(SPIDER_PATH)} ask={!game.won} />
         </div>
       </header>
 
@@ -543,13 +544,7 @@ function Victory({ game, onAgain, onLeave }: { game: GameState; onAgain: () => v
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div className="banner flex w-full max-w-xs flex-col items-center gap-4 rounded-3xl bg-stone-950/90 p-6 ring-1 ring-gold/40">
-        <svg viewBox="0 0 24 24" className="h-16 w-16 text-gold" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M8 21h8" />
-          <path d="M12 17v4" />
-          <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
-          <path d="M17 5h2.5a1.5 1.5 0 0 1 0 3c0 1.7-1.3 3-3 3" />
-          <path d="M7 5H4.5a1.5 1.5 0 0 0 0 3c0 1.7 1.3 3 3 3" />
-        </svg>
+        <TrophyIcon />
         <span className="font-display text-4xl text-gold">VITÓRIA</span>
         <div className="flex gap-6 font-display">
           <div className="flex flex-col items-center leading-none">

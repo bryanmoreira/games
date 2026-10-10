@@ -11,11 +11,13 @@ COPY apps/web/package.json apps/web/
 COPY apps/server/package.json apps/server/
 COPY packages/game/package.json packages/game/
 COPY packages/spider/package.json packages/spider/
+COPY packages/sudoku/package.json packages/sudoku/
 RUN bun install --frozen-lockfile --linker=hoisted
 
 COPY tsconfig.base.json ./
 COPY packages/game packages/game
 COPY packages/spider packages/spider
+COPY packages/sudoku packages/sudoku
 COPY apps/web apps/web
 RUN bun run --cwd apps/web build
 

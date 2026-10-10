@@ -56,12 +56,17 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 |---|---|
 | Carta (PNG) e verso | `components/cards/Card.tsx` (`CardImg` aceita valor em texto ou 1-13) |
 | Botões redondos do topo | `components/ui/buttons.tsx` (`IconButton`, `Icon`, `HelpButton`, `MuteButton`, `TipsButton` + `useTips`, `ExitButton`) |
+| Sair com confirmação ("SAIR?" ✕ / SAIR abaixo do topo) | `components/ui/ExitConfirm.tsx` — use sempre no lugar do `ExitButton` na partida; `ask={false}` quando a partida já acabou |
 | Modal "Como jogar" | `components/ui/HowToPlayModal.tsx` (casca; o conteúdo vem como filho) |
 | Cartão numerado do "Como jogar" | `components/ui/HowToSection.tsx` |
+| Ícones de ferramenta (desfazer, dica, lápis, apagar, troféu, relógio) | `components/ui/icons.tsx` |
+| Nota sintetizada curta | `tone()` em `lib/sound.ts` |
 
 ### Jogo de um jogador só (ex.: Paciência Spider)
 
 Sem adversário nem informação escondida, não precisa de servidor, sala nem lobby: a engine roda no navegador e a partida fica no `localStorage` (recarregar continua). Referência: `packages/spider` (regras, `bestHint` com função de progresso que nunca entra em ciclo) e `components/spider/Table.tsx` (as cartas numa camada única com posição absoluta; mover, distribuir e desfazer viram transições de CSS; arrastar com Pointer Events). Abaixo de ~64 px de largura o índice das PNGs fica ilegível: use uma face compacta (`SpiderCard`).
+
+Jogo sem cartas (ex.: Sudoku): `packages/sudoku` (gerador por `seed` que garante solução única via solver lógico, dificuldade pela técnica mais difícil exigida, dica com o motivo) e `components/sudoku/Table.tsx` (grade com bordas de madeira, teclado numérico, cronômetro que pausa com a aba oculta). Gerar puzzle difícil pode levar ~1 s: mostre um spinner no botão e gere num `setTimeout`.
 
 ## Reaproveitar sem duplicar
 
@@ -77,6 +82,7 @@ Use como lista de tarefas; cada item existe porque já deu problema antes:
 - [ ] Lobby com escolha de lugar/time, host adiciona IA, modo solo com IAs
 - [ ] Mesa: assentos na borda, leques virados ao centro, selo "D" de quem dá, destaque de vez nas cartas, placar e valor da rodada
 - [ ] Distribuição animada a cada mão; bots esperam a animação (`dealUntil` no servidor)
+- [ ] Botão de sair da partida pede confirmação (`ExitConfirm`), em todo jogo, inclusive os de um jogador só
 - [ ] Sons (carta jogada + eventos principais), botão de mudo; dicas no hover com botão para desligar (ocultas em touch)
 - [ ] "Como jogar": página `/<slug>/como-jogar` com imagens das cartas + botão "?" que abre o mesmo conteúdo em modal na partida
 - [ ] Navegador: solo, multiplayer em 2 abas, reconexão (recarregar), fim de jogo, celular 360/375px sem rolagem horizontal, console sem erros

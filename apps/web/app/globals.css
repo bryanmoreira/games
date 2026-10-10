@@ -159,3 +159,31 @@ body {
   background: rgba(242, 193, 78, 0.14);
   animation: glow 1.2s ease-in-out infinite;
 }
+
+/* Sudoku */
+@keyframes cell-in {
+  from { transform: scale(0.2); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.cell-in {
+  display: inline-block;
+  animation: cell-in 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) backwards;
+}
+@keyframes cell-wave {
+  40% { background-color: rgba(242, 193, 78, 0.6); transform: scale(1.08); }
+}
+.cell-wave {
+  z-index: 5;
+  animation: cell-wave 0.55s ease-out backwards;
+}
+@keyframes shake {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(-14%); }
+  40% { transform: translateX(11%); }
+  60% { transform: translateX(-7%); }
+  80% { transform: translateX(4%); }
+}
+.shake {
+  display: inline-block;
+  animation: shake 0.4s ease-out;
+}

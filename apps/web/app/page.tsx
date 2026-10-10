@@ -3,6 +3,8 @@ import { makeCard } from "@truco/game";
 import { CardImg } from "@/components/cards/Card";
 import { TRUCO_PATH } from "@/lib/truco/paths";
 import { SPIDER_PATH } from "@/lib/spider/paths";
+import { SUDOKU_PATH } from "@/lib/sudoku/paths";
+import { MiniBoard } from "@/components/sudoku/common";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
@@ -48,6 +50,19 @@ export default function Home() {
           <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
             <span className="font-display text-3xl text-gold">PACIÊNCIA</span>
             <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">SPIDER</span>
+          </span>
+        </Link>
+
+        <Link
+          href={SUDOKU_PATH}
+          className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"
+        >
+          <div className="absolute left-1/2 top-[8%] w-[36%] -translate-x-1/2 -rotate-6 text-[clamp(7px,2.2vw,12px)]">
+            <MiniBoard />
+          </div>
+          <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
+            <span className="font-display text-3xl text-gold">SUDOKU</span>
+            <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">9 × 9</span>
           </span>
         </Link>
 

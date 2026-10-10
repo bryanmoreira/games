@@ -1,8 +1,8 @@
 # Jogos
 
-Site com vários jogos de cartas. Hoje: **Truco Paulista** (`/truco-paulista`) e **Paciência Spider** (`/paciencia-spider`, só no navegador).
+Site com vários jogos de cartas. Hoje: **Truco Paulista** (`/truco-paulista`), **Paciência Spider** (`/paciencia-spider`) e **Sudoku** (`/sudoku`), os dois últimos só no navegador.
 
-Monorepo Bun: `apps/web` (Next.js), `apps/server` (WebSocket em Bun), `packages/game` (regras do Truco Paulista), `packages/spider` (regras da Paciência Spider).
+Monorepo Bun: `apps/web` (Next.js), `apps/server` (WebSocket em Bun), `packages/game` (regras do Truco Paulista), `packages/spider` (regras da Paciência Spider), `packages/sudoku` (gerador, solver lógico e regras do Sudoku).
 Cartas: [Webisso/playing-cards](https://github.com/Webisso/playing-cards) (MIT).
 
 ## Montando um jogo novo (com Claude Code)
