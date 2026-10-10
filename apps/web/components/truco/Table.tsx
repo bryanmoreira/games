@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@truco/game";
 import { send } from "@/lib/truco/socket";
 import { CardBack, CardImg } from "./Card";
 import { DealAnimation, dealtTo, useDeal } from "./Deal";
+import { isMuted, playCardSound, playTrucoSound, setMuted, unlockAudio } from "@/lib/truco/sound";
 
 type Pos = "bottom" | "right" | "top" | "left";
 const POS: Pos[] = ["bottom", "right", "top", "left"];
@@ -42,12 +43,13 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
   const seatAt = (pos: Pos) => ((me + POS.indexOf(pos)) % 4) as Seat;
   const deal = useDeal(view);
+  useSounds(view);
   const visible = (seat: Seat) => Math.min(view.handCounts[seat], dealtTo(deal, view.dealer, seat));
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex items-center justify-between gap-2 px-3 py-2 sm:px-6">
-        <div className="flex items-center gap-3 rounded-2xl bg-black/40 px-4 py-2 font-display">
+      <header className="flex items-center justify-between gap-1.5 px-2 py-2 sm:gap-2 sm:px-6">
+        <div className="flex items-center gap-2 rounded-2xl bg-black/40 px-3 py-2 font-display sm:gap-3 sm:px-4">
           <div className="flex flex-col items-center leading-none">
             <span className="text-[10px] text-gold/80">NÓS</span>
             <span className="text-3xl text-gold">{us}</span>
@@ -61,9 +63,10 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
         <HandInfo view={view} />
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {!room.solo && <span className="hidden font-display text-white/40 sm:inline">{room.code}</span>}
-          <button onClick={leave} className="h-10 w-10 rounded-full bg-white/10 hover:bg-white/20">
+          <MuteButton />
+          <button onClick={leave} className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10">
             ✕
           </button>
         </div>
@@ -107,6 +110,38 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   );
 }
 
+function useSounds(view: PlayerView) {
+  const plays = view.rounds.reduce((n, r) => n + r.plays.length, 0);
+  const prev = useRef({ hand: view.handNo, plays, shout: view.shout?.id });
+
+  useEffect(() => {
+    const unlock = () => unlockAudio();
+    window.addEventListener("pointerdown", unlock);
+    return () => window.removeEventListener("pointerdown", unlock);
+  }, []);
+
+  useEffect(() => {
+    const p = prev.current;
+    if (view.handNo === p.hand && plays > p.plays) playCardSound();
+    if (view.shout && view.shout.id !== p.shout && view.shout.kind === "truco") playTrucoSound(view.shout.value);
+    prev.current = { hand: view.handNo, plays, shout: view.shout?.id };
+  }, [view.handNo, plays, view.shout]);
+}
+
+function MuteButton() {
+  const [muted, setMutedState] = useState(false);
+  useEffect(() => setMutedState(isMuted()), []);
+  const toggle = () => {
+    setMuted(!muted);
+    setMutedState(!muted);
+  };
+  return (
+    <button onClick={toggle} className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10" title={muted ? "Ativar som" : "Silenciar"}>
+      {muted ? "🔇" : "🔊"}
+    </button>
+  );
+}
+
 function HandInfo({ view }: { view: PlayerView }) {
   const myTeam = teamOf(view.seat);
   const current = view.rounds.length - 1;
@@ -115,7 +150,7 @@ function HandInfo({ view }: { view: PlayerView }) {
     view.mode === "ferro" ? "FERRO" : view.mode === "mao11" ? "MÃO DE 11" : raised ? BET_NAME[view.value].slice(0, -1) : "VALE";
 
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-black/40 px-3 py-1.5">
+    <div className="flex items-center gap-2 rounded-2xl bg-black/40 px-2 py-1.5 sm:gap-3 sm:px-3">
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => {
           const w = view.rounds[i]?.winner;
