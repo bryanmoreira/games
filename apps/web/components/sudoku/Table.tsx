@@ -383,7 +383,7 @@ export function Table() {
                             {DIGITS.map((d) => (
                               <span
                                 key={d}
-                                className={`flex items-center justify-center ${focusDigit === d ? "rounded-sm bg-gold text-stone-900" : "text-white/75"}`}
+                                className={`flex items-center justify-center ${focusDigit === d && game.notes[i] & bit(d) ? "rounded-sm bg-gold text-stone-900" : "text-white/75"}`}
                               >
                                 {game.notes[i] & bit(d) ? d : ""}
                               </span>
