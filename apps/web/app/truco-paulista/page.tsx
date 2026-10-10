@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
 import { CardImg } from "@/components/truco/Card";
-import { roomPath } from "@/lib/truco/paths";
+import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
 import { makeCard } from "@truco/game";
 
 const FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades"), makeCard("7", "diamonds")];
@@ -104,6 +104,13 @@ export default function TrucoHome() {
           </button>
         </div>
       </div>
+      <Link
+        href={`${TRUCO_PATH}/como-jogar`}
+        className="flex items-center gap-2 rounded-full px-4 py-2 font-display text-sm text-white/60 transition hover:bg-white/10 hover:text-white"
+      >
+        <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-current text-xs">?</span>
+        Como jogar
+      </Link>
       {error && <p className="text-sm text-red-300">{error}</p>}
     </main>
   );
