@@ -7,6 +7,7 @@ import { send } from "@/lib/truco/socket";
 import { TRUCO_PATH } from "@/lib/truco/paths";
 import { CardBack, CardImg } from "./Card";
 import { DealAnimation, dealtTo, useDeal } from "./Deal";
+import { HelpButton, HowToPlayModal } from "./HowToPlayModal";
 import { isMuted, playCardSound, playTrucoSound, setMuted, unlockAudio } from "@/lib/truco/sound";
 
 type Pos = "bottom" | "right" | "top" | "left";
@@ -44,18 +45,25 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
   const seatAt = (pos: Pos) => ((me + POS.indexOf(pos)) % 4) as Seat;
   const deal = useDeal(view);
+  const [help, setHelp] = useState(false);
   useSounds(view);
   const visible = (seat: Seat) => Math.min(view.handCounts[seat], dealtTo(deal, view.dealer, seat));
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden">
       <header className="flex items-center justify-between gap-1.5 px-2 py-2 sm:gap-2 sm:px-6">
-        <div className="flex items-center gap-2 rounded-2xl bg-black/40 px-3 py-2 font-display sm:gap-3 sm:px-4">
+        <div className="flex items-center gap-1.5 rounded-2xl bg-black/40 px-3 py-2 font-display sm:gap-3 sm:px-4">
           <div className="flex flex-col items-center leading-none">
             <span className="text-[10px] text-gold/80">NÓS</span>
             <span className="text-3xl text-gold">{us}</span>
           </div>
-          <span className="text-white/30">×</span>
+          {/* espaçador do rótulo + altura da linha dos números, para o × alinhar com os placares */}
+          <div className="flex flex-col items-center leading-none" aria-hidden="true">
+            <span className="invisible text-[10px]">×</span>
+            <span className="flex h-[1em] items-center text-3xl">
+              <span className="text-base text-white/30">×</span>
+            </span>
+          </div>
           <div className="flex flex-col items-center leading-none">
             <span className="text-[10px] text-white/60">ELES</span>
             <span className="text-3xl">{them}</span>
@@ -64,10 +72,11 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
         <HandInfo view={view} />
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {!room.solo && <span className="hidden font-display text-white/40 sm:inline">{room.code}</span>}
+          <HelpButton onClick={() => setHelp(true)} />
           <MuteButton />
-          <button onClick={leave} className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10">
+          <button onClick={leave} className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10">
             ✕
           </button>
         </div>
@@ -107,6 +116,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
       <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} />
 
       {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={leave} />}
+      {help && <HowToPlayModal onClose={() => setHelp(false)} />}
     </main>
   );
 }
@@ -137,7 +147,7 @@ function MuteButton() {
     setMutedState(!muted);
   };
   return (
-    <button onClick={toggle} className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10" title={muted ? "Ativar som" : "Silenciar"}>
+    <button onClick={toggle} className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10" title={muted ? "Ativar som" : "Silenciar"}>
       {muted ? "🔇" : "🔊"}
     </button>
   );
@@ -151,7 +161,7 @@ function HandInfo({ view }: { view: PlayerView }) {
     view.mode === "ferro" ? "FERRO" : view.mode === "mao11" ? "MÃO DE 11" : raised ? BET_NAME[view.value].slice(0, -1) : "VALE";
 
   return (
-    <div className="flex items-center gap-2 rounded-2xl bg-black/40 px-2 py-1.5 sm:gap-3 sm:px-3">
+    <div className="flex items-center gap-1.5 rounded-2xl bg-black/40 px-2 py-1.5 sm:gap-3 sm:px-3">
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => {
           const w = view.rounds[i]?.winner;
@@ -172,7 +182,7 @@ function HandInfo({ view }: { view: PlayerView }) {
         })}
       </div>
       <div className="h-8 w-px bg-white/10" />
-      <div className="flex min-w-12 flex-col items-center leading-none">
+      <div className="flex min-w-9 flex-col items-center leading-none sm:min-w-12">
         <span className={`text-[9px] font-display tracking-wide ${raised || view.mode !== "normal" ? "text-gold" : "text-white/50"}`}>
           {label}
         </span>
