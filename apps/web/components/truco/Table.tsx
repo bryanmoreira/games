@@ -10,6 +10,7 @@ import { DealAnimation, dealtTo, useDeal } from "./Deal";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { HelpButton, MuteButton, TipsButton, useTips } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
+import { GameEnd } from "@/components/ui/GameEnd";
 import { HowToPlay } from "./HowToPlay";
 import { CardInfo } from "./CardInfo";
 import { playCardSound, useAudioUnlock } from "@/lib/sound";
@@ -527,32 +528,14 @@ function ActionBtn({ color, onClick, children }: { color: keyof typeof BTN_COLOR
 }
 
 function GameOver({ view, room, onLeave }: { view: PlayerView; room: RoomInfo; onLeave: () => void }) {
-  const won = view.winner === teamOf(view.seat);
   const myTeam = teamOf(view.seat);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="banner flex flex-col items-center gap-6 rounded-3xl bg-stone-900 px-10 py-8 ring-2 ring-gold/50">
-        <span className="text-6xl">{won ? "🏆" : "💀"}</span>
-        <h2 className={`font-display text-4xl ${won ? "text-gold" : "text-red-400"}`}>{won ? "VITÓRIA!" : "DERROTA"}</h2>
-        <p className="font-display text-3xl">
-          <span className="text-gold">{view.scores[myTeam]}</span>
-          <span className="mx-3 text-white/30">×</span>
-          {view.scores[1 - myTeam]}
-        </p>
-        <div className="flex gap-3">
-          <button onClick={onLeave} className="rounded-xl bg-white/10 px-5 py-3 font-display hover:bg-white/20">
-            ✕
-          </button>
-          {room.isHost && (
-            <button
-              onClick={() => send({ t: "restart" })}
-              className="rounded-xl bg-gold px-6 py-3 font-display text-stone-900 shadow-[0_4px_0_#9a6b12]"
-            >
-              De novo
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+    <GameEnd won={view.winner === myTeam} onLeave={onLeave} onAgain={room.isHost ? () => send({ t: "restart" }) : undefined}>
+      <p className="font-display text-3xl">
+        <span className="text-gold">{view.scores[myTeam]}</span>
+        <span className="mx-3 text-white/30">×</span>
+        {view.scores[1 - myTeam]}
+      </p>
+    </GameEnd>
   );
 }

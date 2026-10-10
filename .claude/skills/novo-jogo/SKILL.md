@@ -13,7 +13,7 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 
 - **Pouco texto na UI.** Rótulos curtos (QUERO, CORRO, BORA), ícones e cores no lugar de frases. Textos explicativos só na página "Como jogar".
 - **Interface em português (pt-BR).** Respostas ao usuário também em português.
-- **Ícones em SVG** (traço arredondado, `stroke="currentColor"`), não emoji nem caracteres como "←". Hover só clareia o botão — o ícone não se mexe.
+- **Ícones em SVG** (traço arredondado, `stroke="currentColor"`), não emoji nem caracteres como "←" (exceção: 🏆/💀 da tela de fim, que o usuário quis igual ao truco). Hover só clareia o botão — o ícone não se mexe.
 - **Sem voz sintetizada.** Sons só com Web Audio (o usuário rejeitou `speechSynthesis`).
 - **Commit e push só quando pedido.** Ao terminar uma mudança, pergunte se quer commit e push. Mensagens de commit em português, com a linha `Co-Authored-By` exigida pelo ambiente.
 - **Verificar no navegador antes de dizer que está pronto**, inclusive em celular (360px e 375px de largura).
@@ -56,10 +56,11 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 |---|---|
 | Carta (PNG) e verso | `components/cards/Card.tsx` (`CardImg` aceita valor em texto ou 1-13) |
 | Botões redondos do topo | `components/ui/buttons.tsx` (`IconButton`, `Icon`, `HelpButton`, `MuteButton`, `TipsButton` + `useTips`, `ExitButton`) |
+| Tela de fim (vitória/derrota) | `components/ui/GameEnd.tsx` (`GameEnd` + `EndStat`) — padrão do truco: 🏆 VITÓRIA! / 💀 DERROTA, selo opcional (nível, naipes), números do jogo como filhos, ✕ sair + "De novo"; botões extras em `actions` |
 | Sair com confirmação ("SAIR?" ✕ / SAIR abaixo do topo) | `components/ui/ExitConfirm.tsx` — use sempre no lugar do `ExitButton` na partida; `ask={false}` quando a partida já acabou |
 | Modal "Como jogar" | `components/ui/HowToPlayModal.tsx` (casca; o conteúdo vem como filho) |
 | Cartão numerado do "Como jogar" | `components/ui/HowToSection.tsx` |
-| Ícones de ferramenta (desfazer, dica, lápis, apagar, troféu, relógio) | `components/ui/icons.tsx` |
+| Ícones de ferramenta (desfazer, dica, lápis, apagar) | `components/ui/icons.tsx` |
 | Nota sintetizada curta | `tone()` em `lib/sound.ts` |
 
 ### Jogo de um jogador só (ex.: Paciência Spider)
@@ -82,6 +83,7 @@ Use como lista de tarefas; cada item existe porque já deu problema antes:
 - [ ] Lobby com escolha de lugar/time, host adiciona IA, modo solo com IAs
 - [ ] Mesa: assentos na borda, leques virados ao centro, selo "D" de quem dá, destaque de vez nas cartas, placar e valor da rodada
 - [ ] Distribuição animada a cada mão; bots esperam a animação (`dealUntil` no servidor)
+- [ ] Vitória e derrota com `GameEnd` (mesmos ícones, títulos e botões em todos os jogos; só os números e o selo mudam)
 - [ ] Botão de sair da partida pede confirmação (`ExitConfirm`), em todo jogo, inclusive os de um jogador só
 - [ ] Sons (carta jogada + eventos principais), botão de mudo; dicas no hover com botão para desligar (ocultas em touch)
 - [ ] "Como jogar": página `/<slug>/como-jogar` com imagens das cartas + botão "?" que abre o mesmo conteúdo em modal na partida

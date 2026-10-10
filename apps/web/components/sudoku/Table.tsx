@@ -22,7 +22,8 @@ import {
 import { HelpButton, MuteButton } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
-import { EraseIcon, HintIcon, PencilIcon, TrophyIcon, UndoIcon } from "@/components/ui/icons";
+import { EraseIcon, HintIcon, PencilIcon, UndoIcon } from "@/components/ui/icons";
+import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { useAudioUnlock } from "@/lib/sound";
 import {
   playErrorSound,
@@ -436,7 +437,7 @@ export function Table() {
       </section>
 
       {showEnd && game.won && <Victory game={game} record={record} busy={busy} onAgain={startNew} onLeave={() => router.push(SUDOKU_PATH)} />}
-      {showEnd && game.lost && <GameOver busy={busy} onContinue={revive} onNew={startNew} />}
+      {showEnd && game.lost && <GameOver game={game} busy={busy} onContinue={revive} onNew={startNew} onLeave={() => router.push(SUDOKU_PATH)} />}
       {help && (
         <HowToPlayModal game="SUDOKU" onClose={() => setHelp(false)}>
           <HowToPlay />
@@ -543,78 +544,55 @@ function Controls({
 
 // ---------- fim de jogo ----------
 
-function Stat({ label, value, gold }: { label: string; value: React.ReactNode; gold?: boolean }) {
+function Level({ game }: { game: GameState }) {
   return (
-    <div className="flex flex-col items-center leading-none">
-      <span className={`text-[10px] ${gold ? "text-gold/80" : "text-white/60"}`}>{label}</span>
-      <span className={`text-2xl ${gold ? "text-gold" : ""}`}>{value}</span>
-    </div>
+    <span className="flex items-center gap-1.5 font-display text-xs text-white/60">
+      <LevelBars level={game.difficulty} className="h-3.5 w-4 text-gold" />
+      {LEVEL_LABEL[game.difficulty]}
+    </span>
   );
-}
-
-function Spinner() {
-  return <span className="inline-block h-5 w-5 animate-spin rounded-full border-[3px] border-current border-r-transparent align-middle" aria-label="Gerando" />;
 }
 
 function Victory({ game, record, busy, onAgain, onLeave }: { game: GameState; record: boolean; busy: boolean; onAgain: () => void; onLeave: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="banner flex w-full max-w-xs flex-col items-center gap-4 rounded-3xl bg-stone-950/90 p-6 ring-1 ring-gold/40">
-        <TrophyIcon />
-        <span className="font-display text-4xl text-gold">VITÓRIA</span>
-        <span className="flex items-center gap-1.5 font-display text-xs text-white/60">
-          <LevelBars level={game.difficulty} className="h-3.5 w-4 text-gold" />
-          {LEVEL_LABEL[game.difficulty]}
-        </span>
-        <div className="flex gap-6 font-display">
-          <Stat label="TEMPO" value={formatTime(game.elapsed)} gold />
-          <Stat label="ERROS" value={game.mistakes} />
-          <Stat label="DICAS" value={game.hints} />
+    <GameEnd won badge={<Level game={game} />} onLeave={onLeave} onAgain={onAgain} busy={busy}>
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex gap-6">
+          <EndStat label="TEMPO" value={formatTime(game.elapsed)} gold />
+          <EndStat label="ERROS" value={game.mistakes} />
+          <EndStat label="DICAS" value={game.hints} />
         </div>
         {record && <span className="banner rounded-full bg-gold px-3 py-1 font-display text-[10px] text-stone-900">RECORDE</span>}
-        <div className="flex w-full gap-2">
-          <button onClick={onLeave} className="flex-1 rounded-xl bg-white/10 py-3 font-display transition hover:bg-white/20">
-            Sair
-          </button>
-          <button
-            onClick={onAgain}
-            disabled={busy}
-            className="flex-1 rounded-xl bg-gold py-3 font-display text-stone-900 shadow-[0_4px_0_#9a6b12] active:translate-y-1 active:shadow-none"
-          >
-            {busy ? <Spinner /> : "De novo"}
-          </button>
-        </div>
       </div>
-    </div>
+    </GameEnd>
   );
 }
 
-function GameOver({ busy, onContinue, onNew }: { busy: boolean; onContinue: () => void; onNew: () => void }) {
+function GameOver({ game, busy, onContinue, onNew, onLeave }: { game: GameState; busy: boolean; onContinue: () => void; onNew: () => void; onLeave: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="banner flex w-full max-w-xs flex-col items-center gap-4 rounded-3xl bg-stone-950/90 p-6 ring-1 ring-red-400/40">
+    <GameEnd
+      won={false}
+      badge={<Level game={game} />}
+      onLeave={onLeave}
+      onAgain={onNew}
+      busy={busy}
+      actions={
+        <button
+          onClick={onContinue}
+          className="rounded-xl bg-emerald-600 px-4 py-3 font-display shadow-[0_4px_0_#065f46] sm:px-5 active:translate-y-1 active:shadow-none"
+        >
+          Continuar
+        </button>
+      }
+    >
+      <div className="flex flex-col items-center gap-2 font-display leading-none">
         <span className="flex gap-2">
           {Array.from({ length: MAX_MISTAKES }, (_, i) => (
-            <span key={i} className="h-5 w-5 rounded-full bg-red-400" />
+            <span key={i} className="h-4 w-4 rounded-full bg-red-400" />
           ))}
         </span>
-        <span className="font-display text-4xl text-red-400">{MAX_MISTAKES} ERROS</span>
-        <div className="flex w-full gap-2">
-          <button
-            onClick={onNew}
-            disabled={busy}
-            className="flex-1 rounded-xl bg-gold py-3 font-display text-stone-900 shadow-[0_4px_0_#9a6b12] active:translate-y-1 active:shadow-none"
-          >
-            {busy ? <Spinner /> : "Novo"}
-          </button>
-          <button
-            onClick={onContinue}
-            className="flex-1 rounded-xl bg-emerald-600 py-3 font-display shadow-[0_4px_0_#065f46] active:translate-y-1 active:shadow-none"
-          >
-            Continuar
-          </button>
-        </div>
+        <span className="text-sm text-red-400">{MAX_MISTAKES} ERROS</span>
       </div>
-    </div>
+    </GameEnd>
   );
 }

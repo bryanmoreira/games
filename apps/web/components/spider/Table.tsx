@@ -24,7 +24,8 @@ import { loadGame, saveGame } from "@/lib/spider/storage";
 import { SPIDER_PATH } from "@/lib/spider/paths";
 import { COMPACT_BELOW, SpiderCard, SuitIcon } from "./SpiderCard";
 import { HowToPlay } from "./HowToPlay";
-import { HintIcon, TrophyIcon, UndoIcon } from "@/components/ui/icons";
+import { HintIcon, UndoIcon } from "@/components/ui/icons";
+import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 
 const RATIO = 726 / 500;
 const MOVE_MS = 260;
@@ -542,32 +543,22 @@ function StuckBar({ onUndo, canUndo, onNew }: { onUndo: () => void; canUndo: boo
 
 function Victory({ game, onAgain, onLeave }: { game: GameState; onAgain: () => void; onLeave: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="banner flex w-full max-w-xs flex-col items-center gap-4 rounded-3xl bg-stone-950/90 p-6 ring-1 ring-gold/40">
-        <TrophyIcon />
-        <span className="font-display text-4xl text-gold">VITÓRIA</span>
-        <div className="flex gap-6 font-display">
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-[10px] text-gold/80">PONTOS</span>
-            <span className="text-3xl text-gold">{scoreOf(game)}</span>
-          </div>
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-[10px] text-white/60">JOGADAS</span>
-            <span className="text-3xl">{game.moves}</span>
-          </div>
-        </div>
-        <div className="flex w-full gap-2">
-          <button onClick={onLeave} className="flex-1 rounded-xl bg-white/10 py-3 font-display transition hover:bg-white/20">
-            Sair
-          </button>
-          <button
-            onClick={onAgain}
-            className="flex-1 rounded-xl bg-gold py-3 font-display text-stone-900 shadow-[0_4px_0_#9a6b12] active:translate-y-1 active:shadow-none"
-          >
-            De novo
-          </button>
-        </div>
+    <GameEnd
+      won
+      badge={
+        <span className="flex gap-1 text-white/60">
+          {SUIT_SETS[game.suits].map((s) => (
+            <SuitIcon key={s} suit={s} className={`h-4 w-4 ${s === "hearts" || s === "diamonds" ? "text-red-400" : ""}`} />
+          ))}
+        </span>
+      }
+      onLeave={onLeave}
+      onAgain={onAgain}
+    >
+      <div className="flex gap-6">
+        <EndStat label="PONTOS" value={scoreOf(game)} gold />
+        <EndStat label="JOGADAS" value={game.moves} />
       </div>
-    </div>
+    </GameEnd>
   );
 }

@@ -44,24 +44,3 @@ export function EraseIcon({ className }: P) {
     </Icon>
   );
 }
-
-export function TrophyIcon({ className = "h-16 w-16 text-gold" }: P) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M8 21h8" />
-      <path d="M12 17v4" />
-      <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
-      <path d="M17 5h2.5a1.5 1.5 0 0 1 0 3c0 1.7-1.3 3-3 3" />
-      <path d="M7 5H4.5a1.5 1.5 0 0 0 0 3c0 1.7 1.3 3 3 3" />
-    </svg>
-  );
-}
-
-export function ClockIcon({ className = "h-4 w-4" }: P) {
-  return (
-    <Icon className={className}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 2" />
-    </Icon>
-  );
-}

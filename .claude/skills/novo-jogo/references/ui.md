@@ -59,7 +59,7 @@ Componente padronizado (`Opponent` + `Fan` + `DealerChip`):
 - Banner central (`CenterStatus`): resultado da mão, aposta pendente pulsando, "⏳ 11".
 - Balão de grito (`ShoutBubble`) perto de quem gritou, com animação `.shout`, chave `shout-${id}`.
 - Painel da vira no canto inferior esquerdo: "VIRA" com a carta em pé (maço atrás) → seta dourada → "MANILHA" numa mini carta branca com borda dourada (letra grande + ♦♠♥♣ na ordem de força). Jogos sem vira podem usar o mesmo canto para outra informação fixa da mão (trunfo, etc.).
-- Fim de jogo: overlay com 🏆/💀, VITÓRIA/DERROTA, placar, sair e "De novo" (host).
+- Fim de jogo: sempre `GameEnd` (`components/ui/GameEnd.tsx`), igual em todos os jogos: 🏆 **VITÓRIA!** dourado ou 💀 **DERROTA** vermelho, selo opcional embaixo do título (nível, naipes), os números do jogo como filhos (placar `12 × 8` no truco; `EndStat` para TEMPO/PONTOS/ERROS), botão ✕ (sair) + **De novo** dourado (no multiplayer só para o host). Ações extras do jogo vão em `actions`, entre os dois (ex.: **Continuar** verde no Sudoku). Não crie tela de fim própria.
 
 ## Botões e ícones
 
