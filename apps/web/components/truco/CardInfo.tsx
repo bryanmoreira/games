@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { makeCard, RANKS, SUITS, type Card, type Rank, type Suit } from "@truco/game";
-import { CardImg } from "./Card";
+import { CardImg } from "@/components/cards/Card";
 
 const RANK_NAME: Record<Rank, string> = {
   "4": "Quatro", "5": "Cinco", "6": "Seis", "7": "Sete", Q: "Dama", J: "Valete", K: "Rei", A: "Ás", "2": "Dois", "3": "Três",
@@ -130,41 +129,4 @@ function MiniManilhas({ cards, plus }: { cards: Card[]; plus?: boolean }) {
 
 function Empty({ children }: { children: React.ReactNode }) {
   return <span className="text-[11px] text-white/50">{children}</span>;
-}
-
-export function useTips(): [boolean, () => void] {
-  const [on, setOn] = useState(true);
-  useEffect(() => {
-    try {
-      setOn(localStorage.getItem("truco.tips") !== "0");
-    } catch {}
-  }, []);
-  const toggle = () =>
-    setOn((v) => {
-      try {
-        localStorage.setItem("truco.tips", v ? "0" : "1");
-      } catch {}
-      return !v;
-    });
-  return [on, toggle];
-}
-
-export function TipsButton({ on, onClick }: { on: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={on ? "Desativar dicas das cartas" : "Ativar dicas das cartas"}
-      aria-pressed={on}
-      title={on ? "Dicas das cartas: ligadas" : "Dicas das cartas: desligadas"}
-      className={`flex h-8 w-8 items-center justify-center rounded-full transition sm:h-10 sm:w-10 [@media(hover:none)]:hidden ${
-        on ? "bg-gold/20 text-gold hover:bg-gold/30" : "bg-white/10 text-white/50 hover:bg-white/20 hover:text-white"
-      }`}
-    >
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M9 18h6" />
-        <path d="M10 22h4" />
-        <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z" />
-      </svg>
-    </button>
-  );
 }

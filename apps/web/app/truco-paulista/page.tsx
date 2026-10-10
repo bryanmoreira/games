@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
 import { BackButton } from "@/components/BackButton";
-import { CardImg } from "@/components/truco/Card";
+import { CardImg } from "@/components/cards/Card";
 import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
 import { makeCard } from "@truco/game";
 

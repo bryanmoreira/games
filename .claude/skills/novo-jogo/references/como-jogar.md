@@ -2,7 +2,7 @@
 
 ## "Como jogar"
 
-Referências: `components/truco/HowToPlay.tsx` (conteúdo), `components/truco/HowToPlayModal.tsx` (modal + `HelpButton`), `app/truco-paulista/como-jogar/page.tsx` (página).
+Referências: `components/truco/HowToPlay.tsx` (conteúdo), `components/ui/HowToPlayModal.tsx` (casca do modal, recebe o conteúdo como filho), `components/ui/buttons.tsx` (`HelpButton`), `app/truco-paulista/como-jogar/page.tsx` (página).
 
 - O **conteúdo fica num componente só** (`HowToPlay`), usado pela página `/<slug>/como-jogar` e pelo modal aberto no botão "?" dentro da partida. Mudou uma regra, as duas atualizam.
 - Na partida, use o **modal**, nunca navegação: sair da página no meio do jogo faz uma IA assumir o seu lugar. O modal fecha com X, Esc ou clique fora (clique dentro não fecha) e tem rolagem própria (`max-h-full overflow-y-auto`).

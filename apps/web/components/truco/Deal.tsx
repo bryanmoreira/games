@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { PlayerView, Seat } from "@truco/game";
-import { CardBack } from "./Card";
+import { CardBack } from "@/components/cards/Card";
 
 export const SHUFFLE_MS = 900;
 export const CARD_MS = 110;

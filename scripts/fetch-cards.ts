@@ -1,10 +1,10 @@
-// Baixa as 40 cartas do truco de https://github.com/Webisso/playing-cards (MIT)
+// Baixa as 52 cartas (truco usa 40; spider usa todas) de https://github.com/Webisso/playing-cards (MIT)
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const BASE = "https://raw.githubusercontent.com/Webisso/playing-cards/main/png";
 const OUT = join(import.meta.dir, "../apps/web/public/cards");
-const RANKS = ["4", "5", "6", "7", "queen", "jack", "king", "ace", "2", "3"];
+const RANKS = ["ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"];
 const SUITS = ["clubs", "diamonds", "hearts", "spades"];
 const FACES = new Set(["queen", "jack", "king"]);
 

@@ -129,3 +129,33 @@ body {
 .banner {
   animation: banner 0.3s cubic-bezier(0.2, 1.4, 0.4, 1) both;
 }
+
+/* Paciência Spider */
+@keyframes flip-in {
+  from { transform: perspective(800px) rotateY(180deg); }
+  to { transform: perspective(800px) rotateY(0deg); }
+}
+.flip-in {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: flip-in 0.3s ease-out backwards;
+}
+.flip-in > * {
+  backface-visibility: hidden;
+}
+.flip-in > .flip-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+}
+@keyframes hint-glow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(242, 193, 78, 0.9)); }
+  50% { filter: drop-shadow(0 0 10px rgba(242, 193, 78, 1)) drop-shadow(0 0 2px rgba(242, 193, 78, 1)); }
+}
+.hint-glow > * {
+  animation: hint-glow 0.8s ease-in-out infinite;
+}
+.target-glow {
+  background: rgba(242, 193, 78, 0.14);
+  animation: glow 1.2s ease-in-out infinite;
+}

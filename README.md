@@ -1,8 +1,8 @@
 # Jogos
 
-Site com vários jogos de cartas. Hoje: **Truco Paulista** (`/truco-paulista`).
+Site com vários jogos de cartas. Hoje: **Truco Paulista** (`/truco-paulista`) e **Paciência Spider** (`/paciencia-spider`, só no navegador).
 
-Monorepo Bun: `apps/web` (Next.js), `apps/server` (WebSocket em Bun), `packages/game` (regras do Truco Paulista).
+Monorepo Bun: `apps/web` (Next.js), `apps/server` (WebSocket em Bun), `packages/game` (regras do Truco Paulista), `packages/spider` (regras da Paciência Spider).
 Cartas: [Webisso/playing-cards](https://github.com/Webisso/playing-cards) (MIT).
 
 ## Montando um jogo novo (com Claude Code)
@@ -45,7 +45,7 @@ Quando uma correção deve valer para todos os jogos (um gosto visual, uma regra
 ```bash
 bun install
 bun run dev     # web :3000, ws :3001
-bun test packages/game
+bun test packages
 ```
 
 ## Produção

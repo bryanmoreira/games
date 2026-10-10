@@ -7,7 +7,7 @@ const config: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: root,
   turbopack: { root },
-  transpilePackages: ["@truco/game"],
+  transpilePackages: ["@truco/game", "@truco/spider"],
 };
 
 export default config;

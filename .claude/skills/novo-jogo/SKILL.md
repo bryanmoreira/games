@@ -42,17 +42,30 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | Salas | `apps/server/src/rooms.ts` | lobby, assentos, bots, `schedule`, `dealUntil`, reconexão |
 | Mesa | `apps/web/components/truco/Table.tsx` | layout, assentos, placar, botões, área de ação |
 | Distribuição | `apps/web/components/truco/Deal.tsx` | `useDeal`, `dealtTo`, `DealAnimation` |
-| Dicas | `apps/web/components/truco/CardInfo.tsx` | painel no hover + `useTips`/`TipsButton` |
-| Como jogar | `components/truco/HowToPlay.tsx`, `HowToPlayModal.tsx`, `app/truco-paulista/como-jogar/page.tsx` | conteúdo compartilhado entre página e modal |
-| Som | `apps/web/lib/truco/sound.ts` | Web Audio, mudo persistido, desbloqueio no gesto |
+| Dicas | `apps/web/components/truco/CardInfo.tsx` | painel no hover (`useTips`/`TipsButton` ficam em `components/ui/buttons.tsx`) |
+| Como jogar | `components/truco/HowToPlay.tsx`, `app/truco-paulista/como-jogar/page.tsx` | conteúdo compartilhado entre página e modal |
+| Som | `apps/web/lib/sound.ts` (núcleo) + `lib/truco/sound.ts` | Web Audio, mudo persistido, `useAudioUnlock`; sons próprios de cada jogo em `lib/<slug>/sound.ts` |
 | Socket | `apps/web/lib/truco/socket.ts` | store com `useSyncExternalStore`, token em `sessionStorage` |
 | Rotas | `apps/web/lib/truco/paths.ts` | constante da rota do jogo |
 | Hub | `apps/web/app/page.tsx` | card de cada jogo |
 | Botão voltar | `apps/web/components/BackButton.tsx` | já compartilhado |
 
+### Já compartilhado entre os jogos
+
+| O quê | Arquivo |
+|---|---|
+| Carta (PNG) e verso | `components/cards/Card.tsx` (`CardImg` aceita valor em texto ou 1-13) |
+| Botões redondos do topo | `components/ui/buttons.tsx` (`IconButton`, `Icon`, `HelpButton`, `MuteButton`, `TipsButton` + `useTips`, `ExitButton`) |
+| Modal "Como jogar" | `components/ui/HowToPlayModal.tsx` (casca; o conteúdo vem como filho) |
+| Cartão numerado do "Como jogar" | `components/ui/HowToSection.tsx` |
+
+### Jogo de um jogador só (ex.: Paciência Spider)
+
+Sem adversário nem informação escondida, não precisa de servidor, sala nem lobby: a engine roda no navegador e a partida fica no `localStorage` (recarregar continua). Referência: `packages/spider` (regras, `bestHint` com função de progresso que nunca entra em ciclo) e `components/spider/Table.tsx` (as cartas numa camada única com posição absoluta; mover, distribuir e desfazer viram transições de CSS; arrastar com Pointer Events). Abaixo de ~64 px de largura o índice das PNGs fica ilegível: use uma face compacta (`SpiderCard`).
+
 ## Reaproveitar sem duplicar
 
-Quando um segundo jogo precisar de algo que hoje está em `components/truco/` ou `lib/truco/` e que **não é específico do truco** (ex.: `Card.tsx`, `sound.ts`, `socket.ts`, `Deal.tsx`, a casca do `HowToPlayModal`, `TipsButton`, `MuteButton`, `HelpButton`), mova para um lugar compartilhado (`components/cards/`, `components/ui/`, `lib/`) e atualize os imports dos dois jogos. Duplicar arquivos faz os jogos divergirem visualmente na primeira correção. Variantes da mesma família (truco mineiro/paulista) podem compartilhar ainda mais — por exemplo, o mesmo pacote de engine com uma opção de variante, se as regras forem quase iguais. Decida olhando o tamanho da diferença e explique a escolha ao usuário.
+Quando um jogo novo precisar de algo que ainda está em `components/truco/` ou `lib/truco/` e que **não é específico do truco** (ex.: `socket.ts`, `Deal.tsx`), mova para um lugar compartilhado (`components/cards/`, `components/ui/`, `lib/`) e atualize os imports dos dois jogos. Duplicar arquivos faz os jogos divergirem visualmente na primeira correção. Variantes da mesma família (truco mineiro/paulista) podem compartilhar ainda mais — por exemplo, o mesmo pacote de engine com uma opção de variante, se as regras forem quase iguais. Decida olhando o tamanho da diferença e explique a escolha ao usuário.
 
 ## Checklist de entrega
 

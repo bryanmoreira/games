@@ -5,11 +5,14 @@ import { useRouter } from "next/navigation";
 import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@truco/game";
 import { send } from "@/lib/truco/socket";
 import { TRUCO_PATH } from "@/lib/truco/paths";
-import { CardBack, CardImg } from "./Card";
+import { CardBack, CardImg } from "@/components/cards/Card";
 import { DealAnimation, dealtTo, useDeal } from "./Deal";
-import { HelpButton, HowToPlayModal } from "./HowToPlayModal";
-import { CardInfo, TipsButton, useTips } from "./CardInfo";
-import { isMuted, playCardSound, playTrucoSound, setMuted, unlockAudio } from "@/lib/truco/sound";
+import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
+import { ExitButton, HelpButton, MuteButton, TipsButton, useTips, XIcon } from "@/components/ui/buttons";
+import { HowToPlay } from "./HowToPlay";
+import { CardInfo } from "./CardInfo";
+import { playCardSound, useAudioUnlock } from "@/lib/sound";
+import { playTrucoSound } from "@/lib/truco/sound";
 
 type Pos = "bottom" | "right" | "top" | "left";
 const POS: Pos[] = ["bottom", "right", "top", "left"];
@@ -38,8 +41,10 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   const them = view.scores[1 - myTeam];
   const round = view.rounds[view.rounds.length - 1];
 
-  const leave = () => {
-    if (view.phase !== "gameOver" && !confirm("Sair da partida?")) return;
+  // confirmação na própria página: confirm() nativo pode ser bloqueado (navegador embutido)
+  const [leaving, setLeaving] = useState(false);
+  const leave = (confirmed = false) => {
+    if (view.phase !== "gameOver" && !confirmed) return setLeaving((v) => !v);
     send({ t: "leave" });
     router.push(TRUCO_PATH);
   };
@@ -82,11 +87,28 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
           <HelpButton onClick={() => setHelp(true)} />
           <TipsButton on={tips} onClick={toggleTips} />
           <MuteButton />
-          <button onClick={leave} className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10">
-            ✕
-          </button>
+          <ExitButton onClick={() => leave()} />
         </div>
-        {tips && hoveredCard && (
+        {leaving && (
+          <div className="banner absolute right-2 top-full z-50 mt-1 flex items-center gap-2 rounded-2xl bg-stone-950/90 py-2 pl-4 pr-2 font-display shadow-2xl ring-1 ring-white/10 sm:right-6">
+            <span className="text-sm text-white/70">SAIR?</span>
+            <button
+              onClick={() => setLeaving(false)}
+              aria-label="Cancelar"
+              title="Cancelar"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/80 transition hover:bg-white/20 hover:text-white"
+            >
+              <XIcon />
+            </button>
+            <button
+              onClick={() => leave(true)}
+              className="rounded-xl bg-red-500 px-4 py-2 text-sm text-white shadow-[0_3px_0_#991b1b] active:translate-y-0.5 active:shadow-none"
+            >
+              SAIR
+            </button>
+          </div>
+        )}
+        {tips && hoveredCard && !leaving && (
           <div className="pointer-events-none absolute right-2 top-full mt-1 sm:right-6 [@media(hover:none)]:hidden">
             <CardInfo card={hoveredCard} manilha={view.manilha} />
           </div>
@@ -126,8 +148,12 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
       <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} onHover={setHovered} />
 
-      {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={leave} />}
-      {help && <HowToPlayModal onClose={() => setHelp(false)} />}
+      {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={() => leave(true)} />}
+      {help && (
+        <HowToPlayModal game="TRUCO PAULISTA" onClose={() => setHelp(false)}>
+          <HowToPlay />
+        </HowToPlayModal>
+      )}
     </main>
   );
 }
@@ -136,11 +162,7 @@ function useSounds(view: PlayerView) {
   const plays = view.rounds.reduce((n, r) => n + r.plays.length, 0);
   const prev = useRef({ hand: view.handNo, plays, shout: view.shout?.id });
 
-  useEffect(() => {
-    const unlock = () => unlockAudio();
-    window.addEventListener("pointerdown", unlock);
-    return () => window.removeEventListener("pointerdown", unlock);
-  }, []);
+  useAudioUnlock();
 
   useEffect(() => {
     const p = prev.current;
@@ -148,20 +170,6 @@ function useSounds(view: PlayerView) {
     if (view.shout && view.shout.id !== p.shout && view.shout.kind === "truco") playTrucoSound(view.shout.value);
     prev.current = { hand: view.handNo, plays, shout: view.shout?.id };
   }, [view.handNo, plays, view.shout]);
-}
-
-function MuteButton() {
-  const [muted, setMutedState] = useState(false);
-  useEffect(() => setMutedState(isMuted()), []);
-  const toggle = () => {
-    setMuted(!muted);
-    setMutedState(!muted);
-  };
-  return (
-    <button onClick={toggle} className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10" title={muted ? "Ativar som" : "Silenciar"}>
-      {muted ? "🔇" : "🔊"}
-    </button>
-  );
 }
 
 function HandInfo({ view }: { view: PlayerView }) {

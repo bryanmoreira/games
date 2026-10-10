@@ -8,6 +8,7 @@ COPY package.json bun.lock ./
 COPY apps/web/package.json apps/web/
 COPY apps/server/package.json apps/server/
 COPY packages/game/package.json packages/game/
+COPY packages/spider/package.json packages/spider/
 RUN bun install --frozen-lockfile --linker=hoisted
 
 COPY tsconfig.base.json ./

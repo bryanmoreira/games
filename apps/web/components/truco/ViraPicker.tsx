@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { makeCard, manilhaOf, RANKS, SUITS, type Rank } from "@truco/game";
-import { CardImg } from "./Card";
+import { CardImg } from "@/components/cards/Card";
 
 const MANILHA_NAME = ["Pica-fumo", "Espadilha", "Copas", "Zap"];
 

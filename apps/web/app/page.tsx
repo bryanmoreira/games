@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { makeCard } from "@truco/game";
-import { CardImg } from "@/components/truco/Card";
+import { CardImg } from "@/components/cards/Card";
 import { TRUCO_PATH } from "@/lib/truco/paths";
+import { SPIDER_PATH } from "@/lib/spider/paths";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
+const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
 
 export default function Home() {
   return (
@@ -29,6 +31,23 @@ export default function Home() {
           <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
             <span className="font-display text-3xl text-gold">TRUCO</span>
             <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">PAULISTA</span>
+          </span>
+        </Link>
+
+        <Link
+          href={SPIDER_PATH}
+          className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"
+        >
+          <div className="absolute left-1/2 top-[8%] h-[58%] w-[19%] -translate-x-1/2">
+            {SPIDER_CASCADE.map((c, i) => (
+              <div key={c.rank} className="absolute left-0 w-full" style={{ top: `${i * 13}%` }}>
+                <CardImg card={c} />
+              </div>
+            ))}
+          </div>
+          <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
+            <span className="font-display text-3xl text-gold">PACIÊNCIA</span>
+            <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">SPIDER</span>
           </span>
         </Link>
 

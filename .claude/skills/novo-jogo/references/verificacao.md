@@ -55,5 +55,6 @@ Use o navegador embutido (servidores do `.claude/launch.json`: `server` na 3001,
 - **`ring` em carta** some porque a carta já tem `box-shadow`: use `outline`.
 - **`filter` no próprio elemento com `preserve-3d`** achata o flip 3D: aplique o `drop-shadow` num wrapper por fora (como `.turn-card > *` faz com o `FlipCard`).
 - **`NEXT_PUBLIC_*` é embutido no build**: para configurar em runtime, leia no servidor (`await connection()` no layout, chave dinâmica) e injete em `window.__ENV__`.
+- **`confirm()`/`alert()` nativos**: no navegador embutido do app eles retornam na hora (`confirm` dá `false`) sem mostrar nada, e o botão parece morto. Confirme na própria página (ex.: o botão vira ✕ + "Começar outra").
 - **Estado preso após desmontar**: `mouseleave` não dispara quando o elemento sai do DOM (carta jogada); derive o estado da view atual.
 - **StrictMode** monta/desmonta efeitos em dev: timers de animação precisam ser limpos e o guard de "já iniciei" resetado no cleanup, senão a animação trava depois do remount.

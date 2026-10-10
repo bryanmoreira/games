@@ -1,12 +1,12 @@
 # Som
 
-Referência: `apps/web/lib/truco/sound.ts` e `useSounds` em `components/truco/Table.tsx`.
+Referência: `apps/web/lib/sound.ts` (núcleo: `audio()`, mudo, `useAudioUnlock`, `playCardSound`), `lib/truco/sound.ts` e `lib/spider/sound.ts` (sons de cada jogo) e `useSounds` em `components/truco/Table.tsx`.
 
 ## Princípios
 
 - **Sintetizado com Web Audio**: nada de arquivos de áudio (sem licença para checar, sem download extra).
 - **Sem voz.** O usuário testou `speechSynthesis` falando "Truco!" e pediu para remover. Não reintroduza.
-- **Mudo** (`MuteButton` 🔊/🔇 no topo) salvo em `localStorage("truco.muted")`. Com mudo ligado, `audio()` retorna `null` e nada toca.
+- **Mudo** (`MuteButton` em `components/ui/buttons.tsx`, ícone SVG no topo) salvo em `localStorage("truco.muted")`. Com mudo ligado, `audio()` retorna `null` e nada toca.
 - Navegadores só liberam áudio depois de um gesto do usuário: `unlockAudio()` num listener de `pointerdown` na janela cria/retoma o `AudioContext`.
 
 ## Sons existentes
