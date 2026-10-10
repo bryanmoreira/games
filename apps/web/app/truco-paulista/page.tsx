@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
+import { BackButton } from "@/components/BackButton";
 import { CardImg } from "@/components/truco/Card";
 import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
 import { makeCard } from "@truco/game";
@@ -45,9 +46,7 @@ export default function TrucoHome() {
 
   return (
     <main className="mx-auto flex min-h-full max-w-sm flex-col items-center justify-center gap-8 px-4 py-10">
-      <Link href="/" className="fixed left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-white/20" title="Jogos">
-        ←
-      </Link>
+      <BackButton href="/" className="fixed left-4 top-4" />
       <div className="relative h-36 w-56">
         {FAN.map((c, i) => (
           <div
