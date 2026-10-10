@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { makeCard } from "@truco/game";
 import { CardImg } from "@/components/truco/Card";
+import { TRUCO_PATH } from "@/lib/truco/paths";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 
@@ -11,7 +12,7 @@ export default function Home() {
 
       <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2">
         <Link
-          href="/truco"
+          href={TRUCO_PATH}
           className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"
         >
           <div className="absolute inset-x-0 top-[12%] mx-auto h-1/2 w-1/2">
@@ -25,7 +26,10 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <span className="font-display text-3xl text-gold drop-shadow-[0_2px_0_#000]">TRUCO</span>
+          <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
+            <span className="font-display text-3xl text-gold">TRUCO</span>
+            <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">PAULISTA</span>
+          </span>
         </Link>
 
         <div className="flex aspect-[4/3] items-center justify-center rounded-3xl border-2 border-dashed border-white/15 font-display text-white/30">

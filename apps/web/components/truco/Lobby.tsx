@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { RoomInfo, Seat } from "@truco/game";
 import { send } from "@/lib/truco/socket";
+import { TRUCO_PATH } from "@/lib/truco/paths";
 
 const TEAMS: { seats: Seat[]; color: string; label: string }[] = [
   { seats: [0, 2], color: "text-team-a border-team-a/40", label: "Time 1" },
@@ -23,7 +24,7 @@ export function Lobby({ room }: { room: RoomInfo }) {
 
   const leave = () => {
     send({ t: "leave" });
-    router.push("/truco");
+    router.push(TRUCO_PATH);
   };
 
   return (

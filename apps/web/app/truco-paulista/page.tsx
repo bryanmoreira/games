@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
 import { CardImg } from "@/components/truco/Card";
+import { roomPath } from "@/lib/truco/paths";
 import { makeCard } from "@truco/game";
 
 const FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades"), makeCard("7", "diamonds")];
@@ -24,7 +25,7 @@ export default function TrucoHome() {
   useEffect(() => {
     if (created) {
       clearCreated();
-      router.push(`/truco/sala/${created}`);
+      router.push(roomPath(created));
     }
   }, [created, router]);
 
@@ -39,7 +40,7 @@ export default function TrucoHome() {
   const join = () => {
     if (code.trim().length < 4) return;
     saveName();
-    router.push(`/truco/sala/${code.trim().toUpperCase()}`);
+    router.push(roomPath(code.trim().toUpperCase()));
   };
 
   return (
@@ -58,7 +59,10 @@ export default function TrucoHome() {
           </div>
         ))}
       </div>
-      <h1 className="font-display text-6xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">TRUCO</h1>
+      <h1 className="flex flex-col items-center leading-none">
+        <span className="font-display text-6xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">TRUCO</span>
+        <span className="mt-2 font-display text-sm tracking-[0.5em] text-white/70">PAULISTA</span>
+      </h1>
 
       <input
         value={name}

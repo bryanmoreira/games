@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
 import { Lobby } from "@/components/truco/Lobby";
 import { Table } from "@/components/truco/Table";
+import { TRUCO_PATH } from "@/lib/truco/paths";
 
 export default function RoomPage() {
   const code = String(useParams<{ code: string }>().code).toUpperCase();
@@ -52,7 +53,7 @@ export default function RoomPage() {
         {error ? (
           <>
             <p className="font-display text-xl text-red-300">{error}</p>
-            <Link href="/truco" className="rounded-xl bg-white/15 px-6 py-3 font-display">
+            <Link href={TRUCO_PATH} className="rounded-xl bg-white/15 px-6 py-3 font-display">
               Voltar
             </Link>
           </>
@@ -68,7 +69,7 @@ export default function RoomPage() {
     return (
       <Center>
         <p className="font-display text-xl">Partida em andamento</p>
-        <Link href="/truco" className="rounded-xl bg-white/15 px-6 py-3 font-display">
+        <Link href={TRUCO_PATH} className="rounded-xl bg-white/15 px-6 py-3 font-display">
           Voltar
         </Link>
       </Center>

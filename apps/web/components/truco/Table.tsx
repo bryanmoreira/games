@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@truco/game";
 import { send } from "@/lib/truco/socket";
+import { TRUCO_PATH } from "@/lib/truco/paths";
 import { CardBack, CardImg } from "./Card";
 import { DealAnimation, dealtTo, useDeal } from "./Deal";
 import { isMuted, playCardSound, playTrucoSound, setMuted, unlockAudio } from "@/lib/truco/sound";
@@ -38,7 +39,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   const leave = () => {
     if (view.phase !== "gameOver" && !confirm("Sair da partida?")) return;
     send({ t: "leave" });
-    router.push("/truco");
+    router.push(TRUCO_PATH);
   };
 
   const seatAt = (pos: Pos) => ((me + POS.indexOf(pos)) % 4) as Seat;
