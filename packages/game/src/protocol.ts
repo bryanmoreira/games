@@ -1,7 +1,7 @@
 import type { Action, PlayerView, Seat } from "./types";
 
 /** Jogos atendidos pelo servidor de salas. */
-export type GameId = "truco-paulista" | "connect4";
+export type GameId = "truco-paulista" | "connect4" | "stop";
 
 export type ClientAction =
   | { type: "play"; index: number; hidden?: boolean }
@@ -16,10 +16,11 @@ export type ClientMsg<A = ClientAction> =
   | { t: "hello"; token: string; name: string }
   | { t: "create"; solo?: boolean; game?: GameId }
   | { t: "join"; code: string }
-  | { t: "sit"; seat: Seat }
+  | { t: "sit"; seat: number }
   | { t: "stand" }
-  | { t: "addBot"; seat: Seat }
-  | { t: "removeBot"; seat: Seat }
+  | { t: "addBot"; seat: number }
+  | { t: "removeBot"; seat: number }
+  | { t: "settings"; settings: unknown }
   | { t: "start" }
   | { t: "restart" }
   | { t: "leave" }
@@ -40,6 +41,14 @@ export interface RoomInfo {
   mySeat: Seat | null;
   seats: SeatInfo[];
   waiting: string[];
+  /** Mínimo de lugares ocupados para começar (sem mínimo = mesa cheia). */
+  minSeats: number;
+  /** O host pode pôr IA nos lugares vazios. */
+  bots: boolean;
+  /** Opções da partida escolhidas pelo host no lobby (jogos que têm opções). */
+  settings: unknown;
+  /** ms até o fim da fase atual, quando ela tem relógio. */
+  timeLeft: number | null;
 }
 
 /** `V` é a visão do jogo da sala. */

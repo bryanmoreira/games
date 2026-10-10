@@ -75,6 +75,8 @@ Jogo online sem cartas (ex.: Connect 4): `packages/connect4` (IA negamax com pod
 
 Jogo sem cartas (ex.: Sudoku): `packages/sudoku` (gerador por `seed` que garante solução única via solver lógico, dificuldade pela técnica mais difícil exigida, dica com o motivo) e `components/sudoku/Table.tsx` (grade com bordas de madeira, teclado numérico, cronômetro que pausa com a aba oculta). Gerar puzzle difícil pode levar ~1 s: mostre um spinner no botão e gere num `setTimeout`.
 
+Jogo online simultâneo e sem IA (ex.: Stop): `packages/stop` (todos agem ao mesmo tempo; fases com relógio avançadas pelo servidor com `advance`; ausentes via ação `away`) e `components/stop/` (folha de respostas com envio em debounce, correção por votos, opções do host no lobby em `Settings.tsx` passadas como filho do `Lobby`). O adaptador usa `minSeats`, `bots: false`, `settings` e `phaseKey`; veja "Vários jogos no servidor" em arquitetura.md.
+
 ## Reaproveitar sem duplicar
 
 Quando um jogo novo precisar de algo que ainda está em `components/truco/` ou `lib/truco/` e que **não é específico do truco** (ex.: `socket.ts`, `Deal.tsx`), mova para um lugar compartilhado (`components/cards/`, `components/ui/`, `lib/`) e atualize os imports dos dois jogos. Duplicar arquivos faz os jogos divergirem visualmente na primeira correção. Variantes da mesma família (truco mineiro/paulista) podem compartilhar ainda mais — por exemplo, o mesmo pacote de engine com uma opção de variante, se as regras forem quase iguais. Decida olhando o tamanho da diferença e explique a escolha ao usuário.

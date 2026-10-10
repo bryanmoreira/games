@@ -7,6 +7,8 @@ import { SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { MiniBoard } from "@/components/sudoku/common";
 import { CONNECT4_PATH } from "@/lib/connect4/paths";
 import { StaticBoard } from "@/components/connect4/Board";
+import { STOP_PATH } from "@/lib/stop/paths";
+import { StopLogo } from "@/components/stop/Tile";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
@@ -79,6 +81,19 @@ export default function Home() {
             <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
               <span className="font-display text-3xl text-gold">CONNECT</span>
               <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">4 EM LINHA</span>
+            </span>
+          </Link>
+
+          <Link
+            href={STOP_PATH}
+            className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"
+          >
+            <div className="absolute left-1/2 top-[20%] -translate-x-1/2 -rotate-3 text-[clamp(28px,9vw,44px)]">
+              <StopLogo className="h-[1.5em] w-[1.5em]" />
+            </div>
+            <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
+              <span className="font-display text-3xl text-gold">STOP</span>
+              <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">ADEDONHA</span>
             </span>
           </Link>
 

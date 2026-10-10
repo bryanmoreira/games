@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@truco/connect4": "workspace:*",
-    "@truco/game": "workspace:*"
+    "@truco/game": "workspace:*",
+    "@truco/stop": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2"

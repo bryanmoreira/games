@@ -10,6 +10,7 @@
     "@truco/connect4": "workspace:*",
     "@truco/game": "workspace:*",
     "@truco/spider": "workspace:*",
+    "@truco/stop": "workspace:*",
     "@truco/sudoku": "workspace:*",
     "next": "^16.4.0",
     "react": "^19.3.0",

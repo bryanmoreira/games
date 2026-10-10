@@ -218,3 +218,15 @@ body {
 .disc-win {
   animation: disc-win 0.9s ease-in-out infinite;
 }
+
+/* Stop */
+@keyframes stop-shout {
+  0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  15% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  25% { transform: scale(1) rotate(-2deg); }
+  85% { transform: scale(1) rotate(-2deg); opacity: 1; }
+  100% { transform: scale(1.05) rotate(-2deg); opacity: 0; }
+}
+.stop-shout {
+  animation: stop-shout 1.5s ease-out forwards;
+}

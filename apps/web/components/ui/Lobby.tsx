@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { RoomInfo, Seat } from "@truco/game";
+import type { RoomInfo } from "@truco/game";
 import { send } from "@/lib/socket";
 
 /** Uma coluna do lobby: os lugares de um time (ou de um jogador). */
 export interface SeatGroup {
-  seats: Seat[];
+  seats: number[];
   color: string;
-  label: React.ReactNode;
+  label?: React.ReactNode;
 }
 
 /** Duplas do truco: 0/2 contra 1/3. */
@@ -18,11 +18,24 @@ export const TEAMS_2X2: SeatGroup[] = [
   { seats: [1, 3], color: "text-team-b border-team-b/40", label: "Time 2" },
 ];
 
-/** Lobby de sala de qualquer jogo online: código para copiar, lugares por coluna, IA e Começar. */
-export function Lobby({ room, groups, exitPath }: { room: RoomInfo; groups: SeatGroup[]; exitPath: string }) {
+/**
+ * Lobby de sala de qualquer jogo online: código para copiar, lugares por coluna, IA e Começar.
+ * `children` entra abaixo dos lugares (opções da partida, ex.: Stop).
+ */
+export function Lobby({
+  room,
+  groups,
+  exitPath,
+  children,
+}: {
+  room: RoomInfo;
+  groups: SeatGroup[];
+  exitPath: string;
+  children?: React.ReactNode;
+}) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
-  const full = room.seats.every((s) => s.kind !== "empty");
+  const full = room.seats.filter((s) => s.kind !== "empty").length >= room.minSeats;
 
   const copy = async () => {
     await navigator.clipboard.writeText(location.href).catch(() => {});
@@ -45,7 +58,7 @@ export function Lobby({ room, groups, exitPath }: { room: RoomInfo; groups: Seat
       <div className="grid w-full grid-cols-2 gap-4">
         {groups.map((team, i) => (
           <div key={i} className={`flex flex-col gap-3 rounded-2xl border-2 bg-white/5 p-3 ${team.color}`}>
-            <h2 className="text-center font-display">{team.label}</h2>
+            {team.label && <h2 className="text-center font-display">{team.label}</h2>}
             {team.seats.map((seat) => (
               <SeatSlot key={seat} room={room} seat={seat} />
             ))}
@@ -62,6 +75,8 @@ export function Lobby({ room, groups, exitPath }: { room: RoomInfo; groups: Seat
           ))}
         </div>
       )}
+
+      {children}
 
       <div className="flex w-full gap-3">
         <button onClick={leave} className="rounded-xl bg-white/10 px-5 py-3 font-display hover:bg-white/20">
@@ -83,7 +98,7 @@ export function Lobby({ room, groups, exitPath }: { room: RoomInfo; groups: Seat
   );
 }
 
-function SeatSlot({ room, seat }: { room: RoomInfo; seat: Seat }) {
+function SeatSlot({ room, seat }: { room: RoomInfo; seat: number }) {
   const s = room.seats[seat];
   const mine = room.mySeat === seat;
 
@@ -96,7 +111,7 @@ function SeatSlot({ room, seat }: { room: RoomInfo; seat: Seat }) {
         >
           Sentar
         </button>
-        {room.isHost && (
+        {room.isHost && room.bots && (
           <button
             onClick={() => send({ t: "addBot", seat })}
             className="w-12 rounded-xl bg-white/10 text-xl transition hover:bg-white/20"

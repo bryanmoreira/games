@@ -23,7 +23,12 @@ interface Room {
   members: Map<string, string>; // token -> nome
   seats: Slot[];
   state: unknown | null;
+  /** Opções do lobby (jogos que têm). */
+  settings: unknown;
   timer?: ReturnType<typeof setTimeout>;
+  /** Fase do relógio atual e quando ele termina (ver `phaseKey`). */
+  timerKey: string | null;
+  deadline: number | null;
   dealUntil: number;
   cleanup?: ReturnType<typeof setTimeout>;
 }
@@ -81,6 +86,10 @@ function info(room: Room, token: string): RoomInfo {
       connected: s.kind === "bot" || (s.kind === "human" && isConnected(s.token)),
     })),
     waiting: [...room.members].filter(([t]) => !seated.has(t)).map(([, n]) => n),
+    minSeats: room.adapter.minSeats ?? room.adapter.seats,
+    bots: room.adapter.bots !== false,
+    settings: room.settings,
+    timeLeft: room.deadline !== null ? Math.max(0, room.deadline - Date.now()) : null,
   };
 }
 
@@ -101,12 +110,19 @@ function findBotActor(room: Room): Seat | null {
 }
 
 function schedule(room: Room) {
-  clearTimeout(room.timer);
   const g = room.state;
+  // mesma fase com relógio: o tempo continua correndo (não reinicia a cada ação)
+  const key = g && room.adapter.phaseKey ? room.adapter.phaseKey(g) : null;
+  if (key !== null && key === room.timerKey) return;
+  clearTimeout(room.timer);
+  room.timerKey = null;
+  room.deadline = null;
   if (!g || room.adapter.over(g)) return;
   const pause = room.adapter.pause(g);
   if (pause !== null) {
     room.timer = setTimeout(() => step(room, { type: "advance" }), pause);
+    room.timerKey = key;
+    room.deadline = Date.now() + pause;
     return;
   }
   const actor = findBotActor(room);
@@ -124,6 +140,23 @@ function markAnim(room: Room, prev: unknown | null) {
   if (ms > 0) room.dealUntil = Date.now() + ms;
 }
 
+/** Avisa o jogo de quem está desconectado (jogos sem IA no lugar de quem cai). */
+function syncAway(room: Room) {
+  if (!room.state || !room.adapter.away || room.adapter.over(room.state)) return;
+  const away = room.seats.map((_, i) => i).filter((i) => !humanControlled(room, i as Seat));
+  const a = room.adapter.away(room.state, away);
+  if (!a) return;
+  const r = room.adapter.applyAction(room.state, a);
+  if (r.ok) room.state = r.state;
+}
+
+/** Depois de qualquer mudança: presença, relógio/bots e o estado para todos. */
+function refresh(room: Room) {
+  syncAway(room);
+  schedule(room);
+  broadcast(room);
+}
+
 function step(room: Room, action: unknown): string | null {
   if (!room.state) return "sem partida";
   const prev = room.state;
@@ -131,16 +164,16 @@ function step(room: Room, action: unknown): string | null {
   if (!r.ok) return r.error;
   room.state = r.state;
   markAnim(room, prev);
-  broadcast(room);
-  schedule(room);
+  refresh(room);
   return null;
 }
 
+const occupied = (room: Room) => room.seats.flatMap((s, i) => (s.kind === "empty" ? [] : [i]));
+
 function startGame(room: Room) {
-  room.state = room.adapter.newGame(room.state);
+  room.state = room.adapter.newGame(room.state, { seats: occupied(room), settings: room.settings });
   markAnim(room, null);
-  broadcast(room);
-  schedule(room);
+  refresh(room);
 }
 
 function deleteRoom(room: Room) {
@@ -164,12 +197,13 @@ function leaveRoom(token: string) {
   room.members.delete(token);
   const seat = seatOf(room, token);
   if (seat !== null) {
-    room.seats[seat] = room.state ? { kind: "bot", name: botName(room) } : emptySlot();
+    // na partida, uma IA assume o lugar; em jogo sem IA o nome fica no placar e o lugar some da próxima
+    const slot = room.seats[seat];
+    room.seats[seat] = !room.state ? emptySlot() : room.adapter.bots === false ? { kind: "empty", name: slot.name } : { kind: "bot", name: botName(room) };
   }
   if (room.members.size === 0) return deleteRoom(room);
   if (room.host === token) room.host = room.members.keys().next().value!;
-  broadcast(room);
-  schedule(room);
+  refresh(room);
 }
 
 function joinRoom(room: Room, token: string, name: string) {
@@ -195,8 +229,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       const seat = seatOf(room, msg.token);
       if (seat !== null) room.seats[seat].name = name;
       clearTimeout(room.cleanup);
-      broadcast(room);
-      schedule(room);
+      refresh(room);
     }
     return;
   }
@@ -218,19 +251,21 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       members: new Map(),
       seats: Array.from({ length: adapter.seats }, emptySlot),
       state: null,
+      settings: adapter.settings?.initial ?? null,
+      timerKey: null,
+      deadline: null,
       dealUntil: 0,
     };
     rooms.set(room.code, room);
     joinRoom(room, token, name);
     room.seats[0] = { kind: "human", token, name };
-    if (room.solo) {
+    if (room.solo && adapter.bots !== false) {
       for (let s = 1; s < adapter.seats; s++) room.seats[s] = { kind: "bot", name: botName(room) };
-      room.state = adapter.newGame(null);
+      room.state = adapter.newGame(null, { seats: occupied(room), settings: room.settings });
       markAnim(room, null);
-    }
+    } else room.solo = false;
     send(ws, { t: "created", code: room.code });
-    broadcast(room);
-    schedule(room);
+    refresh(room);
     return;
   }
 
@@ -239,8 +274,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
     if (!room) return error("Sala não encontrada");
     if (room.solo && !room.members.has(token)) return error("Sala não encontrada");
     joinRoom(room, token, name);
-    broadcast(room);
-    schedule(room);
+    refresh(room);
     return;
   }
 
@@ -268,7 +302,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       break;
     }
     case "addBot":
-      if (!isHost || room.state || room.seats[msg.seat]?.kind !== "empty") return;
+      if (!isHost || room.state || room.adapter.bots === false || room.seats[msg.seat]?.kind !== "empty") return;
       room.seats[msg.seat] = { kind: "bot", name: botName(room) };
       break;
     case "removeBot":
@@ -277,11 +311,16 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       break;
     case "start":
       if (!isHost || room.state) return;
-      if (room.seats.some((s) => s.kind === "empty")) return error("Complete a mesa");
+      if (occupied(room).length < (room.adapter.minSeats ?? room.adapter.seats)) return error("Complete a mesa");
       return startGame(room);
     case "restart":
       if (!isHost || !room.state || !room.adapter.over(room.state)) return;
+      if (occupied(room).length < (room.adapter.minSeats ?? room.adapter.seats)) return error("Faltam jogadores");
       return startGame(room);
+    case "settings":
+      if (!isHost || room.state || !room.adapter.settings) return;
+      room.settings = room.adapter.settings.parse(msg.settings, room.settings);
+      break;
     case "action": {
       const seat = seatOf(room, token);
       if (seat === null || !room.state) return;
@@ -309,7 +348,6 @@ export function handleClose(ws: Socket) {
       }
     }, 30_000);
   }
-  broadcast(room);
-  schedule(room);
+  refresh(room);
   checkEmpty(room);
 }

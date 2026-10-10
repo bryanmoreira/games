@@ -14,6 +14,7 @@
       "dependencies": {
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
+        "@truco/stop": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "^1.4.2",
@@ -25,6 +26,7 @@
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
         "@truco/spider": "workspace:*",
+        "@truco/stop": "workspace:*",
         "@truco/sudoku": "workspace:*",
         "next": "^16.4.0",
         "react": "^19.3.0",
@@ -47,6 +49,9 @@
     },
     "packages/spider": {
       "name": "@truco/spider",
+    },
+    "packages/stop": {
+      "name": "@truco/stop",
     },
     "packages/sudoku": {
       "name": "@truco/sudoku",
@@ -178,6 +183,8 @@
     "@truco/server": ["@truco/server@workspace:apps/server"],
 
     "@truco/spider": ["@truco/spider@workspace:packages/spider"],
+
+    "@truco/stop": ["@truco/stop@workspace:packages/stop"],
 
     "@truco/sudoku": ["@truco/sudoku@workspace:packages/sudoku"],
 

@@ -86,6 +86,13 @@ interface GameAdapter<S, A, V> {
 
 A interface real em `games.ts` também tem `withSeat` (ação do cliente + assento), `over` e `animMs(prev, next)` (no lugar de `isNewHand`: quanto tempo os bots esperam a animação do cliente). Para um jogo novo: acrescente o id em `GameId` (`packages/game/src/protocol.ts`), o adaptador em `GAMES` e a rota em `lib/rooms.ts`. A sala guarda `game` (vindo do `create`) e usa o adaptador correspondente. Registre o adaptador num mapa. Um único servidor WS atende todos os jogos, sem precisar de outro serviço no Easypanel.
 
+Ganchos opcionais do adaptador (criados para o Stop):
+- `minSeats`: começa com esse mínimo de lugares ocupados (sem ele, a mesa precisa estar cheia). `newGame(prev, { seats, settings })` recebe os lugares ocupados.
+- `bots: false`: o lobby esconde o botão de IA e quem sai da partida não vira bot (o lugar fica `empty` com o nome, e sai do "De novo").
+- `settings: { initial, parse }`: opções que o host muda no lobby (mensagem `settings`), validadas pelo jogo; chegam ao cliente em `RoomInfo.settings`.
+- `phaseKey(s)`: enquanto a chave for a mesma, o relógio de `pause` não reinicia a cada ação (fase com tempo em que todos digitam). O tempo restante vai em `RoomInfo.timeLeft` (ms, sem depender do relógio do cliente).
+- `away(s, seats)`: devolve a ação que avisa o jogo de quem está desconectado (para não esperar por ele no PRONTO e na votação), ou `null` se nada mudou.
+
 ## Cliente web
 
 - **Socket** (`lib/socket.ts`, compartilhado; `useRoom<View>()`): store global com `useSyncExternalStore`, fila de mensagens enquanto conecta, reconexão com backoff, `hello` a cada conexão. URL do WS: `window.__ENV__.WS_URL` (injetada em runtime pelo `app/layout.tsx`) ou `ws(s)://<host>:3001`.
