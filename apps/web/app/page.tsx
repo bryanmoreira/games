@@ -12,7 +12,7 @@ export default function Home() {
     <main className="mx-auto flex min-h-full max-w-3xl flex-col items-center gap-10 px-4 py-12">
       <h1 className="font-display text-5xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">JOGOS</h1>
 
-      <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-x-12 gap-y-10 sm:grid-cols-2">
         <Link
           href={TRUCO_PATH}
           className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"

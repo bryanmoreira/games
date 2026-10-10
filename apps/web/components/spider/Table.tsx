@@ -354,8 +354,8 @@ export function Table() {
     }
     const targets = targetsFor(game, d.from, d.index);
     if (!d.active) {
-      // toque sem arrastar: mostra para onde o grupo pode ir
-      setFlash({ key: Date.now(), ids: d.ids, targets });
+      // toque sem arrastar: mostra para onde o grupo pode ir (só com as dicas ligadas)
+      if (tips) setFlash({ key: Date.now(), ids: d.ids, targets });
       return;
     }
     if (e.type === "pointercancel") return;
@@ -373,7 +373,8 @@ export function Table() {
   const hoverGroup = hovered && hovered.where === "col" && isRun(game, hovered.col, hovered.idx) ? game.cols[hovered.col].slice(hovered.idx) : null;
   const hoverTargets = hoverGroup ? targetsFor(game, hovered!.col, hovered!.idx) : [];
   const glow = new Set(dragging ? [] : (flash?.ids ?? hoverGroup ?? []));
-  const targets = dragging?.targets ?? (flash ? flash.targets : hoverTargets);
+  // destinos ao arrastar seguem o botão de dicas; o botão "Dica" mostra sempre
+  const targets = dragging ? (tips ? dragging.targets : []) : flash ? flash.targets : hoverTargets;
   const warn = !!flash?.warn;
 
   const transition = (id: number) => {
