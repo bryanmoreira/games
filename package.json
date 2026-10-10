@@ -1,0 +1,14 @@
+{
+  "name": "truco",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "bun --filter './apps/*' dev",
+    "cards": "bun run scripts/fetch-cards.ts",
+    "test": "bun test packages/game"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "typescript": "5"
+  }
+}

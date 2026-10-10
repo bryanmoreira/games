@@ -1,0 +1,15 @@
+{
+  "name": "@truco/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
+  },
+  "dependencies": {
+    "@truco/game": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2"
+  }
+}

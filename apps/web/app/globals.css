@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: var(--font-bungee), system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --color-felt: #0f5132;
+  --color-felt-dark: #0a3a24;
+  --color-gold: #f2c14e;
+  --color-team-a: #4ade80;
+  --color-team-b: #f87171;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(ellipse at top, #1b2a22, #0b120e 70%);
+  color: #f5f5f4;
+  font-family: var(--font-sans);
+  overscroll-behavior: none;
+}
+
+.felt {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.07), transparent 65%),
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.04) 0 2px, transparent 2px 6px),
+    var(--color-felt);
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.55),
+    0 0 0 10px #5b3a1e,
+    0 0 0 12px #3b2412,
+    0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.card-face {
+  aspect-ratio: 500 / 726;
+  border-radius: 7%/5%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+.card-back {
+  aspect-ratio: 500 / 726;
+  border-radius: 7%/5%;
+  border: 3px solid #fff;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 30%, rgba(255, 255, 255, 0.12) 31% 33%, transparent 34%),
+    repeating-linear-gradient(45deg, #9f1d2b 0 6px, #b8283a 6px 12px),
+    #9f1d2b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+@keyframes pop {
+  0% { transform: translate(-50%, 0) scale(0.3); opacity: 0; }
+  20% { transform: translate(-50%, 0) scale(1.15); opacity: 1; }
+  30% { transform: translate(-50%, 0) scale(1); }
+  85% { opacity: 1; }
+  100% { transform: translate(-50%, -10px) scale(1); opacity: 0; }
+}
+.shout {
+  animation: pop 1.9s ease-out forwards;
+}
+
+@keyframes drop {
+  from { transform: var(--from) scale(1.2); }
+  to { transform: var(--to); }
+}
+.played {
+  animation: drop 0.25s ease-out both;
+}
+
+@keyframes deal {
+  from { transform: translateY(40px) scale(0.8); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.deal {
+  animation: deal 0.35s ease-out both;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 0 2px var(--color-gold), 0 0 12px var(--color-gold); }
+  50% { box-shadow: 0 0 0 2px var(--color-gold), 0 0 24px var(--color-gold); }
+}
+.turn-glow {
+  animation: glow 1.2s ease-in-out infinite;
+}
+
+@keyframes banner {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.banner {
+  animation: banner 0.3s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
