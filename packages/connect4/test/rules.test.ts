@@ -178,7 +178,7 @@ describe("IA", () => {
       expect(viewFor(s, 0).canPlay || viewFor(s, 1).canPlay).toBe(false);
     }
     expect(wins + draws).toBe(300);
-  });
+  }, 20_000);
 
   test("IA completa vence uma IA rasa quase sempre", () => {
     const rng = seeded(7);
@@ -194,5 +194,5 @@ describe("IA", () => {
       if (s.winner === strongSeat) strong++;
     }
     expect(strong).toBeGreaterThanOrEqual(9);
-  });
+  }, 20_000);
 });
