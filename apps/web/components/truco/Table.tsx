@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { teamOf, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@truco/game";
+import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@truco/game";
 import { send } from "@/lib/truco/socket";
 import { CardBack, CardImg } from "./Card";
+import { DealAnimation, dealtTo, useDeal } from "./Deal";
 
 type Pos = "bottom" | "right" | "top" | "left";
 const POS: Pos[] = ["bottom", "right", "top", "left"];
@@ -40,6 +41,8 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   };
 
   const seatAt = (pos: Pos) => ((me + POS.indexOf(pos)) % 4) as Seat;
+  const deal = useDeal(view);
+  const visible = (seat: Seat) => Math.min(view.handCounts[seat], dealtTo(deal, view.dealer, seat));
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden">
@@ -56,22 +59,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <RoundDots view={view} />
-          <div
-            className={`flex h-11 min-w-11 items-center justify-center rounded-full px-2 font-display text-xl ${
-              view.value > 1 ? "bg-gold text-stone-900" : "bg-white/10"
-            }`}
-            title="Valor da mão"
-          >
-            {view.value}
-          </div>
-          {view.mode !== "normal" && (
-            <span className="rounded-full bg-red-500/80 px-3 py-1 font-display text-xs">
-              {view.mode === "ferro" ? "FERRO" : "MÃO DE 11"}
-            </span>
-          )}
-        </div>
+        <HandInfo view={view} />
 
         <div className="flex items-center gap-2">
           {!room.solo && <span className="hidden font-display text-white/40 sm:inline">{room.code}</span>}
@@ -85,12 +73,12 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
         <div className="felt absolute inset-0 rounded-[48px]" />
 
         {(["top", "left", "right"] as const).map((pos) => (
-          <Opponent key={pos} pos={pos} seat={seatAt(pos)} room={room} view={view} />
+          <Opponent key={pos} pos={pos} seat={seatAt(pos)} room={room} view={view} count={visible(seatAt(pos))} />
         ))}
 
-        <Vira view={view} />
+        {!deal && <Vira view={view} />}
 
-        <div className="absolute left-1/2 top-1/2 h-[min(46vh,320px)] w-[min(62vw,360px)] -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-[55%] h-[min(34vh,320px)] w-[min(62vw,360px)] -translate-x-1/2 -translate-y-1/2">
           {round.plays.map((p, i) => (
             <PlayedCard
               key={`${view.handNo}-${view.rounds.length}-${p.seat}`}
@@ -105,49 +93,71 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
         <CenterStatus view={view} />
 
+        {deal && <DealAnimation key={`deal-${deal.hand}`} deal={deal} dealer={view.dealer} me={me} />}
+
         {view.shout && (
-          <ShoutBubble key={view.shout.id} text={shoutText(view.shout)} pos={relPos(view.shout.seat, me)} />
+          <ShoutBubble key={`shout-${view.shout.id}`} text={shoutText(view.shout)} pos={relPos(view.shout.seat, me)} />
         )}
       </section>
 
-      <MyArea view={view} room={room} />
+      <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} />
 
       {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={leave} />}
     </main>
   );
 }
 
-function RoundDots({ view }: { view: PlayerView }) {
+function HandInfo({ view }: { view: PlayerView }) {
   const myTeam = teamOf(view.seat);
+  const current = view.rounds.length - 1;
+  const raised = view.value > 1;
+  const label =
+    view.mode === "ferro" ? "FERRO" : view.mode === "mao11" ? "MÃO DE 11" : raised ? BET_NAME[view.value].slice(0, -1) : "VALE";
+
   return (
-    <div className="flex gap-1.5 rounded-full bg-black/30 px-2.5 py-2">
-      {[0, 1, 2].map((i) => {
-        const w = view.rounds[i]?.winner;
-        const color =
-          w === null || w === undefined
-            ? "bg-white/15"
-            : w === "tie"
-              ? "bg-white/60"
-              : w === myTeam
-                ? "bg-gold"
-                : "bg-red-500";
-        return <span key={i} className={`h-3 w-3 rounded-full ${color}`} />;
-      })}
+    <div className="flex items-center gap-3 rounded-2xl bg-black/40 px-3 py-1.5">
+      <div className="flex gap-1.5">
+        {[0, 1, 2].map((i) => {
+          const w = view.rounds[i]?.winner;
+          let cls = "border border-white/15";
+          let mark = "";
+          if (w === "tie") [cls, mark] = ["bg-white/70 text-stone-900", "="];
+          else if (w === myTeam) [cls, mark] = ["bg-gold text-stone-900", "✓"];
+          else if (w !== null && w !== undefined) [cls, mark] = ["bg-red-500 text-white", "✕"];
+          else if (i === current) cls = "border-2 border-white/50";
+          return (
+            <span
+              key={i}
+              className={`flex h-7 w-5 items-center justify-center rounded-[5px] text-xs font-bold transition-colors sm:h-8 sm:w-6 ${cls}`}
+            >
+              {mark}
+            </span>
+          );
+        })}
+      </div>
+      <div className="h-8 w-px bg-white/10" />
+      <div className="flex min-w-12 flex-col items-center leading-none">
+        <span className={`text-[9px] font-display tracking-wide ${raised || view.mode !== "normal" ? "text-gold" : "text-white/50"}`}>
+          {label}
+        </span>
+        <span key={view.value} className={`banner font-display text-2xl ${raised ? "text-gold" : "text-white"}`}>
+          {view.value}
+        </span>
+      </div>
     </div>
   );
 }
 
 const OPP_POS: Record<Exclude<Pos, "bottom">, string> = {
-  top: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/3 flex-col-reverse",
+  top: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/3 flex-row-reverse gap-3",
   left: "left-3 top-1/2 -translate-y-1/2 flex-col sm:left-6",
   right: "right-3 top-1/2 -translate-y-1/2 flex-col sm:right-6",
 };
 
-function Opponent({ pos, seat, room, view }: { pos: Exclude<Pos, "bottom">; seat: Seat; room: RoomInfo; view: PlayerView }) {
+function Opponent({ pos, seat, room, view, count }: { pos: Exclude<Pos, "bottom">; seat: Seat; room: RoomInfo; view: PlayerView; count: number }) {
   const info = room.seats[seat];
   const partner = teamOf(seat) === teamOf(view.seat);
   const turn = (view.phase === "playing" && !view.bet && view.turn === seat) || (view.bet && teamOf(seat) !== view.bet.team && view.phase === "playing");
-  const count = view.handCounts[seat];
 
   return (
     <div className={`absolute z-10 flex items-center gap-1 ${OPP_POS[pos]}`}>
@@ -199,7 +209,7 @@ function PlayedCard({ play, pos, order, winning, mine }: { play: Play; pos: Pos;
   const p = PLAY_POS[pos];
   return (
     <div
-      className={`played absolute w-[clamp(52px,12vw,84px)] ${p.cls} ${winning ? "[&>*]:outline-4 [&>*]:outline-offset-2 [&>*]:outline-gold" : ""}`}
+      className={`played absolute w-[clamp(48px,min(12vw,12vh),84px)] ${p.cls} ${winning ? "[&>*]:outline-4 [&>*]:outline-offset-2 [&>*]:outline-gold" : ""}`}
       style={{ "--to": p.to, "--from": p.from, transform: p.to, zIndex: winning ? 20 : order } as React.CSSProperties}
     >
       {play.hidden && !mine ? (
@@ -257,24 +267,25 @@ function ShoutBubble({ text, pos }: { text: string; pos: Pos }) {
   );
 }
 
-function MyArea({ view, room }: { view: PlayerView; room: RoomInfo }) {
-  const [hide, setHide] = useState(false);
+function MyArea({ view, room, visible, dealing }: { view: PlayerView; room: RoomInfo; visible: number; dealing: boolean }) {
   const myInfo = room.seats[view.seat];
   const myTurn = view.canPlay || view.mustRespond || view.mustDecideMao11;
+  const canCover = view.canPlay && view.canHide && view.mode !== "ferro";
+  const [flipped, setFlipped] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!view.canPlay || !view.canHide) setHide(false);
-  }, [view.canPlay, view.canHide]);
+    if (!canCover) setFlipped(null);
+  }, [canCover, view.handNo, view.rounds.length]);
 
   const play = (index: number) => {
     if (!view.canPlay) return;
-    send({ t: "action", action: { type: "play", index, hidden: hide } });
-    setHide(false);
+    send({ t: "action", action: { type: "play", index, hidden: canCover && flipped === index } });
+    setFlipped(null);
   };
 
   return (
     <section className="relative z-20 flex flex-col items-center gap-2 px-3 pb-3">
-      <div className="flex min-h-12 flex-wrap items-center justify-center gap-2">
+      <div className={`flex min-h-12 flex-wrap items-center justify-center gap-2 ${dealing ? "invisible" : ""}`}>
         {view.mustDecideMao11 && (
           <>
             <div className="flex gap-1 rounded-xl bg-black/40 p-1.5">
@@ -312,41 +323,66 @@ function MyArea({ view, room }: { view: PlayerView; room: RoomInfo }) {
             {BET_NAME[view.nextBet]}
           </ActionBtn>
         )}
-        {view.canPlay && view.canHide && view.mode !== "ferro" && (
-          <button
-            onClick={() => setHide((h) => !h)}
-            className={`flex h-12 items-center gap-2 rounded-xl px-3 font-display text-sm transition ${
-              hide ? "bg-white text-stone-900" : "bg-white/10 text-white/80 hover:bg-white/20"
-            }`}
-            title="Jogar coberta"
-          >
-            <span className="card-back inline-block w-5 !border" />
-            {hide ? "✓" : ""}
-          </button>
-        )}
       </div>
 
-      <div
-        className={`flex min-h-[calc(clamp(72px,21vw,118px)*1.452+0.5rem)] min-w-24 items-end justify-center rounded-3xl px-4 pt-2 ${
-          myTurn ? "turn-glow" : ""
-        }`}
-      >
-        {view.myHand.map((c, i) => (
-          <button
+      <div className="flex min-h-[calc(clamp(72px,21vw,118px)*1.452+1rem)] min-w-24 items-end justify-center px-4 pt-4">
+        {view.myHand.slice(0, visible).map((c, i) => (
+          <div
             key={`${view.handNo}-${c?.id ?? i}-${i}`}
-            disabled={!view.canPlay}
-            onClick={() => play(i)}
-            className={`deal -mx-1 w-[clamp(72px,21vw,118px)] transition-transform duration-150 sm:mx-1 ${
-              view.canPlay ? "cursor-pointer hover:-translate-y-4" : "cursor-default"
-            } ${hide ? "opacity-80" : ""}`}
-            style={{ animationDelay: `${i * 80}ms` }}
+            className={`deal group relative -mx-1 w-[clamp(72px,21vw,118px)] transition-transform duration-200 sm:mx-1 ${
+              view.canPlay ? "-translate-y-2 hover:-translate-y-5" : ""
+            }`}
           >
-            <CardImg card={c} />
-          </button>
+            <button
+              disabled={!view.canPlay}
+              onClick={() => play(i)}
+              className={`block w-full ${view.canPlay ? "turn-card cursor-pointer" : "cursor-default"}`}
+            >
+              <FlipCard card={c} flipped={flipped === i} />
+            </button>
+            {canCover && (
+              <button
+                onClick={() => setFlipped((f) => (f === i ? null : i))}
+                title={flipped === i ? "Desvirar" : "Virar"}
+                aria-label={flipped === i ? "Desvirar carta" : "Virar carta"}
+                className={`absolute -right-2 -top-2 flex h-9 w-9 items-center justify-center rounded-full shadow-lg ring-2 ring-gold transition hover:scale-110 ${
+                  flipped === i
+                    ? "bg-gold text-stone-900"
+                    : "bg-stone-900 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
+                }`}
+              >
+                {flipped === i ? <span className="text-lg leading-none">↺</span> : <span className="card-back block w-3.5 !border" />}
+              </button>
+            )}
+          </div>
         ))}
       </div>
-      <span className="font-display text-xs text-white/50">{myInfo.name}</span>
+      <span
+        className={`flex items-center gap-1.5 font-display text-xs transition-colors ${myTurn ? "text-gold" : "text-white/50"}`}
+      >
+        {myTurn && <span className="h-2 w-2 animate-pulse rounded-full bg-gold" />}
+        {myInfo.name}
+      </span>
     </section>
+  );
+}
+
+function FlipCard({ card, flipped }: { card: Card | null; flipped: boolean }) {
+  return (
+    <div className="[perspective:900px]">
+      <div
+        className={`relative transition-transform duration-500 ease-out [transform-style:preserve-3d] ${
+          flipped ? "[transform:rotateY(180deg)]" : ""
+        }`}
+      >
+        <div className="[backface-visibility:hidden]">
+          <CardImg card={card} />
+        </div>
+        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+          <CardBack className="h-full" />
+        </div>
+      </div>
+    </div>
   );
 }
 

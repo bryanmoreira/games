@@ -80,7 +80,38 @@ body {
   to { transform: none; opacity: 1; }
 }
 .deal {
-  animation: deal 0.35s ease-out both;
+  animation: deal 0.35s ease-out backwards;
+}
+
+@keyframes shuffle {
+  0%, 100% { transform: translate(-50%, -50%); }
+  25% { transform: translate(calc(-50% + var(--dir) * 40px), calc(-50% - 6px)) rotate(calc(var(--dir) * 12deg)); }
+  50% { transform: translate(-50%, -50%); }
+  75% { transform: translate(calc(-50% + var(--dir) * -28px), calc(-50% + 4px)) rotate(calc(var(--dir) * -6deg)); }
+}
+.shuffle-card {
+  animation: shuffle 0.9s ease-in-out both;
+}
+
+@keyframes fly {
+  0% { left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+  80% { opacity: 1; }
+  100% { left: var(--tx); top: var(--ty); transform: translate(-50%, -50%) rotate(var(--rot)) scale(0.85); opacity: 0; }
+}
+.fly-card {
+  left: 50%;
+  top: 50%;
+  animation-name: fly;
+  animation-timing-function: cubic-bezier(0.3, 0.7, 0.4, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes card-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(242, 193, 78, 0.45)); }
+  50% { filter: drop-shadow(0 0 12px rgba(242, 193, 78, 0.9)); }
+}
+.turn-card > * {
+  animation: card-glow 1.6s ease-in-out infinite;
 }
 
 @keyframes glow {

@@ -24,12 +24,15 @@ interface Room {
   seats: Slot[];
   game: GameState | null;
   timer?: ReturnType<typeof setTimeout>;
+  dealUntil: number;
   cleanup?: ReturnType<typeof setTimeout>;
 }
 
 const BOT_NAMES = ["Zé", "Tião", "Cida", "Juca", "Nena", "Dito", "Lurdes", "Chico"];
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const SEATS: Seat[] = [0, 1, 2, 3];
+// Tempo da animação de embaralhar/distribuir no cliente; bots esperam antes de agir
+const DEAL_MS = 2600;
 
 const rooms = new Map<string, Room>();
 const sockets = new Map<string, Socket>();
@@ -117,13 +120,18 @@ function schedule(room: Room) {
     if (!room.game) return;
     const a = decide(viewFor(room.game, actor));
     if (a) step(room, a);
-  }, 650 + Math.random() * 650);
+  }, 650 + Math.random() * 650 + Math.max(0, room.dealUntil - Date.now()));
+}
+
+function markDeal(room: Room) {
+  room.dealUntil = Date.now() + DEAL_MS;
 }
 
 function step(room: Room, action: Action): string | null {
   if (!room.game) return "sem partida";
   const r = applyAction(room.game, action);
   if (!r.ok) return r.error;
+  if (r.state.handNo !== room.game.handNo) markDeal(room);
   room.game = r.state;
   broadcast(room);
   schedule(room);
@@ -132,6 +140,7 @@ function step(room: Room, action: Action): string | null {
 
 function startGame(room: Room) {
   room.game = newGame(Math.random, Math.floor(Math.random() * 4) as Seat);
+  markDeal(room);
   broadcast(room);
   schedule(room);
 }
@@ -207,6 +216,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg) {
       members: new Map(),
       seats: SEATS.map(emptySlot),
       game: null,
+      dealUntil: 0,
     };
     rooms.set(room.code, room);
     joinRoom(room, token, name);
@@ -214,6 +224,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg) {
     if (room.solo) {
       for (const s of [1, 2, 3]) room.seats[s] = { kind: "bot", name: botName(room) };
       room.game = newGame(Math.random, Math.floor(Math.random() * 4) as Seat);
+      markDeal(room);
     }
     send(ws, { t: "created", code: room.code });
     broadcast(room);
