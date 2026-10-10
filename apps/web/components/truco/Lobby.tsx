@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { RoomInfo, Seat } from "@truco/game";
-import { send } from "@/lib/socket";
+import { send } from "@/lib/truco/socket";
 
 const TEAMS: { seats: Seat[]; color: string; label: string }[] = [
   { seats: [0, 2], color: "text-team-a border-team-a/40", label: "Time 1" },
@@ -23,7 +23,7 @@ export function Lobby({ room }: { room: RoomInfo }) {
 
   const leave = () => {
     send({ t: "leave" });
-    router.push("/");
+    router.push("/truco");
   };
 
   return (

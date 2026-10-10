@@ -1,102 +1,37 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { clearCreated, clearError, connect, getName, send, setName, useTruco } from "@/lib/socket";
-import { CardImg } from "@/components/Card";
+import Link from "next/link";
 import { makeCard } from "@truco/game";
+import { CardImg } from "@/components/truco/Card";
 
-const FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades"), makeCard("7", "diamonds")];
+const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 
 export default function Home() {
-  const router = useRouter();
-  const { created, error } = useTruco();
-  const [name, setNameInput] = useState("");
-  const [code, setCode] = useState("");
-
-  useEffect(() => {
-    setNameInput(getName());
-    connect();
-    clearError();
-  }, []);
-
-  useEffect(() => {
-    if (created) {
-      clearCreated();
-      router.push(`/sala/${created}`);
-    }
-  }, [created, router]);
-
-  const ready = name.trim().length > 0;
-  const saveName = () => setName(name.trim());
-
-  const create = (solo: boolean) => {
-    saveName();
-    send({ t: "create", solo });
-  };
-
-  const join = () => {
-    if (code.trim().length < 4) return;
-    saveName();
-    router.push(`/sala/${code.trim().toUpperCase()}`);
-  };
-
   return (
-    <main className="mx-auto flex min-h-full max-w-sm flex-col items-center justify-center gap-8 px-4 py-10">
-      <div className="relative h-36 w-56">
-        {FAN.map((c, i) => (
-          <div
-            key={c.id}
-            className="absolute bottom-0 left-1/2 w-20 origin-bottom"
-            style={{ transform: `translateX(-50%) rotate(${(i - 1.5) * 14}deg)` }}
-          >
-            <CardImg card={c} />
+    <main className="mx-auto flex min-h-full max-w-3xl flex-col items-center gap-10 px-4 py-12">
+      <h1 className="font-display text-5xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">JOGOS</h1>
+
+      <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2">
+        <Link
+          href="/truco"
+          className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"
+        >
+          <div className="absolute inset-x-0 top-[12%] mx-auto h-1/2 w-1/2">
+            {TRUCO_FAN.map((c, i) => (
+              <div
+                key={c.id}
+                className="absolute bottom-0 left-1/2 w-[38%] origin-bottom transition-transform duration-300"
+                style={{ transform: `translateX(-50%) rotate(${(i - 1) * 16}deg)` }}
+              >
+                <CardImg card={c} />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <h1 className="font-display text-6xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">TRUCO</h1>
+          <span className="font-display text-3xl text-gold drop-shadow-[0_2px_0_#000]">TRUCO</span>
+        </Link>
 
-      <input
-        value={name}
-        onChange={(e) => setNameInput(e.target.value.slice(0, 16))}
-        onBlur={saveName}
-        placeholder="Seu nome"
-        className="w-full rounded-xl bg-white/10 px-4 py-3 text-center text-lg outline-none ring-gold/60 placeholder:text-white/40 focus:ring-2"
-      />
-
-      <div className="flex w-full flex-col gap-3">
-        <button
-          disabled={!ready}
-          onClick={() => create(true)}
-          className="rounded-xl bg-gold py-3 font-display text-lg text-stone-900 shadow-[0_4px_0_#9a6b12] transition active:translate-y-1 active:shadow-none disabled:opacity-40"
-        >
-          🤖 Jogar com IAs
-        </button>
-        <button
-          disabled={!ready}
-          onClick={() => create(false)}
-          className="rounded-xl bg-emerald-600 py-3 font-display text-lg shadow-[0_4px_0_#065f46] transition active:translate-y-1 active:shadow-none disabled:opacity-40"
-        >
-          ➕ Criar sala
-        </button>
-        <div className="flex gap-2">
-          <input
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase().slice(0, 4))}
-            onKeyDown={(e) => e.key === "Enter" && ready && join()}
-            placeholder="CÓDIGO"
-            className="w-0 flex-1 rounded-xl bg-white/10 px-4 py-3 text-center font-display tracking-[0.3em] outline-none ring-gold/60 placeholder:text-white/30 focus:ring-2"
-          />
-          <button
-            disabled={!ready || code.length < 4}
-            onClick={join}
-            className="rounded-xl bg-white/15 px-5 font-display transition hover:bg-white/25 disabled:opacity-40"
-          >
-            Entrar
-          </button>
+        <div className="flex aspect-[4/3] items-center justify-center rounded-3xl border-2 border-dashed border-white/15 font-display text-white/30">
+          Em breve
         </div>
       </div>
-      {error && <p className="text-sm text-red-300">{error}</p>}
     </main>
   );
 }

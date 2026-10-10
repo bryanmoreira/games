@@ -1,0 +1,106 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { clearCreated, clearError, connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
+import { CardImg } from "@/components/truco/Card";
+import { makeCard } from "@truco/game";
+
+const FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades"), makeCard("7", "diamonds")];
+
+export default function TrucoHome() {
+  const router = useRouter();
+  const { created, error } = useTruco();
+  const [name, setNameInput] = useState("");
+  const [code, setCode] = useState("");
+
+  useEffect(() => {
+    setNameInput(getName());
+    connect();
+    clearError();
+  }, []);
+
+  useEffect(() => {
+    if (created) {
+      clearCreated();
+      router.push(`/truco/sala/${created}`);
+    }
+  }, [created, router]);
+
+  const ready = name.trim().length > 0;
+  const saveName = () => setName(name.trim());
+
+  const create = (solo: boolean) => {
+    saveName();
+    send({ t: "create", solo });
+  };
+
+  const join = () => {
+    if (code.trim().length < 4) return;
+    saveName();
+    router.push(`/truco/sala/${code.trim().toUpperCase()}`);
+  };
+
+  return (
+    <main className="mx-auto flex min-h-full max-w-sm flex-col items-center justify-center gap-8 px-4 py-10">
+      <Link href="/" className="fixed left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-white/20" title="Jogos">
+        ←
+      </Link>
+      <div className="relative h-36 w-56">
+        {FAN.map((c, i) => (
+          <div
+            key={c.id}
+            className="absolute bottom-0 left-1/2 w-20 origin-bottom"
+            style={{ transform: `translateX(-50%) rotate(${(i - 1.5) * 14}deg)` }}
+          >
+            <CardImg card={c} />
+          </div>
+        ))}
+      </div>
+      <h1 className="font-display text-6xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">TRUCO</h1>
+
+      <input
+        value={name}
+        onChange={(e) => setNameInput(e.target.value.slice(0, 16))}
+        onBlur={saveName}
+        placeholder="Seu nome"
+        className="w-full rounded-xl bg-white/10 px-4 py-3 text-center text-lg outline-none ring-gold/60 placeholder:text-white/40 focus:ring-2"
+      />
+
+      <div className="flex w-full flex-col gap-3">
+        <button
+          disabled={!ready}
+          onClick={() => create(true)}
+          className="rounded-xl bg-gold py-3 font-display text-lg text-stone-900 shadow-[0_4px_0_#9a6b12] transition active:translate-y-1 active:shadow-none disabled:opacity-40"
+        >
+          🤖 Jogar com IAs
+        </button>
+        <button
+          disabled={!ready}
+          onClick={() => create(false)}
+          className="rounded-xl bg-emerald-600 py-3 font-display text-lg shadow-[0_4px_0_#065f46] transition active:translate-y-1 active:shadow-none disabled:opacity-40"
+        >
+          ➕ Criar sala
+        </button>
+        <div className="flex gap-2">
+          <input
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase().slice(0, 4))}
+            onKeyDown={(e) => e.key === "Enter" && ready && join()}
+            placeholder="CÓDIGO"
+            className="w-0 flex-1 rounded-xl bg-white/10 px-4 py-3 text-center font-display tracking-[0.3em] outline-none ring-gold/60 placeholder:text-white/30 focus:ring-2"
+          />
+          <button
+            disabled={!ready || code.length < 4}
+            onClick={join}
+            className="rounded-xl bg-white/15 px-5 font-display transition hover:bg-white/25 disabled:opacity-40"
+          >
+            Entrar
+          </button>
+        </div>
+      </div>
+      {error && <p className="text-sm text-red-300">{error}</p>}
+    </main>
+  );
+}
