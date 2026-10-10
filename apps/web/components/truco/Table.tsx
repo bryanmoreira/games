@@ -8,6 +8,7 @@ import { TRUCO_PATH } from "@/lib/truco/paths";
 import { CardBack, CardImg } from "./Card";
 import { DealAnimation, dealtTo, useDeal } from "./Deal";
 import { HelpButton, HowToPlayModal } from "./HowToPlayModal";
+import { CardInfo, TipsButton, useTips } from "./CardInfo";
 import { isMuted, playCardSound, playTrucoSound, setMuted, unlockAudio } from "@/lib/truco/sound";
 
 type Pos = "bottom" | "right" | "top" | "left";
@@ -46,12 +47,16 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   const seatAt = (pos: Pos) => ((me + POS.indexOf(pos)) % 4) as Seat;
   const deal = useDeal(view);
   const [help, setHelp] = useState(false);
+  const [tips, toggleTips] = useTips();
+  const [hovered, setHovered] = useState<Card | null>(null);
+  // some ao jogar a carta (o mouseleave não dispara quando ela sai da mão)
+  const hoveredCard = hovered && view.myHand.some((c) => c?.id === hovered.id) ? hovered : null;
   useSounds(view);
   const visible = (seat: Seat) => Math.min(view.handCounts[seat], dealtTo(deal, view.dealer, seat));
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex items-center justify-between gap-1.5 px-2 py-2 sm:gap-2 sm:px-6">
+      <header className="relative z-40 flex items-center justify-between gap-1.5 px-2 py-2 sm:gap-2 sm:px-6">
         <div className="flex items-center gap-1.5 rounded-2xl bg-black/40 px-3 py-2 font-display sm:gap-3 sm:px-4">
           <div className="flex flex-col items-center leading-none">
             <span className="text-[10px] text-gold/80">NÓS</span>
@@ -75,11 +80,17 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
         <div className="flex items-center gap-1 sm:gap-2">
           {!room.solo && <span className="hidden font-display text-white/40 sm:inline">{room.code}</span>}
           <HelpButton onClick={() => setHelp(true)} />
+          <TipsButton on={tips} onClick={toggleTips} />
           <MuteButton />
           <button onClick={leave} className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 sm:h-10 sm:w-10">
             ✕
           </button>
         </div>
+        {tips && hoveredCard && (
+          <div className="pointer-events-none absolute right-2 top-full mt-1 sm:right-6 [@media(hover:none)]:hidden">
+            <CardInfo card={hoveredCard} manilha={view.manilha} />
+          </div>
+        )}
       </header>
 
       <section className="relative mx-auto mb-3 mt-8 w-[calc(100%-1.5rem)] max-w-[1100px] flex-1 sm:mt-10 lg:mt-11 sm:w-[calc(100%-7rem)]">
@@ -113,7 +124,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
         )}
       </section>
 
-      <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} />
+      <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} onHover={setHovered} />
 
       {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={leave} />}
       {help && <HowToPlayModal onClose={() => setHelp(false)} />}
@@ -270,16 +281,39 @@ function Fan({ count, vertical }: { count: number; vertical: boolean }) {
 
 function Vira({ view }: { view: PlayerView }) {
   return (
-    <div className="absolute bottom-4 left-[14%] z-0 flex items-end gap-1 sm:bottom-6">
-      <div className="relative w-10 sm:w-16">
-        <CardBack />
-        <div className="absolute left-1/2 top-0 w-full -translate-y-2 translate-x-[-10%] rotate-12">
-          <CardImg card={view.vira} />
+    <div
+      className="absolute bottom-2 left-2 z-0 flex items-center gap-1.5 rounded-2xl bg-black/35 px-2 py-1.5 ring-1 ring-white/10 sm:bottom-6 sm:left-[9%] sm:gap-3 sm:px-3"
+      aria-label={`Vira ${view.vira.rank}, manilha ${view.manilha}`}
+    >
+      <div className="flex flex-col items-center gap-1">
+        <span className="font-display text-[9px] tracking-widest text-white/60">VIRA</span>
+        <div className="relative w-10 sm:w-14 lg:w-16">
+          <div className="absolute inset-0 translate-x-1 translate-y-0.5 rotate-6">
+            <CardBack className="!border-2" />
+          </div>
+          <div className="relative">
+            <CardImg card={view.vira} />
+          </div>
         </div>
       </div>
-      <span className="ml-3 rounded-full bg-black/40 px-2 py-0.5 font-display text-xs text-gold" title="Manilha">
-        ★{view.manilha}
-      </span>
+
+      <svg viewBox="0 0 24 24" className="mt-3 h-4 w-4 shrink-0 text-gold sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+      </svg>
+
+      <div className="flex flex-col items-center gap-1">
+        <span className="font-display text-[9px] tracking-widest text-gold">MANILHA</span>
+        <div className="flex aspect-[500/726] w-10 flex-col items-center justify-center gap-0.5 rounded-[7%/5%] bg-white text-stone-900 shadow ring-2 ring-gold sm:w-14 lg:w-16">
+          <span className="font-display text-xl leading-none sm:text-3xl">{view.manilha}</span>
+          <span className="flex gap-px text-[9px] leading-none sm:text-xs">
+            <span className="text-red-600">♦</span>
+            <span>♠</span>
+            <span className="text-red-600">♥</span>
+            <span>♣</span>
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -353,7 +387,19 @@ function ShoutBubble({ text, pos }: { text: string; pos: Pos }) {
   );
 }
 
-function MyArea({ view, room, visible, dealing }: { view: PlayerView; room: RoomInfo; visible: number; dealing: boolean }) {
+function MyArea({
+  view,
+  room,
+  visible,
+  dealing,
+  onHover,
+}: {
+  view: PlayerView;
+  room: RoomInfo;
+  visible: number;
+  dealing: boolean;
+  onHover: (card: Card | null) => void;
+}) {
   const myInfo = room.seats[view.seat];
   const myTurn = view.canPlay || view.mustRespond || view.mustDecideMao11;
   const canCover = view.canPlay && view.canHide && view.mode !== "ferro";
@@ -415,6 +461,8 @@ function MyArea({ view, room, visible, dealing }: { view: PlayerView; room: Room
         {view.myHand.slice(0, visible).map((c, i) => (
           <div
             key={`${view.handNo}-${c?.id ?? i}-${i}`}
+            onMouseEnter={() => onHover(c)}
+            onMouseLeave={() => onHover(null)}
             className={`deal group relative -mx-1 w-[clamp(72px,21vw,118px)] transition-transform duration-200 sm:mx-1 ${
               view.canPlay ? "-translate-y-2 hover:-translate-y-5" : ""
             }`}
