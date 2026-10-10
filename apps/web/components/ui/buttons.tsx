@@ -126,10 +126,10 @@ export function useTips(): [boolean, () => void] {
 }
 
 /** Liga/desliga as dicas no hover (oculto em telas de toque, onde não há hover). */
-export function TipsButton({ on, onClick }: { on: boolean; onClick: () => void }) {
+export function TipsButton({ on, onClick, label = "Dicas das cartas" }: { on: boolean; onClick: () => void; label?: string }) {
   return (
     <IconButton
-      label={on ? "Dicas das cartas: ligadas" : "Dicas das cartas: desligadas"}
+      label={`${label}: ${on ? "ligadas" : "desligadas"}`}
       onClick={onClick}
       active={on}
       className={`[@media(hover:none)]:hidden ${on ? "" : "!text-white/50"}`}

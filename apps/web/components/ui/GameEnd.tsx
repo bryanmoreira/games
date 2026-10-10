@@ -5,10 +5,12 @@ import { XIcon } from "./buttons";
 /**
  * Tela de fim de partida de qualquer jogo (padrão do truco): 🏆 VITÓRIA! ou 💀 DERROTA,
  * um selo opcional (ex.: nível), os números do jogo como filhos e os botões ✕ sair + "De novo".
+ * Jogos que podem empatar passam `draw` (🤝 EMPATE).
  * `actions` entra entre os dois (ex.: "Continuar" do Sudoku).
  */
 export function GameEnd({
   won,
+  draw,
   badge,
   children,
   onLeave,
@@ -18,6 +20,7 @@ export function GameEnd({
   actions,
 }: {
   won: boolean;
+  draw?: boolean;
   badge?: React.ReactNode;
   children?: React.ReactNode;
   onLeave: () => void;
@@ -30,10 +33,12 @@ export function GameEnd({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm">
       <div className="banner flex flex-col items-center gap-6 rounded-3xl bg-stone-900 px-5 py-8 ring-2 ring-gold/50 sm:px-10">
         <span className="text-6xl" aria-hidden="true">
-          {won ? "🏆" : "💀"}
+          {draw ? "🤝" : won ? "🏆" : "💀"}
         </span>
         <div className="flex flex-col items-center gap-2">
-          <h2 className={`font-display text-4xl ${won ? "text-gold" : "text-red-400"}`}>{won ? "VITÓRIA!" : "DERROTA"}</h2>
+          <h2 className={`font-display text-4xl ${draw ? "text-white" : won ? "text-gold" : "text-red-400"}`}>
+            {draw ? "EMPATE" : won ? "VITÓRIA!" : "DERROTA"}
+          </h2>
           {badge}
         </div>
         {children}

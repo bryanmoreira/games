@@ -45,7 +45,7 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | Dicas | `apps/web/components/truco/CardInfo.tsx` | painel no hover (`useTips`/`TipsButton` ficam em `components/ui/buttons.tsx`) |
 | Como jogar | `components/truco/HowToPlay.tsx`, `app/truco-paulista/como-jogar/page.tsx` | conteúdo compartilhado entre página e modal |
 | Som | `apps/web/lib/sound.ts` (núcleo) + `lib/truco/sound.ts` | Web Audio, mudo persistido, `useAudioUnlock`; sons próprios de cada jogo em `lib/<slug>/sound.ts` |
-| Socket | `apps/web/lib/truco/socket.ts` | store com `useSyncExternalStore`, token em `sessionStorage` |
+| Socket | `apps/web/lib/socket.ts` (compartilhado) | `useRoom<View>()`, `send`, token em `sessionStorage` |
 | Rotas | `apps/web/lib/truco/paths.ts` | constante da rota do jogo |
 | Hub | `apps/web/app/page.tsx` | card de cada jogo |
 | Botão voltar | `apps/web/components/BackButton.tsx` | já compartilhado |
@@ -61,11 +61,17 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | Modal "Como jogar" | `components/ui/HowToPlayModal.tsx` (casca; o conteúdo vem como filho) |
 | Cartão numerado do "Como jogar" | `components/ui/HowToSection.tsx` |
 | Ícones de ferramenta (desfazer, dica, lápis, apagar) | `components/ui/icons.tsx` |
-| Nota sintetizada curta | `tone()` em `lib/sound.ts` |
+| Nota sintetizada curta, vitória e derrota | `tone()`, `playWinSound`, `playLoseSound` em `lib/sound.ts` |
+| Conexão com o servidor de salas | `lib/socket.ts` (`useRoom<View>()`, `send`) |
+| Lobby da sala (lugares em colunas, IA, Começar) | `components/ui/Lobby.tsx` (`groups`, `exitPath`; `TEAMS_2X2` do truco) |
+| Rota da sala de cada jogo online | `lib/rooms.ts` (`GAME_ROOM_PATH`, para redirecionar código de outro jogo) |
+| Empate na tela de fim | `GameEnd` com `draw` (🤝 EMPATE) |
 
 ### Jogo de um jogador só (ex.: Paciência Spider)
 
 Sem adversário nem informação escondida, não precisa de servidor, sala nem lobby: a engine roda no navegador e a partida fica no `localStorage` (recarregar continua). Referência: `packages/spider` (regras, `bestHint` com função de progresso que nunca entra em ciclo) e `components/spider/Table.tsx` (as cartas numa camada única com posição absoluta; mover, distribuir e desfazer viram transições de CSS; arrastar com Pointer Events). Abaixo de ~64 px de largura o índice das PNGs fica ilegível: use uma face compacta (`SpiderCard`).
+
+Jogo online sem cartas (ex.: Connect 4): `packages/connect4` (IA negamax com poda alfa-beta em tabuleiro plano, ~100 ms por lance) e `components/connect4/` (`Board` com placa SVG por cima das peças e queda em CSS; `StaticBoard` para ilustrações). Dicas que ajudam a ganhar (ex.: ameaças de 4) só contra a IA, nunca entre pessoas.
 
 Jogo sem cartas (ex.: Sudoku): `packages/sudoku` (gerador por `seed` que garante solução única via solver lógico, dificuldade pela técnica mais difícil exigida, dica com o motivo) e `components/sudoku/Table.tsx` (grade com bordas de madeira, teclado numérico, cronômetro que pausa com a aba oculta). Gerar puzzle difícil pode levar ~1 s: mostre um spinner no botão e gere num `setTimeout`.
 

@@ -1,8 +1,6 @@
 import type { ServerWebSocket } from "bun";
-import {
-  applyAction, decide, newGame, viewFor, withSeat,
-  type Action, type ClientMsg, type GameState, type RoomInfo, type Seat, type ServerMsg,
-} from "@truco/game";
+import type { ClientMsg, GameId, RoomInfo, Seat, ServerMsg } from "@truco/game";
+import { GAMES, type GameAdapter } from "./games";
 
 export interface WsData {
   token?: string;
@@ -18,11 +16,13 @@ interface Slot {
 
 interface Room {
   code: string;
+  game: GameId;
+  adapter: GameAdapter;
   solo: boolean;
   host: string;
   members: Map<string, string>; // token -> nome
   seats: Slot[];
-  game: GameState | null;
+  state: unknown | null;
   timer?: ReturnType<typeof setTimeout>;
   dealUntil: number;
   cleanup?: ReturnType<typeof setTimeout>;
@@ -30,9 +30,6 @@ interface Room {
 
 const BOT_NAMES = ["Zé", "Tião", "Cida", "Juca", "Nena", "Dito", "Lurdes", "Chico"];
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-const SEATS: Seat[] = [0, 1, 2, 3];
-// Tempo da animação de embaralhar/distribuir no cliente; bots esperam antes de agir
-const DEAL_MS = 2600;
 
 const rooms = new Map<string, Room>();
 const sockets = new Map<string, Socket>();
@@ -73,8 +70,9 @@ function info(room: Room, token: string): RoomInfo {
   const seated = new Set(room.seats.map((s) => s.token).filter(Boolean));
   return {
     code: room.code,
+    game: room.game,
     solo: room.solo,
-    started: !!room.game,
+    started: !!room.state,
     isHost: room.host === token,
     mySeat: seatOf(room, token),
     seats: room.seats.map((s) => ({
@@ -91,56 +89,56 @@ function broadcast(room: Room) {
     const ws = sockets.get(token);
     if (!ws) continue;
     const seat = seatOf(room, token);
-    const view = room.game && seat !== null ? viewFor(room.game, seat) : null;
+    const view = room.state && seat !== null ? room.adapter.viewFor(room.state, seat) : null;
     send(ws, { t: "room", room: info(room, token), view });
   }
 }
 
 function findBotActor(room: Room): Seat | null {
-  const g = room.game!;
-  const actors = SEATS.filter((seat) => {
-    const v = viewFor(g, seat);
-    return v.canPlay || v.mustRespond || v.mustDecideMao11;
-  });
+  const actors = room.adapter.actors(room.state) as Seat[];
   if (actors.length === 0 || actors.some((s) => humanControlled(room, s))) return null;
   return actors[0];
 }
 
 function schedule(room: Room) {
   clearTimeout(room.timer);
-  const g = room.game;
-  if (!g || g.phase === "gameOver") return;
-  if (g.phase === "roundEnd" || g.phase === "handEnd") {
-    room.timer = setTimeout(() => step(room, { type: "advance" }), g.phase === "roundEnd" ? 1400 : 2600);
+  const g = room.state;
+  if (!g || room.adapter.over(g)) return;
+  const pause = room.adapter.pause(g);
+  if (pause !== null) {
+    room.timer = setTimeout(() => step(room, { type: "advance" }), pause);
     return;
   }
   const actor = findBotActor(room);
   if (actor === null) return;
   room.timer = setTimeout(() => {
-    if (!room.game) return;
-    const a = decide(viewFor(room.game, actor));
+    if (!room.state) return;
+    const a = room.adapter.decide(room.adapter.viewFor(room.state, actor));
     if (a) step(room, a);
   }, 650 + Math.random() * 650 + Math.max(0, room.dealUntil - Date.now()));
 }
 
-function markDeal(room: Room) {
-  room.dealUntil = Date.now() + DEAL_MS;
+// bots esperam a animação do cliente (distribuição, peça caindo) antes de agir
+function markAnim(room: Room, prev: unknown | null) {
+  const ms = room.adapter.animMs(prev, room.state);
+  if (ms > 0) room.dealUntil = Date.now() + ms;
 }
 
-function step(room: Room, action: Action): string | null {
-  if (!room.game) return "sem partida";
-  const r = applyAction(room.game, action);
+function step(room: Room, action: unknown): string | null {
+  if (!room.state) return "sem partida";
+  const prev = room.state;
+  const r = room.adapter.applyAction(prev, action);
   if (!r.ok) return r.error;
-  if (r.state.handNo !== room.game.handNo) markDeal(room);
-  room.game = r.state;
+  room.state = r.state;
+  markAnim(room, prev);
   broadcast(room);
   schedule(room);
   return null;
 }
 
 function startGame(room: Room) {
-  room.game = newGame(Math.random, Math.floor(Math.random() * 4) as Seat);
-  markDeal(room);
+  room.state = room.adapter.newGame(room.state);
+  markAnim(room, null);
   broadcast(room);
   schedule(room);
 }
@@ -166,7 +164,7 @@ function leaveRoom(token: string) {
   room.members.delete(token);
   const seat = seatOf(room, token);
   if (seat !== null) {
-    room.seats[seat] = room.game ? { kind: "bot", name: botName(room) } : emptySlot();
+    room.seats[seat] = room.state ? { kind: "bot", name: botName(room) } : emptySlot();
   }
   if (room.members.size === 0) return deleteRoom(room);
   if (room.host === token) room.host = room.members.keys().next().value!;
@@ -183,7 +181,7 @@ function joinRoom(room: Room, token: string, name: string) {
   clearTimeout(room.cleanup);
 }
 
-export function handleMessage(ws: Socket, msg: ClientMsg) {
+export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
   if (msg.t === "hello") {
     const name = String(msg.name || "Jogador").slice(0, 16);
     const prev = sockets.get(msg.token);
@@ -209,22 +207,26 @@ export function handleMessage(ws: Socket, msg: ClientMsg) {
   const error = (message: string) => send(ws, { t: "error", message });
 
   if (msg.t === "create") {
+    const game: GameId = msg.game && Object.hasOwn(GAMES, msg.game) ? msg.game : "truco-paulista";
+    const adapter = GAMES[game];
     const room: Room = {
       code: newCode(),
+      game,
+      adapter,
       solo: !!msg.solo,
       host: token,
       members: new Map(),
-      seats: SEATS.map(emptySlot),
-      game: null,
+      seats: Array.from({ length: adapter.seats }, emptySlot),
+      state: null,
       dealUntil: 0,
     };
     rooms.set(room.code, room);
     joinRoom(room, token, name);
     room.seats[0] = { kind: "human", token, name };
     if (room.solo) {
-      for (const s of [1, 2, 3]) room.seats[s] = { kind: "bot", name: botName(room) };
-      room.game = newGame(Math.random, Math.floor(Math.random() * 4) as Seat);
-      markDeal(room);
+      for (let s = 1; s < adapter.seats; s++) room.seats[s] = { kind: "bot", name: botName(room) };
+      room.state = adapter.newGame(null);
+      markAnim(room, null);
     }
     send(ws, { t: "created", code: room.code });
     broadcast(room);
@@ -252,7 +254,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg) {
       send(ws, { t: "left" });
       return;
     case "sit": {
-      if (room.game) return error("Partida em andamento");
+      if (room.state) return error("Partida em andamento");
       if (room.seats[msg.seat]?.kind !== "empty") return error("Lugar ocupado");
       const cur = seatOf(room, token);
       if (cur !== null) room.seats[cur] = emptySlot();
@@ -260,30 +262,30 @@ export function handleMessage(ws: Socket, msg: ClientMsg) {
       break;
     }
     case "stand": {
-      if (room.game) return;
+      if (room.state) return;
       const cur = seatOf(room, token);
       if (cur !== null) room.seats[cur] = emptySlot();
       break;
     }
     case "addBot":
-      if (!isHost || room.game || room.seats[msg.seat]?.kind !== "empty") return;
+      if (!isHost || room.state || room.seats[msg.seat]?.kind !== "empty") return;
       room.seats[msg.seat] = { kind: "bot", name: botName(room) };
       break;
     case "removeBot":
-      if (!isHost || room.game || room.seats[msg.seat]?.kind !== "bot") return;
+      if (!isHost || room.state || room.seats[msg.seat]?.kind !== "bot") return;
       room.seats[msg.seat] = emptySlot();
       break;
     case "start":
-      if (!isHost || room.game) return;
+      if (!isHost || room.state) return;
       if (room.seats.some((s) => s.kind === "empty")) return error("Complete a mesa");
       return startGame(room);
     case "restart":
-      if (!isHost || room.game?.phase !== "gameOver") return;
+      if (!isHost || !room.state || !room.adapter.over(room.state)) return;
       return startGame(room);
     case "action": {
       const seat = seatOf(room, token);
-      if (seat === null || !room.game) return;
-      const err = step(room, withSeat(msg.action, seat));
+      if (seat === null || !room.state) return;
+      const err = step(room, room.adapter.withSeat(msg.action, seat));
       if (err) error(err);
       return;
     }
@@ -297,10 +299,10 @@ export function handleClose(ws: Socket) {
   sockets.delete(token);
   const room = rooms.get(roomOf.get(token) ?? "");
   if (!room) return;
-  if (!room.game) {
+  if (!room.state) {
     // antes do jogo, quem sai libera o lugar depois de um tempo sem voltar
     setTimeout(() => {
-      if (!isConnected(token) && !room.game && rooms.has(room.code)) {
+      if (!isConnected(token) && !room.state && rooms.has(room.code)) {
         const seat = seatOf(room, token);
         if (seat !== null) room.seats[seat] = emptySlot();
         broadcast(room);

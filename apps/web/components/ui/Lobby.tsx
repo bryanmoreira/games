@@ -3,15 +3,23 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { RoomInfo, Seat } from "@truco/game";
-import { send } from "@/lib/truco/socket";
-import { TRUCO_PATH } from "@/lib/truco/paths";
+import { send } from "@/lib/socket";
 
-const TEAMS: { seats: Seat[]; color: string; label: string }[] = [
+/** Uma coluna do lobby: os lugares de um time (ou de um jogador). */
+export interface SeatGroup {
+  seats: Seat[];
+  color: string;
+  label: React.ReactNode;
+}
+
+/** Duplas do truco: 0/2 contra 1/3. */
+export const TEAMS_2X2: SeatGroup[] = [
   { seats: [0, 2], color: "text-team-a border-team-a/40", label: "Time 1" },
   { seats: [1, 3], color: "text-team-b border-team-b/40", label: "Time 2" },
 ];
 
-export function Lobby({ room }: { room: RoomInfo }) {
+/** Lobby de sala de qualquer jogo online: código para copiar, lugares por coluna, IA e Começar. */
+export function Lobby({ room, groups, exitPath }: { room: RoomInfo; groups: SeatGroup[]; exitPath: string }) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const full = room.seats.every((s) => s.kind !== "empty");
@@ -24,7 +32,7 @@ export function Lobby({ room }: { room: RoomInfo }) {
 
   const leave = () => {
     send({ t: "leave" });
-    router.push(TRUCO_PATH);
+    router.push(exitPath);
   };
 
   return (
@@ -35,8 +43,8 @@ export function Lobby({ room }: { room: RoomInfo }) {
       </button>
 
       <div className="grid w-full grid-cols-2 gap-4">
-        {TEAMS.map((team) => (
-          <div key={team.label} className={`flex flex-col gap-3 rounded-2xl border-2 bg-white/5 p-3 ${team.color}`}>
+        {groups.map((team, i) => (
+          <div key={i} className={`flex flex-col gap-3 rounded-2xl border-2 bg-white/5 p-3 ${team.color}`}>
             <h2 className="text-center font-display">{team.label}</h2>
             {team.seats.map((seat) => (
               <SeatSlot key={seat} room={room} seat={seat} />

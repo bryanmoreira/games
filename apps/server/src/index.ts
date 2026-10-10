@@ -14,7 +14,7 @@ Bun.serve<WsData>({
     idleTimeout: 120,
     sendPings: true,
     message(ws, raw) {
-      let msg: ClientMsg;
+      let msg: ClientMsg<unknown>;
       try {
         msg = JSON.parse(String(raw));
       } catch {

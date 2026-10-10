@@ -7,12 +7,14 @@ WORKDIR /app
 COPY package.json bun.lock ./
 COPY apps/web/package.json apps/web/
 COPY apps/server/package.json apps/server/
+COPY packages/connect4/package.json packages/connect4/
 COPY packages/game/package.json packages/game/
 COPY packages/spider/package.json packages/spider/
 COPY packages/sudoku/package.json packages/sudoku/
 RUN bun install --frozen-lockfile --linker=hoisted
 
 COPY tsconfig.base.json ./
+COPY packages/connect4 packages/connect4
 COPY packages/game packages/game
 COPY apps/server apps/server
 RUN bun run --cwd apps/server build

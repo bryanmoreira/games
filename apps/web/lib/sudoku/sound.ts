@@ -44,20 +44,3 @@ export function playHintSound() {
   tone(ac, 1046.5, t, 0.25, 0.08, "sine");
   tone(ac, 1567.98, t + 0.08, 0.35, 0.08, "sine");
 }
-
-/** Vitória: acorde maior em duas batidas. */
-export function playWinSound() {
-  const ac = audio();
-  if (!ac) return;
-  const t = ac.currentTime;
-  [440, 554.37, 659.25].forEach((f) => tone(ac, f, t, 0.25, 0.1, "sawtooth"));
-  [587.33, 739.99, 880, 1174.66].forEach((f) => tone(ac, f, t + 0.22, 0.9, 0.09, "sawtooth"));
-}
-
-/** Fim de jogo: três notas descendo. */
-export function playLoseSound() {
-  const ac = audio();
-  if (!ac) return;
-  const t = ac.currentTime;
-  [392, 329.63, 261.63].forEach((f, i) => tone(ac, f, t + i * 0.16, 0.35, 0.1, "triangle"));
-}

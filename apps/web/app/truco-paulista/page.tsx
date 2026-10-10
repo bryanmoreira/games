@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { clearCreated, clearError, connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
+import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
 import { CardImg } from "@/components/cards/Card";
 import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
@@ -13,7 +13,7 @@ const FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spa
 
 export default function TrucoHome() {
   const router = useRouter();
-  const { created, error } = useTruco();
+  const { created, error } = useRoom();
   const [name, setNameInput] = useState("");
   const [code, setCode] = useState("");
 
@@ -35,7 +35,7 @@ export default function TrucoHome() {
 
   const create = (solo: boolean) => {
     saveName();
-    send({ t: "create", solo });
+    send({ t: "create", solo, game: "truco-paulista" });
   };
 
   const join = () => {

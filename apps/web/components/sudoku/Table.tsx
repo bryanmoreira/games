@@ -24,16 +24,8 @@ import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { EraseIcon, HintIcon, PencilIcon, UndoIcon } from "@/components/ui/icons";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
-import { useAudioUnlock } from "@/lib/sound";
-import {
-  playErrorSound,
-  playHintSound,
-  playLoseSound,
-  playNoteSound,
-  playPlaceSound,
-  playUnitSound,
-  playWinSound,
-} from "@/lib/sudoku/sound";
+import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
+import { playErrorSound, playHintSound, playNoteSound, playPlaceSound, playUnitSound } from "@/lib/sudoku/sound";
 import { loadGame, saveBest, saveGame } from "@/lib/sudoku/storage";
 import { SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { formatTime, LevelBars, LEVEL_LABEL, reasonLabel, TECHNIQUE_LABEL } from "./common";

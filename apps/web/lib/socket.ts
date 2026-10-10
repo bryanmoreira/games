@@ -1,23 +1,26 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { ClientMsg, PlayerView, RoomInfo, ServerMsg } from "@truco/game";
+import type { ClientMsg, RoomInfo, ServerMsg } from "@truco/game";
 
-export interface TrucoState {
+// Conexão única com o servidor de salas, compartilhada por todos os jogos online.
+// Uma identidade por aba (token em sessionStorage); o nome fica salvo no aparelho.
+
+export interface RoomState<V = unknown> {
   status: "idle" | "connecting" | "open" | "closed";
   room: RoomInfo | null;
-  view: PlayerView | null;
+  view: V | null;
   error: string | null;
   created: string | null;
 }
 
-let state: TrucoState = { status: "idle", room: null, view: null, error: null, created: null };
+let state: RoomState = { status: "idle", room: null, view: null, error: null, created: null };
 const listeners = new Set<() => void>();
 let ws: WebSocket | null = null;
 let queue: string[] = [];
 let retry = 0;
 
-function set(patch: Partial<TrucoState>) {
+function set(patch: Partial<RoomState>) {
   state = { ...state, ...patch };
   listeners.forEach((l) => l());
 }
@@ -65,7 +68,7 @@ export function connect() {
     set({ status: "open" });
   };
   sock.onmessage = (e) => {
-    const msg: ServerMsg = JSON.parse(e.data);
+    const msg: ServerMsg<unknown> = JSON.parse(e.data);
     if (msg.t === "room") set({ room: msg.room, view: msg.view, error: null });
     else if (msg.t === "created") set({ created: msg.code });
     else if (msg.t === "left") set({ room: null, view: null });
@@ -80,7 +83,7 @@ export function connect() {
   };
 }
 
-export function send(msg: ClientMsg) {
+export function send<A>(msg: ClientMsg<A>) {
   const data = JSON.stringify(msg);
   if (ws?.readyState === WebSocket.OPEN) ws.send(data);
   else {
@@ -102,8 +105,9 @@ const subscribe = (l: () => void) => {
   return () => listeners.delete(l);
 };
 
-const serverState: TrucoState = state;
+const serverState: RoomState = state;
 
-export function useTruco(): TrucoState {
-  return useSyncExternalStore(subscribe, () => state, () => serverState);
+/** Estado da sala; `V` é a visão do jogo desta rota. */
+export function useRoom<V>(): RoomState<V> {
+  return useSyncExternalStore(subscribe, () => state, () => serverState) as RoomState<V>;
 }

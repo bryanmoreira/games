@@ -1,5 +1,8 @@
 import type { Action, PlayerView, Seat } from "./types";
 
+/** Jogos atendidos pelo servidor de salas. */
+export type GameId = "truco-paulista" | "connect4";
+
 export type ClientAction =
   | { type: "play"; index: number; hidden?: boolean }
   | { type: "truco" }
@@ -8,9 +11,10 @@ export type ClientAction =
   | { type: "run" }
   | { type: "mao11"; play: boolean };
 
-export type ClientMsg =
+/** `A` é a ação do jogo da sala (sem `seat`: o servidor injeta o assento). */
+export type ClientMsg<A = ClientAction> =
   | { t: "hello"; token: string; name: string }
-  | { t: "create"; solo?: boolean }
+  | { t: "create"; solo?: boolean; game?: GameId }
   | { t: "join"; code: string }
   | { t: "sit"; seat: Seat }
   | { t: "stand" }
@@ -19,7 +23,7 @@ export type ClientMsg =
   | { t: "start" }
   | { t: "restart" }
   | { t: "leave" }
-  | { t: "action"; action: ClientAction };
+  | { t: "action"; action: A };
 
 export interface SeatInfo {
   kind: "empty" | "human" | "bot";
@@ -29,6 +33,7 @@ export interface SeatInfo {
 
 export interface RoomInfo {
   code: string;
+  game: GameId;
   solo: boolean;
   started: boolean;
   isHost: boolean;
@@ -37,8 +42,9 @@ export interface RoomInfo {
   waiting: string[];
 }
 
-export type ServerMsg =
-  | { t: "room"; room: RoomInfo; view: PlayerView | null }
+/** `V` é a visão do jogo da sala. */
+export type ServerMsg<V = PlayerView> =
+  | { t: "room"; room: RoomInfo; view: V | null }
   | { t: "created"; code: string }
   | { t: "left" }
   | { t: "error"; message: string };

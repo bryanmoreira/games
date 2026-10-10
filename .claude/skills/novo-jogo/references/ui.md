@@ -24,7 +24,7 @@ Tokens em `apps/web/app/globals.css` (`@theme` do Tailwind v4): `--color-felt` (
 ## Página inicial do jogo e lobby
 
 - Página do jogo (`app/<slug>/page.tsx`): leque de 4 cartas, título em duas linhas (nome grande dourado + variante pequena espaçada), campo de nome, **Jogar com IAs** (dourado), **Criar sala** (verde), campo de código + **Entrar**, link "Como jogar" com ícone de interrogação, `BackButton` fixo no canto superior esquerdo apontando para `/`.
-- Lobby (`components/truco/Lobby.tsx`): código grande clicável que copia o link, uma coluna por time com os lugares (Sentar / 🤖 para o host adicionar IA / ✕ para remover), "espectadores" como chips, botão Começar só para o host e habilitado com a mesa cheia. Escolher o lugar = escolher o time e a dupla.
+- Lobby (`components/ui/Lobby.tsx`, colunas de lugares vindas de `groups`): código grande clicável que copia o link, uma coluna por time com os lugares (Sentar / 🤖 para o host adicionar IA / ✕ para remover), "espectadores" como chips, botão Começar só para o host e habilitado com a mesa cheia. Escolher o lugar = escolher o time e a dupla.
 
 ## Layout da mesa (`components/truco/Table.tsx`)
 

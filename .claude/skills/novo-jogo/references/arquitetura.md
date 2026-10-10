@@ -66,7 +66,7 @@ Para testar cenários difíceis (placar 11×11, fim de jogo), um comando de debu
 
 ## Vários jogos no servidor
 
-Hoje `rooms.ts` importa o truco diretamente. Mantenha sempre **um** gerenciador de salas e um único servidor WS. Dimensione a generalização pelo que o jogo novo precisa:
+O `rooms.ts` já usa adaptadores (`apps/server/src/games.ts`, mapa `GAMES`: truco e connect4). Mantenha sempre **um** gerenciador de salas e um único servidor WS. Dimensione a generalização pelo que o jogo novo precisa:
 
 - **Variante da mesma engine** (ex.: truco mineiro): basta `room.variant` vindo do `create`, `RoomInfo.variant` e `newGame(..., variant)`. `applyAction`/`viewFor`/`decide` continuam os mesmos, porque a variante vai dentro do estado. Se alguém abrir um código de sala pela rota do outro jogo, a página redireciona para a rota certa.
 - **Jogo de outra família**: extraia a interface abaixo e registre um adaptador por jogo.
@@ -84,11 +84,11 @@ interface GameAdapter<S, A, V> {
 }
 ```
 
-A sala guarda `game: "truco-paulista" | "<slug>"` (vindo do `create`) e usa o adaptador correspondente. Registre o adaptador num mapa. Um único servidor WS atende todos os jogos, sem precisar de outro serviço no Easypanel.
+A interface real em `games.ts` também tem `withSeat` (ação do cliente + assento), `over` e `animMs(prev, next)` (no lugar de `isNewHand`: quanto tempo os bots esperam a animação do cliente). Para um jogo novo: acrescente o id em `GameId` (`packages/game/src/protocol.ts`), o adaptador em `GAMES` e a rota em `lib/rooms.ts`. A sala guarda `game` (vindo do `create`) e usa o adaptador correspondente. Registre o adaptador num mapa. Um único servidor WS atende todos os jogos, sem precisar de outro serviço no Easypanel.
 
 ## Cliente web
 
-- **Socket** (`lib/<slug>/socket.ts`, ou compartilhado em `lib/`): store global com `useSyncExternalStore`, fila de mensagens enquanto conecta, reconexão com backoff, `hello` a cada conexão. URL do WS: `window.__ENV__.WS_URL` (injetada em runtime pelo `app/layout.tsx`) ou `ws(s)://<host>:3001`.
+- **Socket** (`lib/socket.ts`, compartilhado; `useRoom<View>()`): store global com `useSyncExternalStore`, fila de mensagens enquanto conecta, reconexão com backoff, `hello` a cada conexão. URL do WS: `window.__ENV__.WS_URL` (injetada em runtime pelo `app/layout.tsx`) ou `ws(s)://<host>:3001`.
 - **Rotas**: `app/<slug>/page.tsx` (nome, Jogar com IAs, Criar sala, código + Entrar, link "Como jogar", `BackButton` para `/`), `app/<slug>/sala/[code]/page.tsx` (pede nome se não houver, `join`, mostra lobby ou mesa), `app/<slug>/como-jogar/page.tsx`, `app/<slug>/layout.tsx` com `metadata.title`. Centralize o caminho em `lib/<slug>/paths.ts` (`GAME_PATH`, `roomPath(code)`) e use em todos os `router.push`/`href`.
 - **Hub** (`app/page.tsx`): adicione o card do jogo (felt + leque de cartas + nome em duas linhas, ex.: "TRUCO" / "PAULISTA"); o card "Em breve" vai para o fim.
 - Nome do jogador em `localStorage("truco.name")`; preferências em `localStorage` (`truco.muted`, `truco.tips`). Num jogo novo, reaproveite as chaves de preferência gerais e use prefixo próprio para as específicas.

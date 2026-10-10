@@ -2,15 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { connect, getName, send, setName, useTruco } from "@/lib/truco/socket";
-import { Lobby } from "@/components/truco/Lobby";
+import { useParams, useRouter } from "next/navigation";
+import type { PlayerView } from "@truco/game";
+import { connect, getName, send, setName, useRoom } from "@/lib/socket";
+import { Lobby, TEAMS_2X2 } from "@/components/ui/Lobby";
+import { GAME_ROOM_PATH } from "@/lib/rooms";
 import { Table } from "@/components/truco/Table";
 import { TRUCO_PATH } from "@/lib/truco/paths";
 
 export default function RoomPage() {
   const code = String(useParams<{ code: string }>().code).toUpperCase();
-  const { room, view, error } = useTruco();
+  const router = useRouter();
+  const { room, view, error } = useRoom<PlayerView>();
   const [named, setNamed] = useState<boolean | null>(null);
   const [name, setNameInput] = useState("");
 
@@ -20,6 +23,11 @@ export default function RoomPage() {
     setNamed(!!n);
     if (n) send({ t: "join", code });
   }, [code]);
+
+  // código de sala de outro jogo: vai para a rota certa
+  useEffect(() => {
+    if (room?.code === code && room.game !== "truco-paulista") router.replace(GAME_ROOM_PATH[room.game](code));
+  }, [room, code, router]);
 
   const confirmName = () => {
     if (!name.trim()) return;
@@ -47,7 +55,7 @@ export default function RoomPage() {
     );
   }
 
-  if (!room || room.code !== code) {
+  if (!room || room.code !== code || room.game !== "truco-paulista") {
     return (
       <Center>
         {error ? (
@@ -75,7 +83,7 @@ export default function RoomPage() {
       </Center>
     );
   }
-  return <Lobby room={room} />;
+  return <Lobby room={room} groups={TEAMS_2X2} exitPath={TRUCO_PATH} />;
 }
 
 function Center({ children }: { children: React.ReactNode }) {
