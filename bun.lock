@@ -12,6 +12,7 @@
     "apps/server": {
       "name": "@truco/server",
       "dependencies": {
+        "@truco/batalha-naval": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
         "@truco/stop": "workspace:*",
@@ -23,6 +24,7 @@
     "apps/web": {
       "name": "@truco/web",
       "dependencies": {
+        "@truco/batalha-naval": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
         "@truco/spider": "workspace:*",
@@ -40,6 +42,9 @@
         "tailwindcss": "^4.3.3",
         "typescript": "5",
       },
+    },
+    "packages/batalha-naval": {
+      "name": "@truco/batalha-naval",
     },
     "packages/connect4": {
       "name": "@truco/connect4",
@@ -175,6 +180,8 @@
     "@tailwindcss/oxide-win32-x64-msvc": ["@tailwindcss/oxide-win32-x64-msvc@4.3.3", "", { "os": "win32", "cpu": "x64" }, "sha512-yJ0pwIVc/nYeGoV02WtsN8KYyLQv7kyI2wDnkezyJlGGjkd4QLwDGAwl47YpPJeuI0M0ObaXGSPjvWDPeTPggw=="],
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.3.3", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.3.3", "@tailwindcss/oxide": "4.3.3", "postcss": "^8.5.16", "tailwindcss": "4.3.3" } }, "sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg=="],
+
+    "@truco/batalha-naval": ["@truco/batalha-naval@workspace:packages/batalha-naval"],
 
     "@truco/connect4": ["@truco/connect4@workspace:packages/connect4"],
 

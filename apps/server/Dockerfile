@@ -7,6 +7,7 @@ WORKDIR /app
 COPY package.json bun.lock ./
 COPY apps/web/package.json apps/web/
 COPY apps/server/package.json apps/server/
+COPY packages/batalha-naval/package.json packages/batalha-naval/
 COPY packages/connect4/package.json packages/connect4/
 COPY packages/game/package.json packages/game/
 COPY packages/spider/package.json packages/spider/
@@ -15,6 +16,7 @@ COPY packages/sudoku/package.json packages/sudoku/
 RUN bun install --frozen-lockfile --linker=hoisted
 
 COPY tsconfig.base.json ./
+COPY packages/batalha-naval packages/batalha-naval
 COPY packages/connect4 packages/connect4
 COPY packages/game packages/game
 COPY packages/stop packages/stop

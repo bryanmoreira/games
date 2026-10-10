@@ -105,8 +105,10 @@ function broadcast(room: Room) {
 
 function findBotActor(room: Room): Seat | null {
   const actors = room.adapter.actors(room.state) as Seat[];
-  if (actors.length === 0 || actors.some((s) => humanControlled(room, s))) return null;
-  return actors[0];
+  const bots = actors.filter((s) => !humanControlled(room, s));
+  // em geral o bot espera o humano decidir primeiro (ex.: parceiro no truco); em fase simultânea, não
+  if (bots.length === 0 || (bots.length < actors.length && !room.adapter.simultaneous)) return null;
+  return bots[0];
 }
 
 function schedule(room: Room) {

@@ -1,6 +1,7 @@
 import * as truco from "@truco/game";
 import * as c4 from "@truco/connect4";
 import * as stop from "@truco/stop";
+import * as bn from "@truco/batalha-naval";
 import type { GameId } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -16,6 +17,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
   seats: number;
   /** Mínimo de lugares ocupados para começar; sem ele, a mesa precisa estar cheia. */
   minSeats?: number;
+  /** Quem pode agir age sem esperar os outros (ex.: posicionar a frota): o bot não espera o humano. */
+  simultaneous?: boolean;
   /** false: sem IA no lobby e ninguém joga no lugar de quem cai. */
   bots?: boolean;
   /** Opções do lobby: padrão e validação do que o host mandou. */
@@ -45,6 +48,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
 const DEAL_MS = 2600;
 // Tempo da peça caindo no tabuleiro
 const DROP_MS = 700;
+// Mira descendo + impacto do tiro
+const SHOT_MS = 900;
 
 const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView> = {
   seats: 4,
@@ -114,8 +119,28 @@ const stopAdapter: GameAdapter<stop.GameState, stop.Action, stop.PlayerView> = {
   },
 };
 
+const batalhaNavalAdapter: GameAdapter<bn.GameState, bn.Action, bn.PlayerView> = {
+  seats: 2,
+  simultaneous: true,
+  newGame: (prev) => bn.newGame(Math.random, prev),
+  applyAction: bn.applyAction,
+  viewFor: (s, seat) => bn.viewFor(s, seat as bn.Seat),
+  decide: (v) => bn.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    return m.type === "place"
+      ? { type: "place", seat: seat as bn.Seat, ships: m.ships as bn.Ship[] }
+      : { type: "shoot", seat: seat as bn.Seat, col: Number(m.col), row: Number(m.row) };
+  },
+  actors: (s) => (s.phase === "placing" ? ([0, 1] as const).filter((p) => !s.fleets[p]) : s.phase === "battle" ? [s.turn] : []),
+  pause: () => null,
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => (prev && next.shots.length > prev.shots.length ? SHOT_MS : 0),
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
   stop: stopAdapter,
+  "batalha-naval": batalhaNavalAdapter,
 };

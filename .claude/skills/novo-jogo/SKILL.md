@@ -77,6 +77,8 @@ Jogo sem cartas (ex.: Sudoku): `packages/sudoku` (gerador por `seed` que garante
 
 Jogo online simultâneo e sem IA (ex.: Stop): `packages/stop` (todos agem ao mesmo tempo; fases com relógio avançadas pelo servidor com `advance`; ausentes via ação `away`) e `components/stop/` (folha de respostas com envio em debounce, correção por votos, opções do host no lobby em `Settings.tsx` passadas como filho do `Lobby`). O adaptador usa `minSeats`, `bots: false`, `settings` e `phaseKey`; veja "Vários jogos no servidor" em arquitetura.md.
 
+Jogo online com informação escondida e fase simultânea (ex.: Batalha Naval): `packages/batalha-naval` (`viewFor` só revela navios inimigos afundados, e todos no fim; IA por mapa de probabilidade que caça e depois segue a linha do navio) e `components/batalha-naval/` (`Sea` com itens posicionados por `cellStyle`, navios em SVG por `ShipShape`, `Placement` com arrastar/girar por Pointer Events e frota guardada no `sessionStorage`; mares lado a lado ou empilhados por container query em `.bn-layout`). O adaptador usa `simultaneous: true` para o bot montar a frota sem esperar o humano.
+
 ## Reaproveitar sem duplicar
 
 Quando um jogo novo precisar de algo que ainda está em `components/truco/` ou `lib/truco/` e que **não é específico do truco** (ex.: `socket.ts`, `Deal.tsx`), mova para um lugar compartilhado (`components/cards/`, `components/ui/`, `lib/`) e atualize os imports dos dois jogos. Duplicar arquivos faz os jogos divergirem visualmente na primeira correção. Variantes da mesma família (truco mineiro/paulista) podem compartilhar ainda mais — por exemplo, o mesmo pacote de engine com uma opção de variante, se as regras forem quase iguais. Decida olhando o tamanho da diferença e explique a escolha ao usuário.
