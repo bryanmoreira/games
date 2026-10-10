@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
-    "build": "next build",
-    "start": "next start -p 3000"
+    "build": "next build && cp -R .next/static .next/standalone/apps/web/.next/static && cp -R public .next/standalone/apps/web/public",
+    "start": "bun .next/standalone/apps/web/server.js"
   },
   "dependencies": {
     "@truco/game": "workspace:*",

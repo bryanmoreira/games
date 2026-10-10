@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "start": "bun src/index.ts"
+    "build": "bun build src/index.ts --target=bun --minify --outfile=dist/index.js",
+    "start": "bun dist/index.js"
   },
   "dependencies": {
     "@truco/game": "workspace:*"

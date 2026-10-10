@@ -40,8 +40,14 @@ export function setName(name: string) {
   if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ t: "hello", token: getToken(), name }));
 }
 
+declare global {
+  interface Window {
+    __ENV__?: { WS_URL?: string };
+  }
+}
+
 function url() {
-  if (process.env.NEXT_PUBLIC_WS_URL) return process.env.NEXT_PUBLIC_WS_URL;
+  if (window.__ENV__?.WS_URL) return window.__ENV__.WS_URL;
   const proto = location.protocol === "https:" ? "wss" : "ws";
   return `${proto}://${location.hostname}:3001`;
 }
