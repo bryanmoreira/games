@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 export const SITE_URL = "https://mesadejogos.com";
 export const SITE_NAME = "Mesa de Jogos";
+/** Frase curta exibida na home */
+export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
+/** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
   "Jogue Truco, Stop, Batalha Naval, Connect 4, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 

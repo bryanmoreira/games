@@ -34,6 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="pt-BR" className={`${bungee.variable} ${inter.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: script }} />
+        <script defer src="https://umami.sunfire.com.br/script.js" data-website-id="fc7700da-1558-4ba9-9882-ab404f12129e" />
       </head>
       <body className="antialiased">{children}</body>
     </html>
