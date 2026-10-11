@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
+import { GameFaq, JsonLd } from "@/components/seo";
+import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/sudoku/HowToPlay";
 import { SUDOKU_PATH } from "@/lib/sudoku/paths";
 
-export const metadata: Metadata = { title: "Como jogar · Sudoku" };
+export const metadata: Metadata = howToMetadata("sudoku");
 
 export default function ComoJogar() {
   return (
     <div className="min-h-dvh bg-[#0f1813]">
       <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 sm:py-12">
+        <JsonLd data={howToLd("sudoku")} />
         <header className="relative flex flex-col items-center gap-1">
           <BackButton href={SUDOKU_PATH} className="absolute left-0 top-1/2 -translate-y-1/2" />
           <h1 className="font-display text-3xl text-gold sm:text-4xl">COMO JOGAR</h1>
@@ -17,6 +20,8 @@ export default function ComoJogar() {
         </header>
 
         <HowToPlay />
+
+        <GameFaq slug="sudoku" />
 
         <Link
           href={SUDOKU_PATH}

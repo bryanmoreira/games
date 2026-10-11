@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
+import { GameIntro } from "@/components/seo";
 import { StaticBoard } from "@/components/connect4/Board";
 import { CONNECT4_PATH, roomPath } from "@/lib/connect4/paths";
 
@@ -51,6 +52,7 @@ export default function Connect4Home() {
         <span className="font-display text-6xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">CONNECT</span>
         <span className="mt-2 font-display text-sm tracking-[0.5em] text-white/70">4 EM LINHA</span>
       </h1>
+      <GameIntro slug="connect-4" />
 
       <input
         value={name}

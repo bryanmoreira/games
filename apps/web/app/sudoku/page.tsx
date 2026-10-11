@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DIFFICULTIES, newGame, type Difficulty, type GameState } from "@truco/sudoku";
 import { BackButton } from "@/components/BackButton";
+import { GameIntro } from "@/components/seo";
 import { formatTime, LevelBars, LEVEL_LABEL, MiniBoard } from "@/components/sudoku/common";
 import { XIcon } from "@/components/ui/buttons";
 import { loadBests, loadGame, loadLevel, saveGame, saveLevel, type Bests } from "@/lib/sudoku/storage";
@@ -50,6 +51,7 @@ export default function SudokuHome() {
         <span className="font-display text-[44px] tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c] sm:text-6xl">SUDOKU</span>
         <span className="mt-2 font-display text-sm tracking-[0.5em] text-white/70">9 × 9</span>
       </h1>
+      <GameIntro slug="sudoku" />
 
       <div className="grid w-full grid-cols-4 gap-2" role="radiogroup" aria-label="Dificuldade">
         {DIFFICULTIES.map((d) => (

@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo";
+import { gameLd, gameMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Truco Paulista" };
+export const metadata = gameMetadata("truco-paulista");
 
 export default function TrucoLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <JsonLd data={gameLd("truco-paulista")} />
+      {children}
+    </>
+  );
 }

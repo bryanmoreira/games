@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo";
+import { gameLd, gameMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Sudoku" };
+export const metadata = gameMetadata("sudoku");
 
 export default function SudokuLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <JsonLd data={gameLd("sudoku")} />
+      {children}
+    </>
+  );
 }

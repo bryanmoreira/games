@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
+import { GameFaq, JsonLd } from "@/components/seo";
+import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/batalha-naval/HowToPlay";
 import { BATALHA_PATH } from "@/lib/batalha-naval/paths";
 
-export const metadata: Metadata = { title: "Como jogar · Batalha Naval" };
+export const metadata: Metadata = howToMetadata("batalha-naval");
 
 export default function ComoJogar() {
   return (
     <div className="min-h-dvh bg-[#0f1813]">
       <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 sm:py-12">
+        <JsonLd data={howToLd("batalha-naval")} />
         <header className="relative flex flex-col items-center gap-1">
           <BackButton href={BATALHA_PATH} className="absolute left-0 top-1/2 -translate-y-1/2" />
           <h1 className="font-display text-3xl text-gold sm:text-4xl">COMO JOGAR</h1>
@@ -17,6 +20,8 @@ export default function ComoJogar() {
         </header>
 
         <HowToPlay />
+
+        <GameFaq slug="batalha-naval" />
 
         <Link
           href={BATALHA_PATH}

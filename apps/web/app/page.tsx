@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/seo";
+import { GAMES, SITE_DESCRIPTION, homeLd } from "@/lib/seo";
 import { makeCard } from "@truco/game";
 import { CardImg } from "@/components/cards/Card";
 import { TRUCO_PATH } from "@/lib/truco/paths";
@@ -15,11 +18,15 @@ import { SeaLogo } from "@/components/batalha-naval/Sea";
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
 
+export const metadata: Metadata = { alternates: { canonical: "/", languages: { "pt-BR": "/" } }, openGraph: { url: "/" } };
+
 export default function Home() {
   return (
     <div className="min-h-dvh bg-[#0f1813]">
       <main className="mx-auto flex max-w-3xl flex-col items-center gap-10 px-4 py-12">
-        <h1 className="font-display text-5xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">JOGOS</h1>
+        <JsonLd data={homeLd()} />
+        <h1 className="text-center font-display text-4xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c] sm:text-5xl">MESA DE JOGOS</h1>
+        <p className="-mt-6 max-w-md text-center text-sm text-white/60">{SITE_DESCRIPTION}</p>
 
         <div className="grid w-full grid-cols-1 gap-x-12 gap-y-10 sm:grid-cols-2">
           <Link
@@ -116,6 +123,19 @@ export default function Home() {
             Em breve
           </div>
         </div>
+
+        <nav aria-label="Como jogar" className="flex flex-col items-center gap-3 text-center">
+          <h2 className="font-display text-lg text-gold">Como jogar</h2>
+          <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-white/60">
+            {GAMES.map((g) => (
+              <li key={g.slug}>
+                <Link href={`${g.path}/como-jogar`} className="underline-offset-4 hover:text-gold hover:underline">
+                  {g.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </main>
     </div>
   );

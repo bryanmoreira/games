@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isRed, newGame, scoreOf, SUIT_SETS, type GameState, type SuitCount } from "@truco/spider";
 import { BackButton } from "@/components/BackButton";
+import { GameIntro } from "@/components/seo";
 import { CardImg } from "@/components/cards/Card";
 import { SuitIcon } from "@/components/spider/SpiderCard";
 import { XIcon } from "@/components/ui/buttons";
@@ -72,6 +73,7 @@ export default function SpiderHome() {
         <span className="font-display text-[44px] tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c] sm:text-6xl">PACIÊNCIA</span>
         <span className="mt-2 font-display text-sm tracking-[0.5em] text-white/70">SPIDER</span>
       </h1>
+      <GameIntro slug="paciencia-spider" />
 
       <div className="grid w-full grid-cols-3 gap-2" role="radiogroup" aria-label="Dificuldade">
         {LEVELS.map(({ n, label }) => (

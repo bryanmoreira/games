@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
+import { GameIntro } from "@/components/seo";
 import { CardImg } from "@/components/cards/Card";
 import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
 import { makeCard } from "@truco/game";
@@ -62,6 +63,7 @@ export default function TrucoHome() {
         <span className="font-display text-6xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">TRUCO</span>
         <span className="mt-2 font-display text-sm tracking-[0.5em] text-white/70">PAULISTA</span>
       </h1>
+      <GameIntro slug="truco-paulista" />
 
       <input
         value={name}

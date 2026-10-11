@@ -1,12 +1,23 @@
 import type { Metadata, Viewport } from "next";
 import { Bungee, Inter } from "next/font/google";
 import { connection } from "next/server";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const bungee = Bungee({ weight: "400", subsets: ["latin"], variable: "--font-bungee" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export const metadata: Metadata = { title: "Jogos" };
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: { default: "Mesa de Jogos: Truco, Stop, Batalha Naval e mais jogos online grátis", template: `%s · ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: ["jogos online grátis", "jogos de cartas online", "truco online", "stop online", "adedonha online", "batalha naval online", "connect 4 online", "sudoku online", "paciência spider", "jogos com amigos"],
+  openGraph: { siteName: SITE_NAME, locale: "pt_BR", type: "website", title: SITE_NAME, description: SITE_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: SITE_NAME, description: SITE_DESCRIPTION },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
+  other: { "geo.region": "BR", "content-language": "pt-BR" },
+};
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0b120e" };
 
 // Lido no runtime (não no build): chave dinâmica evita que o Next embuta NEXT_PUBLIC_* no bundle

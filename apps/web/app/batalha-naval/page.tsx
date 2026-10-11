@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
+import { GameIntro } from "@/components/seo";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { BATALHA_PATH, roomPath } from "@/lib/batalha-naval/paths";
 
@@ -49,6 +50,7 @@ export default function BatalhaNavalHome() {
         <span className="font-display text-6xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c]">BATALHA</span>
         <span className="mt-2 font-display text-sm tracking-[0.5em] text-white/70">NAVAL</span>
       </h1>
+      <GameIntro slug="batalha-naval" />
 
       <input
         value={name}

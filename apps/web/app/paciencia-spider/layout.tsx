@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo";
+import { gameLd, gameMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Paciência Spider" };
+export const metadata = gameMetadata("paciencia-spider");
 
 export default function SpiderLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <JsonLd data={gameLd("paciencia-spider")} />
+      {children}
+    </>
+  );
 }
