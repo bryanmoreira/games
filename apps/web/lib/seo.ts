@@ -8,8 +8,6 @@ export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos.
 export const SITE_DESCRIPTION =
   "Jogue Truco, Stop, Batalha Naval, Connect 4, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
-const OG_IMAGE = ["/opengraph-image"];
-
 export type GameSeo = {
   slug: string;
   path: string;
@@ -180,8 +178,8 @@ export function gameMetadata(slug: string): Metadata {
     description: g.description,
     keywords: g.keywords,
     alternates: { canonical: g.path },
-    openGraph: { title: `${g.title} · ${SITE_NAME}`, description: g.description, url: g.path, siteName: SITE_NAME, locale: "pt_BR", type: "website", images: OG_IMAGE },
-    twitter: { card: "summary_large_image", title: `${g.title} · ${SITE_NAME}`, description: g.description, images: OG_IMAGE },
+    openGraph: { title: `${g.title} · ${SITE_NAME}`, description: g.description, url: g.path, siteName: SITE_NAME, locale: "pt_BR", type: "website", images: [`${g.path}/opengraph-image`] },
+    twitter: { card: "summary_large_image", title: `${g.title} · ${SITE_NAME}`, description: g.description, images: [`${g.path}/opengraph-image`] },
   };
 }
 
@@ -193,8 +191,8 @@ export function howToMetadata(slug: string): Metadata {
     description: g.howTo.description,
     keywords: [...g.keywords, `como jogar ${g.name.toLowerCase()}`, `regras ${g.name.toLowerCase()}`],
     alternates: { canonical: path },
-    openGraph: { title: `${g.howTo.title} · ${SITE_NAME}`, description: g.howTo.description, url: path, siteName: SITE_NAME, locale: "pt_BR", type: "article", images: OG_IMAGE },
-    twitter: { card: "summary_large_image", title: `${g.howTo.title} · ${SITE_NAME}`, description: g.howTo.description, images: OG_IMAGE },
+    openGraph: { title: `${g.howTo.title} · ${SITE_NAME}`, description: g.howTo.description, url: path, siteName: SITE_NAME, locale: "pt_BR", type: "article", images: [`${g.path}/opengraph-image`] },
+    twitter: { card: "summary_large_image", title: `${g.howTo.title} · ${SITE_NAME}`, description: g.howTo.description, images: [`${g.path}/opengraph-image`] },
   };
 }
 
