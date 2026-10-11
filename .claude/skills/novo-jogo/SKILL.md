@@ -1,11 +1,11 @@
 ---
 name: novo-jogo
-description: Monta um novo jogo de cartas (ou outro jogo de mesa por turnos) neste monorepo de jogos (Bun + Next.js + WebSocket), seguindo exatamente os padrões do Truco Paulista já implementado — engine de regras pura e testada, IA, salas multiplayer com escolha de time, mesa com assentos na borda, animação de embaralhar/distribuir, sons sintetizados, dicas no hover, página e modal "Como jogar", estilização, responsividade e deploy Docker/Easypanel. Use sempre que o usuário pedir para criar, montar, adicionar ou começar um jogo novo (ex.: "monta o truco mineiro", "adiciona buraco", "cria um jogo de fodinha", "quero um novo jogo na página de jogos"), e também ao estender um jogo existente com recursos que o truco já tem (IA, salas, sons, dicas, como jogar, distribuição animada), mesmo que o usuário não fale em "skill" ou "padrão".
+description: Monta um novo jogo de cartas (ou outro jogo de mesa por turnos) neste monorepo de jogos (Bun + Next.js + WebSocket), seguindo exatamente os padrões do Truco Paulista já implementado — engine de regras pura e testada, IA, salas multiplayer com escolha de time, mesa com assentos na borda, animação de embaralhar/distribuir, sons sintetizados, dicas no hover, página e modal "Como jogar", SEO e prévia de link por jogo, convite pelo WhatsApp, estilização, responsividade e deploy Docker/Easypanel. Use sempre que o usuário pedir para criar, montar, adicionar ou começar um jogo novo (ex.: "monta o truco mineiro", "adiciona buraco", "cria um jogo de fodinha", "quero um novo jogo na página de jogos"), e também ao estender um jogo existente com recursos que o truco já tem (IA, salas, sons, dicas, como jogar, distribuição animada), mesmo que o usuário não fale em "skill" ou "padrão".
 ---
 
 # Novo jogo no monorepo de jogos
 
-Este repositório é um site com vários jogos. O **Truco Paulista** é a implementação de referência: todo jogo novo deve parecer e se comportar como irmão dele. Antes de escrever código, abra os arquivos de referência citados abaixo — copiar a estrutura que já funciona é muito mais rápido e consistente do que reinventar.
+Este repositório é o **Mesa de Jogos** (`mesadejogos.com`), um site com vários jogos. O **Truco Paulista** é a implementação de referência: todo jogo novo deve parecer e se comportar como irmão dele. Antes de escrever código, abra os arquivos de referência citados abaixo — copiar a estrutura que já funciona é muito mais rápido e consistente do que reinventar.
 
 ## Como o usuário gosta de trabalhar
 
@@ -25,8 +25,9 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 3. **Servidor**: plugue o jogo no servidor de salas (bots, timers, reconexão, atraso da animação de distribuição), sempre com **um único** `rooms.ts`/servidor WS. Variante da mesma engine pede só um campo `variant` na sala; jogo de outra família pede um adaptador por jogo. Veja "Vários jogos no servidor" em arquitetura.md.
    - Variante de jogo existente: antes de mexer na UI, procure valores fixos da variante original (no truco: `BET_NAME` por valor, `bet.value + 3`, `[3,6,9,12]` no som, "MÃO DE 11", `value > 1`) e faça-os virem da engine/view (ex.: `raiseTo`, degrau da aposta, rótulos por variante).
 4. **Web**: rota própria `/<slug>` (ex.: `/truco-mineiro`), card na página inicial de jogos, lobby, mesa, "Como jogar". Padrões visuais e componentes: [references/ui.md](references/ui.md).
-5. **Polimento**: distribuição animada, sons, dicas no hover, destaque de vez, placar da mão. Sons: [references/som.md](references/som.md). "Como jogar" e dicas: [references/como-jogar.md](references/como-jogar.md).
-6. **Verificação**: testes, typecheck, navegador (solo, multiplayer com 2 abas, celular), Docker se mexeu em build. Roteiro e armadilhas conhecidas: [references/verificacao.md](references/verificacao.md).
+5. **SEO e prévia de link**: entrada em `GAMES` (`lib/seo.ts`), metadados e JSON-LD no layout, FAQ no "Como jogar", `noindex` nas salas/partidas, arte da prévia em `lib/og.tsx` e chamada do convite no `Lobby`. Passo a passo: [references/seo.md](references/seo.md).
+6. **Polimento**: distribuição animada, sons, dicas no hover, destaque de vez, placar da mão. Sons: [references/som.md](references/som.md). "Como jogar" e dicas: [references/como-jogar.md](references/como-jogar.md).
+7. **Verificação**: testes, typecheck, navegador (solo, multiplayer com 2 abas, celular), Docker se mexeu em build. Roteiro e armadilhas conhecidas: [references/verificacao.md](references/verificacao.md).
 
 ## Mapa do código de referência (Truco Paulista)
 
@@ -48,6 +49,8 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | Socket | `apps/web/lib/socket.ts` (compartilhado) | `useRoom<View>()`, `send`, token em `sessionStorage` |
 | Rotas | `apps/web/lib/truco/paths.ts` | constante da rota do jogo |
 | Hub | `apps/web/app/page.tsx` | card de cada jogo |
+| SEO | `apps/web/lib/seo.ts` (`GAMES`), `app/truco-paulista/layout.tsx` | textos de busca, FAQ, metadados, JSON-LD |
+| Prévia de link | `apps/web/lib/og.tsx`, `app/truco-paulista/opengraph-image.tsx` | arte do jogo na imagem de compartilhamento |
 | Botão voltar | `apps/web/components/BackButton.tsx` | já compartilhado |
 
 ### Já compartilhado entre os jogos
@@ -66,6 +69,9 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | Lobby da sala (lugares em colunas, IA, Começar) | `components/ui/Lobby.tsx` (`groups`, `exitPath`; `TEAMS_2X2` do truco) |
 | Rota da sala de cada jogo online | `lib/rooms.ts` (`GAME_ROOM_PATH`, para redirecionar código de outro jogo) |
 | Empate na tela de fim | `GameEnd` com `draw` (🤝 EMPATE) |
+| SEO do jogo (metadados, JSON-LD, frase sob o título, FAQ) | `lib/seo.ts` (`gameMetadata`, `howToMetadata`, `gameLd`, `howToLd`, `noindex`) + `components/seo.tsx` (`JsonLd`, `GameIntro`, `GameFaq`) |
+| Prévia de link 1200×630 | `lib/og.tsx` (`gameOgImage`, arte por jogo em `art()`) |
+| Convite pelo WhatsApp (só no lobby de jogo online) | `components/ui/WhatsAppInvite.tsx`, mensagens em `INVITE` no `Lobby.tsx` |
 
 ### Jogo de um jogador só (ex.: Paciência Spider)
 
@@ -89,7 +95,10 @@ Use como lista de tarefas; cada item existe porque já deu problema antes:
 
 - [ ] Regras confirmadas e documentadas; testes cobrindo regras, empates/casos especiais e simulação com IAs (`bun test`)
 - [ ] Typecheck limpo (`node_modules/.bin/tsc.exe --noEmit -p apps/web`, `-p apps/server`, `-p packages/<slug>`)
-- [ ] Rota `/<slug>` + constante em `lib/<slug>/paths.ts`; card no hub; título da aba (`layout.tsx` com `metadata`)
+- [ ] Rota `/<slug>` + constante em `lib/<slug>/paths.ts`; card no hub; `layout.tsx` com `gameMetadata` e `gameLd`
+- [ ] SEO: entrada em `GAMES` com textos conferidos no código, `GameIntro` na página do jogo, `GameFaq` + `howToLd` no "Como jogar", `noindex` em `sala/` ou `jogo/` ([references/seo.md](references/seo.md))
+- [ ] Prévia de link: `TITLES` + `art()` em `lib/og.tsx` e `app/<slug>/opengraph-image.tsx`; PNG conferido a olho
+- [ ] Jogo online: chamada do convite em `INVITE` (`Lobby.tsx`); jogo de um jogador só não tem convite
 - [ ] Lobby com escolha de lugar/time, host adiciona IA, modo solo com IAs
 - [ ] Mesa: assentos na borda, leques virados ao centro, selo "D" de quem dá, destaque de vez nas cartas, placar e valor da rodada
 - [ ] Distribuição animada a cada mão; bots esperam a animação (`dealUntil` no servidor)

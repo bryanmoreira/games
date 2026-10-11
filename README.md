@@ -38,7 +38,7 @@ Funciona em qualquer sessão do Claude Code aberta na pasta do repositório.
 
 ### Mantendo a skill atualizada
 
-Quando uma correção deve valer para todos os jogos (um gosto visual, uma regra de trabalho, uma armadilha nova), peça: `atualiza a skill novo-jogo com isso`. A skill fica em `.claude/skills/novo-jogo/`: o `SKILL.md` tem o fluxo e o checklist, e `references/` tem os detalhes (arquitetura, UI, som, "Como jogar", verificação).
+Quando uma correção deve valer para todos os jogos (um gosto visual, uma regra de trabalho, uma armadilha nova), peça: `atualiza a skill novo-jogo com isso`. A skill fica em `.claude/skills/novo-jogo/`: o `SKILL.md` tem o fluxo e o checklist, e `references/` tem os detalhes (arquitetura, UI, som, "Como jogar", SEO e prévia de link, verificação).
 
 ## Desenvolvimento
 
