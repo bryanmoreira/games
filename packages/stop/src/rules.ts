@@ -33,6 +33,9 @@ export const matchesLetter = (text: string | undefined, letter: string) => {
   return n.length > 0 && n[0] === letter.toLowerCase();
 };
 
+/** Só uma letra ("B", "b."): vale para o STOP, mas entra na correção já com ✗ de todos. */
+export const isSingleLetter = (text: string | undefined) => normalize(text ?? "").replace(/[^\p{L}]/gu, "").length === 1;
+
 /** Id de um tema criado pelo host (o mesmo nome, com ou sem acento, vira o mesmo tema). */
 export const customId = (name: string) => `c:${normalize(name)}`;
 
@@ -151,7 +154,15 @@ const nextPhase = (s: GameState, phase: GameState["phase"]) => {
 function endWriting(s: GameState, stopper: Seat | null) {
   s.stoppedBy = stopper;
   s.review = 0;
-  s.votes = s.settings.categories.map(() => ({}));
+  // resposta de uma letra começa anulada: todos os outros já votam ✗ (cada um pode tirar o seu)
+  const letter = letterOf(s);
+  s.votes = s.settings.categories.map((_, cat) =>
+    Object.fromEntries(
+      s.players
+        .filter((p) => matchesLetter(s.answers[p][cat], letter) && isSingleLetter(s.answers[p][cat]))
+        .map((p) => [p, s.players.filter((v) => v !== p)]),
+    ),
+  );
   nextPhase(s, "review");
 }
 

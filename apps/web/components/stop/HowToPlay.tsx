@@ -113,6 +113,13 @@ export function HowToPlay() {
           para votar contra uma resposta: com mais da metade dos outros
           contra, ela é anulada (empate mantém). Todos em <b className="text-white">PRONTO</b> passa para a próxima.
         </p>
+        <p className="text-center text-sm text-white/70">
+          Resposta de <b className="text-white">uma letra só</b> já chega com o{" "}
+          <span className="inline-flex h-5 w-5 translate-y-1 items-center justify-center rounded-full bg-red-500 text-white [&_svg]:h-3 [&_svg]:w-3">
+            <XIcon />
+          </span>{" "}
+          de todos; quem achar que vale tira o seu.
+        </p>
       </Section>
 
       <Section n={6} title="Pontos">

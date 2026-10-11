@@ -11,6 +11,8 @@
  *   A resposta é anulada se mais da metade dos outros jogadores presentes votar contra (empate mantém).
  *   A tela avança quando todos os presentes apertam PRONTO ou depois de 30 s.
  * - Resposta vazia ou com outra letra inicial vale 0 sem votação.
+ * - Resposta com uma letra só ("B") vale para o STOP, mas entra na correção com ✗ de todos os outros
+ *   (anulada); cada um pode tirar o seu voto.
  * - Pontos por categoria: 10 resposta única, 5 repetida (sem diferenciar acento nem maiúscula), 0 vazia ou anulada.
  * - Depois da última rodada, vence a maior soma; empate no topo = empate.
  * - Quem cai continua na partida (o que escreveu fica guardado), mas não conta na maioria nem no PRONTO.

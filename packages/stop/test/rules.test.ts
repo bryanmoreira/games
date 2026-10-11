@@ -218,6 +218,32 @@ describe("correção", () => {
     expect(isAnnulled(s, 0, 0)).toBe(false);
   });
 
+  test("uma letra só: libera o STOP e entra na correção com ✗ de todos os outros", () => {
+    let s = writing([0, 1, 2]);
+    s = write(s, { 0: ["B", "b.", "Banana"], 1: ["Beto", "", ""] });
+    expect(viewFor(s, 0).canStop).toBe(true);
+    s = apply(s, { type: "stop", seat: 0 });
+    expect(s.votes[0]).toEqual({ 0: [1, 2] });
+    expect(s.votes[1]).toEqual({ 0: [1, 2] });
+    expect(s.votes[2]).toEqual({});
+    expect(viewFor(s, 1).votable).toContain(0);
+    expect(categoryPoints(s, 0)).toEqual({ 0: 0, 1: 10, 2: 0 });
+    // um tira o voto: 1 de 2 é empate, a resposta volta a valer
+    s = apply(s, { type: "vote", seat: 1, target: 0, against: false });
+    expect(isAnnulled(s, 0, 0)).toBe(false);
+    expect(categoryPoints(s, 0)).toEqual({ 0: 10, 1: 10, 2: 0 });
+    // e pode voltar a marcar
+    s = apply(s, { type: "vote", seat: 1, target: 0, against: true });
+    expect(isAnnulled(s, 0, 0)).toBe(true);
+  });
+
+  test("uma letra com outra inicial continua zerada sem votação", () => {
+    let s = write(writing([0, 1]), { 0: ["C", "", ""] });
+    s = apply(s, { type: "advance" });
+    expect(s.votes[0]).toEqual({});
+    expect(categoryPoints(s, 0)).toEqual({ 0: 0, 1: 0 });
+  });
+
   test("com 2 jogadores, um voto anula", () => {
     let s = reviewing([0, 1]);
     s = apply(s, { type: "vote", seat: 1, target: 0, against: true });
