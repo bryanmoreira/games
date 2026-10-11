@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { RoomInfo } from "@truco/game";
+import type { GameId, RoomInfo } from "@truco/game";
 import { send } from "@/lib/socket";
+import { WhatsAppInvite } from "@/components/ui/WhatsAppInvite";
+
+/** Chamada da mensagem de convite de cada jogo online */
+const INVITE: Record<GameId, string> = {
+  "truco-paulista": "Bora jogar um truco? 🃏",
+  connect4: "Duvido você me ganhar no Connect 4! 🔴🟡",
+  stop: "Bora jogar Stop (Adedonha)? ✋",
+  "batalha-naval": "Bora jogar Batalha Naval? 🚢",
+};
 
 /** Uma coluna do lobby: os lugares de um time (ou de um jogador). */
 export interface SeatGroup {
@@ -50,10 +59,16 @@ export function Lobby({
 
   return (
     <main className="mx-auto flex min-h-full max-w-xl flex-col items-center justify-center gap-8 px-4 py-8">
-      <button onClick={copy} className="group flex flex-col items-center gap-1" title="Copiar link">
-        <span className="font-display text-6xl tracking-[0.2em] text-gold">{room.code}</span>
-        <span className="text-sm text-white/50 group-hover:text-white/80">{copied ? "✓ link copiado" : "🔗 copiar link"}</span>
-      </button>
+      <div className="flex flex-col items-center gap-4">
+        <button onClick={copy} className="group flex flex-col items-center gap-1" title="Copiar link">
+          <span className="font-display text-6xl tracking-[0.2em] text-gold">{room.code}</span>
+          <span className="text-sm text-white/50 group-hover:text-white/80">{copied ? "✓ link copiado" : "🔗 copiar link"}</span>
+        </button>
+        <WhatsAppInvite
+          campaign={room.game}
+          message={(url) => `${INVITE[room.game]} Entra na minha sala (${room.code}): ${url}`}
+        />
+      </div>
 
       <div className="grid w-full grid-cols-2 gap-4">
         {groups.map((team, i) => (

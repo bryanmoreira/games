@@ -16,7 +16,7 @@
 
 Tokens em `apps/web/app/globals.css` (`@theme` do Tailwind v4): `--color-felt` (#0f5132), `--color-gold` (#f2c14e), `--color-team-a` / `--color-team-b`. Fontes: **Bungee** (`font-display`) para títulos, números e botões; **Inter** para o resto.
 
-- Fundo do site: degradê radial escuro. Páginas longas (como "Como jogar") usam um wrapper com cor sólida `bg-[#0f1813]` e `min-h-dvh`, senão aparece o cinza padrão quando a página passa da altura da tela.
+- Fundo do site: **uma cor só**, `#0f1813`, definida em `html, body` no `globals.css` (e no `themeColor`/manifest). Nada de degradê no fundo da página: como `body` tem `height: 100%`, o degradê se repete quando o conteúdo passa da altura da tela e aparece uma faixa de outra cor. Páginas novas (inicial do jogo, "Como jogar") não precisam de wrapper com fundo próprio; se precisar de um, use a mesma cor `bg-[#0f1813]`.
 - Mesa: classe `.felt` (feltro verde com borda de madeira via `box-shadow`), cantos `rounded-[48px] sm:rounded-[120px]`, `max-w-[1100px]` centralizada para os laterais não ficarem longe em monitores largos.
 - Cores de time: **dourado** para você e seu parceiro (`bg-gold`/`text-gold`), **vermelho** para adversários (`border-red-400/80`, `text-red-400`). Use em avatares, placar, banners de resultado ("+3 NÓS" dourado / "+1 ELES" vermelho).
 - Cartas: `CardImg` (PNG com `.card-face`) e `CardBack` (CSS). Proporção 500/726.

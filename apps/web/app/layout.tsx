@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
   other: { "geo.region": "BR", "content-language": "pt-BR" },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0b120e" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0f1813" };
 
 // Lido no runtime (não no build): chave dinâmica evita que o Next embuta NEXT_PUBLIC_* no bundle
 function runtimeEnv(name: string): string | undefined {

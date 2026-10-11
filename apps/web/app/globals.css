@@ -14,13 +14,14 @@
   color-scheme: dark;
 }
 
+/* Cor única em todo o site: sem degradê, para não aparecer faixa quando a página passa da altura da tela */
 html,
 body {
   height: 100%;
+  background: #0f1813;
 }
 
 body {
-  background: radial-gradient(ellipse at top, #1b2a22, #0b120e 70%);
   color: #f5f5f4;
   font-family: var(--font-sans);
   overscroll-behavior: none;
