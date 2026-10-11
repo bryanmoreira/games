@@ -10,9 +10,11 @@ import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { HelpButton, MuteButton, XIcon } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { GameEnd } from "@/components/ui/GameEnd";
-import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
-import { playCountdownSound, playLetterSound, playPointsSound, playStopSound, playTickSound, playVoteSound } from "@/lib/stop/sound";
-import { CheckIcon, ClockIcon, Points, Tile } from "./Tile";
+import { playCountdownSound, playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
+import { playLetterSound, playPointsSound, playStopSound, playTickSound, playVoteSound } from "@/lib/stop/sound";
+import { Points, Tile } from "./Tile";
+import { CheckIcon, ClockIcon } from "@/components/ui/icons";
+import { useCountdown } from "@/lib/countdown";
 import { HowToPlay } from "./HowToPlay";
 
 const WRITE_DEBOUNCE = 300;
@@ -387,7 +389,7 @@ function End({ room, view, onLeave }: { room: RoomInfo; view: PlayerView; onLeav
   const top = view.players.filter((p) => view.scores[p] === best);
   const ranked = [...view.players].sort((a, b) => view.scores[b] - view.scores[a] || a - b);
   // quem saiu não volta no "De novo": só dá para recomeçar com gente suficiente na sala
-  const enough = room.seats.filter((s) => s.kind !== "empty").length >= room.minSeats;
+  const enough = room.canStart;
   const [show, setShow] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 900);
@@ -453,22 +455,6 @@ function useShout(view: PlayerView) {
 }
 
 /* ---------- tempo e sons ---------- */
-
-/** ms até o fim da fase, a partir do `timeLeft` de cada mensagem do servidor. */
-function useCountdown(room: RoomInfo): number | null {
-  const [endsAt, setEndsAt] = useState<number | null>(null);
-  const [now, setNow] = useState(() => Date.now());
-  // cada mensagem do servidor acerta o relógio
-  useEffect(() => {
-    setEndsAt(room.timeLeft !== null ? Date.now() + room.timeLeft : null);
-    setNow(Date.now());
-  }, [room]);
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 250);
-    return () => clearInterval(t);
-  }, []);
-  return endsAt === null ? null : Math.max(0, endsAt - now);
-}
 
 function useSounds(view: PlayerView, left: number | null) {
   useAudioUnlock();

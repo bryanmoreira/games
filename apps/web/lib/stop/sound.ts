@@ -46,13 +46,6 @@ export function playStopSound() {
   lfo.stop(t + 0.62);
 }
 
-/** Tempo acabando: bip curto a cada segundo. */
-export function playCountdownSound(last: boolean) {
-  const ac = audio();
-  if (!ac) return;
-  tone(ac, last ? 1046.5 : 880, ac.currentTime, last ? 0.3 : 0.1, 0.08, "square");
-}
-
 /** Voto ✗ (grave) ou voto retirado (agudo). */
 export function playVoteSound(against: boolean) {
   const ac = audio();

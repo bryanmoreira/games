@@ -14,6 +14,8 @@ import { STOP_PATH } from "@/lib/stop/paths";
 import { StopLogo } from "@/components/stop/Tile";
 import { BATALHA_PATH } from "@/lib/batalha-naval/paths";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
+import { CODENAMES_PATH } from "@/lib/codenames/paths";
+import { MiniGrid } from "@/components/codenames/Board";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
@@ -116,6 +118,19 @@ export default function Home() {
             <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
               <span className="font-display text-3xl text-gold">BATALHA</span>
               <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">NAVAL</span>
+            </span>
+          </Link>
+
+          <Link
+            href={CODENAMES_PATH}
+            className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"
+          >
+            <div className="absolute left-1/2 top-[10%] w-[44%] -translate-x-1/2 -rotate-3">
+              <MiniGrid />
+            </div>
+            <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
+              <span className="font-display text-3xl text-gold">CODENAMES</span>
+              <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">AGENTES SECRETOS</span>
             </span>
           </Link>
 

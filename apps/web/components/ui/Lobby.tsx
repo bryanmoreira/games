@@ -12,6 +12,7 @@ const INVITE: Record<GameId, string> = {
   connect4: "Duvido você me ganhar no Connect 4! 🔴🟡",
   stop: "Bora jogar Stop (Adedonha)? ✋",
   "batalha-naval": "Bora jogar Batalha Naval? 🚢",
+  codenames: "Bora jogar Codenames? 🕵️",
 };
 
 /** Uma coluna do lobby: os lugares de um time (ou de um jogador). */
@@ -19,6 +20,11 @@ export interface SeatGroup {
   seats: number[];
   color: string;
   label?: React.ReactNode;
+  /**
+   * Lugares divididos por papel (ex.: mestre/agentes no Codenames). Cada parte mostra só quem sentou
+   * e um "Sentar" para o próximo lugar livre, em vez de todos os lugares vazios.
+   */
+  sections?: { label: React.ReactNode; seats: number[] }[];
 }
 
 /** Duplas do truco: 0/2 contra 1/3. */
@@ -44,7 +50,6 @@ export function Lobby({
 }) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
-  const full = room.seats.filter((s) => s.kind !== "empty").length >= room.minSeats;
 
   const copy = async () => {
     await navigator.clipboard.writeText(location.href).catch(() => {});
@@ -74,9 +79,9 @@ export function Lobby({
         {groups.map((team, i) => (
           <div key={i} className={`flex flex-col gap-3 rounded-2xl border-2 bg-white/5 p-3 ${team.color}`}>
             {team.label && <h2 className="text-center font-display">{team.label}</h2>}
-            {team.seats.map((seat) => (
-              <SeatSlot key={seat} room={room} seat={seat} />
-            ))}
+            {team.sections
+              ? team.sections.map((sec, j) => <Section key={j} room={room} label={sec.label} seats={sec.seats} />)
+              : team.seats.map((seat) => <SeatSlot key={seat} room={room} seat={seat} />)}
           </div>
         ))}
       </div>
@@ -99,7 +104,7 @@ export function Lobby({
         </button>
         {room.isHost ? (
           <button
-            disabled={!full}
+            disabled={!room.canStart}
             onClick={() => send({ t: "start" })}
             className="flex-1 rounded-xl bg-gold py-3 font-display text-lg text-stone-900 shadow-[0_4px_0_#9a6b12] active:translate-y-1 active:shadow-none disabled:opacity-40"
           >
@@ -110,6 +115,21 @@ export function Lobby({
         )}
       </div>
     </main>
+  );
+}
+
+/** Parte de uma coluna: quem sentou e um lugar livre. */
+function Section({ room, label, seats }: { room: RoomInfo; label: React.ReactNode; seats: number[] }) {
+  const taken = seats.filter((s) => room.seats[s].kind !== "empty");
+  const free = seats.find((s) => room.seats[s].kind === "empty");
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="flex items-center gap-1.5 font-display text-xs opacity-80">{label}</span>
+      {taken.map((seat) => (
+        <SeatSlot key={seat} room={room} seat={seat} />
+      ))}
+      {free !== undefined && <SeatSlot room={room} seat={free} />}
+    </div>
   );
 }
 

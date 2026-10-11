@@ -44,3 +44,48 @@ export function EraseIcon({ className }: P) {
     </Icon>
   );
 }
+
+export function ClockIcon({ className }: { className?: string }) {
+  return (
+    <Icon className={className}>
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2.5 2" />
+      <path d="M10 2h4" />
+    </Icon>
+  );
+}
+
+export function InfinityIcon({ className }: { className?: string }) {
+  return (
+    <Icon className={className}>
+      <path d="M12 12c-2-2.7-3.6-4-5.3-4a4 4 0 0 0 0 8c1.7 0 3.3-1.3 5.3-4Zm0 0c2 2.7 3.6 4 5.3 4a4 4 0 0 0 0-8c-1.7 0-3.3 1.3-5.3 4Z" />
+    </Icon>
+  );
+}
+
+export function CheckIcon({ className }: { className?: string }) {
+  return (
+    <Icon className={className}>
+      <path d="M20 6 9 17l-5-5" />
+    </Icon>
+  );
+}
+
+/** Tempo em m:ss (ou ∞ sem limite). */
+export function TimeLabel({ seconds, className }: { seconds: number; className?: string }) {
+  if (seconds === 0) return <InfinityIcon className={className ?? "h-5 w-5"} />;
+  return <span className={className}>{`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`}</span>;
+}
+
+export function ListIcon({ className }: { className?: string }) {
+  return (
+    <Icon className={className}>
+      <path d="M9 6h11" />
+      <path d="M9 12h11" />
+      <path d="M9 18h11" />
+      <path d="M4 6h.01" />
+      <path d="M4 12h.01" />
+      <path d="M4 18h.01" />
+    </Icon>
+  );
+}

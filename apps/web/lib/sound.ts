@@ -114,3 +114,10 @@ export function playLoseSound() {
   const t = ac.currentTime;
   [392, 329.63, 261.63].forEach((f, i) => tone(ac, f, t + i * 0.16, 0.35, 0.1, "triangle"));
 }
+
+/** Tempo acabando: bip curto a cada segundo. */
+export function playCountdownSound(last: boolean) {
+  const ac = audio();
+  if (!ac) return;
+  tone(ac, last ? 1046.5 : 880, ac.currentTime, last ? 0.3 : 0.1, 0.08, "square");
+}

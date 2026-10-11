@@ -1,6 +1,7 @@
 import { Section } from "@/components/ui/HowToSection";
 import { XIcon } from "@/components/ui/buttons";
-import { CheckIcon, ClockIcon, FlagIcon, ListIcon, Points, Tile } from "./Tile";
+import { FlagIcon, Points, Tile } from "./Tile";
+import { CheckIcon, ClockIcon, ListIcon } from "@/components/ui/icons";
 
 const SHEET: { cat: string; text: string; ok: boolean }[] = [
   { cat: "NOME", text: "Bruno", ok: true },

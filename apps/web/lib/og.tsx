@@ -32,6 +32,7 @@ const TITLES: Record<string, [string, string]> = {
   "connect-4": ["CONNECT", "4 EM LINHA"],
   stop: ["STOP", "ADEDONHA"],
   "batalha-naval": ["BATALHA", "NAVAL"],
+  codenames: ["CODENAMES", "AGENTES SECRETOS"],
 };
 
 async function art(slug: string) {
@@ -182,6 +183,36 @@ async function art(slug: string) {
               </div>
             );
           })}
+        </div>
+      );
+    }
+    case "codenames": {
+      // mesa 5×4 com algumas palavras reveladas
+      const words = ["PRAIA", "GELO", "SOL", "BANCO", "PIRATA", "AREIA", "LOBO", "NEVE", "ONDA", "DISCO", "MÃO", "TREM", "CHAVE", "LUA", "FOGO", "ROSA", "BOLA", "REDE", "MEL", "TIGRE"];
+      const revealed: Record<number, string> = { 2: "#d9463b", 7: "#2f6fd6", 11: "#cbb98c", 13: "#d9463b", 16: "#2f6fd6", 4: "#1c1917" };
+      return (
+        <div style={{ display: "flex", flexWrap: "wrap", width: 450, gap: 8, padding: 14, background: "#0b2b1b", borderRadius: 20, transform: "rotate(-4deg)", boxShadow: "0 12px 28px rgba(0,0,0,0.5)" }}>
+          {words.map((w, i) => (
+            <div
+              key={w}
+              style={{
+                display: "flex",
+                width: 78,
+                height: 54,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 9,
+                background: revealed[i] ?? "#f3ead3",
+                color: revealed[i] ? "rgba(255,255,255,0.75)" : "#292524",
+                fontSize: 15,
+                fontWeight: 700,
+                fontFamily: "Inter",
+                boxShadow: `0 4px 0 ${revealed[i] ? "rgba(0,0,0,0.35)" : "#b8a77c"}`,
+              }}
+            >
+              {w}
+            </div>
+          ))}
         </div>
       );
     }

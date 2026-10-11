@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@truco/batalha-naval": "workspace:*",
+    "@truco/codenames": "workspace:*",
     "@truco/connect4": "workspace:*",
     "@truco/game": "workspace:*",
     "@truco/stop": "workspace:*"

@@ -92,6 +92,8 @@ Ganchos opcionais do adaptador (criados para o Stop):
 - `settings: { initial, parse }`: opções que o host muda no lobby (mensagem `settings`), validadas pelo jogo; chegam ao cliente em `RoomInfo.settings`.
 - `phaseKey(s)`: enquanto a chave for a mesma, o relógio de `pause` não reinicia a cada ação (fase com tempo em que todos digitam). O tempo restante vai em `RoomInfo.timeLeft` (ms, sem depender do relógio do cliente).
 - `away(s, seats)`: devolve a ação que avisa o jogo de quem está desconectado (para não esperar por ele no PRONTO e na votação), ou `null` se nada mudou.
+- `canStart(seats)` (criado para o Codenames): além do mínimo, valida a composição da mesa (mestre e agente em cada time). Chega ao cliente como `RoomInfo.canStart`, que o `Lobby` usa no botão Começar e o "De novo" respeita.
+- Mensagem `lobby` (host, partida encerrada): volta a sala ao lobby para trocar lugares/opções; a partida anterior fica em `room.prev` e o jogo novo continua a sequência (quem começa, palavras já usadas).
 - `simultaneous: true` (criado para a Batalha Naval): quando vários lugares podem agir ao mesmo tempo (montar a frota), o bot age sem esperar o humano. Sem ele, o bot espera enquanto algum humano conectado puder agir (no truco, o parceiro humano decide antes da IA).
 
 ## Cliente web

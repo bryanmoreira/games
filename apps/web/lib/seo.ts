@@ -6,7 +6,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Stop, Batalha Naval, Connect 4, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Stop, Codenames, Batalha Naval, Connect 4, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
@@ -161,6 +161,30 @@ export const GAMES: GameSeo[] = [
       { q: "Qual é o objetivo da Batalha Naval?", a: "Afundar toda a frota do adversário antes que ele afunde a sua." },
       { q: "Qual o tamanho do tabuleiro?", a: "Cada jogador tem um mar de 10 × 10 casas." },
       { q: "Dá para jogar Batalha Naval online com um amigo?", a: "Sim. Crie uma sala, compartilhe o código ou o link e jogue 1 contra 1 sem cadastro. Também há modo contra o computador." },
+    ],
+  },
+  {
+    slug: "codenames",
+    path: "/codenames",
+    name: "Codenames",
+    title: "Codenames Online Grátis",
+    description:
+      "Jogue Codenames online grátis com amigos: dois times, mestres dão dicas de uma palavra e agentes acham as palavras certas. Use sua própria lista de palavras.",
+    tagline: "Mestres dão a dica, agentes acham as palavras. Em times, com amigos.",
+    keywords: ["codenames online", "jogar codenames", "codenames grátis", "codenames com amigos", "codenames em português", "jogo de palavras em equipe", "agentes secretos jogo"],
+    genre: "Jogo de palavras em equipe",
+    players: { min: 4, max: 12 },
+    modes: "Multiplayer online em salas privadas: dois times com mestres e agentes, lista de palavras própria e tempo por vez opcional.",
+    howTo: {
+      title: "Como jogar Codenames: regras, dicas e mestres",
+      description: "Aprenda as regras do Codenames: times vermelho e azul, mestres e agentes, como dar a dica de uma palavra e um número, os civis e o assassino.",
+    },
+    faq: [
+      { q: "Quantas pessoas precisa para jogar Codenames?", a: "Pelo menos 4: dois times, cada um com 1 mestre e pelo menos 1 agente. Cada time pode ter até 5 agentes, então cabem até 12 pessoas." },
+      { q: "Como funciona a dica do mestre?", a: "Na vez do time, o mestre digita uma palavra e um número. O número diz quantas palavras da mesa a dica liga, e os agentes podem tocar em até esse número mais uma. Com 0 ou infinito, não há limite." },
+      { q: "O que acontece se tocar no assassino?", a: "O time que revelou o assassino perde na hora. Uma palavra civil ou do outro time só passa a vez." },
+      { q: "Posso usar minhas próprias palavras?", a: "Sim. Quem cria a sala cola uma lista com uma palavra por linha. Se tiver menos de 25, o jogo completa com uma lista pronta em português." },
+      { q: "Tem tempo para jogar?", a: "É opcional. Quem cria a sala escolhe 1, 1,5, 2 ou 3 minutos, ou sem tempo. O limite vale para o mestre dar a dica e, de novo, para os agentes; quando acaba, a vez passa." },
     ],
   },
 ];

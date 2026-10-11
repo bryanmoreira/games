@@ -2,6 +2,7 @@ import * as truco from "@truco/game";
 import * as c4 from "@truco/connect4";
 import * as stop from "@truco/stop";
 import * as bn from "@truco/batalha-naval";
+import * as cn from "@truco/codenames";
 import type { GameId } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -17,6 +18,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
   seats: number;
   /** Mínimo de lugares ocupados para começar; sem ele, a mesa precisa estar cheia. */
   minSeats?: number;
+  /** Além do mínimo, os lugares ocupados formam uma mesa válida (ex.: mestre e agente em cada time). */
+  canStart?(seats: number[]): boolean;
   /** Quem pode agir age sem esperar os outros (ex.: posicionar a frota): o bot não espera o humano. */
   simultaneous?: boolean;
   /** false: sem IA no lobby e ninguém joga no lugar de quem cai. */
@@ -138,9 +141,32 @@ const batalhaNavalAdapter: GameAdapter<bn.GameState, bn.Action, bn.PlayerView> =
   animMs: (prev, next) => (prev && next.shots.length > prev.shots.length ? SHOT_MS : 0),
 };
 
+const codenamesAdapter: GameAdapter<cn.GameState, cn.Action, cn.PlayerView> = {
+  seats: cn.SEATS,
+  minSeats: 4,
+  canStart: cn.canStart,
+  bots: false,
+  settings: {
+    initial: cn.DEFAULT_SETTINGS,
+    parse: (raw, prev) => cn.parseSettings(raw, prev as cn.Settings),
+  },
+  newGame: (prev, { seats, settings }) => cn.newGame(Math.random, { players: seats, settings: cn.parseSettings(settings) }, prev),
+  applyAction: cn.applyAction,
+  viewFor: (s, seat) => cn.viewFor(s, seat),
+  decide: () => null,
+  withSeat: (a, seat) => ({ ...(a as cn.ClientAction), seat }) as cn.Action,
+  actors: (s) =>
+    s.players.filter((p) => (s.phase === "clue" ? cn.canClue(s, p) : s.phase === "guess" ? cn.canGuess(s, p) : false)),
+  pause: (s) => (s.phase !== "gameOver" && s.settings.time > 0 ? s.settings.time * 1000 : null),
+  over: (s) => s.phase === "gameOver",
+  animMs: () => 0,
+  phaseKey: (s) => `${s.gameNo}:${s.phaseNo}`,
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
   stop: stopAdapter,
   "batalha-naval": batalhaNavalAdapter,
+  codenames: codenamesAdapter,
 };

@@ -23,6 +23,8 @@ interface Room {
   members: Map<string, string>; // token -> nome
   seats: Slot[];
   state: unknown | null;
+  /** Partida anterior quando o host voltou ao lobby (o jogo novo continua a sequência). */
+  prev: unknown | null;
   /** Opções do lobby (jogos que têm). */
   settings: unknown;
   timer?: ReturnType<typeof setTimeout>;
@@ -87,6 +89,7 @@ function info(room: Room, token: string): RoomInfo {
     })),
     waiting: [...room.members].filter(([t]) => !seated.has(t)).map(([, n]) => n),
     minSeats: room.adapter.minSeats ?? room.adapter.seats,
+    canStart: canStart(room),
     bots: room.adapter.bots !== false,
     settings: room.settings,
     timeLeft: room.deadline !== null ? Math.max(0, room.deadline - Date.now()) : null,
@@ -172,8 +175,14 @@ function step(room: Room, action: unknown): string | null {
 
 const occupied = (room: Room) => room.seats.flatMap((s, i) => (s.kind === "empty" ? [] : [i]));
 
+function canStart(room: Room) {
+  const seats = occupied(room);
+  return seats.length >= (room.adapter.minSeats ?? room.adapter.seats) && (room.adapter.canStart?.(seats) ?? true);
+}
+
 function startGame(room: Room) {
-  room.state = room.adapter.newGame(room.state, { seats: occupied(room), settings: room.settings });
+  room.state = room.adapter.newGame(room.state ?? room.prev, { seats: occupied(room), settings: room.settings });
+  room.prev = null;
   markAnim(room, null);
   refresh(room);
 }
@@ -253,6 +262,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       members: new Map(),
       seats: Array.from({ length: adapter.seats }, emptySlot),
       state: null,
+      prev: null,
       settings: adapter.settings?.initial ?? null,
       timerKey: null,
       deadline: null,
@@ -313,12 +323,22 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       break;
     case "start":
       if (!isHost || room.state) return;
-      if (occupied(room).length < (room.adapter.minSeats ?? room.adapter.seats)) return error("Complete a mesa");
+      if (!canStart(room)) return error("Complete a mesa");
       return startGame(room);
     case "restart":
       if (!isHost || !room.state || !room.adapter.over(room.state)) return;
-      if (occupied(room).length < (room.adapter.minSeats ?? room.adapter.seats)) return error("Faltam jogadores");
+      if (!canStart(room)) return error("Faltam jogadores");
       return startGame(room);
+    case "lobby":
+      if (!isHost || !room.state || !room.adapter.over(room.state)) return;
+      room.prev = room.state;
+      room.state = null;
+      // quem saiu durante a partida libera o lugar
+      room.seats = room.seats.map((s) => (s.kind === "empty" ? emptySlot() : s));
+      clearTimeout(room.timer);
+      room.deadline = null;
+      room.timerKey = null;
+      break;
     case "settings":
       if (!isHost || room.state || !room.adapter.settings) return;
       room.settings = room.adapter.settings.parse(msg.settings, room.settings);
