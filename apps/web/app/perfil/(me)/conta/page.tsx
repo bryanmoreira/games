@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { SOCIAL_PROVIDERS } from "@/components/auth/providers";
+import { LinkedAccounts } from "@/components/profile/LinkedAccounts";
 import { PrivacyToggle } from "@/components/profile/PrivacyToggle";
 import { UsernameField } from "@/components/profile/UsernameField";
 import { auth } from "@/lib/auth";
@@ -16,12 +16,19 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-export default async function AccountPage() {
+/** Erros que o Better Auth manda em ?error= quando "Conectar" falha. */
+function linkError(code: string): string {
+  if (code === "account_already_linked_to_different_user") return "Essa conta já está ligada a outro jogador.";
+  if (code === "access_denied") return "Conexão cancelada.";
+  return "Não deu para conectar. Tente de novo.";
+}
+
+export default async function AccountPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error } = await searchParams;
   const h = await headers();
   const session = await auth.api.getSession({ headers: h, query: { disableCookieCache: true } });
   if (!session) return null;
   const accounts = await auth.api.listUserAccounts({ headers: h });
-  const linked = new Set(accounts.map((a) => a.providerId));
 
   const since = new Date(session.user.createdAt).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
 
@@ -36,19 +43,19 @@ export default async function AccountPage() {
         <PrivacyToggle initial={session.user.profilePublic ?? true} />
       </div>
 
+      <div className="rounded-2xl bg-white/5 ring-1 ring-white/10">
+        <h2 className="px-4 pb-1 pt-4 text-sm text-white/50 sm:px-5">Formas de entrar</h2>
+        {error && (
+          <p role="alert" className="mx-4 my-2 rounded-xl bg-red-950/60 px-3 py-2 text-xs text-red-200 ring-1 ring-red-500/30 sm:mx-5">
+            {linkError(error)}
+          </p>
+        )}
+        <LinkedAccounts linked={accounts.map((a) => ({ id: a.id, providerId: a.providerId }))} />
+      </div>
+
       <div className="divide-y divide-white/10 rounded-2xl bg-white/5 ring-1 ring-white/10">
         <Row label="E-mail">{session.user.email}</Row>
         <Row label="Membro desde">{since}</Row>
-        <Row label="Login">
-          <span className="flex items-center justify-end gap-2">
-            {SOCIAL_PROVIDERS.filter((p) => linked.has(p.id)).map(({ id, label, Logo }) => (
-              <span key={id} className="flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-xs font-medium text-neutral-800">
-                <Logo className="h-3.5 w-3.5" />
-                {label}
-              </span>
-            ))}
-          </span>
-        </Row>
       </div>
     </div>
   );

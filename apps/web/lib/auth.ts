@@ -27,7 +27,14 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
       prompt: "select_account",
     },
+    discord: {
+      clientId: process.env.DISCORD_CLIENT_ID ?? "",
+      clientSecret: process.env.DISCORD_CLIENT_SECRET ?? "",
+    },
   },
+  // Login: mesmo e-mail em Google e Discord = mesma conta (só junta se o provedor confirmou o e-mail).
+  // "Conectar" em Perfil > Conta liga outro provedor à conta logada, mesmo com e-mail diferente.
+  account: { accountLinking: { enabled: true, trustedProviders: ["google"], allowDifferentEmails: true } },
   session: {
     expiresIn: 60 * 60 * 24 * 60, // 60 dias
     cookieCache: { enabled: true, maxAge: 5 * 60 },

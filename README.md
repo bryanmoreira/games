@@ -63,6 +63,8 @@ bun test packages
 - No Google Cloud, em **Credenciais > ID do cliente OAuth**, adicione os URIs de redirecionamento:
   - `http://localhost:3000/api/auth/callback/google`
   - `https://mesadejogos.com/api/auth/callback/google`
+- No [Discord Developer Portal](https://discord.com/developers/applications), em **OAuth2 > Redirects**, o mesmo com `/callback/discord`.
+- Mesmo e-mail em Google e Discord vira uma conta só (`accountLinking` no `lib/auth.ts`).
 - Mudou o schema? `bun run --cwd apps/web db:migrate` cria a migração. Em produção ela roda sozinha na subida do container (`prisma migrate deploy`).
 - No servidor: `const session = await auth.api.getSession({ headers: await headers() })`. No cliente: `authClient.useSession()`.
 
@@ -92,6 +94,8 @@ Variáveis de ambiente (runtime, sem precisar rebuildar):
 | web | `BETTER_AUTH_URL` | `https://mesadejogos.com` |
 | web | `GOOGLE_CLIENT_ID` | do Google Cloud |
 | web | `GOOGLE_CLIENT_SECRET` | do Google Cloud |
+| web | `DISCORD_CLIENT_ID` | do Discord Developer Portal |
+| web | `DISCORD_CLIENT_SECRET` | do Discord Developer Portal |
 | ws | `PORT` (opcional) | `3001` |
 
 Sem `NEXT_PUBLIC_WS_URL`, o cliente tenta `ws(s)://<host da página>:3001`.
