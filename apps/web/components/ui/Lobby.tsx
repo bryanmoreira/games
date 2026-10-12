@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { GameId, RoomInfo } from "@truco/game";
 import { send } from "@/lib/socket";
 import { WhatsAppInvite } from "@/components/ui/WhatsAppInvite";
+import { SeatFace } from "@/components/ui/SeatFace";
 
 /** Chamada da mensagem de convite de cada jogo online */
 const INVITE: Record<GameId, string> = {
@@ -165,7 +166,9 @@ function SeatSlot({ room, seat }: { room: RoomInfo; seat: number }) {
         s.connected ? "" : "opacity-50"
       }`}
     >
-      <span className="text-xl">{s.kind === "bot" ? "🤖" : "🙂"}</span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black/25 font-display text-base">
+        {s.kind === "human" && !s.image ? "🙂" : <SeatFace seat={s} />}
+      </span>
       <span className="flex-1 truncate font-semibold">{s.name}</span>
       {s.kind === "bot" && room.isHost && (
         <button onClick={() => send({ t: "removeBot", seat })} className="text-white/50 hover:text-white">

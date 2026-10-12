@@ -35,6 +35,7 @@ export function newGame(suits: SuitCount, seed = randomSeed()): GameState {
     stock: ids.slice(INITIAL),
     done: [],
     moves: 0,
+    elapsed: 0,
     history: [],
     won: false,
     last: null,

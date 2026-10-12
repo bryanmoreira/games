@@ -13,7 +13,8 @@ export type ClientAction =
 
 /** `A` é a ação do jogo da sala (sem `seat`: o servidor injeta o assento). */
 export type ClientMsg<A = ClientAction> =
-  | { t: "hello"; token: string; name: string }
+  /** `ticket`: conta logada no site (assinado pelo site), para salvar resultados. */
+  | { t: "hello"; token: string; name: string; ticket?: string }
   | { t: "create"; solo?: boolean; game?: GameId }
   | { t: "join"; code: string }
   | { t: "sit"; seat: number }
@@ -32,6 +33,10 @@ export interface SeatInfo {
   kind: "empty" | "human" | "bot";
   name: string;
   connected: boolean;
+  /** Foto da conta (só de quem está logado). */
+  image?: string | null;
+  /** @usuario da conta (só de quem está logado), para abrir o perfil. */
+  username?: string | null;
 }
 
 export interface RoomInfo {
@@ -64,4 +69,25 @@ export type ServerMsg<V = PlayerView> =
 
 export function withSeat(a: ClientAction, seat: Seat): Action {
   return { ...a, seat } as Action;
+}
+
+// ---------- resultados (servidor de salas → site) ----------
+
+export type Outcome = "win" | "loss" | "draw";
+
+/** Resultado de um jogador logado numa partida terminada. */
+export interface PlayerReport {
+  userId: string;
+  outcome: Outcome;
+  /** Colocação (1 = primeiro) em jogos com mais de dois lados. */
+  placement?: number;
+  data: Record<string, unknown>;
+}
+
+export interface MatchReport {
+  game: GameId;
+  /** "ai": só um humano na mesa (o resto é IA). */
+  mode: "ai" | "online";
+  matchId: string;
+  players: PlayerReport[];
 }

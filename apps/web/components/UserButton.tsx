@@ -1,22 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { loginHref } from "@/lib/login";
-import { getName, setName } from "@/lib/socket";
 
 /** "Entrar" (vai para /login) ou avatar que leva ao perfil. */
 export function UserButton({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const { data, isPending } = authClient.useSession();
   const user = data?.user;
-
-  // primeiro login: o nome da conta vira o apelido das salas
-  useEffect(() => {
-    if (user && !getName()) setName(user.name.slice(0, 24));
-  }, [user]);
 
   if (isPending) return <div className={`h-10 w-10 ${className}`} />;
 

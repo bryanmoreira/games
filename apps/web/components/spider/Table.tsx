@@ -21,6 +21,9 @@ import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { playCardSound, useAudioUnlock } from "@/lib/sound";
 import { playCompleteSound, playDealSound, playWinSound } from "@/lib/spider/sound";
 import { loadGame, saveGame } from "@/lib/spider/storage";
+import { reportSoloWin } from "@/lib/stats/report";
+import { useClock } from "@/lib/useClock";
+import { formatTime } from "@/components/sudoku/common";
 import { SPIDER_PATH } from "@/lib/spider/paths";
 import { COMPACT_BELOW, SpiderCard, SuitIcon } from "./SpiderCard";
 import { HowToPlay } from "./HowToPlay";
@@ -205,7 +208,11 @@ export function Table() {
   const [felt, feltRef, size] = useSize();
   const els = useRef(new Map<number, HTMLDivElement>());
   const drag = useRef<{ from: number; index: number; ids: number[]; sx: number; sy: number; base: { x: number; y: number }[]; active: boolean } | null>(null);
+  const [visible, setVisible] = useState(true);
   useAudioUnlock();
+
+  // o relógio para com a partida ganha, a ajuda aberta, a aba escondida e durante a distribuição
+  const clock = useClock(!!game && !game.won && !help && visible && !intro);
 
   // carrega a partida salva; sem partida, volta para a página inicial do jogo
   useEffect(() => {
@@ -215,8 +222,28 @@ export function Table() {
       return;
     }
     setGame(g);
+    clock.reset(g.elapsed);
     if (g.moves === 0 && !g.history.length) setIntro(true);
-  }, [router]);
+  }, [router, clock]);
+
+  // salva o tempo ao esconder a aba ou sair
+  const latest = useRef<GameState | null>(null);
+  latest.current = game;
+  useEffect(() => {
+    const save = () => latest.current && saveGame({ ...latest.current, elapsed: clock.now() });
+    const onVis = () => {
+      if (document.hidden) save();
+      setVisible(!document.hidden);
+    };
+    setVisible(!document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("pagehide", save);
+    return () => {
+      save();
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("pagehide", save);
+    };
+  }, [clock]);
 
   const L = useMemo(() => (size ? computeLayout(size.w, size.h) : null), [size]);
 
@@ -274,7 +301,7 @@ export function Table() {
   const dispatch = (action: Action) => {
     const r = applyAction(game, action);
     if (!r.ok) return false;
-    const next = r.state;
+    const next = { ...r.state, elapsed: clock.now() };
     setAnim(diff(game, next, action.type));
     setGame(next);
     setFlash(null);
@@ -284,7 +311,10 @@ export function Table() {
     if (last.type === "deal") playDealSound(10);
     else playCardSound();
     if (last.completed) setTimeout(playCompleteSound, last.type === "deal" ? 10 * 60 + MOVE_MS : MOVE_MS);
-    if (next.won) setTimeout(playWinSound, 900);
+    if (next.won) {
+      setTimeout(playWinSound, 900);
+      reportSoloWin("paciencia-spider", { suits: next.suits, moves: next.moves, score: scoreOf(next), timeMs: Math.round(next.elapsed) });
+    }
     return true;
   };
 
@@ -305,6 +335,7 @@ export function Table() {
     saveGame(g);
     setAnim(null);
     setGame(g);
+    clock.reset(0);
     setIntro(true);
   };
 
@@ -395,9 +426,14 @@ export function Table() {
             <span className="text-[10px] text-gold/80">PONTOS</span>
             <span className="text-2xl text-gold sm:text-3xl">{scoreOf(game)}</span>
           </div>
-          <div className="flex flex-col items-center leading-none">
+          {/* no celular não cabe tudo: jogadas aparecem na tela de vitória */}
+          <div className="hidden flex-col items-center leading-none sm:flex">
             <span className="text-[10px] text-white/60">JOGADAS</span>
-            <span className="text-2xl sm:text-3xl">{game.moves}</span>
+            <span className="text-3xl">{game.moves}</span>
+          </div>
+          <div className="flex flex-col items-center leading-none">
+            <span className="text-[10px] text-white/60">TEMPO</span>
+            <span className="text-2xl tabular-nums sm:text-3xl">{formatTime(game.won ? game.elapsed : clock.now())}</span>
           </div>
         </div>
 
@@ -558,6 +594,7 @@ function Victory({ game, onAgain, onLeave }: { game: GameState; onAgain: () => v
       <div className="flex gap-6">
         <EndStat label="PONTOS" value={scoreOf(game)} gold />
         <EndStat label="JOGADAS" value={game.moves} />
+        <EndStat label="TEMPO" value={formatTime(game.elapsed)} />
       </div>
     </GameEnd>
   );

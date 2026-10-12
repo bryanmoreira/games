@@ -4,7 +4,7 @@ export const USERNAME_MAX = 20;
 export const USERNAME_RE = /^[a-z0-9_]+$/;
 
 // rotas e palavras que não podem virar perfil
-const RESERVED = new Set(["conta", "editar", "config", "configuracoes", "admin", "api", "login", "entrar", "sair", "perfil", "jogador", "suporte", "mesadejogos"]);
+const RESERVED = new Set(["conta", "conquistas", "editar", "config", "configuracoes", "admin", "api", "login", "entrar", "sair", "perfil", "jogador", "suporte", "mesadejogos"]);
 
 export function normalizeUsername(u: string): string {
   return u.trim().toLowerCase();

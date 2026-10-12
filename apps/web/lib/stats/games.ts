@@ -1,0 +1,38 @@
+import type { GameId } from "@truco/game";
+import { BATALHA_PATH } from "@/lib/batalha-naval/paths";
+import { CODENAMES_PATH } from "@/lib/codenames/paths";
+import { CONNECT4_PATH } from "@/lib/connect4/paths";
+import { SPIDER_PATH } from "@/lib/spider/paths";
+import { STOP_PATH } from "@/lib/stop/paths";
+import { SUDOKU_PATH } from "@/lib/sudoku/paths";
+import { TRUCO_PATH } from "@/lib/truco/paths";
+
+/** Jogos que guardam resultado no perfil. Online: o servidor de salas manda; solo: o navegador manda. */
+export const SOLO_GAMES = ["sudoku", "paciencia-spider"] as const;
+export const ONLINE_GAMES = ["truco-paulista", "connect4", "batalha-naval", "stop", "codenames"] as const satisfies readonly GameId[];
+
+export type SoloGame = (typeof SOLO_GAMES)[number];
+export type StatGame = SoloGame | GameId;
+export type Mode = "solo" | "ai" | "online";
+export type Outcome = "win" | "loss" | "draw";
+
+export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
+  "truco-paulista": { name: "Truco", path: TRUCO_PATH },
+  connect4: { name: "Connect 4", path: CONNECT4_PATH },
+  "batalha-naval": { name: "Batalha Naval", path: BATALHA_PATH },
+  stop: { name: "Stop", path: STOP_PATH },
+  codenames: { name: "Codenames", path: CODENAMES_PATH },
+  sudoku: { name: "Sudoku", path: SUDOKU_PATH },
+  "paciencia-spider": { name: "Paciência Spider", path: SPIDER_PATH },
+};
+
+/** Ordem na tela do perfil. */
+export const STAT_GAMES: StatGame[] = [...ONLINE_GAMES, ...SOLO_GAMES];
+
+export const isOnlineGame = (g: string): g is (typeof ONLINE_GAMES)[number] => (ONLINE_GAMES as readonly string[]).includes(g);
+/** Jogo da página atual, pelo caminho (ex.: /connect-4/sala/ABCD → connect4). */
+export function gameFromPath(pathname: string): StatGame | null {
+  return STAT_GAMES.find((g) => pathname === GAME_INFO[g].path || pathname.startsWith(`${GAME_INFO[g].path}/`)) ?? null;
+}
+
+export const isSoloGame = (g: string): g is SoloGame => (SOLO_GAMES as readonly string[]).includes(g);

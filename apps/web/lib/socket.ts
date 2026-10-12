@@ -19,6 +19,21 @@ const listeners = new Set<() => void>();
 let ws: WebSocket | null = null;
 let queue: string[] = [];
 let retry = 0;
+// o hello (com o ticket de quem está logado) vai antes de qualquer outra mensagem
+let ready = false;
+let ticket: string | null = null;
+
+/** Ticket assinado pelo site: o servidor de jogos sabe quem está logado e salva o resultado no perfil. */
+async function fetchTicket(): Promise<string | null> {
+  try {
+    const r = await fetch("/api/ws-ticket", { cache: "no-store" });
+    return r.status === 200 ? ((await r.json()) as { ticket: string }).ticket : null;
+  } catch {
+    return null;
+  }
+}
+
+const hello = () => JSON.stringify({ t: "hello", token: getToken(), name: getName() || "Jogador", ticket: ticket ?? undefined });
 
 function set(patch: Partial<RoomState>) {
   state = { ...state, ...patch };
@@ -38,9 +53,16 @@ export function getName(): string {
   return localStorage.getItem("truco.name") ?? "";
 }
 
+/** Login, logout ou nome/foto trocados no perfil: busca o ticket de novo e avisa o servidor (a sala aberta já atualiza). */
+export async function refreshIdentity() {
+  if (!ready || ws?.readyState !== WebSocket.OPEN) return;
+  ticket = await fetchTicket();
+  if (ready && ws?.readyState === WebSocket.OPEN) ws.send(hello());
+}
+
 export function setName(name: string) {
   localStorage.setItem("truco.name", name);
-  if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ t: "hello", token: getToken(), name }));
+  if (ready && ws?.readyState === WebSocket.OPEN) ws.send(hello());
 }
 
 declare global {
@@ -60,11 +82,14 @@ export function connect() {
   set({ status: "connecting" });
   const sock = new WebSocket(url());
   ws = sock;
-  sock.onopen = () => {
+  sock.onopen = async () => {
     retry = 0;
-    sock.send(JSON.stringify({ t: "hello", token: getToken(), name: getName() || "Jogador" }));
+    ticket = await fetchTicket();
+    if (ws !== sock || sock.readyState !== WebSocket.OPEN) return;
+    sock.send(hello());
     queue.forEach((m) => sock.send(m));
     queue = [];
+    ready = true;
     set({ status: "open" });
   };
   sock.onmessage = (e) => {
@@ -77,6 +102,7 @@ export function connect() {
   sock.onclose = (e) => {
     if (ws !== sock) return;
     ws = null;
+    ready = false;
     set({ status: "closed" });
     if (e.code === 4000) return;
     setTimeout(connect, Math.min(5000, 500 * 2 ** retry++));
@@ -85,7 +111,7 @@ export function connect() {
 
 export function send<A>(msg: ClientMsg<A>) {
   const data = JSON.stringify(msg);
-  if (ws?.readyState === WebSocket.OPEN) ws.send(data);
+  if (ready && ws?.readyState === WebSocket.OPEN) ws.send(data);
   else {
     queue.push(data);
     connect();

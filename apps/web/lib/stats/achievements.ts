@@ -1,0 +1,289 @@
+import type { Mode, Outcome, StatGame } from "@/lib/stats/games";
+
+/** Resultado como vem do banco (só o que as regras usam). */
+export interface ResultRow {
+  mode: Mode | string;
+  outcome: Outcome | string;
+  placement: number | null;
+  data: Record<string, unknown>;
+  createdAt: Date;
+}
+
+export type AchievementIcon = "trophy" | "star" | "bolt" | "flame" | "target" | "shield" | "crown" | "calendar";
+
+interface Ctx {
+  /** Resultados deste jogo, do mais antigo ao mais novo. */
+  results: ResultRow[];
+  /** Maior sequência de dias seguidos jogando (todos os jogos). */
+  bestDays: number;
+}
+
+export interface AchievementDef {
+  code: string;
+  game: StatGame | null;
+  title: string;
+  desc: string;
+  icon: AchievementIcon;
+  check(ctx: Ctx): boolean;
+}
+
+// ---------- ajudantes ----------
+
+const num = (r: ResultRow, k: string) => Number(r.data[k] ?? NaN);
+const isWin = (r: ResultRow) => r.outcome === "win";
+const winsOf = (rs: ResultRow[]) => rs.filter(isWin);
+
+/** Maior sequência de vitórias (empate e derrota quebram). */
+export function bestStreak(rs: ResultRow[]): number {
+  let best = 0;
+  let cur = 0;
+  for (const r of rs) {
+    cur = isWin(r) ? cur + 1 : 0;
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+
+/** Sequência de vitórias que está valendo agora. */
+export function currentStreak(rs: ResultRow[]): number {
+  let n = 0;
+  for (let i = rs.length - 1; i >= 0 && isWin(rs[i]); i--) n++;
+  return n;
+}
+
+const wins = (game: StatGame, n: number, icon: AchievementIcon = n >= 100 ? "crown" : n >= 50 ? "star" : "trophy"): AchievementDef => ({
+  code: `${game}:wins_${n}`,
+  game,
+  title: `${n} vitórias`,
+  desc: `Vencer ${n} partidas`,
+  icon,
+  check: ({ results }) => winsOf(results).length >= n,
+});
+
+const first = (game: StatGame): AchievementDef => ({
+  code: `${game}:first`,
+  game,
+  title: "Primeira vitória",
+  desc: "Vencer a primeira partida",
+  icon: "trophy",
+  check: ({ results }) => results.some(isWin),
+});
+
+const streak5 = (game: StatGame): AchievementDef => ({
+  code: `${game}:streak_5`,
+  game,
+  title: "Embalado",
+  desc: "5 vitórias seguidas",
+  icon: "flame",
+  check: ({ results }) => bestStreak(results) >= 5,
+});
+
+const days = (n: number): AchievementDef => ({
+  code: `days_${n}`,
+  game: null,
+  title: `${n} dias seguidos`,
+  desc: `Jogar ${n} dias seguidos`,
+  icon: "calendar",
+  check: ({ bestDays }) => bestDays >= n,
+});
+
+// ---------- lista ----------
+
+export const ACHIEVEMENTS: AchievementDef[] = [
+  days(7),
+  days(30),
+
+  first("truco-paulista"),
+  {
+    code: "truco-paulista:shutout",
+    game: "truco-paulista",
+    title: "Pneu",
+    desc: "Ganhar de 12 a 0",
+    icon: "crown",
+    check: ({ results }) => winsOf(results).some((r) => (r.data.scores as number[] | undefined)?.[1] === 0),
+  },
+  streak5("truco-paulista"),
+  wins("truco-paulista", 10),
+  wins("truco-paulista", 50),
+  wins("truco-paulista", 100),
+
+  first("connect4"),
+  {
+    code: "connect4:quick",
+    game: "connect4",
+    title: "Relâmpago",
+    desc: "Vencer com só 4 peças",
+    icon: "bolt",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "pieces") === 4),
+  },
+  {
+    code: "connect4:ai_10",
+    game: "connect4",
+    title: "Mais esperto que a máquina",
+    desc: "Vencer a IA 10 vezes",
+    icon: "star",
+    check: ({ results }) => winsOf(results).filter((r) => r.mode === "ai").length >= 10,
+  },
+  streak5("connect4"),
+
+  first("batalha-naval"),
+  {
+    code: "batalha-naval:sharp",
+    game: "batalha-naval",
+    title: "Mira afiada",
+    desc: "Vencer com 60% ou mais de acertos",
+    icon: "target",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "shots") > 0 && num(r, "hits") / num(r, "shots") >= 0.6),
+  },
+  {
+    code: "batalha-naval:flawless",
+    game: "batalha-naval",
+    title: "Intocável",
+    desc: "Vencer sem perder nenhum navio",
+    icon: "shield",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "shipsLost") === 0),
+  },
+  streak5("batalha-naval"),
+
+  first("stop"),
+  {
+    code: "stop:perfect_round",
+    game: "stop",
+    title: "Rodada perfeita",
+    desc: "Todas as respostas únicas numa rodada",
+    icon: "star",
+    check: ({ results }) => results.some((r) => num(r, "perfectRounds") > 0),
+  },
+  {
+    code: "stop:stops_10",
+    game: "stop",
+    title: "Mão rápida",
+    desc: "Apertar o STOP 10 vezes",
+    icon: "bolt",
+    check: ({ results }) => results.reduce((n, r) => n + (num(r, "stops") || 0), 0) >= 10,
+  },
+  wins("stop", 10),
+  wins("stop", 50),
+
+  {
+    code: "codenames:master",
+    game: "codenames",
+    title: "Mestre espião",
+    desc: "Vencer como mestre",
+    icon: "crown",
+    check: ({ results }) => winsOf(results).some((r) => r.data.role === "master"),
+  },
+  {
+    code: "codenames:agent",
+    game: "codenames",
+    title: "Agente de campo",
+    desc: "Vencer como agente",
+    icon: "trophy",
+    check: ({ results }) => winsOf(results).some((r) => r.data.role === "agent"),
+  },
+  {
+    code: "codenames:clue_3",
+    game: "codenames",
+    title: "Dica de ouro",
+    desc: "Dica que rendeu 3 ou mais acertos",
+    icon: "target",
+    check: ({ results }) => results.some((r) => num(r, "bestClue") >= 3),
+  },
+  wins("codenames", 10),
+
+  first("sudoku"),
+  {
+    code: "sudoku:all_levels",
+    game: "sudoku",
+    title: "Todos os níveis",
+    desc: "Vencer no fácil, médio, difícil e expert",
+    icon: "star",
+    check: ({ results }) => new Set(winsOf(results).map((r) => r.data.difficulty)).size >= 4,
+  },
+  {
+    code: "sudoku:perfect",
+    game: "sudoku",
+    title: "Perfeito",
+    desc: "Vencer sem erros e sem dicas",
+    icon: "shield",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "mistakes") === 0 && num(r, "hints") === 0),
+  },
+  {
+    code: "sudoku:expert_20",
+    game: "sudoku",
+    title: "Expert relâmpago",
+    desc: "Vencer o expert em menos de 20 minutos",
+    icon: "bolt",
+    check: ({ results }) => winsOf(results).some((r) => r.data.difficulty === "expert" && num(r, "timeMs") < 20 * 60_000),
+  },
+  wins("sudoku", 10),
+  wins("sudoku", 50),
+  wins("sudoku", 100),
+
+  first("paciencia-spider"),
+  {
+    code: "paciencia-spider:suits_2",
+    game: "paciencia-spider",
+    title: "Dois naipes",
+    desc: "Vencer com 2 naipes",
+    icon: "star",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "suits") === 2),
+  },
+  {
+    code: "paciencia-spider:suits_4",
+    game: "paciencia-spider",
+    title: "Quatro naipes",
+    desc: "Vencer com 4 naipes",
+    icon: "crown",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "suits") === 4),
+  },
+  wins("paciencia-spider", 10),
+  wins("paciencia-spider", 50),
+  wins("paciencia-spider", 100),
+];
+
+export const ACHIEVEMENT_BY_CODE = new Map(ACHIEVEMENTS.map((a) => [a.code, a]));
+
+/** Conquistas novas para estes resultados (só as deste jogo e as gerais). */
+export function newAchievements(game: StatGame, ctx: Ctx, have: Set<string>): AchievementDef[] {
+  return ACHIEVEMENTS.filter((a) => (a.game === game || a.game === null) && !have.has(a.code) && a.check(ctx));
+}
+
+// ---------- dias seguidos ----------
+
+const DAY_FMT = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" });
+
+/** Dia no horário de Brasília (AAAA-MM-DD). */
+export const dayKey = (d: Date) => DAY_FMT.format(d);
+
+const prevDay = (key: string) => {
+  const d = new Date(`${key}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString().slice(0, 10);
+};
+
+/** Sequência de dias: a maior e a atual (vale se jogou hoje ou ontem). */
+export function dayStreaks(dayKeys: Iterable<string>): { best: number; current: number } {
+  const set = new Set(dayKeys);
+  let best = 0;
+  for (const k of set) {
+    if (set.has(prevDay(k))) continue; // só conta a partir do começo de cada sequência
+    let n = 0;
+    for (let d = k; set.has(d); d = nextDay(d)) n++;
+    best = Math.max(best, n);
+  }
+  const today = dayKey(new Date());
+  let start = set.has(today) ? today : prevDay(today);
+  let current = 0;
+  while (set.has(start)) {
+    current++;
+    start = prevDay(start);
+  }
+  return { best, current };
+}
+
+function nextDay(key: string) {
+  const d = new Date(`${key}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+}

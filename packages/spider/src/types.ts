@@ -34,6 +34,8 @@ export interface GameState extends Board {
   seed: number;
   /** jogadas feitas, incluindo distribuições e desfazer (cada uma custa 1 ponto) */
   moves: number;
+  /** tempo jogado em ms (o cliente soma enquanto a aba está visível) */
+  elapsed: number;
   history: Board[];
   won: boolean;
   last: LastAction | null;

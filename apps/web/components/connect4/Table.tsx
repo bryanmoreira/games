@@ -14,6 +14,7 @@ import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playDropSound } from "@/lib/connect4/sound";
 import { Board, cellStyle, Disc, type DiscColor } from "./Board";
 import { HowToPlay } from "./HowToPlay";
+import { SeatFace } from "@/components/ui/SeatFace";
 
 // Tempo até a peça bater no fundo (72% da animação de queda, ver .disc-fall)
 const landMs = (row: number) => (0.22 + (ROWS - row) * 0.07) * 0.72 * 1000;
@@ -178,11 +179,11 @@ function Opponent({ room, seat, turn }: { room: RoomInfo; seat: Seat; turn: bool
     <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 -translate-y-6 flex-col items-center sm:-translate-y-7 lg:-translate-y-8">
       <div className={`relative flex flex-col items-center ${info.connected ? "" : "opacity-40"}`}>
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-red-400/80 bg-stone-800 font-display text-xl text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
+          className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] border-red-400/80 bg-stone-800 font-display text-xl text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
             turn ? "turn-glow" : ""
           }`}
         >
-          {info.kind === "bot" ? "🤖" : info.name.slice(0, 1).toUpperCase()}
+          <SeatFace seat={info} />
         </div>
         <span className="relative -mt-2 flex max-w-28 items-center gap-1 truncate rounded-full bg-stone-950/90 px-2 py-0.5 text-[11px] font-semibold ring-1 ring-white/10 lg:text-xs">
           <Disc color="red" className="h-2.5 w-2.5 shrink-0 text-[2px]" />

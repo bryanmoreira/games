@@ -1,6 +1,7 @@
 import type { ServerWebSocket } from "bun";
-import type { ClientMsg, GameId, RoomInfo, Seat, ServerMsg } from "@truco/game";
+import type { ClientMsg, GameId, PlayerReport, RoomInfo, Seat, ServerMsg } from "@truco/game";
 import { GAMES, type GameAdapter } from "./games";
+import { sendReport, verifyTicket, type Account } from "./results";
 
 export interface WsData {
   token?: string;
@@ -12,6 +13,16 @@ interface Slot {
   kind: "empty" | "human" | "bot";
   token?: string;
   name: string;
+  /** Foto e @usuario de quem está logado no site. */
+  image?: string | null;
+  username?: string | null;
+}
+
+/** Quem começou a partida em cada lugar (para o resultado e para saber quem abandonou). */
+interface Match {
+  id: string;
+  mode: "ai" | "online";
+  players: { seat: Seat; token: string; userId: string | null }[];
 }
 
 interface Room {
@@ -33,6 +44,7 @@ interface Room {
   deadline: number | null;
   dealUntil: number;
   cleanup?: ReturnType<typeof setTimeout>;
+  match: Match | null;
 }
 
 const BOT_NAMES = ["Zé", "Tião", "Cida", "Juca", "Nena", "Dito", "Lurdes", "Chico"];
@@ -41,6 +53,13 @@ const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const rooms = new Map<string, Room>();
 const sockets = new Map<string, Socket>();
 const roomOf = new Map<string, string>(); // token -> code
+const accounts = new Map<string, Account>(); // token -> conta do site (só logados)
+
+/** Como a pessoa aparece no lugar: logado, nome e foto da conta; senão, o nome digitado. */
+const who = (token: string, name: string) => {
+  const a = accounts.get(token);
+  return a ? { name: a.name, image: a.image, username: a.username } : { name, image: null, username: null };
+};
 
 const emptySlot = (): Slot => ({ kind: "empty", name: "" });
 
@@ -86,6 +105,8 @@ function info(room: Room, token: string): RoomInfo {
       kind: s.kind,
       name: s.name,
       connected: s.kind === "bot" || (s.kind === "human" && isConnected(s.token)),
+      image: s.kind === "human" ? (s.image ?? null) : null,
+      username: s.kind === "human" ? (s.username ?? null) : null,
     })),
     waiting: [...room.members].filter(([t]) => !seated.has(t)).map(([, n]) => n),
     minSeats: room.adapter.minSeats ?? room.adapter.seats,
@@ -169,8 +190,29 @@ function step(room: Room, action: unknown): string | null {
   if (!r.ok) return r.error;
   room.state = r.state;
   markAnim(room, prev);
+  if (!room.adapter.over(prev) && room.adapter.over(r.state)) endMatch(room);
   refresh(room);
   return null;
+}
+
+/** Partida começando: anota quem está em cada lugar. Uma pessoa só contra IA = "ai". */
+function beginMatch(room: Room) {
+  const players = room.seats.flatMap((s, i) => (s.kind === "human" && s.token ? [{ seat: i as Seat, token: s.token, userId: accounts.get(s.token)?.userId ?? null }] : []));
+  room.match = { id: crypto.randomUUID(), mode: players.length >= 2 ? "online" : "ai", players };
+}
+
+/** Partida terminou: resultado de cada logado. Quem saiu no meio leva derrota. */
+function endMatch(room: Room) {
+  const m = room.match;
+  room.match = null;
+  if (!m || !room.state) return;
+  const players: PlayerReport[] = m.players.flatMap(({ seat, token, userId }) => {
+    if (!userId) return [];
+    const slot = room.seats[seat];
+    const stayed = slot.kind === "human" && slot.token === token;
+    return [stayed ? { userId, ...room.adapter.outcome(room.state, seat) } : { userId, outcome: "loss" as const, data: { abandoned: true } }];
+  });
+  void sendReport({ game: room.game, mode: m.mode, matchId: m.id, players });
 }
 
 const occupied = (room: Room) => room.seats.flatMap((s, i) => (s.kind === "empty" ? [] : [i]));
@@ -183,6 +225,7 @@ function canStart(room: Room) {
 function startGame(room: Room) {
   room.state = room.adapter.newGame(room.state ?? room.prev, { seats: occupied(room), settings: room.settings });
   room.prev = null;
+  beginMatch(room);
   markAnim(room, null);
   refresh(room);
 }
@@ -190,7 +233,10 @@ function startGame(room: Room) {
 function deleteRoom(room: Room) {
   clearTimeout(room.timer);
   clearTimeout(room.cleanup);
-  for (const t of room.members.keys()) roomOf.delete(t);
+  for (const t of room.members.keys()) {
+    roomOf.delete(t);
+    if (!sockets.has(t)) accounts.delete(t);
+  }
   rooms.delete(room.code);
 }
 
@@ -222,13 +268,17 @@ function joinRoom(room: Room, token: string, name: string) {
   room.members.set(token, name);
   roomOf.set(token, room.code);
   const seat = seatOf(room, token);
-  if (seat !== null) room.seats[seat].name = name;
+  if (seat !== null) Object.assign(room.seats[seat], who(token, name));
   clearTimeout(room.cleanup);
 }
 
 export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
   if (msg.t === "hello") {
-    const name = String(msg.name || "Jogador").slice(0, 16);
+    // logado: vale o nome da conta (só muda no perfil); o que o navegador mandar é ignorado
+    const account = verifyTicket(msg.ticket);
+    if (account) accounts.set(msg.token, account);
+    else accounts.delete(msg.token);
+    const name = account?.name ?? String(msg.name || "Jogador").slice(0, 16);
     const prev = sockets.get(msg.token);
     if (prev && prev !== ws) prev.close(4000, "replaced");
     ws.data.token = msg.token;
@@ -238,7 +288,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
     if (room) {
       room.members.set(msg.token, name);
       const seat = seatOf(room, msg.token);
-      if (seat !== null) room.seats[seat].name = name;
+      if (seat !== null) Object.assign(room.seats[seat], who(msg.token, name));
       clearTimeout(room.cleanup);
       refresh(room);
     }
@@ -267,13 +317,15 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       timerKey: null,
       deadline: null,
       dealUntil: 0,
+      match: null,
     };
     rooms.set(room.code, room);
     joinRoom(room, token, name);
-    room.seats[0] = { kind: "human", token, name };
+    room.seats[0] = { kind: "human", token, ...who(token, name) };
     if (room.solo && adapter.bots !== false) {
       for (let s = 1; s < adapter.seats; s++) room.seats[s] = { kind: "bot", name: botName(room) };
       room.state = adapter.newGame(null, { seats: occupied(room), settings: room.settings });
+      beginMatch(room);
       markAnim(room, null);
     } else room.solo = false;
     send(ws, { t: "created", code: room.code });
@@ -304,7 +356,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       if (room.seats[msg.seat]?.kind !== "empty") return error("Lugar ocupado");
       const cur = seatOf(room, token);
       if (cur !== null) room.seats[cur] = emptySlot();
-      room.seats[msg.seat] = { kind: "human", token, name };
+      room.seats[msg.seat] = { kind: "human", token, ...who(token, name) };
       break;
     }
     case "stand": {

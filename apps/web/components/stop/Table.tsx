@@ -16,6 +16,7 @@ import { Points, Tile } from "./Tile";
 import { CheckIcon, ClockIcon } from "@/components/ui/icons";
 import { useCountdown } from "@/lib/countdown";
 import { HowToPlay } from "./HowToPlay";
+import { SeatFace } from "@/components/ui/SeatFace";
 
 const WRITE_DEBOUNCE = 300;
 
@@ -104,11 +105,11 @@ function Players({ room, view }: { room: RoomInfo; view: PlayerView }) {
                 />
               </svg>
               <span
-                className={`absolute inset-[5px] flex items-center justify-center rounded-full bg-stone-800 font-display text-lg ${
+                className={`absolute inset-[5px] flex items-center justify-center overflow-hidden rounded-full bg-stone-800 font-display text-lg ${
                   me ? "text-gold ring-2 ring-gold/70" : "text-white"
                 }`}
               >
-                {(room.seats[p]?.name || "?").slice(0, 1).toUpperCase()}
+                <SeatFace seat={room.seats[p]} />
               </span>
               {ready && (
                 <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white ring-2 ring-stone-900">

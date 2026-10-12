@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   applyAction,
@@ -27,6 +27,8 @@ import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playErrorSound, playHintSound, playNoteSound, playPlaceSound, playUnitSound } from "@/lib/sudoku/sound";
 import { loadGame, saveBest, saveGame } from "@/lib/sudoku/storage";
+import { reportSoloWin } from "@/lib/stats/report";
+import { useClock } from "@/lib/useClock";
 import { SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { formatTime, LevelBars, LEVEL_LABEL, reasonLabel, TECHNIQUE_LABEL } from "./common";
 import { HowToPlay } from "./HowToPlay";
@@ -34,32 +36,6 @@ import { HowToPlay } from "./HowToPlay";
 const HEADER = "relative z-40 flex min-h-12 items-center justify-between gap-1.5 px-2 py-2 sm:min-h-[72px] sm:gap-2 sm:px-6";
 const WAVE_STEP = 45;
 const DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-// ---------- relógio ----------
-
-/** Soma o tempo só enquanto `running`. `now()` dá o total em ms. */
-function useClock(running: boolean) {
-  const base = useRef(0);
-  const since = useRef<number | null>(null);
-  const [, setTick] = useState(0);
-  const now = useCallback(() => base.current + (since.current === null ? 0 : Date.now() - since.current), []);
-  const reset = useCallback((ms: number) => {
-    base.current = ms;
-    if (since.current !== null) since.current = Date.now();
-    setTick((x) => x + 1);
-  }, []);
-  useEffect(() => {
-    if (!running) return;
-    since.current = Date.now();
-    const t = setInterval(() => setTick((x) => x + 1), 1000);
-    return () => {
-      clearInterval(t);
-      if (since.current !== null) base.current += Date.now() - since.current;
-      since.current = null;
-    };
-  }, [running]);
-  return useMemo(() => ({ now, reset }), [now, reset]);
-}
 
 function useSize() {
   const [el, setEl] = useState<HTMLElement | null>(null);
@@ -193,6 +169,7 @@ export function Table() {
       if (next.won) {
         setFx({ key: last.id, wave: wave(Array.from({ length: 81 }, (_, i) => i), last.cell) });
         setRecord(saveBest(next.difficulty, next.elapsed));
+        reportSoloWin("sudoku", { difficulty: next.difficulty, timeMs: Math.round(next.elapsed), mistakes: next.mistakes, hints: next.hints });
         setTimeout(playWinSound, 350);
         setTimeout(() => setShowEnd(true), 16 * WAVE_STEP + 900);
       } else if (last.completed.length) {

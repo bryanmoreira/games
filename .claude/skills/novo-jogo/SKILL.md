@@ -1,6 +1,6 @@
 ---
 name: novo-jogo
-description: Monta um novo jogo de cartas (ou outro jogo de mesa por turnos) neste monorepo de jogos (Bun + Next.js + WebSocket), seguindo exatamente os padrões do Truco Paulista já implementado — engine de regras pura e testada, IA, salas multiplayer com escolha de time, mesa com assentos na borda, animação de embaralhar/distribuir, sons sintetizados, dicas no hover, página e modal "Como jogar", SEO e prévia de link por jogo, convite pelo WhatsApp, estilização, responsividade e deploy Docker/Easypanel. Use sempre que o usuário pedir para criar, montar, adicionar ou começar um jogo novo (ex.: "monta o truco mineiro", "adiciona buraco", "cria um jogo de fodinha", "quero um novo jogo na página de jogos"), e também ao estender um jogo existente com recursos que o truco já tem (IA, salas, sons, dicas, como jogar, distribuição animada), mesmo que o usuário não fale em "skill" ou "padrão".
+description: Monta um novo jogo de cartas (ou outro jogo de mesa por turnos) neste monorepo de jogos (Bun + Next.js + WebSocket), seguindo exatamente os padrões do Truco Paulista já implementado — engine de regras pura e testada, IA, salas multiplayer com escolha de time, mesa com assentos na borda, animação de embaralhar/distribuir, sons sintetizados, dicas no hover, página e modal "Como jogar", recordes e conquistas no perfil, SEO e prévia de link por jogo, convite pelo WhatsApp, estilização, responsividade e deploy Docker/Easypanel. Use sempre que o usuário pedir para criar, montar, adicionar ou começar um jogo novo (ex.: "monta o truco mineiro", "adiciona buraco", "cria um jogo de fodinha", "quero um novo jogo na página de jogos"), e também ao estender um jogo existente com recursos que o truco já tem (IA, salas, sons, dicas, como jogar, distribuição animada), mesmo que o usuário não fale em "skill" ou "padrão".
 ---
 
 # Novo jogo no monorepo de jogos
@@ -21,13 +21,15 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 ## Fluxo
 
 1. **Regras primeiro.** Confirme com o usuário a variante exata (ex.: truco mineiro vs paulista: manilhas, valores das apostas, pontuação, número de jogadores, regras especiais). Se houver dúvida real sobre uma regra, pergunte — regra errada é o bug mais caro. Registre as regras no topo do arquivo de regras e na página "Como jogar".
+   - **No mesmo plano, proponha os recordes e as conquistas do jogo** (o que salvar de cada partida, recordes do perfil, 4 a 7 conquistas) e espere o usuário aprovar ou trocar. Ele quer pensar nisso junto em todo jogo novo. Roteiro: [references/conquistas.md](references/conquistas.md).
 2. **Engine pura + testes** (`packages/<slug>`): tipos, baralho, reducer `applyAction`, projeção por jogador `viewFor`, IA `decide`, protocolo. Escreva os testes junto, incluindo a simulação de centenas de partidas só com IAs. Detalhes: [references/arquitetura.md](references/arquitetura.md).
 3. **Servidor**: plugue o jogo no servidor de salas (bots, timers, reconexão, atraso da animação de distribuição), sempre com **um único** `rooms.ts`/servidor WS. Variante da mesma engine pede só um campo `variant` na sala; jogo de outra família pede um adaptador por jogo. Veja "Vários jogos no servidor" em arquitetura.md.
    - Variante de jogo existente: antes de mexer na UI, procure valores fixos da variante original (no truco: `BET_NAME` por valor, `bet.value + 3`, `[3,6,9,12]` no som, "MÃO DE 11", `value > 1`) e faça-os virem da engine/view (ex.: `raiseTo`, degrau da aposta, rótulos por variante).
 4. **Web**: rota própria `/<slug>` (ex.: `/truco-mineiro`), card na página inicial de jogos, lobby, mesa, "Como jogar". Padrões visuais e componentes: [references/ui.md](references/ui.md).
 5. **SEO e prévia de link**: entrada em `GAMES` (`lib/seo.ts`), metadados e JSON-LD no layout, FAQ no "Como jogar", `noindex` nas salas/partidas, arte da prévia em `lib/og.tsx` e chamada do convite no `Lobby`. Passo a passo: [references/seo.md](references/seo.md).
-6. **Polimento**: distribuição animada, sons, dicas no hover, destaque de vez, placar da mão. Sons: [references/som.md](references/som.md). "Como jogar" e dicas: [references/como-jogar.md](references/como-jogar.md).
-7. **Verificação**: testes, typecheck, navegador (solo, multiplayer com 2 abas, celular), Docker se mexeu em build. Roteiro e armadilhas conhecidas: [references/verificacao.md](references/verificacao.md).
+6. **Recordes e conquistas**: os aprovados no passo 1. Jogo online: `outcome()` no adaptador do servidor; jogo solo: `reportSoloWin` + validação em `/api/results`. Conquistas em `lib/stats/achievements.ts`, recordes em `lib/stats/summary.ts`. Passo a passo: [references/conquistas.md](references/conquistas.md).
+7. **Polimento**: distribuição animada, sons, dicas no hover, destaque de vez, placar da mão. Sons: [references/som.md](references/som.md). "Como jogar" e dicas: [references/como-jogar.md](references/como-jogar.md).
+8. **Verificação**: testes, typecheck, navegador (solo, multiplayer com 2 abas, celular), Docker se mexeu em build. Roteiro e armadilhas conhecidas: [references/verificacao.md](references/verificacao.md).
 
 ## Mapa do código de referência (Truco Paulista)
 
@@ -72,6 +74,10 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | SEO do jogo (metadados, JSON-LD, frase sob o título, FAQ) | `lib/seo.ts` (`gameMetadata`, `howToMetadata`, `gameLd`, `howToLd`, `noindex`) + `components/seo.tsx` (`JsonLd`, `GameIntro`, `GameFaq`) |
 | Prévia de link 1200×630 | `lib/og.tsx` (`gameOgImage`, arte por jogo em `art()`) |
 | Convite pelo WhatsApp (só no lobby de jogo online) | `components/ui/WhatsAppInvite.tsx`, mensagens em `INVITE` no `Lobby.tsx` |
+| Resultados, recordes e conquistas no perfil | `lib/stats/` (`games.ts`, `achievements.ts`, `summary.ts`, `record.ts`, `report.ts`), `outcome()` em `apps/server/src/games.ts`; a tela de fim já mostra as conquistas novas (`NewAchievements` no `GameEnd`) |
+| Cronômetro que pausa com a aba oculta | `lib/useClock.ts` (Sudoku e Spider) |
+| Nome do jogador antes da sala | `components/ui/PlayerName.tsx`: campo para visitante; logado, nome e foto da conta travados (só mudam no perfil). Use na página do jogo e no "Seu nome" da sala — nunca um `<input>` próprio |
+| Rosto do jogador na mesa e no lobby | `components/ui/SeatFace.tsx` dentro do círculo do lugar (com `overflow-hidden`): foto da conta, 🤖 ou inicial. O servidor manda `image`/`username` em `SeatInfo` e usa o nome da conta (ticket assinado), ignorando o que o navegador mandar |
 
 ### Jogo de um jogador só (ex.: Paciência Spider)
 
@@ -104,6 +110,7 @@ Use como lista de tarefas; cada item existe porque já deu problema antes:
 - [ ] Lobby com escolha de lugar/time, host adiciona IA, modo solo com IAs
 - [ ] Mesa: assentos na borda, leques virados ao centro, selo "D" de quem dá, destaque de vez nas cartas, placar e valor da rodada
 - [ ] Distribuição animada a cada mão; bots esperam a animação (`dealUntil` no servidor)
+- [ ] Recordes e conquistas aprovados pelo usuário e implementados; partida até o fim logado grava em `game_result`, aparece no `/perfil` e em `/perfil/conquistas`; dados de teste apagados ([references/conquistas.md](references/conquistas.md))
 - [ ] Vitória e derrota com `GameEnd` (mesmos ícones, títulos e botões em todos os jogos; só os números e o selo mudam)
 - [ ] Botão de sair da partida pede confirmação (`ExitConfirm`), em todo jogo, inclusive os de um jogador só
 - [ ] Sons (carta jogada + eventos principais), botão de mudo; dicas no hover com botão para desligar (ocultas em touch)

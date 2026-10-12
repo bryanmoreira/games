@@ -9,6 +9,7 @@ import { Lobby, TEAMS_2X2 } from "@/components/ui/Lobby";
 import { GAME_ROOM_PATH } from "@/lib/rooms";
 import { Table } from "@/components/truco/Table";
 import { TRUCO_PATH } from "@/lib/truco/paths";
+import { PlayerName } from "@/components/ui/PlayerName";
 
 export default function RoomPage() {
   const code = String(useParams<{ code: string }>().code).toUpperCase();
@@ -40,14 +41,7 @@ export default function RoomPage() {
     return (
       <Center>
         <h1 className="font-display text-3xl text-gold">{code}</h1>
-        <input
-          autoFocus
-          value={name}
-          onChange={(e) => setNameInput(e.target.value.slice(0, 16))}
-          onKeyDown={(e) => e.key === "Enter" && confirmName()}
-          placeholder="Seu nome"
-          className="w-full rounded-xl bg-white/10 px-4 py-3 text-center text-lg outline-none ring-gold/60 focus:ring-2"
-        />
+        <PlayerName autoFocus value={name} onChange={setNameInput} onEnter={confirmName} />
         <button onClick={confirmName} className="w-full rounded-xl bg-gold py-3 font-display text-stone-900">
           Entrar
         </button>

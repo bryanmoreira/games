@@ -15,6 +15,7 @@ import { HowToPlay } from "./HowToPlay";
 import { CardInfo } from "./CardInfo";
 import { playCardSound, useAudioUnlock } from "@/lib/sound";
 import { playTrucoSound } from "@/lib/truco/sound";
+import { SeatFace } from "@/components/ui/SeatFace";
 
 type Pos = "bottom" | "right" | "top" | "left";
 const POS: Pos[] = ["bottom", "right", "top", "left"];
@@ -212,11 +213,11 @@ function Opponent({ pos, seat, room, view, count }: { pos: Exclude<Pos, "bottom"
     <div className={`absolute z-10 flex items-center gap-1.5 sm:gap-2 ${SEAT_POS[pos]}`}>
       <div className={`relative flex flex-col items-center ${info.connected ? "" : "opacity-40"}`}>
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border-[3px] font-display text-xl shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
+          className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] font-display text-xl shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
             partner ? "border-gold bg-gold text-stone-900" : "border-red-400/80 bg-stone-800 text-white"
           } ${turn ? "turn-glow" : ""}`}
         >
-          {info.kind === "bot" ? "🤖" : info.name.slice(0, 1).toUpperCase()}
+          <SeatFace seat={info} />
         </div>
         <span className="relative -mt-2 max-w-24 truncate rounded-full bg-stone-950/90 px-2 py-0.5 text-[11px] font-semibold lg:text-xs ring-1 ring-white/10">
           {info.name}

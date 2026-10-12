@@ -9,6 +9,7 @@ import { GameIntro } from "@/components/seo";
 import { CardImg } from "@/components/cards/Card";
 import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
 import { makeCard } from "@truco/game";
+import { PlayerName } from "@/components/ui/PlayerName";
 
 const FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades"), makeCard("7", "diamonds")];
 
@@ -65,13 +66,7 @@ export default function TrucoHome() {
       </h1>
       <GameIntro slug="truco-paulista" />
 
-      <input
-        value={name}
-        onChange={(e) => setNameInput(e.target.value.slice(0, 16))}
-        onBlur={saveName}
-        placeholder="Seu nome"
-        className="w-full rounded-xl bg-white/10 px-4 py-3 text-center text-lg outline-none ring-gold/60 placeholder:text-white/40 focus:ring-2"
-      />
+      <PlayerName value={name} onChange={setNameInput} onBlur={saveName} />
 
       <div className="flex w-full flex-col gap-3">
         <button

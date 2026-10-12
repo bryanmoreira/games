@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bungee, Inter } from "next/font/google";
 import { connection } from "next/server";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { AccountSync } from "@/components/AccountSync";
 import "./globals.css";
 
 const bungee = Bungee({ weight: "400", subsets: ["latin"], variable: "--font-bungee" });
@@ -36,7 +37,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: script }} />
         <script defer src="https://umami.sunfire.com.br/script.js" data-website-id="fc7700da-1558-4ba9-9882-ab404f12129e" />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <AccountSync />
+        {children}
+      </body>
     </html>
   );
 }

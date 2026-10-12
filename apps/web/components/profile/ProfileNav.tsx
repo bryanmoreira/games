@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { refreshIdentity } from "@/lib/socket";
 
 type Item = { href: string; label: string; icon: React.ReactNode };
 
@@ -26,6 +27,11 @@ const ITEMS: Item[] = [
     ),
   },
   {
+    href: "/perfil/conquistas",
+    label: "Conquistas",
+    icon: svg(<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z" />),
+  },
+  {
     href: "/perfil/conta",
     label: "Conta",
     icon: svg(
@@ -43,15 +49,17 @@ export function ProfileNav() {
 
   const signOut = async () => {
     await authClient.signOut();
+    void refreshIdentity();
     router.push("/");
     router.refresh();
   };
 
-  const base = "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition";
+  // no celular as abas ficam numa fileira: mais compactas, e "Sair" só com o ícone
+  const base = "flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-[13px] transition md:gap-3 md:px-3 md:py-2.5 md:text-sm";
 
   return (
     <nav aria-label="Perfil" className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
-      <ul className="flex gap-2 md:sticky md:top-6 md:flex-col md:gap-1">
+      <ul className="flex gap-1 md:sticky md:top-6 md:flex-col md:gap-1">
         {ITEMS.map((it) => {
           const active = pathname === it.href;
           return (
@@ -68,7 +76,7 @@ export function ProfileNav() {
           );
         })}
         <li className="shrink-0 md:mt-4 md:border-t md:border-white/10 md:pt-4">
-          <button onClick={signOut} className={`${base} w-full text-white/50 hover:bg-white/5 hover:text-white`}>
+          <button onClick={signOut} aria-label="Sair" title="Sair" className={`${base} w-full text-white/50 hover:bg-white/5 hover:text-white`}>
             {svg(
               <>
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -76,7 +84,7 @@ export function ProfileNav() {
                 <path d="M21 12H9" />
               </>,
             )}
-            Sair
+            <span className="hidden md:inline">Sair</span>
           </button>
         </li>
       </ul>

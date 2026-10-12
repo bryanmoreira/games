@@ -5,9 +5,11 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { BackButton } from "@/components/BackButton";
 import { ShareProfileButton } from "@/components/profile/ShareProfileButton";
+import { ProfileStatsView, RivalryCard } from "@/components/stats/ProfileStats";
 import { Avatar } from "@/components/profile/ProfileHeader";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getProfileStats, getRivalry } from "@/lib/stats/summary";
 import { normalizeUsername } from "@/lib/username";
 
 function LockIcon({ className }: { className?: string }) {
@@ -46,6 +48,9 @@ export default async function PublicProfile({ params }: Props) {
   const isMe = session?.user.id === player.id;
   // perfil privado: visitante vê só foto, nome e @
   const hidden = !player.profilePublic && !isMe;
+  const [stats, rivalry] = hidden
+    ? [null, null]
+    : await Promise.all([getProfileStats(player.id), session && !isMe ? getRivalry(session.user.id, player.id) : null]);
   const since = player.createdAt.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
 
   return (
@@ -95,15 +100,10 @@ export default async function PublicProfile({ params }: Props) {
             <span className="font-display text-sm">PERFIL PRIVADO</span>
           </section>
         ) : (
-          // conquistas e estatísticas entram aqui quando forem para o banco
-          <section className="flex flex-col items-center gap-3 rounded-2xl bg-white/5 px-4 py-12 text-white/30 ring-1 ring-white/10">
-            <svg viewBox="0 0 24 24" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M8 21h8M12 17v4" />
-              <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
-              <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
-            </svg>
-            <span className="font-display text-sm">CONQUISTAS EM BREVE</span>
-          </section>
+          <>
+            {rivalry && <RivalryCard rivalry={rivalry} them={player.username!} />}
+            <ProfileStatsView stats={stats!} />
+          </>
         )}
       </main>
     </div>

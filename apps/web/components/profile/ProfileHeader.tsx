@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckIcon, PencilIcon } from "@/components/ui/icons";
 import { authClient } from "@/lib/auth-client";
-import { setName as setGameName } from "@/lib/socket";
+import { refreshIdentity, setName as setGameName } from "@/lib/socket";
 
 type User = { name: string; email: string; image: string | null; username: string | null };
 
@@ -44,6 +44,7 @@ export function ProfileHeader({ user }: { user: User }) {
     setSaving(false);
     if (error) return;
     setGameName(n);
+    void refreshIdentity();
     setEditing(false);
     router.refresh();
   };

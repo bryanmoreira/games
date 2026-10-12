@@ -1,5 +1,6 @@
 "use client";
 
+import { NewAchievements } from "@/components/stats/NewAchievements";
 import { XIcon } from "./buttons";
 
 /**
@@ -42,6 +43,7 @@ export function GameEnd({
           {badge}
         </div>
         {children}
+        <NewAchievements />
         <div className="flex flex-wrap justify-center gap-2 text-sm sm:gap-3 sm:text-base">
           <button onClick={onLeave} aria-label="Sair" title="Sair" className="flex items-center rounded-xl bg-white/10 px-4 py-3 sm:px-5 transition hover:bg-white/20">
             <XIcon />

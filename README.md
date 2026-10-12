@@ -7,7 +7,7 @@ Cartas: [Webisso/playing-cards](https://github.com/Webisso/playing-cards) (MIT).
 
 ## Montando um jogo novo (com Claude Code)
 
-O repositório tem a skill de projeto **`novo-jogo`** ([.claude/skills/novo-jogo](.claude/skills/novo-jogo/SKILL.md)), que ensina o Claude a montar jogos seguindo os padrões do Truco Paulista: regras e IA testadas, salas multiplayer com escolha de time, mesa, distribuição animada, sons, dicas no hover, "Como jogar", visual, celular e deploy. Ela também guarda as preferências do projeto (pouco texto na tela, ícones SVG, sons sem voz, commit só quando pedido).
+O repositório tem a skill de projeto **`novo-jogo`** ([.claude/skills/novo-jogo](.claude/skills/novo-jogo/SKILL.md)), que ensina o Claude a montar jogos seguindo os padrões do Truco Paulista: regras e IA testadas, salas multiplayer com escolha de time, mesa, distribuição animada, sons, dicas no hover, "Como jogar", recordes e conquistas no perfil, visual, celular e deploy. Ela também guarda as preferências do projeto (pouco texto na tela, ícones SVG, sons sem voz, commit só quando pedido).
 
 ### Como chamar
 
@@ -38,7 +38,7 @@ Funciona em qualquer sessão do Claude Code aberta na pasta do repositório.
 
 ### Mantendo a skill atualizada
 
-Quando uma correção deve valer para todos os jogos (um gosto visual, uma regra de trabalho, uma armadilha nova), peça: `atualiza a skill novo-jogo com isso`. A skill fica em `.claude/skills/novo-jogo/`: o `SKILL.md` tem o fluxo e o checklist, e `references/` tem os detalhes (arquitetura, UI, som, "Como jogar", SEO e prévia de link, verificação).
+Quando uma correção deve valer para todos os jogos (um gosto visual, uma regra de trabalho, uma armadilha nova), peça: `atualiza a skill novo-jogo com isso`. A skill fica em `.claude/skills/novo-jogo/`: o `SKILL.md` tem o fluxo e o checklist, e `references/` tem os detalhes (arquitetura, UI, som, "Como jogar", SEO e prévia de link, recordes e conquistas, verificação).
 
 ## Desenvolvimento
 
@@ -58,6 +58,8 @@ bun test packages
 
 - **Novo provedor** (GitHub, Discord…): habilite em `socialProviders` no `lib/auth.ts` e adicione em `SOCIAL_PROVIDERS` (`components/auth/providers.tsx`).
 - **E-mail e senha**: ligue `emailAndPassword` no `lib/auth.ts` e coloque o formulário em `components/auth/LoginOptions.tsx`, acima dos botões.
+- **Recordes e conquistas**: cada partida terminada vira uma linha em `game_result` (`lib/stats/`). Sudoku e Spider mandam pelo navegador (`/api/results`); os jogos online e contra IA são registrados pelo servidor de salas, que sabe quem está logado por um ticket assinado com `GAME_SECRET` e envia para `/api/internal/results`. Quem sai no meio de uma partida online leva derrota. Conquistas novas: `lib/stats/achievements.ts`.
+- Para rodar local, copie também `apps/server/.env.example` para `apps/server/.env` com o mesmo `GAME_SECRET` do site.
 - Para mandar alguém logar e voltar: `loginHref("/caminho")` (`lib/login.ts`).
 
 - No Google Cloud, em **Credenciais > ID do cliente OAuth**, adicione os URIs de redirecionamento:
@@ -96,6 +98,9 @@ Variáveis de ambiente (runtime, sem precisar rebuildar):
 | web | `GOOGLE_CLIENT_SECRET` | do Google Cloud |
 | web | `DISCORD_CLIENT_ID` | do Discord Developer Portal |
 | web | `DISCORD_CLIENT_SECRET` | do Discord Developer Portal |
+| web | `GAME_SECRET` | `openssl rand -hex 32` (o mesmo no `ws`) |
+| ws | `GAME_SECRET` | o mesmo do `web` |
+| ws | `WEB_URL` | endereço interno do serviço web, ex.: `http://web:3000` |
 | ws | `PORT` (opcional) | `3001` |
 
 Sem `NEXT_PUBLIC_WS_URL`, o cliente tenta `ws(s)://<host da página>:3001`.

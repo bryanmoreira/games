@@ -16,6 +16,7 @@ import { playCountdownSound, playLoseSound, playWinSound, useAudioUnlock } from 
 import { playClueSound, playRevealSound } from "@/lib/codenames/sound";
 import { EyeIcon, SendIcon, SkullIcon, TEAM, WordCard, type Mark } from "./Board";
 import { HowToPlay } from "./HowToPlay";
+import { SeatFace } from "@/components/ui/SeatFace";
 
 export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   const router = useRouter();
@@ -93,7 +94,7 @@ function TeamPanel({ room, view, team }: { room: RoomInfo; view: PlayerView; tea
       </div>
       <div className="flex flex-col gap-0.5 lg:gap-1">
         {seats.map((p) => (
-          <Player key={p} name={room.seats[p]?.name ?? ""} team={team} master={roleOf(p) === "master"} me={p === view.seat} glow={acting(view, p)} away={!room.seats[p]?.connected} />
+          <Player key={p} name={room.seats[p]?.name ?? ""} image={room.seats[p]?.image} team={team} master={roleOf(p) === "master"} me={p === view.seat} glow={acting(view, p)} away={!room.seats[p]?.connected} />
         ))}
       </div>
     </section>
@@ -101,15 +102,15 @@ function TeamPanel({ room, view, team }: { room: RoomInfo; view: PlayerView; tea
 }
 
 /** Uma linha por jogador: inicial, nome inteiro e o olho no mestre. */
-function Player({ name, team, master, me, glow, away }: { name: string; team: Team; master: boolean; me: boolean; glow: boolean; away: boolean }) {
+function Player({ name, image, team, master, me, glow, away }: { name: string; image?: string | null; team: Team; master: boolean; me: boolean; glow: boolean; away: boolean }) {
   return (
     <div className={`flex items-center gap-1.5 rounded-lg px-1 py-0.5 lg:gap-2 lg:px-1.5 lg:py-1 ${master ? "bg-black/25" : ""} ${away ? "opacity-40" : ""}`} title={name}>
       <span
-        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-stone-800 font-display text-[10px] ring-2 lg:h-7 lg:w-7 lg:text-xs ${TEAM[team].ring} ${
+        className={`flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-stone-800 font-display text-[10px] ring-2 lg:h-7 lg:w-7 lg:text-xs ${TEAM[team].ring} ${
           glow ? "turn-glow" : ""
         } ${me ? "text-gold" : "text-white"}`}
       >
-        {(name || "?").slice(0, 1).toUpperCase()}
+        <SeatFace seat={{ kind: "human", name, image }} />
       </span>
       <span className={`min-w-0 flex-1 truncate text-xs font-semibold lg:text-sm ${me ? "text-gold" : "text-white/80"}`}>{name}</span>
       {master && <EyeIcon className={`h-4 w-4 shrink-0 ${TEAM[team].text}`} />}

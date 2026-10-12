@@ -23,6 +23,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  results       GameResult[]
+  achievements  Achievement[]
 
   @@map("user")
 }
@@ -72,4 +74,37 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+// Uma linha por jogador por partida terminada. Recordes, sequências e rivalidade saem daqui.
+model GameResult {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game      String // ver lib/stats/games.ts
+  mode      String // solo | ai | online
+  outcome   String // win | loss | draw
+  // colocação (1 = primeiro) nos jogos com mais de dois lados (Stop)
+  placement Int?
+  // mesma partida para todos que jogaram: liga os jogadores na rivalidade
+  matchId   String?
+  // números da partida (tempo, jogadas, pontos…) de cada jogo
+  data      Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([userId, game, createdAt])
+  @@index([matchId])
+  @@map("game_result")
+}
+
+model Achievement {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code       String // ver lib/stats/achievements.ts
+  unlockedAt DateTime @default(now())
+
+  @@unique([userId, code])
+  @@index([userId, unlockedAt])
+  @@map("achievement")
 }

@@ -361,3 +361,13 @@ body {
     row-gap: 0.5rem;
   }
 }
+
+/* conquista desbloqueada na tela de fim */
+@keyframes achievement-pop {
+  0% { opacity: 0; transform: scale(0.8) translateY(6px); }
+  60% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: none; }
+}
+.achievement-pop {
+  animation: achievement-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}

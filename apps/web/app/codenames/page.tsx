@@ -8,6 +8,7 @@ import { BackButton } from "@/components/BackButton";
 import { GameIntro } from "@/components/seo";
 import { MiniGrid } from "@/components/codenames/Board";
 import { CODENAMES_PATH, roomPath } from "@/lib/codenames/paths";
+import { PlayerName } from "@/components/ui/PlayerName";
 
 export default function CodenamesHome() {
   const router = useRouter();
@@ -52,13 +53,7 @@ export default function CodenamesHome() {
       </h1>
       <GameIntro slug="codenames" />
 
-      <input
-        value={name}
-        onChange={(e) => setNameInput(e.target.value.slice(0, 16))}
-        onBlur={saveName}
-        placeholder="Seu nome"
-        className="w-full rounded-xl bg-white/10 px-4 py-3 text-center text-lg outline-none ring-gold/60 placeholder:text-white/40 focus:ring-2"
-      />
+      <PlayerName value={name} onChange={setNameInput} onBlur={saveName} />
 
       <div className="flex w-full flex-col gap-3">
         <button

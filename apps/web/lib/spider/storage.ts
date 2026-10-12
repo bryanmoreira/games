@@ -11,7 +11,7 @@ export function loadGame(): GameState | null {
     const raw = localStorage.getItem(GAME_KEY);
     if (!raw) return null;
     const g = JSON.parse(raw) as GameState;
-    return Array.isArray(g.cols) && g.cols.length === 10 ? g : null;
+    return Array.isArray(g.cols) && g.cols.length === 10 ? { ...g, elapsed: g.elapsed ?? 0 } : null;
   } catch {
     return null;
   }

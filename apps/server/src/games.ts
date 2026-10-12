@@ -3,7 +3,7 @@ import * as c4 from "@truco/connect4";
 import * as stop from "@truco/stop";
 import * as bn from "@truco/batalha-naval";
 import * as cn from "@truco/codenames";
-import type { GameId } from "@truco/game";
+import type { GameId, PlayerReport } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
 
@@ -45,6 +45,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
   phaseKey?(s: S): string;
   /** Ação que avisa o jogo de quem está desconectado (null se nada mudou). */
   away?(s: S, seats: number[]): A | null;
+  /** Resultado de um lugar na partida terminada (o que vai para o perfil). */
+  outcome(s: S, seat: number): Omit<PlayerReport, "userId">;
 }
 
 // Tempo da animação de embaralhar/distribuir no cliente
@@ -69,6 +71,13 @@ const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView>
   pause: (s) => (s.phase === "roundEnd" ? 1400 : s.phase === "handEnd" ? 2600 : null),
   over: (s) => s.phase === "gameOver",
   animMs: (prev, next) => (!prev || prev.handNo !== next.handNo ? DEAL_MS : 0),
+  outcome: (s, seat) => {
+    const team = truco.teamOf(seat as truco.Seat);
+    return {
+      outcome: s.winner === team ? "win" : "loss",
+      data: { scores: [s.scores[team], s.scores[1 - team]], hands: s.handNo },
+    };
+  },
 };
 
 const connect4Adapter: GameAdapter<c4.GameState, c4.Action, c4.PlayerView> = {
@@ -82,6 +91,10 @@ const connect4Adapter: GameAdapter<c4.GameState, c4.Action, c4.PlayerView> = {
   pause: () => null,
   over: (s) => s.phase === "gameOver",
   animMs: (prev, next) => (prev && next.moves.length > prev.moves.length ? DROP_MS : 0),
+  outcome: (s, seat) => ({
+    outcome: s.winner === null ? "draw" : s.winner === seat ? "win" : "loss",
+    data: { pieces: s.moves.filter((m) => m.seat === seat).length, moves: s.moves.length },
+  }),
 };
 
 const stopAdapter: GameAdapter<stop.GameState, stop.Action, stop.PlayerView> = {
@@ -120,6 +133,25 @@ const stopAdapter: GameAdapter<stop.GameState, stop.Action, stop.PlayerView> = {
     const away = s.players.filter((p) => seats.includes(p));
     return away.length === s.away.length && away.every((p) => s.away.includes(p)) ? null : { type: "away", seats: away };
   },
+  outcome: (s, seat) => {
+    const score = s.scores[seat] ?? 0;
+    const all = s.players.map((p) => s.scores[p] ?? 0);
+    const top = Math.max(...all);
+    const atTop = all.filter((x) => x === top).length;
+    const mine = s.history.map((r) => r.points[seat] ?? []);
+    return {
+      // vitória só para o primeiro lugar sozinho; empate no topo é empate
+      outcome: score === top ? (atTop > 1 ? "draw" : "win") : "loss",
+      placement: 1 + all.filter((x) => x > score).length,
+      data: {
+        score,
+        players: s.players.length,
+        unique: mine.flat().filter((p) => p === 10).length,
+        stops: s.history.filter((r) => r.stoppedBy === seat).length,
+        perfectRounds: mine.filter((pts) => pts.length > 0 && pts.every((p) => p === 10)).length,
+      },
+    };
+  },
 };
 
 const batalhaNavalAdapter: GameAdapter<bn.GameState, bn.Action, bn.PlayerView> = {
@@ -139,6 +171,17 @@ const batalhaNavalAdapter: GameAdapter<bn.GameState, bn.Action, bn.PlayerView> =
   pause: () => null,
   over: (s) => s.phase === "gameOver",
   animMs: (prev, next) => (prev && next.shots.length > prev.shots.length ? SHOT_MS : 0),
+  outcome: (s, seat) => {
+    const mine = s.shots.filter((x) => x.seat === seat);
+    return {
+      outcome: s.winner === seat ? "win" : "loss",
+      data: {
+        shots: mine.length,
+        hits: mine.filter((x) => x.hit).length,
+        shipsLost: s.shots.filter((x) => x.seat !== seat && x.sunk !== null).length,
+      },
+    };
+  },
 };
 
 const codenamesAdapter: GameAdapter<cn.GameState, cn.Action, cn.PlayerView> = {
@@ -161,6 +204,15 @@ const codenamesAdapter: GameAdapter<cn.GameState, cn.Action, cn.PlayerView> = {
   over: (s) => s.phase === "gameOver",
   animMs: () => 0,
   phaseKey: (s) => `${s.gameNo}:${s.phaseNo}`,
+  outcome: (s, seat) => {
+    const team = cn.teamOf(seat);
+    // dica que mais rendeu: palavras do próprio time achadas com ela
+    const bestClue = Math.max(0, ...s.clues.filter((c) => c.seat === seat).map((c) => c.guesses.filter((g) => s.cards[g]?.key === team).length));
+    return {
+      outcome: s.winner === team ? "win" : "loss",
+      data: { role: cn.roleOf(seat), assassin: s.reason === "assassin" && s.winner !== team, bestClue },
+    };
+  },
 };
 
 export const GAMES: Record<GameId, GameAdapter> = {
