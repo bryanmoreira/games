@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { friendStatus, groupFriends, planFriendAction, type FriendRow, type FriendUser } from "../lib/friends-rules";
+import { canSeeProfile, friendStatus, groupFriends, planFriendAction, type FriendRow, type FriendUser } from "../lib/friends-rules";
 
 const ANA = "ana";
 const BETO = "beto";
@@ -70,6 +70,23 @@ describe("desfazer", () => {
 
   test("sem linha: nada para apagar", () => {
     expect(planFriendAction(ANA, BETO, null, "remove")).toEqual({ op: null, status: "none" });
+  });
+});
+
+describe("perfil privado", () => {
+  test("público: todo mundo vê", () => {
+    expect(canSeeProfile(true, false, "none")).toBe(true);
+  });
+
+  test("privado: o dono e os amigos veem", () => {
+    expect(canSeeProfile(false, true, "none")).toBe(true);
+    expect(canSeeProfile(false, false, "friends")).toBe(true);
+  });
+
+  test("privado: convite pendente ou visitante não veem", () => {
+    expect(canSeeProfile(false, false, "none")).toBe(false);
+    expect(canSeeProfile(false, false, "sent")).toBe(false);
+    expect(canSeeProfile(false, false, "received")).toBe(false);
   });
 });
 

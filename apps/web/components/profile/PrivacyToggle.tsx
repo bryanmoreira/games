@@ -45,7 +45,7 @@ export function PrivacyToggle({ initial }: { initial: boolean }) {
       </span>
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="text-sm text-white/90">{on ? "Perfil público" : "Perfil privado"}</span>
-        <span className="text-xs text-white/45">{on ? "Qualquer pessoa pode ver" : "Só você pode ver"}</span>
+        <span className="text-xs text-white/45">{on ? "Qualquer pessoa pode ver" : "Só você e seus amigos"}</span>
       </span>
       <span className={`relative h-6 w-11 shrink-0 rounded-full transition ${on ? "bg-gold" : "bg-white/15"}`}>
         <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${on ? "left-[22px]" : "left-0.5"}`} />

@@ -11,6 +11,7 @@ import { Avatar } from "@/components/profile/ProfileHeader";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getFriendStatus } from "@/lib/friends";
+import { canSeeProfile } from "@/lib/friends-rules";
 import { getProfileStats, getRivalry } from "@/lib/stats/summary";
 import { normalizeUsername } from "@/lib/username";
 
@@ -48,12 +49,11 @@ export default async function PublicProfile({ params }: Props) {
 
   const session = await auth.api.getSession({ headers: await headers() });
   const isMe = session?.user.id === player.id;
-  // perfil privado: visitante vê só foto, nome e @
-  const hidden = !player.profilePublic && !isMe;
+  const friendStatus = session && !isMe ? await getFriendStatus(session.user.id, player.id) : "none";
+  const hidden = !canSeeProfile(player.profilePublic, isMe, friendStatus);
   const [stats, rivalry] = hidden
     ? [null, null]
     : await Promise.all([getProfileStats(player.id), session && !isMe ? getRivalry(session.user.id, player.id) : null]);
-  const friendStatus = session && !isMe ? await getFriendStatus(session.user.id, player.id) : "none";
   const since = player.createdAt.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
 
   return (
@@ -89,7 +89,7 @@ export default async function PublicProfile({ params }: Props) {
                 </Link>
               )}
               {isMe && !player.profilePublic && (
-                <span title="Só você vê este perfil" className="flex h-9 items-center gap-1.5 rounded-full px-3 text-xs text-white/50 ring-1 ring-white/10">
+                <span title="Só você e seus amigos veem este perfil" className="flex h-9 items-center gap-1.5 rounded-full px-3 text-xs text-white/50 ring-1 ring-white/10">
                   <LockIcon className="h-3.5 w-3.5" />
                   Privado
                 </span>

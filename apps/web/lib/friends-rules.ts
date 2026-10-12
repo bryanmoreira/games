@@ -32,6 +32,11 @@ export function planFriendAction(me: string, them: string, row: FriendRow | null
   return { op: "create", status: "sent" };
 }
 
+/** Perfil privado: só o dono e os amigos veem os números; os outros veem foto, nome e @. */
+export function canSeeProfile(profilePublic: boolean, isMe: boolean, status: FriendStatus): boolean {
+  return profilePublic || isMe || status === "friends";
+}
+
 type RowWithUsers = FriendRow & { addresseeId: string; requester: FriendUser; addressee: FriendUser };
 
 /** Separa as linhas em amigos (por nome), convites recebidos e enviados. */
