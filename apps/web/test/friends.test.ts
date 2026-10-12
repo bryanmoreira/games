@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { canSeeProfile, friendStatus, groupFriends, planFriendAction, type FriendRow, type FriendUser } from "../lib/friends-rules";
+import { canSeeProfile, friendStatus, groupFriends, isOnline, ONLINE_MS, planFriendAction, type FriendRow, type FriendUser } from "../lib/friends-rules";
 
 const ANA = "ana";
 const BETO = "beto";
@@ -122,5 +122,62 @@ describe("lista", () => {
   test("jogador sem @ fica de fora", () => {
     const g = groupFriends(ANA, [row(user("x", "Sem Nome", null), me, "pending")]);
     expect(g.received).toEqual([]);
+  });
+});
+
+describe("online", () => {
+  const NOW = new Date("2026-10-12T15:00:00Z");
+  const ago = (ms: number) => new Date(NOW.getTime() - ms);
+
+  test("visto há pouco: online; passou da folga ou nunca visto: offline", () => {
+    expect(isOnline(ago(0), NOW)).toBe(true);
+    expect(isOnline(ago(ONLINE_MS), NOW)).toBe(true);
+    expect(isOnline(ago(ONLINE_MS + 1), NOW)).toBe(false);
+    expect(isOnline(null, NOW)).toBe(false);
+  });
+
+  test("a folga cobre pelo menos dois avisos perdidos de 1 minuto", () => {
+    expect(ONLINE_MS).toBeGreaterThan(2 * 60_000);
+  });
+
+  const me = user(ANA, "Ana");
+  const seen = (u: FriendUser, at: Date | null) => ({ ...u, lastSeenAt: at });
+  const row = (requester: FriendUser & { lastSeenAt: Date | null }, addressee: FriendUser & { lastSeenAt: Date | null }, status: string) => ({
+    requesterId: requester.id,
+    addresseeId: addressee.id,
+    status,
+    requester,
+    addressee,
+  });
+  const meSeen = seen(me, NOW);
+
+  test("amigos online primeiro, cada grupo por nome", () => {
+    const g = groupFriends(
+      ANA,
+      [
+        row(meSeen, seen(user("z", "Zeca"), ago(1000)), "accepted"),
+        row(seen(user("b", "Bruno"), null), meSeen, "accepted"),
+        row(meSeen, seen(user("c", "Carla"), ago(ONLINE_MS * 10)), "accepted"),
+        row(meSeen, seen(user("a", "Alice"), ago(30_000)), "accepted"),
+      ],
+      NOW,
+    );
+    expect(g.friends.map((u) => [u.name, u.online])).toEqual([
+      ["Alice", true],
+      ["Zeca", true],
+      ["Bruno", false],
+      ["Carla", false],
+    ]);
+  });
+
+  test("convite pendente não mostra se a pessoa está online", () => {
+    const g = groupFriends(ANA, [row(seen(user("d", "Duda"), NOW), meSeen, "pending"), row(meSeen, seen(user("e", "Edu"), NOW), "pending")], NOW);
+    expect(g.received[0].online).toBe(false);
+    expect(g.sent[0].online).toBe(false);
+  });
+
+  test("a data de visto por último não vai para a tela", () => {
+    const g = groupFriends(ANA, [row(meSeen, seen(user("z", "Zeca"), NOW), "accepted")], NOW);
+    expect(g.friends[0]).not.toHaveProperty("lastSeenAt");
   });
 });

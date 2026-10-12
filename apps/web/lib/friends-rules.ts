@@ -7,6 +7,17 @@ export type FriendAction = "add" | "accept" | "remove";
 
 export type FriendUser = { id: string; name: string; image: string | null; username: string | null };
 
+/** Amigo na lista: `online` só vale para amizades aceitas. */
+export type FriendEntry = FriendUser & { online: boolean };
+
+/** O navegador avisa a cada minuto; um pouco de folga para aba em segundo plano e rede lenta. */
+export const PRESENCE_EVERY_MS = 60_000;
+export const ONLINE_MS = 150_000;
+
+export function isOnline(lastSeenAt: Date | null, now: Date): boolean {
+  return !!lastSeenAt && now.getTime() - lastSeenAt.getTime() <= ONLINE_MS;
+}
+
 /** A linha do par na tabela friendship (uma só por par, em qualquer direção). */
 export type FriendRow = { requesterId: string; status: string };
 
@@ -37,22 +48,24 @@ export function canSeeProfile(profilePublic: boolean, isMe: boolean, status: Fri
   return profilePublic || isMe || status === "friends";
 }
 
-type RowWithUsers = FriendRow & { addresseeId: string; requester: FriendUser; addressee: FriendUser };
+type RowUser = FriendUser & { lastSeenAt?: Date | null };
+type RowWithUsers = FriendRow & { addresseeId: string; requester: RowUser; addressee: RowUser };
 
-/** Separa as linhas em amigos (por nome), convites recebidos e enviados. */
-export function groupFriends(me: string, rows: RowWithUsers[]) {
-  const friends: FriendUser[] = [];
-  const received: FriendUser[] = [];
-  const sent: FriendUser[] = [];
+/** Separa as linhas em amigos (online primeiro, depois por nome), convites recebidos e enviados. */
+export function groupFriends(me: string, rows: RowWithUsers[], now = new Date()) {
+  const friends: FriendEntry[] = [];
+  const received: FriendEntry[] = [];
+  const sent: FriendEntry[] = [];
   for (const r of rows) {
-    const other = r.requesterId === me ? r.addressee : r.requester;
+    const { lastSeenAt, ...other } = r.requesterId === me ? r.addressee : r.requester;
     // sem @ não tem perfil para abrir nem como responder
     if (!other.username) continue;
     const status = friendStatus(me, r);
-    if (status === "friends") friends.push(other);
-    else if (status === "received") received.push(other);
-    else sent.push(other);
+    // quem não é amigo não vê se a pessoa está online
+    if (status === "friends") friends.push({ ...other, online: isOnline(lastSeenAt ?? null, now) });
+    else if (status === "received") received.push({ ...other, online: false });
+    else sent.push({ ...other, online: false });
   }
-  friends.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+  friends.sort((a, b) => Number(b.online) - Number(a.online) || a.name.localeCompare(b.name, "pt-BR"));
   return { friends, received, sent };
 }

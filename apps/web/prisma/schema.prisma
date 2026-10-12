@@ -19,6 +19,8 @@ model User {
   displayUsername String?
   // false: só o próprio jogador vê o perfil completo
   profilePublic   Boolean   @default(true)
+  // última vez com o site aberto (aviso a cada minuto); amigos veem quem está online
+  lastSeenAt      DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]

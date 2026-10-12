@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/profile/ProfileHeader";
 import { CheckSmallIcon, sendFriendAction, UserPlusIcon, UsersIcon, XIcon } from "@/components/profile/FriendButton";
-import type { FriendAction, FriendUser } from "@/lib/friends-rules";
+import { PRESENCE_EVERY_MS, type FriendAction, type FriendEntry } from "@/lib/friends-rules";
 import { normalizeUsername, USERNAME_MAX } from "@/lib/username";
 
 const CARD = "rounded-2xl bg-white/5 ring-1 ring-white/10";
 const ROUND = "flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 transition disabled:opacity-50";
 const MUTED = "bg-white/5 text-white/50 ring-white/10 hover:bg-red-500/10 hover:text-red-300 hover:ring-red-500/40";
 
-type Lists = { friends: FriendUser[]; received: FriendUser[]; sent: FriendUser[] };
+type Lists = { friends: FriendEntry[]; received: FriendEntry[]; sent: FriendEntry[] };
 
 /** Amigos, convites recebidos (aceitar/recusar) e enviados (cancelar), mais o campo de convidar pelo @. */
 export function FriendsView({ friends, received, sent }: Lists) {
@@ -21,7 +21,15 @@ export function FriendsView({ friends, received, sent }: Lists) {
   // desfazer amizade pede um segundo clique
   const [confirm, setConfirm] = useState<string | null>(null);
 
-  const act = async (u: FriendUser, action: FriendAction) => {
+  // quem está online muda sozinho: atualiza a lista enquanto a aba está visível
+  useEffect(() => {
+    const t = setInterval(() => document.visibilityState === "visible" && router.refresh(), PRESENCE_EVERY_MS);
+    return () => clearInterval(t);
+  }, [router]);
+
+  const online = friends.filter((u) => u.online).length;
+
+  const act = async (u: FriendEntry, action: FriendAction) => {
     if (busy || !u.username) return;
     setBusy(u.id);
     setConfirm(null);
@@ -30,10 +38,20 @@ export function FriendsView({ friends, received, sent }: Lists) {
     router.refresh();
   };
 
-  const row = (u: FriendUser, actions: React.ReactNode) => (
+  const row = (u: FriendEntry, actions: React.ReactNode) => (
     <li key={u.id} className="flex items-center gap-3 px-4 py-3 sm:px-5">
       <Link href={`/perfil/${u.username}`} className="group flex min-w-0 flex-1 items-center gap-3">
-        <Avatar user={u} className="h-10 w-10 text-base !ring-2" />
+        <span className="relative shrink-0">
+          <Avatar user={u} className="h-10 w-10 text-base !ring-2" />
+          {u.online && (
+            <span
+              role="img"
+              aria-label="Online"
+              title="Online"
+              className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-400 ring-[3px] ring-[#1b231f]"
+            />
+          )}
+        </span>
         <span className="flex min-w-0 flex-col">
           <span className="truncate text-sm text-white/90 transition group-hover:text-gold">{u.name}</span>
           <span className="truncate text-xs text-white/45">@{u.username}</span>
@@ -43,10 +61,11 @@ export function FriendsView({ friends, received, sent }: Lists) {
     </li>
   );
 
-  const heading = (label: string, count: number) => (
+  const heading = (label: string, count: number, extra?: React.ReactNode) => (
     <h2 className="flex items-center gap-2 px-4 pb-1 pt-4 text-sm text-white/50 sm:px-5">
       {label}
       <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px] tabular-nums text-white/60">{count}</span>
+      {extra}
     </h2>
   );
 
@@ -82,7 +101,16 @@ export function FriendsView({ friends, received, sent }: Lists) {
       )}
 
       <section className={CARD}>
-        {heading("Amigos", friends.length)}
+        {heading(
+          "Amigos",
+          friends.length,
+          online > 0 && (
+            <span title="Online agora" className="ml-auto flex items-center gap-1.5 text-xs tabular-nums text-emerald-300/90">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
+              {online}
+            </span>
+          ),
+        )}
         {friends.length ? (
           <ul className="divide-y divide-white/10">
             {friends.map((u) =>

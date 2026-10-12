@@ -3,6 +3,7 @@ import { Bungee, Inter } from "next/font/google";
 import { connection } from "next/server";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { AccountSync } from "@/components/AccountSync";
+import { Presence } from "@/components/Presence";
 import "./globals.css";
 
 const bungee = Bungee({ weight: "400", subsets: ["latin"], variable: "--font-bungee" });
@@ -39,6 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="antialiased">
         <AccountSync />
+        <Presence />
         {children}
       </body>
     </html>
