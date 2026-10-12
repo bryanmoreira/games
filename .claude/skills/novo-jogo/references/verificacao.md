@@ -11,6 +11,7 @@
 
 ```bash
 bun test packages/<slug>
+bun run test                                        # tudo: jogos, servidor de salas e site
 node_modules/.bin/tsc.exe --noEmit -p apps/web      # Windows: tsc.exe na raiz
 node_modules/.bin/tsc.exe -p apps/server
 bun run dev                                          # ou os servidores "server"/"web" do .claude/launch.json

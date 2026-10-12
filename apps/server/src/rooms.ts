@@ -1,6 +1,7 @@
 import type { ServerWebSocket } from "bun";
-import type { ClientMsg, GameId, PlayerReport, RoomInfo, Seat, ServerMsg } from "@truco/game";
+import type { ClientMsg, GameId, RoomInfo, Seat, ServerMsg } from "@truco/game";
 import { GAMES, type GameAdapter } from "./games";
+import { canStartSeats, matchReport, newMatch, occupiedSeats, type Match } from "./match";
 import { sendReport, verifyTicket, type Account } from "./results";
 
 export interface WsData {
@@ -16,13 +17,6 @@ interface Slot {
   /** Foto e @usuario de quem está logado no site. */
   image?: string | null;
   username?: string | null;
-}
-
-/** Quem começou a partida em cada lugar (para o resultado e para saber quem abandonou). */
-interface Match {
-  id: string;
-  mode: "ai" | "online";
-  players: { seat: Seat; token: string; userId: string | null }[];
 }
 
 interface Room {
@@ -197,8 +191,7 @@ function step(room: Room, action: unknown): string | null {
 
 /** Partida começando: anota quem está em cada lugar. Uma pessoa só contra IA = "ai". */
 function beginMatch(room: Room) {
-  const players = room.seats.flatMap((s, i) => (s.kind === "human" && s.token ? [{ seat: i as Seat, token: s.token, userId: accounts.get(s.token)?.userId ?? null }] : []));
-  room.match = { id: crypto.randomUUID(), mode: players.length >= 2 ? "online" : "ai", players };
+  room.match = newMatch(room.seats, (token) => accounts.get(token)?.userId ?? null);
 }
 
 /** Partida terminou: resultado de cada logado. Quem saiu no meio leva derrota. */
@@ -206,20 +199,13 @@ function endMatch(room: Room) {
   const m = room.match;
   room.match = null;
   if (!m || !room.state) return;
-  const players: PlayerReport[] = m.players.flatMap(({ seat, token, userId }) => {
-    if (!userId) return [];
-    const slot = room.seats[seat];
-    const stayed = slot.kind === "human" && slot.token === token;
-    return [stayed ? { userId, ...room.adapter.outcome(room.state, seat) } : { userId, outcome: "loss" as const, data: { abandoned: true } }];
-  });
-  void sendReport({ game: room.game, mode: m.mode, matchId: m.id, players });
+  void sendReport(matchReport(room.game, room.adapter, room.state, m, room.seats));
 }
 
-const occupied = (room: Room) => room.seats.flatMap((s, i) => (s.kind === "empty" ? [] : [i]));
+const occupied = (room: Room) => occupiedSeats(room.seats);
 
 function canStart(room: Room) {
-  const seats = occupied(room);
-  return seats.length >= (room.adapter.minSeats ?? room.adapter.seats) && (room.adapter.canStart?.(seats) ?? true);
+  return canStartSeats(room.adapter, room.seats);
 }
 
 function startGame(room: Room) {

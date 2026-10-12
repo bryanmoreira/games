@@ -110,7 +110,7 @@ Use como lista de tarefas; cada item existe porque já deu problema antes:
 - [ ] Lobby com escolha de lugar/time, host adiciona IA, modo solo com IAs
 - [ ] Mesa: assentos na borda, leques virados ao centro, selo "D" de quem dá, destaque de vez nas cartas, placar e valor da rodada
 - [ ] Distribuição animada a cada mão; bots esperam a animação (`dealUntil` no servidor)
-- [ ] Recordes e conquistas aprovados pelo usuário e implementados; partida até o fim logado grava em `game_result`, aparece no `/perfil` e em `/perfil/conquistas`; dados de teste apagados ([references/conquistas.md](references/conquistas.md))
+- [ ] Recordes e conquistas aprovados pelo usuário e implementados, com testes (`outcome` no servidor, `CASES` das conquistas); partida até o fim logado grava em `game_result`, aparece no `/perfil` e em `/perfil/conquistas`; dados de teste apagados ([references/conquistas.md](references/conquistas.md))
 - [ ] Vitória e derrota com `GameEnd` (mesmos ícones, títulos e botões em todos os jogos; só os números e o selo mudam)
 - [ ] Botão de sair da partida pede confirmação (`ExitConfirm`), em todo jogo, inclusive os de um jogador só
 - [ ] Sons (carta jogada + eventos principais), botão de mudo; dicas no hover com botão para desligar (ocultas em touch)

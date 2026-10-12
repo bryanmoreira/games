@@ -7,12 +7,34 @@ const GAME_KEY = "sudoku.game";
 const LEVEL_KEY = "sudoku.level";
 const BEST_KEY = "sudoku.best";
 
+const isNum = (v: unknown) => typeof v === "number" && Number.isFinite(v);
+const isGrid = (v: unknown) => Array.isArray(v) && v.length === 81 && v.every(isNum);
+const isCells = (c: unknown) => !!c && isGrid((c as GameState).values) && isGrid((c as GameState).notes);
+
+/** Partida salva só volta se tiver tudo o que a mesa usa; senão começa outra. */
+function isGame(g: unknown): g is GameState {
+  if (!g || typeof g !== "object") return false;
+  const s = g as GameState;
+  return (
+    DIFFICULTIES.includes(s.difficulty) &&
+    isCells(s) &&
+    isGrid(s.puzzle) &&
+    isGrid(s.solution) &&
+    [s.seed, s.mistakes, s.hints, s.elapsed].every(isNum) &&
+    Array.isArray(s.history) &&
+    s.history.every(isCells) &&
+    typeof s.won === "boolean" &&
+    typeof s.lost === "boolean" &&
+    (s.last === null || typeof s.last === "object")
+  );
+}
+
 export function loadGame(): GameState | null {
   try {
     const raw = localStorage.getItem(GAME_KEY);
     if (!raw) return null;
-    const g = JSON.parse(raw) as GameState;
-    return Array.isArray(g.values) && g.values.length === 81 && Array.isArray(g.solution) ? g : null;
+    const g: unknown = JSON.parse(raw);
+    return isGame(g) ? g : null;
   } catch {
     return null;
   }

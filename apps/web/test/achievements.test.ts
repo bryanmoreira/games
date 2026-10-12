@@ -1,0 +1,337 @@
+import { afterEach, describe, expect, test, setSystemTime } from "bun:test";
+import {
+  ACHIEVEMENT_BY_CODE,
+  ACHIEVEMENTS,
+  bestStreak,
+  currentStreak,
+  dayKey,
+  dayStreaks,
+  newAchievements,
+  nextDay,
+  prevDay,
+  type ResultRow,
+} from "@/lib/stats/achievements";
+import { isSoloGame, STAT_GAMES } from "@/lib/stats/games";
+
+type Data = Record<string, unknown>;
+
+const row = (outcome: string, data: Data = {}, mode = "online"): ResultRow => ({ mode, outcome, placement: null, data, createdAt: new Date(0) });
+const win = (data: Data = {}, mode?: string) => row("win", data, mode);
+const loss = (data: Data = {}, mode?: string) => row("loss", data, mode);
+const draw = (data: Data = {}) => row("draw", data);
+const times = (n: number, make: () => ResultRow) => Array.from({ length: n }, make);
+const ctx = (results: ResultRow[], bestDays = 0) => ({ results, bestDays });
+
+/** Para cada conquista: o mínimo que destrava e o "quase" que ainda não destrava. */
+interface Case {
+  ok: ResultRow[];
+  almost: ResultRow[];
+  okDays?: number;
+  almostDays?: number;
+}
+
+const firstCase: Case = { ok: [loss(), win()], almost: [loss(), draw(), loss()] };
+const streakCase: Case = {
+  ok: [loss(), ...times(5, win)],
+  almost: [...times(4, win), loss(), ...times(4, win), draw(), ...times(4, win)],
+};
+const winsCase = (n: number): Case => ({
+  ok: [...times(n, win), ...times(5, loss)],
+  almost: [...times(n - 1, win), ...times(n, loss), ...times(n, draw)],
+});
+
+const CASES: Record<string, Case> = {
+  days_7: { ok: [], almost: [], okDays: 7, almostDays: 6 },
+  days_30: { ok: [], almost: [], okDays: 30, almostDays: 29 },
+
+  "truco-paulista:first": firstCase,
+  "truco-paulista:shutout": {
+    ok: [win({ scores: [12, 0] })],
+    almost: [win({ scores: [12, 1] }), win({}), loss({ scores: [0, 12] })],
+  },
+  "truco-paulista:streak_5": streakCase,
+  "truco-paulista:wins_10": winsCase(10),
+  "truco-paulista:wins_50": winsCase(50),
+  "truco-paulista:wins_100": winsCase(100),
+
+  "connect4:first": firstCase,
+  "connect4:quick": { ok: [win({ pieces: 4 })], almost: [win({ pieces: 5 }), loss({ pieces: 4 }), win({})] },
+  "connect4:ai_10": {
+    ok: times(10, () => win({}, "ai")),
+    almost: [...times(9, () => win({}, "ai")), ...times(5, () => win({}, "online")), ...times(5, () => loss({}, "ai"))],
+  },
+  "connect4:streak_5": streakCase,
+
+  "batalha-naval:first": firstCase,
+  "batalha-naval:sharp": {
+    ok: [win({ hits: 6, shots: 10 })],
+    almost: [win({ hits: 59, shots: 100 }), loss({ hits: 10, shots: 10 }), win({ hits: 0, shots: 0 }), win({})],
+  },
+  "batalha-naval:flawless": { ok: [win({ shipsLost: 0 })], almost: [win({ shipsLost: 1 }), loss({ shipsLost: 0 }), win({})] },
+  "batalha-naval:streak_5": streakCase,
+
+  "stop:first": firstCase,
+  "stop:perfect_round": { ok: [loss({ perfectRounds: 1 })], almost: [win({ perfectRounds: 0 }), win({})] },
+  "stop:stops_10": {
+    ok: [loss({ stops: 3 }), win({ stops: 3 }), draw({ stops: 4 })],
+    almost: [loss({ stops: 3 }), win({ stops: 3 }), draw({ stops: 3 }), win({})],
+  },
+  "stop:wins_10": winsCase(10),
+  "stop:wins_50": winsCase(50),
+
+  "codenames:master": { ok: [win({ role: "master" })], almost: [loss({ role: "master" }), win({ role: "agent" })] },
+  "codenames:agent": { ok: [win({ role: "agent" })], almost: [loss({ role: "agent" }), win({ role: "master" })] },
+  "codenames:clue_3": { ok: [loss({ bestClue: 3 })], almost: [win({ bestClue: 2 }), win({})] },
+  "codenames:wins_10": winsCase(10),
+
+  "sudoku:first": { ok: [win({}, "solo")], almost: [] },
+  "sudoku:all_levels": {
+    ok: ["easy", "medium", "hard", "expert"].map((difficulty) => win({ difficulty }, "solo")),
+    almost: [...["easy", "medium", "hard", "hard"].map((difficulty) => win({ difficulty }, "solo")), loss({ difficulty: "expert" }, "solo")],
+  },
+  "sudoku:perfect": {
+    ok: [win({ mistakes: 0, hints: 0 }, "solo")],
+    almost: [win({ mistakes: 0, hints: 1 }, "solo"), win({ mistakes: 1, hints: 0 }, "solo"), win({}, "solo")],
+  },
+  "sudoku:expert_20": {
+    ok: [win({ difficulty: "expert", timeMs: 20 * 60_000 - 1 }, "solo")],
+    almost: [win({ difficulty: "expert", timeMs: 20 * 60_000 }, "solo"), win({ difficulty: "hard", timeMs: 60_000 }, "solo"), win({ difficulty: "expert" }, "solo")],
+  },
+  "sudoku:wins_10": winsCase(10),
+  "sudoku:wins_50": winsCase(50),
+  "sudoku:wins_100": winsCase(100),
+
+  "paciencia-spider:first": { ok: [win({}, "solo")], almost: [] },
+  "paciencia-spider:suits_2": { ok: [win({ suits: 2 }, "solo")], almost: [win({ suits: 1 }, "solo"), win({ suits: 4 }, "solo")] },
+  "paciencia-spider:suits_4": { ok: [win({ suits: 4 }, "solo")], almost: [win({ suits: 1 }, "solo"), win({ suits: 2 }, "solo")] },
+  "paciencia-spider:wins_10": winsCase(10),
+  "paciencia-spider:wins_50": winsCase(50),
+  "paciencia-spider:wins_100": winsCase(100),
+};
+
+const codes = ACHIEVEMENTS.map((a) => a.code);
+
+describe("lista de conquistas", () => {
+  test("códigos únicos", () => {
+    expect(new Set(codes).size).toBe(codes.length);
+    expect(ACHIEVEMENT_BY_CODE.size).toBe(codes.length);
+  });
+
+  test("código começa pelo jogo; as gerais não têm jogo", () => {
+    for (const a of ACHIEVEMENTS) {
+      if (a.game) expect(a.code.startsWith(`${a.game}:`)).toBe(true);
+      else expect(a.code).not.toContain(":");
+    }
+  });
+
+  test("todo jogo do perfil tem conquista e toda conquista tem caso de teste", () => {
+    for (const g of STAT_GAMES) expect(ACHIEVEMENTS.some((a) => a.game === g)).toBe(true);
+    expect(Object.keys(CASES).sort()).toEqual([...codes].sort());
+  });
+});
+
+describe.each(ACHIEVEMENTS.map((a) => [a.code, a] as const))("%s", (code, a) => {
+  const c = CASES[code];
+
+  test("destrava quando atinge a condição", () => {
+    expect(a.check(ctx(c.ok, c.okDays))).toBe(true);
+  });
+
+  test("não destrava logo antes", () => {
+    expect(a.check(ctx(c.almost, c.almostDays))).toBe(false);
+  });
+
+  test("não destrava sem partidas", () => {
+    expect(a.check(ctx([]))).toBe(false);
+  });
+
+  if (a.game) {
+    test("só sai no próprio jogo", () => {
+      expect(newAchievements(a.game!, ctx(c.ok, c.okDays), new Set()).map((x) => x.code)).toContain(code);
+      for (const other of STAT_GAMES.filter((g) => g !== a.game)) {
+        expect(newAchievements(other, ctx(c.ok, c.okDays), new Set()).map((x) => x.code)).not.toContain(code);
+      }
+    });
+  } else {
+    test("vale em qualquer jogo", () => {
+      for (const g of STAT_GAMES) expect(newAchievements(g, ctx([], c.okDays), new Set()).map((x) => x.code)).toContain(code);
+    });
+  }
+});
+
+describe("detalhes das conquistas", () => {
+  const check = (code: string, results: ResultRow[]) => ACHIEVEMENT_BY_CODE.get(code)!.check(ctx(results));
+
+  test("Todos os níveis: precisa das 4 dificuldades de verdade", () => {
+    const levels = (...ds: unknown[]) => ds.map((difficulty) => win({ difficulty }, "solo"));
+    expect(check("sudoku:all_levels", levels("easy", "medium", "hard", "expert"))).toBe(true);
+    expect(check("sudoku:all_levels", levels("easy", "medium", "hard", undefined))).toBe(false);
+    expect(check("sudoku:all_levels", levels("easy", "medium", "hard", "insano"))).toBe(false);
+    expect(check("sudoku:all_levels", levels("easy", "medium", "hard", "hard", "easy"))).toBe(false);
+  });
+
+  test("4 naipes não conta como 2 naipes", () => {
+    expect(check("paciencia-spider:suits_2", [win({ suits: 4 }, "solo")])).toBe(false);
+  });
+
+  test("Pneu olha o placar do adversário (segunda posição)", () => {
+    expect(check("truco-paulista:shutout", [win({ scores: [0, 12] })])).toBe(false);
+    expect(check("truco-paulista:shutout", [win({ scores: [12, "0"] })])).toBe(false);
+  });
+
+  test("Mão rápida soma o STOP de todas as partidas, ignorando valor que não é número", () => {
+    expect(check("stop:stops_10", [...times(9, () => loss({ stops: 1 })), loss({ stops: "x" }), loss({ stops: 1 })])).toBe(true);
+  });
+
+  test("números guardados como texto também valem", () => {
+    expect(check("connect4:quick", [win({ pieces: "4" })])).toBe(true);
+  });
+
+  test("abandono (só abandoned) não destrava nada", () => {
+    const rs = times(20, () => loss({ abandoned: true }));
+    for (const g of STAT_GAMES) expect(newAchievements(g, ctx(rs), new Set())).toEqual([]);
+  });
+});
+
+describe("newAchievements", () => {
+  const sudoku = [win({ difficulty: "expert", timeMs: 60_000, mistakes: 0, hints: 0 }, "solo")];
+
+  test("devolve as novas na ordem da lista", () => {
+    expect(newAchievements("sudoku", ctx(sudoku, 7), new Set()).map((a) => a.code)).toEqual(["days_7", "sudoku:first", "sudoku:perfect", "sudoku:expert_20"]);
+  });
+
+  test("não devolve as que o jogador já tem", () => {
+    const have = new Set(["days_7", "sudoku:first", "connect4:first"]);
+    expect(newAchievements("sudoku", ctx(sudoku, 7), have).map((a) => a.code)).toEqual(["sudoku:perfect", "sudoku:expert_20"]);
+  });
+
+  test("já tendo todas: nada", () => {
+    expect(newAchievements("sudoku", ctx(sudoku, 30), new Set(codes))).toEqual([]);
+  });
+
+  test("resultados de jogo solo não destravam conquista de jogo online", () => {
+    const got = newAchievements("sudoku", ctx(times(100, () => win({}, "solo"))), new Set());
+    expect(got.length).toBeGreaterThan(0);
+    expect(got.every((a) => a.game === null || isSoloGame(a.game))).toBe(true);
+  });
+});
+
+describe("sequência de vitórias", () => {
+  const seq = (s: string) => [...s].map((ch) => (ch === "W" ? win() : ch === "D" ? draw() : loss()));
+
+  test.each([
+    ["", 0, 0],
+    ["L", 0, 0],
+    ["W", 1, 1],
+    ["WWW", 3, 3],
+    ["WWWL", 3, 0],
+    ["WWWD", 3, 0],
+    ["LWW", 2, 2],
+    ["WWWWLWW", 4, 2],
+    ["WWDWWW", 3, 3],
+    ["WLWLWL", 1, 0],
+    ["LLWWWWWL", 5, 0],
+  ])("%p: maior %i, atual %i", (s, best, current) => {
+    expect(bestStreak(seq(s))).toBe(best);
+    expect(currentStreak(seq(s))).toBe(current);
+  });
+
+  test("a ordem dos resultados importa (do mais antigo ao mais novo)", () => {
+    expect(currentStreak(seq("LWW"))).toBe(2);
+    expect(currentStreak(seq("WWL"))).toBe(0);
+  });
+});
+
+describe("dias", () => {
+  test("dayKey usa o horário de Brasília: 23h30 e 00h30 são dias diferentes, mesmo no mesmo dia UTC", () => {
+    const a = new Date("2026-03-09T23:30:00-03:00"); // 02:30 UTC do dia 10
+    const b = new Date("2026-03-10T00:30:00-03:00"); // 03:30 UTC do dia 10
+    expect(a.toISOString().slice(0, 10)).toBe(b.toISOString().slice(0, 10));
+    expect(dayKey(a)).toBe("2026-03-09");
+    expect(dayKey(b)).toBe("2026-03-10");
+    expect(dayStreaks([dayKey(a), dayKey(b)]).best).toBe(2);
+  });
+
+  test("21h de Brasília já é outro dia em UTC, mas o mesmo dia aqui", () => {
+    expect(dayKey(new Date("2026-03-10T00:30:00Z"))).toBe("2026-03-09");
+    expect(dayKey(new Date("2026-03-09T12:00:00Z"))).toBe("2026-03-09");
+  });
+
+  test.each([
+    ["2026-12-31T23:59:59-03:00", "2026-12-31"],
+    ["2027-01-01T02:59:59Z", "2026-12-31"],
+    ["2027-01-01T03:00:00Z", "2027-01-01"],
+    ["2026-03-01T02:00:00Z", "2026-02-28"],
+    ["2028-03-01T02:00:00Z", "2028-02-29"],
+  ])("dayKey(%s) = %s", (iso, key) => {
+    expect(dayKey(new Date(iso))).toBe(key);
+  });
+
+  test.each([
+    ["2026-10-12", "2026-10-13"],
+    ["2026-01-31", "2026-02-01"],
+    ["2026-02-28", "2026-03-01"],
+    ["2028-02-28", "2028-02-29"],
+    ["2028-02-29", "2028-03-01"],
+    ["2026-04-30", "2026-05-01"],
+    ["2026-12-31", "2027-01-01"],
+  ])("dia seguinte de %s é %s (e volta)", (day, next) => {
+    expect(nextDay(day)).toBe(next);
+    expect(prevDay(next)).toBe(day);
+  });
+});
+
+describe("dias seguidos", () => {
+  // meio-dia de Brasília de 12/10/2026
+  const NOW = new Date("2026-10-12T12:00:00-03:00");
+  const at = (d: Date) => setSystemTime(d);
+  afterEach(() => setSystemTime());
+
+  test.each([
+    ["sem jogos", [], 0, 0],
+    ["só hoje", ["2026-10-12"], 1, 1],
+    ["só ontem ainda vale", ["2026-10-11"], 1, 1],
+    ["anteontem zera a atual", ["2026-10-10"], 1, 0],
+    ["três até hoje", ["2026-10-10", "2026-10-11", "2026-10-12"], 3, 3],
+    ["três até ontem", ["2026-10-09", "2026-10-10", "2026-10-11"], 3, 3],
+    ["buraco quebra", ["2026-10-08", "2026-10-09", "2026-10-10", "2026-10-12"], 3, 1],
+    ["maior antiga, atual curta", ["2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-10-11", "2026-10-12"], 4, 2],
+    ["fora de ordem e repetidos", ["2026-10-12", "2026-10-10", "2026-10-11", "2026-10-12", "2026-10-10"], 3, 3],
+    ["virada de mês", ["2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02"], 4, 0],
+    ["virada de ano", ["2025-12-30", "2025-12-31", "2026-01-01"], 3, 0],
+    ["fevereiro de ano bissexto", ["2028-02-28", "2028-02-29", "2028-03-01"], 3, 0],
+    ["fevereiro de ano comum", ["2026-02-28", "2026-03-01"], 2, 0],
+  ] as [string, string[], number, number][])("%s", (_, days, best, current) => {
+    at(NOW);
+    expect(dayStreaks(days)).toEqual({ best, current });
+  });
+
+  test("hoje é o dia de Brasília: 23h30 de 12/10 ainda é dia 12, 00h30 já é 13", () => {
+    at(new Date("2026-10-12T23:30:00-03:00"));
+    expect(dayStreaks(["2026-10-11"]).current).toBe(1);
+    at(new Date("2026-10-13T00:30:00-03:00"));
+    expect(dayStreaks(["2026-10-11"]).current).toBe(0);
+    expect(dayStreaks(["2026-10-12"]).current).toBe(1);
+  });
+
+  test("sequência atual atravessando a virada do ano", () => {
+    at(new Date("2027-01-01T10:00:00-03:00"));
+    expect(dayStreaks(["2026-12-30", "2026-12-31", "2027-01-01"])).toEqual({ best: 3, current: 3 });
+  });
+
+  test("um dia sem jogar zera a atual mas mantém a maior", () => {
+    at(new Date("2026-10-14T10:00:00-03:00"));
+    expect(dayStreaks(["2026-10-10", "2026-10-11", "2026-10-12"])).toEqual({ best: 3, current: 0 });
+  });
+
+  test("7 e 30 dias seguidos destravam as conquistas de dias", () => {
+    at(NOW);
+    const run = (n: number) => Array.from({ length: n }, (_, i) => `2026-08-${String(i + 1).padStart(2, "0")}`);
+    const best = (n: number) => dayStreaks(run(n)).best;
+    const daysCodes = (n: number) => newAchievements("stop", ctx([], best(n)), new Set()).map((a) => a.code);
+    expect(daysCodes(6)).toEqual([]);
+    expect(daysCodes(7)).toEqual(["days_7"]);
+    expect(daysCodes(29)).toEqual(["days_7"]);
+    expect(daysCodes(30)).toEqual(["days_7", "days_30"]);
+  });
+});

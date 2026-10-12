@@ -47,7 +47,7 @@ bun install
 cp apps/web/.env.example apps/web/.env   # preencha as variáveis (Postgres do seu PC)
 bun run --cwd apps/web db:migrate        # cria/atualiza as tabelas
 bun run dev     # web :3000, ws :3001
-bun test packages
+bun run test    # regras dos jogos, servidor de salas e site
 ```
 
 ### Contas (login com Google)

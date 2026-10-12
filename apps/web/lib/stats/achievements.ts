@@ -1,3 +1,4 @@
+import { DIFFICULTIES } from "@truco/sudoku";
 import type { Mode, Outcome, StatGame } from "@/lib/stats/games";
 
 /** Resultado como vem do banco (só o que as regras usam). */
@@ -198,7 +199,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Todos os níveis",
     desc: "Vencer no fácil, médio, difícil e expert",
     icon: "star",
-    check: ({ results }) => new Set(winsOf(results).map((r) => r.data.difficulty)).size >= 4,
+    check: ({ results }) => DIFFICULTIES.every((d) => winsOf(results).some((r) => r.data.difficulty === d)),
   },
   {
     code: "sudoku:perfect",
@@ -256,7 +257,7 @@ const DAY_FMT = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo"
 /** Dia no horário de Brasília (AAAA-MM-DD). */
 export const dayKey = (d: Date) => DAY_FMT.format(d);
 
-const prevDay = (key: string) => {
+export const prevDay = (key: string) => {
   const d = new Date(`${key}T12:00:00Z`);
   d.setUTCDate(d.getUTCDate() - 1);
   return d.toISOString().slice(0, 10);
@@ -282,7 +283,7 @@ export function dayStreaks(dayKeys: Iterable<string>): { best: number; current: 
   return { best, current };
 }
 
-function nextDay(key: string) {
+export function nextDay(key: string) {
   const d = new Date(`${key}T12:00:00Z`);
   d.setUTCDate(d.getUTCDate() + 1);
   return d.toISOString().slice(0, 10);

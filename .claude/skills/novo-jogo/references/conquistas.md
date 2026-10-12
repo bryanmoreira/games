@@ -42,6 +42,11 @@ Não precisa mexer em banco: tudo vai para `game_result` (com `data` em JSON) e 
 
 ## 4. Verificação
 
+- Testes automáticos (rodam com `bun run test` na raiz):
+  - `apps/server/test/games.test.ts`: um `describe` para o `outcome` do jogo novo (vitória, derrota, empate se houver e os campos de `data`), com partidas reais montadas pelas funções do pacote.
+  - `apps/web/test/achievements.test.ts`: cada conquista nova precisa de uma linha em `CASES`, com o mínimo que destrava e o "quase" que não destrava. O teste falha se faltar.
+  - `apps/web/test/stats.test.ts`: os recordes novos de `gameStats` (em `lib/stats/compute.ts`).
+  - Jogo solo: os limites do `data` aceito em `lib/stats/solo-result.ts`, em `apps/web/test/solo-result.test.ts`.
 - Jogo online: jogue uma partida até o fim logado (contra a IA serve) e confira a linha em `game_result` (modo, resultado e `data` certos). Se der, teste também sair no meio de uma partida online: quem saiu leva derrota.
 - Jogo solo: ganhe uma partida (ou chame `POST /api/results` com um `data` válido) e veja a conquista "Primeira vitória" aparecer na tela de fim.
 - `/perfil` mostra o card do jogo com os recordes; `/perfil/conquistas` lista o grupo do jogo; a página pública mostra só as desbloqueadas.

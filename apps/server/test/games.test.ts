@@ -1,0 +1,224 @@
+import { describe, expect, test } from "bun:test";
+import * as truco from "@truco/game";
+import * as c4 from "@truco/connect4";
+import * as stop from "@truco/stop";
+import * as bn from "@truco/batalha-naval";
+import * as cn from "@truco/codenames";
+import { GAMES } from "../src/games";
+
+/** rng determinístico (mulberry32) */
+function seeded(seed: number) {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function ok<S>(r: { ok: true; state: S } | { ok: false; error: string }): S {
+  if (!r.ok) throw new Error(r.error);
+  return r.state;
+}
+
+describe("truco", () => {
+  const { outcome } = GAMES["truco-paulista"];
+
+  /** Partida inteira entre IAs. */
+  function finished(seed: number): truco.GameState {
+    const rng = seeded(seed);
+    let s = truco.newGame(rng, 0);
+    for (let steps = 0; s.phase !== "gameOver"; steps++) {
+      if (steps > 5000) throw new Error("partida travada");
+      if (s.phase === "roundEnd" || s.phase === "handEnd") {
+        s = ok(truco.applyAction(s, { type: "advance" }, rng));
+        continue;
+      }
+      const a = ([0, 1, 2, 3] as truco.Seat[]).map((p) => truco.decide(truco.viewFor(s, p))).find(Boolean);
+      if (!a) throw new Error("ninguém pode agir");
+      s = ok(truco.applyAction(s, a, rng));
+    }
+    return s;
+  }
+
+  test("time vencedor ganha, o outro perde; placar visto do próprio time", () => {
+    for (const seed of [1, 2, 3]) {
+      const s = finished(seed);
+      const w = s.winner!;
+      for (const seat of [0, 1, 2, 3] as truco.Seat[]) {
+        const team = truco.teamOf(seat);
+        expect(outcome(s, seat)).toEqual({
+          outcome: team === w ? "win" : "loss",
+          data: { scores: [s.scores[team], s.scores[1 - team]], hands: s.handNo },
+        });
+      }
+      expect(outcome(s, w).data.scores).toEqual([12, expect.any(Number)]);
+    }
+  });
+
+  test("parceiros têm o mesmo resultado", () => {
+    const s = finished(4);
+    expect(outcome(s, 0)).toEqual(outcome(s, 2));
+    expect(outcome(s, 1)).toEqual(outcome(s, 3));
+    expect(outcome(s, 0).outcome).not.toBe(outcome(s, 1).outcome);
+  });
+});
+
+describe("connect4", () => {
+  const { outcome } = GAMES.connect4;
+
+  function play(cols: number[]): c4.GameState {
+    let s: c4.GameState = { ...c4.newGame(), turn: 0, starter: 0 };
+    for (const col of cols) s = ok(c4.applyAction(s, { type: "drop", seat: s.turn, col }));
+    return s;
+  }
+
+  test("vitória e derrota com peças de cada um", () => {
+    const s = play([0, 0, 1, 1, 2, 2, 3]);
+    expect(outcome(s, 0)).toEqual({ outcome: "win", data: { pieces: 4, moves: 7 } });
+    expect(outcome(s, 1)).toEqual({ outcome: "loss", data: { pieces: 3, moves: 7 } });
+  });
+
+  test("tabuleiro cheio é empate para os dois", () => {
+    const s = play([..."355044234114302533122645021043016026565661"].map(Number));
+    expect(s.winner).toBeNull();
+    expect(outcome(s, 0)).toEqual({ outcome: "draw", data: { pieces: 21, moves: 42 } });
+    expect(outcome(s, 1)).toEqual({ outcome: "draw", data: { pieces: 21, moves: 42 } });
+  });
+});
+
+describe("stop", () => {
+  const adapter = GAMES.stop;
+  const SETTINGS: stop.Settings = { categories: ["nome", "animal", "fruta"], custom: [], rounds: 3, time: 60 };
+
+  /** Primeira rodada com a letra B e as respostas dadas; `stopper` aperta STOP; as outras rodadas ficam em branco. */
+  function finished(players: number[], answers: Record<number, string[]>, stopper: number): stop.GameState {
+    const rng = seeded(1);
+    let s = stop.newGame(rng, { players, settings: SETTINGS });
+    s.letters = ["B"];
+    s = ok(stop.applyAction(s, { type: "advance" }, rng));
+    for (const [seat, list] of Object.entries(answers))
+      list.forEach((text, cat) => (s = ok(stop.applyAction(s, { type: "write", seat: Number(seat), cat, text }, rng))));
+    s = ok(stop.applyAction(s, { type: "stop", seat: stopper }, rng));
+    while (s.phase !== "gameOver") s = ok(stop.applyAction(s, { type: "advance" }, rng));
+    return s;
+  }
+
+  test("primeiro lugar sozinho vence; os outros perdem com a colocação", () => {
+    const s = finished(
+      [0, 1, 2],
+      { 0: ["Bruno", "Baleia", "Banana"], 1: ["Bia", "Baleia", "Banana"], 2: ["Beto", "Burro", "Bacuri"] },
+      0,
+    );
+    expect(s.scores).toEqual({ 0: 20, 1: 20, 2: 30 });
+    expect(adapter.outcome(s, 2)).toEqual({
+      outcome: "win",
+      placement: 1,
+      data: { score: 30, players: 3, unique: 3, stops: 0, perfectRounds: 1 },
+    });
+    expect(adapter.outcome(s, 0)).toEqual({
+      outcome: "loss",
+      placement: 2,
+      data: { score: 20, players: 3, unique: 1, stops: 1, perfectRounds: 0 },
+    });
+    expect(adapter.outcome(s, 1)).toMatchObject({ outcome: "loss", placement: 2 });
+  });
+
+  test("dois empatados no topo: empate para os dois, ambos em 1º", () => {
+    const s = finished([0, 1, 2], { 0: ["Bruno", "Baleia", "Banana"], 1: ["Bia", "Baleia", "Banana"], 2: ["Beto", "", ""] }, 1);
+    expect(s.scores).toEqual({ 0: 20, 1: 20, 2: 10 });
+    expect(adapter.outcome(s, 0)).toMatchObject({ outcome: "draw", placement: 1 });
+    expect(adapter.outcome(s, 1)).toMatchObject({ outcome: "draw", placement: 1, data: { stops: 1 } });
+    expect(adapter.outcome(s, 2)).toMatchObject({ outcome: "loss", placement: 3, data: { score: 10, unique: 1 } });
+  });
+
+  test("lugares fora de ordem e espaçados", () => {
+    const s = finished([1, 4, 7], { 1: ["Bia", "", ""], 4: ["Bruno", "Burro", ""], 7: ["Beto", "Baleia", "Banana"] }, 7);
+    expect(adapter.outcome(s, 7)).toMatchObject({ outcome: "win", placement: 1, data: { score: 30, perfectRounds: 1 } });
+    expect(adapter.outcome(s, 4)).toMatchObject({ outcome: "loss", placement: 2, data: { score: 20 } });
+    expect(adapter.outcome(s, 1)).toMatchObject({ outcome: "loss", placement: 3, data: { score: 10 } });
+  });
+
+  test("mínimo de 2 lugares, sem IA", () => {
+    expect(adapter.minSeats).toBe(2);
+    expect(adapter.seats).toBe(8);
+    expect(adapter.bots).toBe(false);
+  });
+});
+
+describe("batalha naval", () => {
+  const { outcome } = GAMES["batalha-naval"];
+  const FLEET: bn.Ship[] = bn.FLEET.map((_, i) => ({ col: 0, row: i, dir: "h" }));
+
+  test("quem afunda a frota vence; tiros, acertos e navios perdidos de cada lado", () => {
+    let s: bn.GameState = { ...bn.newGame(), starter: 0 };
+    s = ok(bn.applyAction(s, { type: "place", seat: 0, ships: FLEET }));
+    s = ok(bn.applyAction(s, { type: "place", seat: 1, ships: FLEET }));
+    const shoot = (seat: bn.Seat, col: number, row: number) => (s = ok(bn.applyAction(s, { type: "shoot", seat, col, row })));
+    shoot(0, 9, 9); // água
+    shoot(1, 0, 0); // acerta e atira de novo
+    shoot(1, 9, 9); // água
+    bn.FLEET.forEach((ship, row) => {
+      for (let col = 0; col < ship.size; col++) shoot(0, col, row);
+    });
+    expect(s.phase).toBe("gameOver");
+    expect(outcome(s, 0)).toEqual({ outcome: "win", data: { shots: 18, hits: 17, shipsLost: 0 } });
+    expect(outcome(s, 1)).toEqual({ outcome: "loss", data: { shots: 2, hits: 1, shipsLost: 5 } });
+  });
+});
+
+describe("codenames", () => {
+  const adapter = GAMES.codenames;
+  // vermelho: mestre 0, agentes 1 e 2 · azul: mestre 6, agente 7
+  const PLAYERS = [0, 1, 2, 6, 7];
+
+  /** Partida com o vermelho começando. */
+  function game(): cn.GameState {
+    const settings = cn.DEFAULT_SETTINGS;
+    const s = cn.newGame(seeded(1), { players: PLAYERS, settings });
+    return s.starter === 0 ? s : cn.newGame(seeded(1), { players: PLAYERS, settings }, s);
+  }
+
+  const find = (s: cn.GameState, key: cn.Key) => s.cards.findIndex((c) => c.key === key && !c.revealed);
+  const act = (s: cn.GameState, a: cn.Action) => ok(cn.applyAction(s, a));
+
+  test("todas as palavras reveladas: time vence; papel e melhor dica de cada um", () => {
+    let s = act(game(), { type: "clue", seat: 0, word: "dica", number: null });
+    while (cn.remaining(s, 0) > 0) s = act(s, { type: "guess", seat: 1, index: find(s, 0) });
+    expect(s.phase).toBe("gameOver");
+    expect(adapter.outcome(s, 0)).toEqual({ outcome: "win", data: { role: "master", assassin: false, bestClue: 9 } });
+    expect(adapter.outcome(s, 1)).toEqual({ outcome: "win", data: { role: "agent", assassin: false, bestClue: 0 } });
+    expect(adapter.outcome(s, 6)).toEqual({ outcome: "loss", data: { role: "master", assassin: false, bestClue: 0 } });
+    expect(adapter.outcome(s, 7)).toEqual({ outcome: "loss", data: { role: "agent", assassin: false, bestClue: 0 } });
+  });
+
+  test("assassino marca só o time que perdeu", () => {
+    let s = act(game(), { type: "clue", seat: 0, word: "dica", number: 2 });
+    s = act(s, { type: "guess", seat: 1, index: find(s, "assassin") });
+    expect(s.winner).toBe(1);
+    expect(adapter.outcome(s, 0)).toEqual({ outcome: "loss", data: { role: "master", assassin: true, bestClue: 0 } });
+    expect(adapter.outcome(s, 2)).toMatchObject({ outcome: "loss", data: { assassin: true } });
+    expect(adapter.outcome(s, 6)).toMatchObject({ outcome: "win", data: { assassin: false } });
+  });
+
+  test("melhor dica conta só palavras do próprio time", () => {
+    let s = act(game(), { type: "clue", seat: 0, word: "dica", number: 3 });
+    s = act(s, { type: "guess", seat: 1, index: find(s, 0) });
+    s = act(s, { type: "guess", seat: 2, index: find(s, 0) });
+    s = act(s, { type: "guess", seat: 1, index: find(s, "neutral") }); // a vez passa
+    s = act(s, { type: "clue", seat: 6, word: "outra", number: 1 });
+    s = act(s, { type: "guess", seat: 7, index: find(s, 1) });
+    s = act(s, { type: "guess", seat: 7, index: find(s, "assassin") });
+    expect(s.winner).toBe(0);
+    expect(adapter.outcome(s, 0)).toEqual({ outcome: "win", data: { role: "master", assassin: false, bestClue: 2 } });
+    expect(adapter.outcome(s, 6)).toEqual({ outcome: "loss", data: { role: "master", assassin: true, bestClue: 1 } });
+  });
+
+  test("começa com 4+ lugares e mestre e agente nos dois times", () => {
+    expect(adapter.minSeats).toBe(4);
+    expect(adapter.canStart!([0, 1, 6, 7])).toBe(true);
+    expect(adapter.canStart!([1, 2, 6, 7])).toBe(false);
+    expect(adapter.bots).toBe(false);
+  });
+});
