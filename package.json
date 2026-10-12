@@ -10,7 +10,7 @@
     "build": "bun --filter './apps/*' build",
     "start": "bun --filter './apps/*' start",
     "cards": "bun run scripts/fetch-cards.ts",
-    "test": "bun test packages"
+    "test": "bun test packages apps/web/test"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2",

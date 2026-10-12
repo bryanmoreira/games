@@ -5,6 +5,7 @@ import { BackButton } from "@/components/BackButton";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileNav } from "@/components/profile/ProfileNav";
 import { auth } from "@/lib/auth";
+import { countFriendRequests } from "@/lib/friends";
 import { loginHref } from "@/lib/login";
 import { SITE_NAME } from "@/lib/seo";
 
@@ -18,6 +19,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
   if (!session) redirect(loginHref("/perfil"));
 
   const { name, email, image, username } = session.user;
+  const requests = await countFriendRequests(session.user.id);
 
   return (
     <div className="min-h-dvh bg-[#0f1813]">
@@ -25,7 +27,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
       <div className="mx-auto flex max-w-4xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
         <ProfileHeader user={{ name, email, image: image ?? null, username: username ?? null }} />
         <div className="flex flex-col gap-6 md:grid md:grid-cols-[200px_1fr] md:gap-10">
-          <ProfileNav />
+          <ProfileNav badges={{ "/perfil/amigos": requests }} />
           <section className="min-w-0">{children}</section>
         </div>
       </div>

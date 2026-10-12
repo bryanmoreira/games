@@ -32,6 +32,17 @@ const ITEMS: Item[] = [
     icon: svg(<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z" />),
   },
   {
+    href: "/perfil/amigos",
+    label: "Amigos",
+    icon: svg(
+      <>
+        <circle cx="9" cy="8" r="4" />
+        <path d="M2 21a7 7 0 0 1 14 0" />
+        <path d="M16 3.5a4 4 0 0 1 0 9M22 21a7 7 0 0 0-4-6.3" />
+      </>,
+    ),
+  },
+  {
     href: "/perfil/conta",
     label: "Conta",
     icon: svg(
@@ -43,7 +54,8 @@ const ITEMS: Item[] = [
   },
 ];
 
-export function ProfileNav() {
+/** `badges`: número ao lado da opção (ex.: convites de amizade em /perfil/amigos). */
+export function ProfileNav({ badges = {} }: { badges?: Record<string, number> }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -54,7 +66,7 @@ export function ProfileNav() {
     router.refresh();
   };
 
-  // no celular as abas ficam numa fileira: mais compactas, e "Sair" só com o ícone
+  // no celular as abas ficam numa fileira: mais compactas, e as inativas e "Sair" só com o ícone
   const base = "flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-[13px] transition md:gap-3 md:px-3 md:py-2.5 md:text-sm";
 
   return (
@@ -62,15 +74,27 @@ export function ProfileNav() {
       <ul className="flex gap-1 md:sticky md:top-6 md:flex-col md:gap-1">
         {ITEMS.map((it) => {
           const active = pathname === it.href;
+          const badge = badges[it.href] ?? 0;
           return (
             <li key={it.href} className="shrink-0">
               <Link
                 href={it.href}
                 aria-current={active ? "page" : undefined}
+                aria-label={it.label}
+                title={it.label}
                 className={`${base} ${active ? "bg-gold/15 text-gold ring-1 ring-gold/40" : "text-white/60 hover:bg-white/5 hover:text-white"}`}
               >
                 {it.icon}
-                {it.label}
+                {/* no celular só a aba ativa mostra o nome */}
+                <span className={active ? undefined : "hidden md:inline"}>{it.label}</span>
+                {badge > 0 && (
+                  <span
+                    aria-label={`${badge} novo${badge > 1 ? "s" : ""}`}
+                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gold px-1 text-[10px] font-semibold tabular-nums text-[#2a1a04] md:ml-auto"
+                  >
+                    {badge > 9 ? "9+" : badge}
+                  </span>
+                )}
               </Link>
             </li>
           );

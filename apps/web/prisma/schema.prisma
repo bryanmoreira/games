@@ -25,6 +25,8 @@ model User {
   accounts      Account[]
   results       GameResult[]
   achievements  Achievement[]
+  friendsSent     Friendship[] @relation("FriendRequester")
+  friendsReceived Friendship[] @relation("FriendAddressee")
 
   @@map("user")
 }
@@ -107,4 +109,21 @@ model Achievement {
   @@unique([userId, code])
   @@index([userId, unlockedAt])
   @@map("achievement")
+}
+
+// Convite de amizade: requester pediu, addressee aceita (vira "accepted") ou recusa (linha apagada).
+// Uma linha por par: quem tenta convidar quem já o convidou aceita o convite.
+model Friendship {
+  id          String    @id @default(cuid())
+  requesterId String
+  requester   User      @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addresseeId String
+  addressee   User      @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  status      String // pending | accepted
+  createdAt   DateTime  @default(now())
+  acceptedAt  DateTime?
+
+  @@unique([requesterId, addresseeId])
+  @@index([addresseeId, status])
+  @@map("friendship")
 }

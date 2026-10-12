@@ -4,11 +4,13 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { BackButton } from "@/components/BackButton";
+import { FriendButton } from "@/components/profile/FriendButton";
 import { ShareProfileButton } from "@/components/profile/ShareProfileButton";
 import { ProfileStatsView, RivalryCard } from "@/components/stats/ProfileStats";
 import { Avatar } from "@/components/profile/ProfileHeader";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getFriendStatus } from "@/lib/friends";
 import { getProfileStats, getRivalry } from "@/lib/stats/summary";
 import { normalizeUsername } from "@/lib/username";
 
@@ -51,6 +53,7 @@ export default async function PublicProfile({ params }: Props) {
   const [stats, rivalry] = hidden
     ? [null, null]
     : await Promise.all([getProfileStats(player.id), session && !isMe ? getRivalry(session.user.id, player.id) : null]);
+  const friendStatus = session && !isMe ? await getFriendStatus(session.user.id, player.id) : "none";
   const since = player.createdAt.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
 
   return (
@@ -72,6 +75,7 @@ export default async function PublicProfile({ params }: Props) {
               </span>
             )}
             <div className="mt-2 flex flex-wrap gap-2">
+              {!isMe && <FriendButton username={player.username!} initial={friendStatus} loggedIn={!!session} />}
               {!hidden && <ShareProfileButton name={player.name} />}
               {isMe && (
                 <Link
