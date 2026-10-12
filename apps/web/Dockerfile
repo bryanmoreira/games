@@ -39,6 +39,13 @@ ENV NODE_ENV=production \
 # Saída standalone já contém server.js, node_modules mínimos, estáticos e public/
 COPY --from=build --chown=bun:bun /app/apps/web/.next/standalone ./
 
+# Migrações do banco rodam na subida (prisma migrate deploy)
+WORKDIR /migrate
+RUN echo '{"private":true}' > package.json && bun add prisma@7.10.0 && chown -R bun:bun /migrate
+COPY --chown=bun:bun apps/web/prisma ./prisma
+COPY --chown=bun:bun apps/web/prisma.config.ts ./
+
+WORKDIR /app
 USER bun
 EXPOSE 3000
-CMD ["bun", "apps/web/server.js"]
+CMD ["sh", "-c", "cd /migrate && bun x prisma migrate deploy && cd /app && exec bun apps/web/server.js"]

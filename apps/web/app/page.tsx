@@ -16,6 +16,7 @@ import { BATALHA_PATH } from "@/lib/batalha-naval/paths";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { CODENAMES_PATH } from "@/lib/codenames/paths";
 import { MiniGrid } from "@/components/codenames/Board";
+import { UserButton } from "@/components/UserButton";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
@@ -25,7 +26,10 @@ export const metadata: Metadata = { alternates: { canonical: "/", languages: { "
 export default function Home() {
   return (
     <div className="min-h-dvh bg-[#0f1813]">
-      <main className="mx-auto flex max-w-3xl flex-col items-center gap-10 px-4 py-12">
+      <header className="mx-auto flex max-w-5xl justify-end px-4 pt-4">
+        <UserButton />
+      </header>
+      <main className="mx-auto flex max-w-3xl flex-col items-center gap-10 px-4 pb-12 pt-2">
         <JsonLd data={homeLd()} />
         <h1 className="text-center font-display text-4xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c] sm:text-5xl">MESA DE JOGOS</h1>
         <p className="-mt-6 max-w-md text-center text-sm text-white/60">{SITE_TAGLINE}</p>

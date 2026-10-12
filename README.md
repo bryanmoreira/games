@@ -44,9 +44,27 @@ Quando uma correção deve valer para todos os jogos (um gosto visual, uma regra
 
 ```bash
 bun install
+cp apps/web/.env.example apps/web/.env   # preencha as variáveis (Postgres do seu PC)
+bun run --cwd apps/web db:migrate        # cria/atualiza as tabelas
 bun run dev     # web :3000, ws :3001
 bun test packages
 ```
+
+### Contas (login com Google)
+
+[Better Auth](https://better-auth.com) + Prisma + Postgres. Configuração em `apps/web/lib/auth.ts`, schema em `apps/web/prisma/schema.prisma`. Telas: `/login`, `/perfil` (área do jogador, com sidebar) e `/perfil/<username>` (perfil público, sem e-mail).
+
+- **Nome de usuário**: toda conta nova ganha um a partir do nome (`joaosilva`, `joaosilva2`…) e o jogador troca em Perfil → Conta. Regras e palavras reservadas em `lib/username.ts` — uma rota nova dentro de `/perfil` precisa entrar na lista de reservadas.
+
+- **Novo provedor** (GitHub, Discord…): habilite em `socialProviders` no `lib/auth.ts` e adicione em `SOCIAL_PROVIDERS` (`components/auth/providers.tsx`).
+- **E-mail e senha**: ligue `emailAndPassword` no `lib/auth.ts` e coloque o formulário em `components/auth/LoginOptions.tsx`, acima dos botões.
+- Para mandar alguém logar e voltar: `loginHref("/caminho")` (`lib/login.ts`).
+
+- No Google Cloud, em **Credenciais > ID do cliente OAuth**, adicione os URIs de redirecionamento:
+  - `http://localhost:3000/api/auth/callback/google`
+  - `https://mesadejogos.com/api/auth/callback/google`
+- Mudou o schema? `bun run --cwd apps/web db:migrate` cria a migração. Em produção ela roda sozinha na subida do container (`prisma migrate deploy`).
+- No servidor: `const session = await auth.api.getSession({ headers: await headers() })`. No cliente: `authClient.useSession()`.
 
 ## Produção
 
@@ -69,6 +87,11 @@ Variáveis de ambiente (runtime, sem precisar rebuildar):
 | Serviço | Variável | Exemplo |
 |---|---|---|
 | web | `NEXT_PUBLIC_WS_URL` (ou `WS_URL`) | `wss://ws.seudominio.com` |
+| web | `DATABASE_URL` | `postgresql://user:senha@host:5432/mesadejogos` |
+| web | `BETTER_AUTH_SECRET` | `openssl rand -base64 32` |
+| web | `BETTER_AUTH_URL` | `https://mesadejogos.com` |
+| web | `GOOGLE_CLIENT_ID` | do Google Cloud |
+| web | `GOOGLE_CLIENT_SECRET` | do Google Cloud |
 | ws | `PORT` (opcional) | `3001` |
 
 Sem `NEXT_PUBLIC_WS_URL`, o cliente tenta `ws(s)://<host da página>:3001`.
