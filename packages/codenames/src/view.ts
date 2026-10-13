@@ -1,15 +1,20 @@
 import { canClue, canGuess, canPass, remaining, roleOf, teamOf } from "./rules";
 import type { GameState, PlayerView, Seat } from "./types";
 
-/** O que um jogador vê: o mestre vê o mapa inteiro; o agente, só a cor das palavras reveladas. No fim, todos veem tudo. */
-export function viewFor(state: GameState, seat: Seat): PlayerView {
+/**
+ * O que um jogador vê: o mestre vê o mapa inteiro; o agente, só a cor das palavras reveladas. No fim, todos veem tudo.
+ * `seat` null = espectador (sem lugar na partida): vê como um agente e não age.
+ */
+export function viewFor(state: GameState, seat: Seat | null): PlayerView {
   const s = structuredClone(state);
-  const role = roleOf(seat);
+  const spectator = seat === null;
+  const role = spectator ? "agent" : roleOf(seat);
   const all = role === "master" || s.phase === "gameOver";
   return {
-    seat,
-    team: teamOf(seat),
+    seat: seat ?? -1,
+    team: spectator ? s.turn : teamOf(seat),
     role,
+    spectator,
     gameNo: s.gameNo,
     time: s.settings.time,
     players: s.players,
@@ -27,8 +32,8 @@ export function viewFor(state: GameState, seat: Seat): PlayerView {
     left: [remaining(s, 0), remaining(s, 1)],
     winner: s.winner,
     reason: s.reason,
-    canClue: canClue(s, seat),
-    canGuess: canGuess(s, seat),
-    canPass: canPass(s, seat),
+    canClue: !spectator && canClue(s, seat),
+    canGuess: !spectator && canGuess(s, seat),
+    canPass: !spectator && canPass(s, seat),
   };
 }

@@ -8,7 +8,8 @@
  *   com menos, completa com a lista pronta. No "De novo", evita repetir as palavras da partida anterior.
  * - Na vez do time, o mestre digita a dica: UMA palavra (sem espaço e diferente das palavras ainda cobertas)
  *   e um número de 0 a 9 ou ∞. Com número N (1 a 9), os agentes podem tocar até N+1 palavras; com 0 ou ∞, sem limite.
- * - Agentes marcam palavras (todos veem as marcas) e qualquer agente do time revela uma.
+ * - Agentes marcam palavras (cada um pode marcar várias; todos veem as marcas) e qualquer agente do time
+ *   revela uma por vez.
  *   Palavra do próprio time: continua (enquanto houver toques). Civil ou do adversário: a vez passa.
  *   Assassino: o time perde na hora. Depois do primeiro toque, os agentes podem PASSAR.
  * - Vence quem tiver todas as suas palavras reveladas (mesmo que o adversário revele a última).
@@ -82,8 +83,8 @@ export interface GameState {
   clues: Clue[];
   /** Toques que ainda restam com a dica atual (null = sem limite). */
   guessesLeft: number | null;
-  /** Palavra marcada por cada agente do time da vez. */
-  marks: Record<Seat, number>;
+  /** Palavras marcadas por cada agente do time da vez (várias por agente). */
+  marks: Record<Seat, number[]>;
   /** Última palavra revelada (a UI anima e toca som uma vez por id). */
   last: { id: number; index: number; seat: Seat } | null;
   /** A vez passou por tempo (para a UI avisar). */
@@ -114,9 +115,12 @@ export interface ViewCard {
 }
 
 export interface PlayerView {
+  /** -1 para quem só está assistindo. */
   seat: Seat;
   team: Team;
   role: Role;
+  /** Assistindo sem lugar na partida: vê a mesa como um agente (sem o mapa) até o fim. */
+  spectator: boolean;
   gameNo: number;
   time: number;
   players: Seat[];
@@ -129,7 +133,7 @@ export interface PlayerView {
   /** Dica valendo agora (só na fase "guess"). */
   clue: Clue | null;
   guessesLeft: number | null;
-  marks: Record<Seat, number>;
+  marks: Record<Seat, number[]>;
   last: GameState["last"];
   timeout: GameState["timeout"];
   /** Palavras que faltam para cada time. */

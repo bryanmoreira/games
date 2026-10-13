@@ -116,7 +116,7 @@ function broadcast(room: Room) {
     const ws = sockets.get(token);
     if (!ws) continue;
     const seat = seatOf(room, token);
-    const view = room.state && seat !== null ? room.adapter.viewFor(room.state, seat) : null;
+    const view = !room.state ? null : seat !== null ? room.adapter.viewFor(room.state, seat) : (room.adapter.spectate?.(room.state) ?? null);
     send(ws, { t: "room", room: info(room, token), view });
   }
 }

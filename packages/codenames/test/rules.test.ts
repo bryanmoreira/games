@@ -267,12 +267,39 @@ describe("toques", () => {
     const i = find(s, 0);
     s = apply(s, { type: "mark", seat: 1, index: i });
     s = apply(s, { type: "mark", seat: 2, index: i });
-    expect(s.marks).toEqual({ 1: i, 2: i });
+    expect(s.marks).toEqual({ 1: [i], 2: [i] });
     s = apply(s, { type: "mark", seat: 2, index: i });
-    expect(s.marks).toEqual({ 1: i });
+    expect(s.marks).toEqual({ 1: [i] });
     s = apply(s, { type: "guess", seat: 2, index: i });
     expect(s.marks).toEqual({});
     expect(applyAction(s, { type: "mark", seat: 7, index: 0 }).ok).toBe(false);
+  });
+
+  test("marcas: várias por agente, revela uma por vez", () => {
+    let s = game();
+    s = apply(s, { type: "clue", seat: 0, word: "dica", number: 3 });
+    const [a, b, c] = s.cards.flatMap((card, i) => (card.key === 0 ? [i] : [])).slice(0, 3);
+    s = apply(s, { type: "mark", seat: 1, index: a });
+    s = apply(s, { type: "mark", seat: 1, index: b });
+    s = apply(s, { type: "mark", seat: 1, index: c });
+    s = apply(s, { type: "mark", seat: 2, index: b });
+    expect(s.marks).toEqual({ 1: [a, b, c], 2: [b] });
+    s = apply(s, { type: "guess", seat: 1, index: b });
+    expect(s.marks).toEqual({ 1: [a, c] });
+    expect(s.cards[a].revealed).toBe(false);
+    s = apply(s, { type: "mark", seat: 1, index: null });
+    expect(s.marks).toEqual({});
+  });
+
+  test("espectador vê como agente e não age", () => {
+    let s = game();
+    s = apply(s, { type: "clue", seat: 0, word: "dica", number: 2 });
+    const v = viewFor(s, null);
+    expect(v.spectator).toBe(true);
+    expect(v.cards.every((c) => c.key === null)).toBe(true);
+    expect(v.canGuess || v.canClue || v.canPass).toBe(false);
+    s = apply(s, { type: "guess", seat: 1, index: find(s, "assassin") });
+    expect(viewFor(s, null).cards.every((c) => c.key !== null)).toBe(true);
   });
 });
 

@@ -1,6 +1,7 @@
-import type { Key } from "@truco/codenames";
+import { TIME_OPTIONS, type Key } from "@truco/codenames";
 import { Section } from "@/components/ui/HowToSection";
-import { ClockIcon, InfinityIcon, ListIcon } from "@/components/ui/icons";
+import { Icon } from "@/components/ui/buttons";
+import { ClockIcon, InfinityIcon, ListIcon, TimeLabel } from "@/components/ui/icons";
 import { AgentIcon, EyeIcon, TEAM, WordCard } from "./Board";
 
 /** Como o mestre vê a mesa e como o agente vê (mesmas palavras). */
@@ -116,27 +117,52 @@ export function HowToPlay() {
             </div>
           ))}
         </div>
-        <div className="flex justify-center gap-2">
-          <span className="rounded-xl bg-gold px-4 py-2 font-display text-stone-900 shadow-[0_4px_0_#9a6b12]">REVELAR</span>
+        <div className="flex items-center justify-center gap-3">
+          <span className="relative w-28">
+            <WordCard word="Praia" k={null} revealed={false} selected marks={[{ initial: "A", team: 0, mine: true }]} />
+            <span className="absolute right-[4%] top-[6%] flex h-6 w-6 items-center justify-center rounded-full bg-gold text-stone-900 shadow-[0_2px_0_#9a6b12]">
+              <Icon className="h-4 w-4">
+                <path d="m5 12 5 5 9-10" />
+              </Icon>
+            </span>
+          </span>
           <span className="rounded-xl bg-white/15 px-4 py-2 font-display">PASSAR</span>
         </div>
         <p className="text-center text-sm text-white/70">
-          Os agentes tocam numa palavra para marcar (todos veem) e qualquer um do time revela. Depois do primeiro toque, dá para passar.
-          Palavra do outro time conta para ele.
+          Os agentes tocam nas palavras para marcar (várias, e todos veem). Para revelar, um toque no{" "}
+          <b className="text-gold">✓</b> da palavra marcada: uma por vez. Depois do primeiro toque, dá para passar. Palavra do outro time conta
+          para ele.
         </p>
       </Section>
 
       <Section n={5} title="Opções da sala">
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="flex flex-col items-center gap-2 rounded-2xl bg-white/5 p-3 text-center text-sm text-white/70">
-            <ListIcon className="h-6 w-6 text-gold" />
-            Quem cria a sala pode colar uma lista de palavras, <b className="text-white">uma por linha</b>. Se tiver menos de 25, completa com a lista
-            pronta.
-          </div>
-          <div className="flex flex-col items-center gap-2 rounded-2xl bg-white/5 p-3 text-center text-sm text-white/70">
-            <ClockIcon className="h-6 w-6 text-gold" />
-            Tempo opcional: vale para o mestre dar a dica e, de novo, para os agentes. Acabou, a vez passa.
-          </div>
+          <OptionCard icon={<ListIcon className="h-4 w-4" />} label="PALAVRAS">
+            <div className="flex flex-col gap-0.5 rounded-xl bg-black/30 px-3 py-2 text-sm font-semibold uppercase leading-relaxed text-white/80">
+              {["Praia", "Pirata", "Neve"].map((w) => (
+                <span key={w}>{w}</span>
+              ))}
+              <span className="text-white/30">…</span>
+            </div>
+            <p>
+              Quem cria a sala cola a lista, <b className="text-white">uma por linha</b>. Menos de 25? Completa com a lista pronta.
+            </p>
+          </OptionCard>
+          <OptionCard icon={<ClockIcon className="h-4 w-4" />} label="TEMPO">
+            <div className="flex rounded-xl bg-black/30 p-1">
+              {TIME_OPTIONS.map((t) => (
+                <span
+                  key={t}
+                  className={`flex h-8 flex-1 items-center justify-center rounded-lg font-display text-xs ${t === 90 ? "bg-gold text-stone-900" : "text-white/50"}`}
+                >
+                  <TimeLabel seconds={t} className={t === 0 ? "h-4 w-4" : undefined} />
+                </span>
+              ))}
+            </div>
+            <p>
+              Vale para o mestre dar a dica e, de novo, para os agentes. Acabou, <b className="text-white">a vez passa</b>.
+            </p>
+          </OptionCard>
         </div>
       </Section>
     </>
@@ -150,5 +176,18 @@ function Legend({ k, label }: { k: Key; label: string }) {
       <span className={`h-3.5 w-3.5 rounded ${color}`} />
       {label}
     </span>
+  );
+}
+
+/** Uma opção do lobby: título com ícone, a miniatura do controle e a explicação. */
+function OptionCard({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3 rounded-2xl bg-white/5 p-4 text-sm text-white/70 ring-1 ring-white/10">
+      <span className="flex items-center gap-2 font-display text-xs text-gold">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15">{icon}</span>
+        {label}
+      </span>
+      {children}
+    </div>
   );
 }

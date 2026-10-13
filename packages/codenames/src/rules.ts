@@ -212,13 +212,16 @@ export function applyAction(state: GameState, action: Action): Result {
     case "mark": {
       if (!canGuess(s, seat)) return fail("Não é sua vez");
       const i = action.index;
+      // null: limpa as marcas do agente
       if (i === null) {
         delete s.marks[seat];
         return { ok: true, state: s };
       }
       if (!Number.isInteger(i) || i < 0 || i >= BOARD || s.cards[i].revealed) return fail("Palavra inválida");
-      if (s.marks[seat] === i) delete s.marks[seat];
-      else s.marks[seat] = i;
+      const mine = s.marks[seat] ?? [];
+      const next = mine.includes(i) ? mine.filter((m) => m !== i) : [...mine, i];
+      if (next.length) s.marks[seat] = next;
+      else delete s.marks[seat];
       return { ok: true, state: s };
     }
 
@@ -231,7 +234,11 @@ export function applyAction(state: GameState, action: Action): Result {
       card.revealed = true;
       s.clues.at(-1)!.guesses.push(i);
       s.last = { id: (s.last?.id ?? 0) + 1, index: i, seat };
-      for (const [k, v] of Object.entries(s.marks)) if (v === i) delete s.marks[Number(k)];
+      for (const [k, v] of Object.entries(s.marks)) {
+        const rest = v.filter((m) => m !== i);
+        if (rest.length) s.marks[Number(k)] = rest;
+        else delete s.marks[Number(k)];
+      }
 
       const team = s.turn;
       if (card.key === "assassin") {

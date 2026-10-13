@@ -33,12 +33,20 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
   return (
     <main className="flex min-h-dvh flex-col">
-      <header className="relative z-40 flex items-center justify-end gap-2 px-2 py-2 sm:px-6">
+      <header className="relative z-40 flex items-center justify-between gap-2 px-2 py-2 sm:px-6">
+        {view.spectator ? (
+          <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 font-display text-xs text-white/70" title="Assistindo">
+            <EyeIcon className="h-4 w-4" />
+            ASSISTINDO
+          </span>
+        ) : (
+          <span />
+        )}
         <div className="flex items-center gap-1 sm:gap-2">
           <span className="hidden font-display text-white/40 sm:inline">{room.code}</span>
           <HelpButton onClick={() => setHelp(true)} />
           <MuteButton />
-          <ExitConfirm onExit={leave} ask={!over} />
+          <ExitConfirm onExit={leave} ask={!over && !view.spectator} />
         </div>
       </header>
 
@@ -61,7 +69,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
       </div>
 
       {timeout && <TimeoutShout key={`timeout-${timeout.id}`} team={timeout.team} />}
-      {over && <End key={`end-${view.gameNo}`} room={room} view={view} onLeave={leave} />}
+      {over && !view.spectator && <End key={`end-${view.gameNo}`} room={room} view={view} onLeave={leave} />}
       {help && (
         <HowToPlayModal game="CODENAMES" onClose={() => setHelp(false)}>
           <HowToPlay />
@@ -184,51 +192,61 @@ function Clock({ left, total }: { left: number; total: number }) {
 /* ---------- mesa ---------- */
 
 function Grid({ room, view }: { room: RoomInfo; view: PlayerView }) {
-  const mine = view.marks[view.seat];
+  const mine = view.marks[view.seat] ?? [];
   const marks: Record<number, Mark[]> = {};
-  for (const [seat, index] of Object.entries(view.marks)) {
+  for (const [seat, list] of Object.entries(view.marks)) {
     const s = Number(seat);
-    (marks[index] ??= []).push({ initial: (room.seats[s]?.name || "?").slice(0, 1).toUpperCase(), team: teamOf(s), mine: s === view.seat });
+    for (const index of list)
+      (marks[index] ??= []).push({ initial: (room.seats[s]?.name || "?").slice(0, 1).toUpperCase(), team: teamOf(s), mine: s === view.seat });
   }
 
   return (
     <div className="grid grid-cols-5 gap-1 sm:gap-2">
       {view.cards.map((c, i) => (
-        <div key={`${view.gameNo}-${i}`} className="cn-deal" style={{ animationDelay: `${i * 25}ms` }}>
+        <div key={`${view.gameNo}-${i}`} className="cn-deal @container relative" style={{ animationDelay: `${i * 25}ms` }}>
           <WordCard
             word={c.word}
             k={c.key}
             revealed={c.revealed}
-            selected={mine === i}
+            selected={mine.includes(i)}
             marks={marks[i]}
             flip={c.revealed && view.last?.index === i}
             onClick={view.canGuess && !c.revealed ? () => send({ t: "action", action: { type: "mark", index: i } }) : undefined}
           />
+          {view.canGuess && !c.revealed && mine.includes(i) && <RevealButton word={c.word} onClick={() => send({ t: "action", action: { type: "guess", index: i } })} />}
         </div>
       ))}
     </div>
   );
 }
 
+/** Revelar a palavra marcada (uma por vez): botão no canto do cartão. */
+function RevealButton({ word, onClick }: { word: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={`Revelar ${word}`}
+      title="Revelar"
+      className="banner absolute right-[4%] top-[6%] flex h-[min(24cqw,26px)] w-[min(24cqw,26px)] items-center justify-center rounded-full bg-gold text-stone-900 shadow-[0_2px_0_#9a6b12] ring-2 ring-stone-900/30 transition before:absolute before:-inset-2 before:content-[''] hover:brightness-110 active:translate-y-0.5 active:shadow-none"
+    >
+      <Icon className="h-[60%] w-[60%]">
+        <path d="m5 12 5 5 9-10" />
+      </Icon>
+    </button>
+  );
+}
+
 /* ---------- ações ---------- */
 
 function Actions({ view }: { view: PlayerView }) {
-  const mine = view.marks[view.seat];
   if (view.canClue) return <ClueForm key={`form-${view.phaseNo}`} view={view} />;
   if (!view.canGuess) return <div className="min-h-14" />;
   return (
-    <div className="flex min-h-14 items-center gap-2">
-      <button
-        disabled={mine === undefined}
-        onClick={() => mine !== undefined && send({ t: "action", action: { type: "guess", index: mine } })}
-        className="h-12 flex-1 rounded-xl bg-gold font-display text-lg text-stone-900 shadow-[0_4px_0_#9a6b12] transition active:translate-y-1 active:shadow-none disabled:bg-stone-700 disabled:text-white/30 disabled:shadow-[0_4px_0_#292524]"
-      >
-        REVELAR
-      </button>
+    <div className="flex min-h-14 items-center justify-center gap-2">
       <button
         disabled={!view.canPass}
         onClick={() => send({ t: "action", action: { type: "pass" } })}
-        className="h-12 rounded-xl bg-white/15 px-5 font-display text-lg transition hover:bg-white/25 disabled:opacity-30 disabled:hover:bg-white/15"
+        className="h-12 rounded-xl bg-white/15 px-8 font-display text-lg transition hover:bg-white/25 disabled:opacity-30 disabled:hover:bg-white/15"
       >
         PASSAR
       </button>
@@ -427,33 +445,17 @@ function End({ room, view, onLeave }: { room: RoomInfo; view: PlayerView; onLeav
         ) : undefined
       }
       onLeave={onLeave}
-      onAgain={room.isHost && room.canStart ? () => send({ t: "restart" }) : undefined}
+      // de novo: todos voltam ao lobby (trocar de time, quem assistia senta) e o host começa
+      onAgain={room.isHost ? () => send({ t: "lobby" }) : undefined}
       actions={
-        <>
-          <button
-            onClick={() => setPeek(true)}
-            aria-label="Ver mapa"
-            title="Ver mapa"
-            className="flex items-center rounded-xl bg-white/10 px-4 py-3 transition hover:bg-white/20 sm:px-5"
-          >
-            <EyeIcon />
-          </button>
-          {room.isHost && (
-            <button
-              onClick={() => send({ t: "lobby" })}
-              aria-label="Trocar lugares"
-              title="Trocar lugares"
-              className="flex items-center rounded-xl bg-white/10 px-4 py-3 transition hover:bg-white/20 sm:px-5"
-            >
-              <Icon>
-                <path d="m8 3-4 4 4 4" />
-                <path d="M4 7h16" />
-                <path d="m16 21 4-4-4-4" />
-                <path d="M20 17H4" />
-              </Icon>
-            </button>
-          )}
-        </>
+        <button
+          onClick={() => setPeek(true)}
+          aria-label="Ver mapa"
+          title="Ver mapa"
+          className="flex items-center rounded-xl bg-white/10 px-4 py-3 transition hover:bg-white/20 sm:px-5"
+        >
+          <EyeIcon />
+        </button>
       }
     >
       <div className="flex gap-3">
@@ -494,7 +496,7 @@ function useSounds(view: PlayerView, left: number | null) {
       playRevealSound(k === "assassin" ? "assassin" : k === "neutral" ? "neutral" : k === team ? "hit" : "enemy");
     } else if (view.clues.length > p.clues) playClueSound();
 
-    if (view.phase === "gameOver" && p.phase !== "gameOver") setTimeout(view.winner === view.team ? playWinSound : playLoseSound, 1600);
+    if (view.phase === "gameOver" && p.phase !== "gameOver" && !view.spectator) setTimeout(view.winner === view.team ? playWinSound : playLoseSound, 1600);
     if (view.phase !== "gameOver" && sec !== null && p.sec !== null && sec < p.sec && sec <= 5) playCountdownSound(sec === 0);
   }, [view, sec]);
 }

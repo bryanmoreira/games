@@ -30,6 +30,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
   newGame(prev: S | null, setup: GameSetup): S;
   applyAction(s: S, a: A): Result<S>;
   viewFor(s: S, seat: number): V;
+  /** Visão de quem está na sala sem lugar na partida (assistindo); sem ela, o espectador não vê a mesa. */
+  spectate?(s: S): V;
   /** Lance do bot a partir da visão dele. */
   decide(v: V): A | null;
   /** Ação vinda do cliente (sem assento) com o assento de quem mandou. */
@@ -196,6 +198,7 @@ const codenamesAdapter: GameAdapter<cn.GameState, cn.Action, cn.PlayerView> = {
   newGame: (prev, { seats, settings }) => cn.newGame(Math.random, { players: seats, settings: cn.parseSettings(settings) }, prev),
   applyAction: cn.applyAction,
   viewFor: (s, seat) => cn.viewFor(s, seat),
+  spectate: (s) => cn.viewFor(s, null),
   decide: () => null,
   withSeat: (a, seat) => ({ ...(a as cn.ClientAction), seat }) as cn.Action,
   actors: (s) =>
