@@ -8,6 +8,8 @@ export interface NewResult {
   outcome: Outcome;
   placement?: number | null;
   data: Record<string, unknown>;
+  /** dia do desafio diário (só jogos solo) */
+  daily?: string | null;
 }
 
 /** Dias (horário de Brasília) em que o jogador terminou alguma partida. */
@@ -27,7 +29,9 @@ export async function recordResults(game: StatGame, mode: Mode, matchId: string 
   const rows = results.filter((r) => exists.has(r.userId));
   if (!rows.length) return new Map();
 
+  // desafio diário já vencido não conta de novo (único por jogador, jogo e dia)
   await prisma.gameResult.createMany({
+    skipDuplicates: true,
     data: rows.map((r) => ({
       userId: r.userId,
       game,
@@ -35,6 +39,7 @@ export async function recordResults(game: StatGame, mode: Mode, matchId: string 
       outcome: r.outcome,
       placement: r.placement ?? null,
       matchId,
+      daily: r.daily ?? null,
       data: r.data as Prisma.InputJsonValue,
     })),
   });
@@ -49,7 +54,7 @@ async function checkAchievements(userId: string, game: StatGame): Promise<Achiev
     prisma.gameResult.findMany({
       where: { userId, game },
       orderBy: { createdAt: "asc" },
-      select: { mode: true, outcome: true, placement: true, data: true, createdAt: true },
+      select: { mode: true, outcome: true, placement: true, data: true, daily: true, createdAt: true },
     }),
     prisma.achievement.findMany({ where: { userId }, select: { code: true } }),
     playedDays(userId),

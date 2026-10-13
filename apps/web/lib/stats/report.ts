@@ -12,9 +12,10 @@ export interface UnlockedAchievement {
 
 export const ACHIEVEMENTS_EVENT = "mesa:achievements";
 
-/** Vitória num jogo solo: vai para o perfil (só se estiver logado; senão o site ignora). */
-export function reportSoloWin(game: SoloGame, data: Record<string, unknown>) {
-  fetch("/api/results", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ game, data }) })
+/** Vitória num jogo solo: vai para o perfil (só se estiver logado; senão o site ignora). `daily`: era o desafio deste dia. */
+export function reportSoloWin(game: SoloGame, data: Record<string, unknown>, daily?: { day: string; seed: number }) {
+  const body = daily ? { game, data, daily: daily.day, seed: daily.seed } : { game, data };
+  fetch("/api/results", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
     .then((r) => (r.ok ? r.json() : null))
     .then((j: { achievements?: UnlockedAchievement[] } | null) => {
       if (j?.achievements?.length) window.dispatchEvent(new CustomEvent(ACHIEVEMENTS_EVENT, { detail: j.achievements }));

@@ -6,6 +6,7 @@ import {
   applyAction,
   bit,
   colOf,
+  gameFrom,
   isGiven,
   isLocked,
   isWrong,
@@ -26,10 +27,13 @@ import { EraseIcon, HintIcon, PencilIcon, UndoIcon } from "@/components/ui/icons
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playErrorSound, playHintSound, playNoteSound, playPlaceSound, playUnitSound } from "@/lib/sudoku/sound";
-import { loadGame, saveBest, saveGame } from "@/lib/sudoku/storage";
+import { isGame, loadGame, saveBest, saveGame } from "@/lib/sudoku/storage";
+import { loadDaily, saveDaily, trimOthers } from "@/lib/daily/storage";
+import type { DailyChallenge } from "@/lib/daily/challenge";
+import { DailyBadge } from "@/components/daily/common";
 import { reportSoloWin } from "@/lib/stats/report";
 import { useClock } from "@/lib/useClock";
-import { SUDOKU_PATH } from "@/lib/sudoku/paths";
+import { SUDOKU_DAILY_PATH, SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { formatTime, LevelBars, LEVEL_LABEL, reasonLabel, TECHNIQUE_LABEL } from "./common";
 import { HowToPlay } from "./HowToPlay";
 
@@ -70,8 +74,14 @@ interface Flash {
 
 // ---------- mesa ----------
 
-export function Table() {
+export type SudokuChallenge = Extract<DailyChallenge, { game: "sudoku" }>;
+
+/** `daily`: o desafio do dia (sempre o mesmo puzzle, salvo à parte por dia). */
+export function Table({ daily }: { daily?: SudokuChallenge }) {
   const router = useRouter();
+  const home = daily ? SUDOKU_DAILY_PATH : SUDOKU_PATH;
+  const fresh = (c: SudokuChallenge) => gameFrom(c.data.difficulty, c.data.seed, c.data);
+  const save = (g: GameState) => (daily ? saveDaily("sudoku", daily.day, g) : saveGame(g));
   const [game, setGame] = useState<GameState | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [focus, setFocus] = useState<number | null>(null);
@@ -93,7 +103,12 @@ export function Table() {
 
   // carrega a partida salva; sem partida, volta para a página inicial do jogo
   useEffect(() => {
-    const g = loadGame();
+    let g = daily ? loadDaily("sudoku", daily.day, isGame) : loadGame();
+    if (daily) {
+      // primeira vez neste dia: começa o puzzle do desafio
+      if (!g || g.seed !== daily.data.seed) save((g = fresh(daily)));
+      trimOthers("sudoku", daily.day);
+    }
     if (!g) {
       router.replace(SUDOKU_PATH);
       return;
@@ -102,7 +117,7 @@ export function Table() {
     clock.reset(g.elapsed);
     setShowEnd(g.won || g.lost);
     if (!g.last && !g.history.length && !g.elapsed) setIntro(Date.now());
-  }, [router, clock]);
+  }, [router, clock, daily]);
 
   // as pistas aparecem em onda no começo
   useEffect(() => {
@@ -116,20 +131,20 @@ export function Table() {
   const latest = useRef<GameState | null>(null);
   latest.current = game;
   useEffect(() => {
-    const save = () => latest.current && saveGame({ ...latest.current, elapsed: clock.now() });
+    const saveNow = () => latest.current && save({ ...latest.current, elapsed: clock.now() });
     const onVis = () => {
-      if (document.hidden) save();
+      if (document.hidden) saveNow();
       setVisible(!document.hidden);
     };
     setVisible(!document.hidden);
     document.addEventListener("visibilitychange", onVis);
-    window.addEventListener("pagehide", save);
+    window.addEventListener("pagehide", saveNow);
     return () => {
-      save();
+      saveNow();
       document.removeEventListener("visibilitychange", onVis);
-      window.removeEventListener("pagehide", save);
+      window.removeEventListener("pagehide", saveNow);
     };
-  }, [clock]);
+  }, [clock, daily]);
 
   useEffect(() => {
     if (!fx) return;
@@ -152,7 +167,7 @@ export function Table() {
     const next = { ...r.state, elapsed: clock.now() };
     latest.current = next;
     setGame(next);
-    saveGame(next);
+    save(next);
     const last = next.last;
     if (!last || last.id === cur.last?.id) return true; // continuar depois dos 3 erros não repete a última jogada
 
@@ -169,7 +184,11 @@ export function Table() {
       if (next.won) {
         setFx({ key: last.id, wave: wave(Array.from({ length: 81 }, (_, i) => i), last.cell) });
         setRecord(saveBest(next.difficulty, next.elapsed));
-        reportSoloWin("sudoku", { difficulty: next.difficulty, timeMs: Math.round(next.elapsed), mistakes: next.mistakes, hints: next.hints });
+        reportSoloWin(
+          "sudoku",
+          { difficulty: next.difficulty, timeMs: Math.round(next.elapsed), mistakes: next.mistakes, hints: next.hints },
+          daily && { day: daily.day, seed: daily.data.seed },
+        );
         setTimeout(playWinSound, 350);
         setTimeout(() => setShowEnd(true), 16 * WAVE_STEP + 900);
       } else if (last.completed.length) {
@@ -183,10 +202,11 @@ export function Table() {
   const startNew = () => {
     if (!game || busy) return;
     setBusy(true);
-    // deixa o botão mostrar que está gerando antes de travar no cálculo
+    // deixa o botão mostrar que está gerando antes de travar no cálculo; o desafio recomeça o mesmo puzzle
     setTimeout(() => {
-      const g = newGame(game.difficulty);
-      saveGame(g);
+      const g = daily ? fresh(daily) : newGame(game.difficulty);
+      latest.current = g;
+      save(g);
       setGame(g);
       clock.reset(0);
       setSelected(null);
@@ -304,15 +324,19 @@ export function Table() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 rounded-full bg-black/30 px-3 py-1.5 font-display text-xs text-white/70" title={LEVEL_LABEL[game.difficulty]}>
-          <LevelBars level={game.difficulty} className="h-3.5 w-4 text-gold" />
-          <span className="hidden sm:inline">{LEVEL_LABEL[game.difficulty]}</span>
-        </div>
+        {daily ? (
+          <DailyBadge day={daily.day} className="rounded-full bg-black/30 px-3 py-1.5 text-white/70" />
+        ) : (
+          <div className="flex items-center gap-1.5 rounded-full bg-black/30 px-3 py-1.5 font-display text-xs text-white/70" title={LEVEL_LABEL[game.difficulty]}>
+            <LevelBars level={game.difficulty} className="h-3.5 w-4 text-gold" />
+            <span className="hidden sm:inline">{LEVEL_LABEL[game.difficulty]}</span>
+          </div>
+        )}
 
         <div className="flex items-center gap-1 sm:gap-2">
           <HelpButton onClick={() => setHelp(true)} />
           <MuteButton />
-          <ExitConfirm onExit={() => router.push(SUDOKU_PATH)} ask={!game.won} />
+          <ExitConfirm onExit={() => router.push(home)} ask={!game.won} />
         </div>
       </header>
 
@@ -405,8 +429,8 @@ export function Table() {
         />
       </section>
 
-      {showEnd && game.won && <Victory game={game} record={record} busy={busy} onAgain={startNew} onLeave={() => router.push(SUDOKU_PATH)} />}
-      {showEnd && game.lost && <GameOver game={game} busy={busy} onContinue={revive} onNew={startNew} onLeave={() => router.push(SUDOKU_PATH)} />}
+      {showEnd && game.won && <Victory game={game} day={daily?.day} record={record} busy={busy} onAgain={startNew} onLeave={() => router.push(home)} />}
+      {showEnd && game.lost && <GameOver game={game} day={daily?.day} busy={busy} onContinue={revive} onNew={startNew} onLeave={() => router.push(home)} />}
       {help && (
         <HowToPlayModal game="SUDOKU" onClose={() => setHelp(false)}>
           <HowToPlay />
@@ -513,7 +537,9 @@ function Controls({
 
 // ---------- fim de jogo ----------
 
-function Level({ game }: { game: GameState }) {
+/** Selo da tela de fim: o nível, ou o dia no desafio. */
+function Level({ game, day }: { game: GameState; day?: string }) {
+  if (day) return <DailyBadge day={day} className="text-white/60" />;
   return (
     <span className="flex items-center gap-1.5 font-display text-xs text-white/60">
       <LevelBars level={game.difficulty} className="h-3.5 w-4 text-gold" />
@@ -522,9 +548,9 @@ function Level({ game }: { game: GameState }) {
   );
 }
 
-function Victory({ game, record, busy, onAgain, onLeave }: { game: GameState; record: boolean; busy: boolean; onAgain: () => void; onLeave: () => void }) {
+function Victory({ game, day, record, busy, onAgain, onLeave }: { game: GameState; day?: string; record: boolean; busy: boolean; onAgain: () => void; onLeave: () => void }) {
   return (
-    <GameEnd won badge={<Level game={game} />} onLeave={onLeave} onAgain={onAgain} busy={busy}>
+    <GameEnd won badge={<Level game={game} day={day} />} onLeave={onLeave} onAgain={onAgain} busy={busy}>
       <div className="flex flex-col items-center gap-3">
         <div className="flex gap-6">
           <EndStat label="TEMPO" value={formatTime(game.elapsed)} gold />
@@ -537,11 +563,11 @@ function Victory({ game, record, busy, onAgain, onLeave }: { game: GameState; re
   );
 }
 
-function GameOver({ game, busy, onContinue, onNew, onLeave }: { game: GameState; busy: boolean; onContinue: () => void; onNew: () => void; onLeave: () => void }) {
+function GameOver({ game, day, busy, onContinue, onNew, onLeave }: { game: GameState; day?: string; busy: boolean; onContinue: () => void; onNew: () => void; onLeave: () => void }) {
   return (
     <GameEnd
       won={false}
-      badge={<Level game={game} />}
+      badge={<Level game={game} day={day} />}
       onLeave={onLeave}
       onAgain={onNew}
       busy={busy}

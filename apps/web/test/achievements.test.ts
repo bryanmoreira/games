@@ -4,6 +4,7 @@ import {
   ACHIEVEMENTS,
   bestStreak,
   currentStreak,
+  dailyStreaks,
   dayKey,
   dayStreaks,
   newAchievements,
@@ -21,6 +22,23 @@ const loss = (data: Data = {}, mode?: string) => row("loss", data, mode);
 const draw = (data: Data = {}) => row("draw", data);
 const times = (n: number, make: () => ResultRow) => Array.from({ length: n }, make);
 const ctx = (results: ResultRow[], bestDays = 0) => ({ results, bestDays });
+/** Desafio do dia `day` terminado em `at` (padrão: no próprio dia, meio-dia de Brasília). */
+const dailyRow = (day: string, at = day, outcome = "win"): ResultRow => ({ ...row(outcome, {}, "solo"), daily: day, createdAt: new Date(`${at}T12:00:00-03:00`) });
+/** `n` dias seguidos a partir de 01/08/2026. */
+const run = (n: number, from = 1) => Array.from({ length: n }, (_, i) => `2026-08-${String(i + from).padStart(2, "0")}`);
+const dailyCases = (): Record<string, Case> => ({
+  daily_first: { ok: [win({}, "solo"), dailyRow("2026-10-12")], almost: [win({}, "solo"), dailyRow("2026-10-12", "2026-10-12", "loss")] },
+  daily_week: {
+    ok: run(7).map((d) => dailyRow(d)),
+    // 6 no dia + o 7º rejogado no dia seguinte; e 3 + buraco + 4
+    almost: [...run(6).map((d) => dailyRow(d)), dailyRow("2026-08-07", "2026-08-08"), ...run(3, 10).map((d) => dailyRow(d)), ...run(4, 14).map((d) => dailyRow(d))],
+  },
+  daily_30: {
+    ok: run(30).map((d) => dailyRow(d, "2026-10-01")),
+    almost: [...run(29).map((d) => dailyRow(d)), ...times(10, () => win({}, "solo")), dailyRow("2026-08-30", "2026-08-30", "loss")],
+  },
+});
+const withGame = (game: string, cases: Record<string, Case>) => Object.fromEntries(Object.entries(cases).map(([k, v]) => [`${game}:${k}`, v]));
 
 /** Para cada conquista: o mínimo que destrava e o "quase" que ainda não destrava. */
 interface Case {
@@ -100,6 +118,7 @@ const CASES: Record<string, Case> = {
   "sudoku:wins_10": winsCase(10),
   "sudoku:wins_50": winsCase(50),
   "sudoku:wins_100": winsCase(100),
+  ...withGame("sudoku", dailyCases()),
 
   "paciencia-spider:first": { ok: [win({}, "solo")], almost: [] },
   "paciencia-spider:suits_2": { ok: [win({ suits: 2 }, "solo")], almost: [win({ suits: 1 }, "solo"), win({ suits: 4 }, "solo")] },
@@ -107,6 +126,7 @@ const CASES: Record<string, Case> = {
   "paciencia-spider:wins_10": winsCase(10),
   "paciencia-spider:wins_50": winsCase(50),
   "paciencia-spider:wins_100": winsCase(100),
+  ...withGame("paciencia-spider", dailyCases()),
 };
 
 const codes = ACHIEVEMENTS.map((a) => a.code);
@@ -181,6 +201,18 @@ describe("detalhes das conquistas", () => {
 
   test("Mão rápida soma o STOP de todas as partidas, ignorando valor que não é número", () => {
     expect(check("stop:stops_10", [...times(9, () => loss({ stops: 1 })), loss({ stops: "x" }), loss({ stops: 1 })])).toBe(true);
+  });
+
+  test("desafio diário: só a vitória no próprio dia conta para a semana, rejogar conta para o total", () => {
+    const late = run(7).map((d) => dailyRow(d, "2026-09-01"));
+    expect(check("sudoku:daily_week", late)).toBe(false);
+    expect(check("sudoku:daily_first", late)).toBe(true);
+    expect(dailyStreaks(late)).toEqual({ best: 0, current: 0 });
+    expect(dailyStreaks(run(7).map((d) => dailyRow(d))).best).toBe(7);
+  });
+
+  test("vitória fora do desafio não conta como desafio", () => {
+    expect(check("sudoku:daily_first", times(50, () => win({ difficulty: "expert" }, "solo")))).toBe(false);
   });
 
   test("números guardados como texto também valem", () => {

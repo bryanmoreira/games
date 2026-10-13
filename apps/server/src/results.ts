@@ -32,16 +32,23 @@ export function verifyTicket(ticket: unknown): Account | null {
   }
 }
 
-export async function sendReport(report: MatchReport) {
-  if (!SECRET || report.players.length === 0) return;
+/** POST numa rota interna do site, autenticado com o GAME_SECRET. null = sem segredo ou site fora do ar. */
+export async function callSite(path: string, body: unknown = {}): Promise<Response | null> {
+  if (!SECRET) return null;
   try {
-    const r = await fetch(`${WEB_URL}/api/internal/results`, {
+    return await fetch(`${WEB_URL}${path}`, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${SECRET}` },
-      body: JSON.stringify(report),
+      body: JSON.stringify(body),
     });
-    if (!r.ok) console.error(`resultados: ${r.status} ${await r.text()}`);
-  } catch (e) {
-    console.error("resultados: site fora do ar", e);
+  } catch {
+    return null;
   }
+}
+
+export async function sendReport(report: MatchReport) {
+  if (!SECRET || report.players.length === 0) return;
+  const r = await callSite("/api/internal/results", report);
+  if (!r) console.error("resultados: site fora do ar");
+  else if (!r.ok) console.error(`resultados: ${r.status} ${await r.text()}`);
 }

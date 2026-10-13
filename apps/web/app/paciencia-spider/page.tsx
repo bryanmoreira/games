@@ -5,12 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isRed, newGame, scoreOf, SUIT_SETS, type GameState, type SuitCount } from "@truco/spider";
 import { BackButton } from "@/components/BackButton";
+import { DailyButton } from "@/components/daily/DailyButton";
 import { GameIntro } from "@/components/seo";
 import { CardImg } from "@/components/cards/Card";
 import { SuitIcon } from "@/components/spider/SpiderCard";
 import { XIcon } from "@/components/ui/buttons";
 import { loadGame, loadSuits, saveGame, saveSuits } from "@/lib/spider/storage";
-import { SPIDER_PATH, SPIDER_PLAY_PATH } from "@/lib/spider/paths";
+import { SPIDER_DAILY_PATH, SPIDER_PATH, SPIDER_PLAY_PATH } from "@/lib/spider/paths";
 
 const CASCADE = [
   { rank: 13, suit: "spades" },
@@ -124,6 +125,7 @@ export default function SpiderHome() {
             </span>
           </button>
         )}
+        <DailyButton game="paciencia-spider" href={SPIDER_DAILY_PATH} />
       </div>
       <Link
         href={`${SPIDER_PATH}/como-jogar`}

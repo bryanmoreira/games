@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DIFFICULTIES, newGame, type Difficulty, type GameState } from "@truco/sudoku";
 import { BackButton } from "@/components/BackButton";
+import { DailyButton } from "@/components/daily/DailyButton";
 import { GameIntro } from "@/components/seo";
 import { formatTime, LevelBars, LEVEL_LABEL, MiniBoard } from "@/components/sudoku/common";
 import { XIcon } from "@/components/ui/buttons";
 import { loadBests, loadGame, loadLevel, saveGame, saveLevel, type Bests } from "@/lib/sudoku/storage";
-import { SUDOKU_PATH, SUDOKU_PLAY_PATH } from "@/lib/sudoku/paths";
+import { SUDOKU_DAILY_PATH, SUDOKU_PATH, SUDOKU_PLAY_PATH } from "@/lib/sudoku/paths";
 
 export default function SudokuHome() {
   const router = useRouter();
@@ -112,6 +113,7 @@ export default function SudokuHome() {
             </span>
           </button>
         )}
+        <DailyButton game="sudoku" href={SUDOKU_DAILY_PATH} />
       </div>
       <Link
         href={`${SUDOKU_PATH}/como-jogar`}

@@ -221,6 +221,32 @@ export function howToMetadata(slug: string): Metadata {
   };
 }
 
+/** Jogos com desafio diário: página do calendário em `${path}/diario`. */
+export const DAILY_SEO: Record<string, { title: string; description: string }> = {
+  sudoku: {
+    title: "Sudoku Diário: o desafio do dia",
+    description: "Um Sudoku expert novo todo dia, o mesmo para todos os jogadores. Resolva o desafio de hoje, mantenha a sequência e rejogue os dias anteriores.",
+  },
+  "paciencia-spider": {
+    title: "Paciência Spider Diária: o desafio do dia",
+    description: "Uma Paciência Spider de 4 naipes nova todo dia, a mesma distribuição para todos. Jogue o desafio de hoje e rejogue os dias anteriores.",
+  },
+};
+
+export function dailyMetadata(slug: string): Metadata {
+  const g = getGame(slug);
+  const { title, description } = DAILY_SEO[slug];
+  const path = `${g.path}/diario`;
+  return {
+    title,
+    description,
+    keywords: [...g.keywords, `${g.name.toLowerCase()} diário`, "desafio diário", "desafio do dia"],
+    alternates: { canonical: path },
+    openGraph: { title: `${title} · ${SITE_NAME}`, description, url: path, siteName: SITE_NAME, locale: "pt_BR", type: "website", images: [`${g.path}/opengraph-image`] },
+    twitter: { card: "summary_large_image", title: `${title} · ${SITE_NAME}`, description, images: [`${g.path}/opengraph-image`] },
+  };
+}
+
 /** Telas que não devem ser indexadas (salas e partidas em andamento) */
 export const noindex: Metadata = { robots: { index: false, follow: false } };
 

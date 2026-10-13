@@ -7,6 +7,8 @@ export interface ResultRow {
   outcome: Outcome | string;
   placement: number | null;
   data: Record<string, unknown>;
+  /** dia do desafio diário (AAAA-MM-DD), se a partida foi um */
+  daily?: string | null;
   createdAt: Date;
 }
 
@@ -78,6 +80,39 @@ const streak5 = (game: StatGame): AchievementDef => ({
   icon: "flame",
   check: ({ results }) => bestStreak(results) >= 5,
 });
+
+/** Desafios diários vencidos. */
+export const dailyWins = (rs: ResultRow[]) => rs.filter((r) => r.daily && isWin(r));
+
+/** Sequência de desafios vencidos no próprio dia (rejogar um dia antigo não conta). */
+export const dailyStreaks = (rs: ResultRow[]) => dayStreaks(dailyWins(rs).flatMap((r) => (dayKey(r.createdAt) === r.daily ? [r.daily!] : [])));
+
+const daily = (game: StatGame): AchievementDef[] => [
+  {
+    code: `${game}:daily_first`,
+    game,
+    title: "Desafio do dia",
+    desc: "Completar um desafio diário",
+    icon: "calendar",
+    check: ({ results }) => dailyWins(results).length > 0,
+  },
+  {
+    code: `${game}:daily_week`,
+    game,
+    title: "Semana em dia",
+    desc: "7 desafios seguidos, cada um no seu dia",
+    icon: "flame",
+    check: ({ results }) => dailyStreaks(results).best >= 7,
+  },
+  {
+    code: `${game}:daily_30`,
+    game,
+    title: "30 desafios",
+    desc: "Completar 30 desafios diários",
+    icon: "crown",
+    check: ({ results }) => dailyWins(results).length >= 30,
+  },
+];
 
 const days = (n: number): AchievementDef => ({
   code: `days_${n}`,
@@ -220,6 +255,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   wins("sudoku", 10),
   wins("sudoku", 50),
   wins("sudoku", 100),
+  ...daily("sudoku"),
 
   first("paciencia-spider"),
   {
@@ -241,6 +277,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   wins("paciencia-spider", 10),
   wins("paciencia-spider", 50),
   wins("paciencia-spider", 100),
+  ...daily("paciencia-spider"),
 ];
 
 export const ACHIEVEMENT_BY_CODE = new Map(ACHIEVEMENTS.map((a) => [a.code, a]));

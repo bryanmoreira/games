@@ -19,11 +19,20 @@ export function randomSeed(): number {
   return Math.floor(Math.random() * 2 ** 32);
 }
 
-export function newGame(suits: SuitCount, seed = randomSeed()): GameState {
-  const ids = shuffle(
+/** Ordem do baralho embaralhado por `seed`: a partida sai dela (ver `dealGame`). */
+export function shuffledDeck(seed: number): number[] {
+  return shuffle(
     Array.from({ length: DECK_SIZE }, (_, i) => i),
     mulberry32(seed),
   );
+}
+
+export function newGame(suits: SuitCount, seed = randomSeed()): GameState {
+  return dealGame(suits, seed, shuffledDeck(seed));
+}
+
+/** Partida do zero a partir de um baralho já embaralhado (ex.: o desafio do dia, guardado no banco). */
+export function dealGame(suits: SuitCount, seed: number, ids: number[]): GameState {
   const cols: number[][] = Array.from({ length: COLS }, () => []);
   // distribui em rodadas, como na mesa: a carta i vai para a coluna i % 10
   for (let i = 0; i < INITIAL; i++) cols[i % COLS].push(ids[i]);

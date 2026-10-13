@@ -7,6 +7,7 @@ import {
   bestHint,
   canDeal,
   cardOf,
+  dealGame,
   isRun,
   newGame,
   scoreOf,
@@ -20,11 +21,14 @@ import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { playCardSound, useAudioUnlock } from "@/lib/sound";
 import { playCompleteSound, playDealSound, playWinSound } from "@/lib/spider/sound";
-import { loadGame, saveGame } from "@/lib/spider/storage";
+import { isGame, loadGame, saveGame } from "@/lib/spider/storage";
+import { loadDaily, saveDaily, trimOthers } from "@/lib/daily/storage";
+import type { DailyChallenge } from "@/lib/daily/challenge";
+import { DailyBadge } from "@/components/daily/common";
 import { reportSoloWin } from "@/lib/stats/report";
 import { useClock } from "@/lib/useClock";
 import { formatTime } from "@/components/sudoku/common";
-import { SPIDER_PATH } from "@/lib/spider/paths";
+import { SPIDER_DAILY_PATH, SPIDER_PATH } from "@/lib/spider/paths";
 import { COMPACT_BELOW, SpiderCard, SuitIcon } from "./SpiderCard";
 import { HowToPlay } from "./HowToPlay";
 import { HintIcon, UndoIcon } from "@/components/ui/icons";
@@ -195,8 +199,14 @@ const HEADER = "relative z-40 flex min-h-12 items-center justify-between gap-1.5
 const FELT =
   "felt relative isolate mx-auto mb-4 mt-1 w-[calc(100%-1.75rem)] max-w-[1200px] flex-1 touch-none select-none rounded-[28px] sm:mt-2 sm:rounded-[48px]";
 
-export function Table() {
+export type SpiderChallenge = Extract<DailyChallenge, { game: "paciencia-spider" }>;
+
+/** `daily`: o desafio do dia (sempre a mesma distribuição, salva à parte por dia). */
+export function Table({ daily }: { daily?: SpiderChallenge }) {
   const router = useRouter();
+  const home = daily ? SPIDER_DAILY_PATH : SPIDER_PATH;
+  const fresh = (c: SpiderChallenge) => dealGame(c.data.suits, c.data.seed, c.data.deck);
+  const save = (g: GameState) => (daily ? saveDaily("paciencia-spider", daily.day, g) : saveGame(g));
   const [game, setGame] = useState<GameState | null>(null);
   const [intro, setIntro] = useState(false);
   const [anim, setAnim] = useState<Anim | null>(null);
@@ -216,7 +226,12 @@ export function Table() {
 
   // carrega a partida salva; sem partida, volta para a página inicial do jogo
   useEffect(() => {
-    const g = loadGame();
+    let g = daily ? loadDaily("paciencia-spider", daily.day, isGame) : loadGame();
+    if (daily) {
+      // primeira vez neste dia: começa a distribuição do desafio
+      if (!g || g.seed !== daily.data.seed) save((g = fresh(daily)));
+      trimOthers("paciencia-spider", daily.day);
+    }
     if (!g) {
       router.replace(SPIDER_PATH);
       return;
@@ -224,26 +239,26 @@ export function Table() {
     setGame(g);
     clock.reset(g.elapsed);
     if (g.moves === 0 && !g.history.length) setIntro(true);
-  }, [router, clock]);
+  }, [router, clock, daily]);
 
   // salva o tempo ao esconder a aba ou sair
   const latest = useRef<GameState | null>(null);
   latest.current = game;
   useEffect(() => {
-    const save = () => latest.current && saveGame({ ...latest.current, elapsed: clock.now() });
+    const saveNow = () => latest.current && save({ ...latest.current, elapsed: clock.now() });
     const onVis = () => {
-      if (document.hidden) save();
+      if (document.hidden) saveNow();
       setVisible(!document.hidden);
     };
     setVisible(!document.hidden);
     document.addEventListener("visibilitychange", onVis);
-    window.addEventListener("pagehide", save);
+    window.addEventListener("pagehide", saveNow);
     return () => {
-      save();
+      saveNow();
       document.removeEventListener("visibilitychange", onVis);
-      window.removeEventListener("pagehide", save);
+      window.removeEventListener("pagehide", saveNow);
     };
-  }, [clock]);
+  }, [clock, daily]);
 
   const L = useMemo(() => (size ? computeLayout(size.w, size.h) : null), [size]);
 
@@ -306,14 +321,18 @@ export function Table() {
     setGame(next);
     setFlash(null);
     setHover(null);
-    saveGame(next);
+    save(next);
     const last = next.last!;
     if (last.type === "deal") playDealSound(10);
     else playCardSound();
     if (last.completed) setTimeout(playCompleteSound, last.type === "deal" ? 10 * 60 + MOVE_MS : MOVE_MS);
     if (next.won) {
       setTimeout(playWinSound, 900);
-      reportSoloWin("paciencia-spider", { suits: next.suits, moves: next.moves, score: scoreOf(next), timeMs: Math.round(next.elapsed) });
+      reportSoloWin(
+        "paciencia-spider",
+        { suits: next.suits, moves: next.moves, score: scoreOf(next), timeMs: Math.round(next.elapsed) },
+        daily && { day: daily.day, seed: daily.data.seed },
+      );
     }
     return true;
   };
@@ -330,9 +349,10 @@ export function Table() {
     setFlash({ key: Date.now(), ids: game.cols[from].slice(index), targets: [to] });
   };
 
+  // o desafio recomeça a mesma distribuição
   const newSame = () => {
-    const g = newGame(game.suits);
-    saveGame(g);
+    const g = daily ? fresh(daily) : newGame(game.suits);
+    save(g);
     setAnim(null);
     setGame(g);
     clock.reset(0);
@@ -437,11 +457,15 @@ export function Table() {
           </div>
         </div>
 
-        <div className="hidden items-center gap-1 rounded-full bg-black/30 px-3 py-1.5 text-white/70 md:flex" title={`${game.suits} naipe${game.suits > 1 ? "s" : ""}`}>
-          {SUIT_SETS[game.suits].map((s) => (
-            <SuitIcon key={s} suit={s} className={`h-4 w-4 ${s === "hearts" || s === "diamonds" ? "text-red-400" : ""}`} />
-          ))}
-        </div>
+        {daily ? (
+          <DailyBadge day={daily.day} className="hidden rounded-full bg-black/30 px-3 py-1.5 text-white/70 md:flex" />
+        ) : (
+          <div className="hidden items-center gap-1 rounded-full bg-black/30 px-3 py-1.5 text-white/70 md:flex" title={`${game.suits} naipe${game.suits > 1 ? "s" : ""}`}>
+            {SUIT_SETS[game.suits].map((s) => (
+              <SuitIcon key={s} suit={s} className={`h-4 w-4 ${s === "hearts" || s === "diamonds" ? "text-red-400" : ""}`} />
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center gap-1 sm:gap-2">
           <IconButton label="Desfazer" onClick={() => dispatch({ type: "undo" })} disabled={!game.history.length}>
@@ -453,7 +477,7 @@ export function Table() {
           <HelpButton onClick={() => setHelp(true)} />
           <TipsButton on={tips} onClick={toggleTips} />
           <MuteButton />
-          <ExitConfirm onExit={() => router.push(SPIDER_PATH)} ask={!game.won} />
+          <ExitConfirm onExit={() => router.push(home)} ask={!game.won} />
         </div>
       </header>
 
@@ -553,7 +577,7 @@ export function Table() {
       </section>
 
       {stuck && !flash && <StuckBar onUndo={() => dispatch({ type: "undo" })} canUndo={!!game.history.length} onNew={newSame} />}
-      {game.won && !anim && <Victory game={game} onAgain={newSame} onLeave={() => router.push(SPIDER_PATH)} />}
+      {game.won && !anim && <Victory game={game} day={daily?.day} onAgain={newSame} onLeave={() => router.push(home)} />}
       {help && (
         <HowToPlayModal game="PACIÊNCIA SPIDER" onClose={() => setHelp(false)}>
           <HowToPlay />
@@ -577,16 +601,20 @@ function StuckBar({ onUndo, canUndo, onNew }: { onUndo: () => void; canUndo: boo
   );
 }
 
-function Victory({ game, onAgain, onLeave }: { game: GameState; onAgain: () => void; onLeave: () => void }) {
+function Victory({ game, day, onAgain, onLeave }: { game: GameState; day?: string; onAgain: () => void; onLeave: () => void }) {
   return (
     <GameEnd
       won
       badge={
-        <span className="flex gap-1 text-white/60">
-          {SUIT_SETS[game.suits].map((s) => (
-            <SuitIcon key={s} suit={s} className={`h-4 w-4 ${s === "hearts" || s === "diamonds" ? "text-red-400" : ""}`} />
-          ))}
-        </span>
+        day ? (
+          <DailyBadge day={day} className="text-white/60" />
+        ) : (
+          <span className="flex gap-1 text-white/60">
+            {SUIT_SETS[game.suits].map((s) => (
+              <SuitIcon key={s} suit={s} className={`h-4 w-4 ${s === "hearts" || s === "diamonds" ? "text-red-400" : ""}`} />
+            ))}
+          </span>
+        )
       }
       onLeave={onLeave}
       onAgain={onAgain}

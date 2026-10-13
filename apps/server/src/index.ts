@@ -1,4 +1,5 @@
 import type { ClientMsg } from "@truco/game";
+import { startDailyScheduler } from "./daily";
 import { handleClose, handleMessage, type WsData } from "./rooms";
 
 const port = Number(process.env.PORT ?? 3001);
@@ -29,3 +30,4 @@ Bun.serve<WsData>({
 });
 
 console.log(`truco ws on :${port}`);
+startDailyScheduler();

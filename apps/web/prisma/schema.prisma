@@ -94,11 +94,26 @@ model GameResult {
   matchId   String?
   // números da partida (tempo, jogadas, pontos…) de cada jogo
   data      Json     @default("{}")
+  // dia do desafio diário (AAAA-MM-DD) quando a partida foi um; conta uma vez por jogador
+  daily     String?
   createdAt DateTime @default(now())
 
+  @@unique([userId, game, daily])
   @@index([userId, game, createdAt])
   @@index([matchId])
   @@map("game_result")
+}
+
+// Desafio diário: a mesma partida para todos num dia (horário de Brasília). Fica guardado para rejogar depois.
+model DailyChallenge {
+  game      String // ver lib/daily/challenge.ts
+  day       String // AAAA-MM-DD
+  // sudoku: { difficulty, seed, puzzle, solution }; paciencia-spider: { suits, seed, deck }
+  data      Json
+  createdAt DateTime @default(now())
+
+  @@id([game, day])
+  @@map("daily_challenge")
 }
 
 model Achievement {

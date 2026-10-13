@@ -26,7 +26,7 @@ function isBoard(b: unknown): b is Board {
 }
 
 /** Partida salva só volta se tiver tudo o que a mesa usa; senão começa outra. */
-function isGame(g: unknown): g is GameState {
+export function isGame(g: unknown): g is GameState {
   if (!isBoard(g)) return false;
   const s = g as GameState;
   return (

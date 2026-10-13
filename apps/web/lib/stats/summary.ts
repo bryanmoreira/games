@@ -23,7 +23,7 @@ export async function getProfileStats(userId: string): Promise<ProfileStats> {
     prisma.gameResult.findMany({
       where: { userId },
       orderBy: { createdAt: "asc" },
-      select: { game: true, mode: true, outcome: true, placement: true, data: true, createdAt: true },
+      select: { game: true, mode: true, outcome: true, placement: true, data: true, daily: true, createdAt: true },
     }),
     prisma.achievement.findMany({ where: { userId }, orderBy: { unlockedAt: "desc" } }),
     playedDays(userId),

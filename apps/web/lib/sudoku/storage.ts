@@ -12,7 +12,7 @@ const isGrid = (v: unknown) => Array.isArray(v) && v.length === 81 && v.every(is
 const isCells = (c: unknown) => !!c && isGrid((c as GameState).values) && isGrid((c as GameState).notes);
 
 /** Partida salva só volta se tiver tudo o que a mesa usa; senão começa outra. */
-function isGame(g: unknown): g is GameState {
+export function isGame(g: unknown): g is GameState {
   if (!g || typeof g !== "object") return false;
   const s = g as GameState;
   return (

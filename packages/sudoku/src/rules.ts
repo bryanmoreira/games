@@ -10,7 +10,7 @@
 // - Dica: corrige um número errado ou coloca a próxima casa que dá para deduzir, com o motivo.
 // - Desfazer volta números e anotações, mas não devolve erros nem dicas.
 import { bit, CELL_UNITS, PEERS, SIZE, unitAt, UNITS } from "./board";
-import { generate } from "./generate";
+import { generate, type Puzzle } from "./generate";
 import { bestHint } from "./hint";
 import type { Action, Cells, Difficulty, GameState, HintReason, Result, Unit } from "./types";
 
@@ -22,12 +22,16 @@ export function randomSeed(): number {
 }
 
 export function newGame(difficulty: Difficulty, seed = randomSeed()): GameState {
-  const { puzzle, solution } = generate(difficulty, seed);
+  return gameFrom(difficulty, seed, generate(difficulty, seed));
+}
+
+/** Partida do zero com um puzzle já gerado (ex.: o desafio do dia, guardado no banco). */
+export function gameFrom(difficulty: Difficulty, seed: number, { puzzle, solution }: Puzzle): GameState {
   return {
     difficulty,
     seed,
-    puzzle,
-    solution,
+    puzzle: puzzle.slice(),
+    solution: solution.slice(),
     values: puzzle.slice(),
     notes: new Array(SIZE).fill(0),
     mistakes: 0,

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, setSystemTime, test } from "bun:test";
 import type { ResultRow } from "@/lib/stats/achievements";
 import { computeRivalry, formatMs, gameStats, modeStats, statsByGame, type RivalryRow } from "@/lib/stats/compute";
 import { GAME_INFO, gameFromPath, isOnlineGame, isSoloGame, ONLINE_GAMES, SOLO_GAMES, STAT_GAMES } from "@/lib/stats/games";
@@ -200,6 +200,34 @@ describe("gameStats: Paciência Spider", () => {
         { label: "4 naipes", values: ["1", "33:20", "600", "300"] },
       ],
     });
+  });
+});
+
+describe("gameStats: desafio diário", () => {
+  const daily = (day: string, at = day, outcome = "win"): ResultRow => ({ ...row(outcome, { suits: 4, timeMs: 1_000 }, "solo"), daily: day, createdAt: new Date(`${at}T12:00:00-03:00`) });
+  const days = (n: number) => Array.from({ length: n }, (_, i) => `2026-08-${String(i + 1).padStart(2, "0")}`);
+
+  test("sem desafio: sem os números do desafio", () => {
+    expect(chips("paciencia-spider", [solo({ suits: 4 })])).toEqual([]);
+  });
+
+  test("conta os desafios vencidos (rejogados também) e as vitórias entram na tabela normal", () => {
+    const rs = [daily("2026-08-01", "2026-09-01"), daily("2026-08-03"), daily("2026-08-05", "2026-08-05", "loss")];
+    expect(chips("paciencia-spider", rs)).toEqual([{ label: "Desafios diários", value: "2" }]);
+    expect(gameStats("paciencia-spider", rs).table!.rows[2].values[0]).toBe("2");
+  });
+
+  test("sequência no próprio dia: atual, recorde ou os dois", () => {
+    const seq = (now: string) => {
+      setSystemTime(new Date(`${now}T12:00:00-03:00`));
+      const c = chips("sudoku", [...days(3).map((d) => daily(d)), daily("2026-08-10"), daily("2026-08-11")]).find((c) => c.label === "Desafios seguidos")?.value;
+      setSystemTime();
+      return c;
+    };
+    expect(seq("2026-08-03")).toBe("3");
+    expect(seq("2026-08-11")).toBe("2 · recorde 3");
+    expect(seq("2026-09-01")).toBe("recorde 3");
+    expect(chips("sudoku", [daily("2026-08-01")])).toEqual([{ label: "Desafios diários", value: "1" }]);
   });
 });
 

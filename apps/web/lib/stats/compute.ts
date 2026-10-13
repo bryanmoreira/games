@@ -1,4 +1,4 @@
-import { bestStreak, currentStreak, type ResultRow } from "@/lib/stats/achievements";
+import { bestStreak, currentStreak, dailyStreaks, dailyWins, type ResultRow } from "@/lib/stats/achievements";
 import { STAT_GAMES, type StatGame } from "@/lib/stats/games";
 
 // Cálculos do perfil sobre linhas já lidas do banco (sem banco aqui, para testar).
@@ -94,6 +94,14 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
     chips: [],
   };
   const chip = (label: string, value: string | number | null) => value !== null && stats.chips.push({ label, value: String(value) });
+
+  // desafio diário (Sudoku e Spider): quantos e a sequência de dias seguidos
+  const dailies = dailyWins(rs).length;
+  if (dailies) {
+    const { current, best } = dailyStreaks(rs);
+    chip("Desafios diários", dailies);
+    if (best >= 2) chip("Desafios seguidos", current === best ? best : current ? `${current} · recorde ${best}` : `recorde ${best}`);
+  }
 
   switch (game) {
     case "connect4":
