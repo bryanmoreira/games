@@ -59,7 +59,7 @@ export default async function PublicProfile({ params }: Props) {
   return (
     <div className="min-h-dvh bg-[#0f1813]">
       <BackButton href="/" className="fixed left-4 top-4 z-10" />
-      <main className="mx-auto flex max-w-3xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
+      <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
         <header className="flex items-center gap-5 sm:gap-8">
           <Avatar user={player} className="h-24 w-24 text-4xl sm:h-36 sm:w-36 sm:text-6xl" />
           <div className="flex min-w-0 flex-1 flex-col gap-1">

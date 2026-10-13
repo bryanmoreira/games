@@ -33,7 +33,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const since = new Date(session.user.createdAt).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
 
   return (
-    <div className="flex flex-col gap-4">
+    // tela larga: duas colunas, para os campos não esticarem
+    <div className="grid items-start gap-4 lg:grid-cols-2">
       <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 sm:p-5">
         <h2 className="mb-3 text-sm text-white/50">Nome de usuário</h2>
         <UsernameField current={session.user.username ?? null} />

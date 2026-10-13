@@ -50,7 +50,7 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | Som | `apps/web/lib/sound.ts` (núcleo) + `lib/truco/sound.ts` | Web Audio, mudo persistido, `useAudioUnlock`; sons próprios de cada jogo em `lib/<slug>/sound.ts` |
 | Socket | `apps/web/lib/socket.ts` (compartilhado) | `useRoom<View>()`, `send`, token em `sessionStorage` |
 | Rotas | `apps/web/lib/truco/paths.ts` | constante da rota do jogo |
-| Hub | `apps/web/app/page.tsx` | card de cada jogo |
+| Hub | `apps/web/app/page.tsx`, `components/home/GameGrid.tsx` | card de cada jogo (entrada em `CARDS`); selos Solo/Multiplayer/quantidade e filtro vêm de `players` em `lib/seo.ts` (`min: 1` = tem solo) |
 | SEO | `apps/web/lib/seo.ts` (`GAMES`), `app/truco-paulista/layout.tsx` | textos de busca, FAQ, metadados, JSON-LD |
 | Prévia de link | `apps/web/lib/og.tsx`, `app/truco-paulista/opengraph-image.tsx` | arte do jogo na imagem de compartilhamento |
 | Botão voltar | `apps/web/components/BackButton.tsx` | já compartilhado |

@@ -64,7 +64,7 @@ export function Lobby({
   };
 
   return (
-    <main className="mx-auto flex min-h-full max-w-xl flex-col items-center justify-center gap-8 px-4 py-8">
+    <main className="mx-auto flex min-h-full max-w-3xl flex-col items-center justify-center gap-8 px-4 py-8">
       <div className="flex flex-col items-center gap-4">
         <button onClick={copy} className="group flex flex-col items-center gap-1" title="Copiar link">
           <span className="font-display text-6xl tracking-[0.2em] text-gold">{room.code}</span>

@@ -140,7 +140,7 @@ function UnlockedAchievements({ stats }: { stats: ProfileStats }) {
           {stats.achievements.length}/{ACHIEVEMENTS.length}
         </span>
       </h2>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2 @xl:grid-cols-3 @4xl:grid-cols-4">
         {stats.achievements.map((a) => (
           <AchievementCard key={a.def.code} def={a.def} at={a.unlockedAt} />
         ))}
@@ -160,7 +160,7 @@ export function AchievementsView({ stats }: { stats: ProfileStats }) {
   const pct = Math.round((done / ACHIEVEMENTS.length) * 100);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="@container flex flex-col gap-6">
       <div className={`${CARD} flex items-center gap-4 p-4 sm:p-5`}>
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gold text-stone-900">
           <AchievementIcon icon="trophy" className="h-6 w-6" />
@@ -189,7 +189,7 @@ export function AchievementsView({ stats }: { stats: ProfileStats }) {
                 {got}/{g.list.length}
               </span>
             </h2>
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2 @xl:grid-cols-2 @4xl:grid-cols-3">
               {/* conquistadas primeiro */}
               {[...g.list].sort((a, b) => Number(have.has(b.code)) - Number(have.has(a.code))).map((a) => (
                 <AchievementCard key={a.code} def={a} at={have.get(a.code)} detailed />
@@ -205,7 +205,7 @@ export function AchievementsView({ stats }: { stats: ProfileStats }) {
 /** Números do jogador. `achievements`: mostra também as conquistas (perfil público; o próprio perfil tem página delas). */
 export function ProfileStatsView({ stats, achievements = true }: { stats: ProfileStats; achievements?: boolean }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="@container flex flex-col gap-6">
       {stats.games.length > 0 && (
         <div className="flex flex-wrap gap-2">
           <span className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 ${stats.days.current > 0 ? "bg-orange-400/10 text-orange-200 ring-orange-400/30" : "bg-white/5 text-white/50 ring-white/10"}`}>
@@ -217,7 +217,7 @@ export function ProfileStatsView({ stats, achievements = true }: { stats: Profil
       )}
 
       {stats.games.length > 0 ? (
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid gap-3 @xl:grid-cols-2 @5xl:grid-cols-3">
           {stats.games.map((g) => (
             <GameCard key={g.game} s={g} />
           ))}

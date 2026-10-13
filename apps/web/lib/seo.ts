@@ -21,6 +21,7 @@ export type GameSeo = {
   tagline: string;
   keywords: string[];
   genre: string;
+  /** Pessoas na partida. `min: 1` = tem modo solo; `max > 1` = multiplayer (selos e filtro da home) */
   players: { min: number; max: number };
   /** O que dá para fazer: usado nos textos de llms.txt */
   modes: string;
@@ -39,7 +40,7 @@ export const GAMES: GameSeo[] = [
     tagline: "Truco em duplas, online com amigos ou contra o computador.",
     keywords: ["truco online", "truco paulista", "jogar truco online grátis", "truco com amigos", "truco multiplayer", "jogo de cartas"],
     genre: "Jogo de cartas",
-    players: { min: 2, max: 4 },
+    players: { min: 1, max: 4 },
     modes: "Multiplayer online em salas privadas (duplas 2x2 ou 1x1) e modo solo contra o computador.",
     howTo: {
       title: "Como jogar Truco Paulista: regras, manilhas e apostas",

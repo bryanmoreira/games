@@ -89,3 +89,34 @@ export function ListIcon({ className }: { className?: string }) {
     </Icon>
   );
 }
+
+export function PersonIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M5 21a7 7 0 0 1 14 0" />
+    </Icon>
+  );
+}
+
+export function PeopleIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <circle cx="9" cy="8" r="3.5" />
+      <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+      <path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8" />
+      <path d="M18 14.2a6.5 6.5 0 0 1 3.5 5.8" />
+    </Icon>
+  );
+}
+
+export function GridIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+    </Icon>
+  );
+}

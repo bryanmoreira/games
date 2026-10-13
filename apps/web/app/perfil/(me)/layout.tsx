@@ -24,7 +24,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
   return (
     <div className="min-h-dvh bg-[#0f1813]">
       <BackButton href="/" className="fixed left-4 top-4 z-10" />
-      <div className="mx-auto flex max-w-4xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
         <ProfileHeader user={{ name, email, image: image ?? null, username: username ?? null }} />
         <div className="flex flex-col gap-6 md:grid md:grid-cols-[200px_1fr] md:gap-10">
           <ProfileNav badges={{ "/perfil/amigos": requests }} />
