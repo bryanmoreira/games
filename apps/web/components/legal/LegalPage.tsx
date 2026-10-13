@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
+import { SiteFooter } from "@/components/SiteFooter";
 import { LEGAL_EMAIL, LEGAL_UPDATED, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 
 /** Página de texto (Privacidade, Termos): título, data da versão e seções em cartões. */
@@ -17,6 +18,7 @@ export function LegalPage({ title, children }: { title: string; children: React.
           Dúvidas? <Email />
         </p>
       </main>
+      <SiteFooter />
     </div>
   );
 }

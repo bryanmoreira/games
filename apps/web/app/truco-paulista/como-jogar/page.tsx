@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
+import { SiteFooter } from "@/components/SiteFooter";
 import { GameFaq, JsonLd } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/truco/HowToPlay";
@@ -30,6 +31,7 @@ export default function ComoJogar() {
           Bora jogar
         </Link>
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo";
-import { GAMES, SITE_TAGLINE, getGame, homeLd } from "@/lib/seo";
+import { SITE_TAGLINE, getGame, homeLd } from "@/lib/seo";
 import { makeCard } from "@truco/game";
 import { CardImg } from "@/components/cards/Card";
 import { MiniBoard } from "@/components/sudoku/common";
@@ -12,7 +12,7 @@ import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { MiniGrid } from "@/components/codenames/Board";
 import { UserButton } from "@/components/UserButton";
 import { GameGrid, type GameTile } from "@/components/home/GameGrid";
-import { LegalLinks } from "@/components/legal/LegalPage";
+import { SiteFooter } from "@/components/SiteFooter";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
@@ -137,23 +137,8 @@ export default function Home() {
         <p className="-mt-6 max-w-md text-center text-sm text-white/60">{SITE_TAGLINE}</p>
 
         <GameGrid games={tiles} />
-
-        <nav aria-label="Como jogar" className="flex flex-col items-center gap-3 text-center">
-          <h2 className="font-display text-lg text-gold">Como jogar</h2>
-          <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-white/60">
-            {GAMES.map((g) => (
-              <li key={g.slug}>
-                <Link href={`${g.path}/como-jogar`} className="underline-offset-4 hover:text-gold hover:underline">
-                  {g.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </main>
-      <footer className="pb-8">
-        <LegalLinks />
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
