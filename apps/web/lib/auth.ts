@@ -40,6 +40,9 @@ export const auth = betterAuth({
     cookieCache: { enabled: true, maxAge: 5 * 60 },
   },
   user: {
+    // Perfil > Conta > Excluir conta. Sem senha (só login social): o Better Auth exige sessão criada há menos de
+    // um dia (session.freshAge); mais velha, o jogador entra de novo. Partidas, conquistas e amigos vão em cascata.
+    deleteUser: { enabled: true },
     additionalFields: {
       // perfil público em /perfil/<username>; o jogador liga/desliga em Perfil > Conta
       profilePublic: { type: "boolean", defaultValue: true, required: false, input: true },

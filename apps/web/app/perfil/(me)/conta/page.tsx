@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { LegalLinks } from "@/components/legal/LegalPage";
+import { DeleteAccount } from "@/components/profile/DeleteAccount";
 import { LinkedAccounts } from "@/components/profile/LinkedAccounts";
 import { PrivacyToggle } from "@/components/profile/PrivacyToggle";
 import { UsernameField } from "@/components/profile/UsernameField";
@@ -23,8 +25,8 @@ function linkError(code: string): string {
   return "Não deu para conectar. Tente de novo.";
 }
 
-export default async function AccountPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  const { error } = await searchParams;
+export default async function AccountPage({ searchParams }: { searchParams: Promise<{ error?: string; excluir?: string }> }) {
+  const { error, excluir } = await searchParams;
   const h = await headers();
   const session = await auth.api.getSession({ headers: h, query: { disableCookieCache: true } });
   if (!session) return null;
@@ -58,6 +60,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <Row label="E-mail">{session.user.email}</Row>
         <Row label="Membro desde">{since}</Row>
       </div>
+
+      <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 lg:col-start-2">
+        <DeleteAccount providers={accounts.map((a) => a.providerId)} startOpen={excluir === "1"} />
+      </div>
+
+      <LegalLinks className="lg:col-span-2" />
     </div>
   );
 }

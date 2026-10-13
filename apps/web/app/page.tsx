@@ -12,6 +12,7 @@ import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { MiniGrid } from "@/components/codenames/Board";
 import { UserButton } from "@/components/UserButton";
 import { GameGrid, type GameTile } from "@/components/home/GameGrid";
+import { LegalLinks } from "@/components/legal/LegalPage";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
@@ -150,6 +151,9 @@ export default function Home() {
           </ul>
         </nav>
       </main>
+      <footer className="pb-8">
+        <LegalLinks />
+      </footer>
     </div>
   );
 }

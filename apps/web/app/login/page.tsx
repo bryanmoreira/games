@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { makeCard } from "@truco/game";
@@ -11,6 +12,7 @@ import { StaticBoard } from "@/components/connect4/Board";
 import { StopLogo } from "@/components/stop/Tile";
 import { MiniBoard } from "@/components/sudoku/common";
 import { auth } from "@/lib/auth";
+import { PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { safeNext } from "@/lib/login";
 
 export const metadata: Metadata = { title: "Entrar", robots: { index: false, follow: false } };
@@ -79,6 +81,17 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               </p>
             )}
             <LoginOptions next={next} />
+            <p className="text-center text-[11px] leading-snug text-white/50">
+              Ao entrar, você aceita os{" "}
+              <Link href={TERMS_PATH} className="text-white/75 underline underline-offset-2 hover:text-gold">
+                Termos
+              </Link>{" "}
+              e a{" "}
+              <Link href={PRIVACY_PATH} className="text-white/75 underline underline-offset-2 hover:text-gold">
+                Privacidade
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </div>
