@@ -100,6 +100,20 @@ describe("gameStats: Connect 4", () => {
   });
 });
 
+describe("gameStats: Otrio", () => {
+  test("vitória mais rápida pelas peças da cor e forma favorita, só entre vitórias", () => {
+    const rs = [win({ colorPieces: 5, how: "line" }), win({ colorPieces: 4, how: "stack" }), win({ colorPieces: 6, how: "stack" }), loss({ pieces: 3 })];
+    expect(chips("otrio", rs)).toEqual([
+      { label: "Vitória mais rápida", value: "4 peças" },
+      { label: "Forma favorita", value: "Alvo" },
+    ]);
+  });
+
+  test("sem vitória: sem recorde", () => {
+    expect(chips("otrio", [loss({ pieces: 3 }), draw({})])).toEqual([]);
+  });
+});
+
 describe("gameStats: Batalha Naval", () => {
   test("melhor mira e menos tiros, só entre vitórias", () => {
     const rs = [win({ hits: 17, shots: 40 }), win({ hits: 17, shots: 25 }), loss({ hits: 10, shots: 10 })];
@@ -331,6 +345,7 @@ describe("jogos", () => {
   test.each([
     ["/connect-4", "connect4"],
     ["/connect-4/sala/ABCD", "connect4"],
+    ["/otrio/sala/ABCD", "otrio"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],
     ["/paciencia-spider/jogo", "paciencia-spider"],

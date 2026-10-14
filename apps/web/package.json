@@ -16,6 +16,7 @@
     "@truco/codenames": "workspace:*",
     "@truco/connect4": "workspace:*",
     "@truco/game": "workspace:*",
+    "@truco/otrio": "workspace:*",
     "@truco/spider": "workspace:*",
     "@truco/stop": "workspace:*",
     "@truco/sudoku": "workspace:*",

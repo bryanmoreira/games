@@ -309,7 +309,9 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
     joinRoom(room, token, name);
     room.seats[0] = { kind: "human", token, ...who(token, name) };
     if (room.solo && adapter.bots !== false) {
-      for (let s = 1; s < adapter.seats; s++) room.seats[s] = { kind: "bot", name: botName(room) };
+      const max = adapter.seats - 1;
+      const bots = Number.isInteger(msg.bots) ? Math.min(max, Math.max((adapter.minSeats ?? adapter.seats) - 1, msg.bots!)) : max;
+      for (let s = 1; s <= bots; s++) room.seats[s] = { kind: "bot", name: botName(room) };
       room.state = adapter.newGame(null, { seats: occupied(room), settings: room.settings });
       beginMatch(room);
       markAnim(room, null);

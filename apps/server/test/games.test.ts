@@ -4,6 +4,7 @@ import * as c4 from "@truco/connect4";
 import * as stop from "@truco/stop";
 import * as bn from "@truco/batalha-naval";
 import * as cn from "@truco/codenames";
+import * as otrio from "@truco/otrio";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -85,6 +86,37 @@ describe("connect4", () => {
     expect(s.winner).toBeNull();
     expect(outcome(s, 0)).toEqual({ outcome: "draw", data: { pieces: 21, moves: 42 } });
     expect(outcome(s, 1)).toEqual({ outcome: "draw", data: { pieces: 21, moves: 42 } });
+  });
+});
+
+describe("otrio", () => {
+  const { outcome, actors } = GAMES.otrio;
+
+  /** Cada lance é [casa, tamanho] de quem estiver na vez; o primeiro lugar começa. */
+  function play(players: number[], moves: [number, otrio.Size][]): otrio.GameState {
+    let s = otrio.newGame(() => 0, players);
+    for (const [cell, size] of moves) s = ok(otrio.applyAction(s, { type: "place", seat: s.owner[s.order[s.turn]]!, cell, size }));
+    return s;
+  }
+
+  test("vitória guarda a forma; os outros perdem", () => {
+    const s = play([0, 1, 2], [[4, 0], [0, 0], [8, 0], [4, 1], [0, 2], [8, 2], [4, 2]]);
+    expect(outcome(s, 0)).toEqual({ outcome: "win", data: { pieces: 3, how: "stack", colorPieces: 3, players: 3, moves: 7 } });
+    expect(outcome(s, 1)).toEqual({ outcome: "loss", data: { pieces: 2, players: 3, moves: 7 } });
+    expect(outcome(s, 2)).toEqual({ outcome: "loss", data: { pieces: 2, players: 3, moves: 7 } });
+  });
+
+  test("com 2 jogadores, as peças das duas cores contam", () => {
+    const s = play([0, 1], [[0, 2], [8, 0], [3, 0], [6, 1], [1, 2], [8, 1], [4, 0], [7, 1], [6, 2], [2, 1], [5, 0]]);
+    expect(outcome(s, 0)).toEqual({ outcome: "win", data: { pieces: 6, how: "line", colorPieces: 3, players: 2, moves: 11 } });
+    expect(outcome(s, 1).outcome).toBe("loss");
+  });
+
+  test("empate para todos; a vez é do dono da cor", () => {
+    const s = play([1, 3], [[4, 0]]);
+    expect(actors(s)).toEqual([3]);
+    const draw = { ...s, phase: "gameOver" as const };
+    expect(outcome(draw, 1)).toEqual({ outcome: "draw", data: { pieces: 1, players: 2, moves: 1 } });
   });
 });
 

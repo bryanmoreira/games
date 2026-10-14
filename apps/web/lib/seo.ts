@@ -6,7 +6,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Stop, Codenames, Batalha Naval, Connect 4, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Stop, Codenames, Batalha Naval, Connect 4, Otrio, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
@@ -186,6 +186,30 @@ export const GAMES: GameSeo[] = [
       { q: "O que acontece se tocar no assassino?", a: "O time que revelou o assassino perde na hora. Uma palavra civil ou do outro time só passa a vez." },
       { q: "Posso usar minhas próprias palavras?", a: "Sim. Quem cria a sala cola uma lista com uma palavra por linha. Se tiver menos de 25, o jogo completa com uma lista pronta em português." },
       { q: "Tem tempo para jogar?", a: "É opcional. Quem cria a sala escolhe 1, 1,5, 2 ou 3 minutos, ou sem tempo. O limite vale para o mestre dar a dica e, de novo, para os agentes; quando acaba, a vez passa." },
+    ],
+  },
+  {
+    slug: "otrio",
+    path: "/otrio",
+    name: "Otrio",
+    title: "Otrio Online Grátis",
+    description:
+      "Jogue Otrio online grátis: o jogo da velha com anéis de três tamanhos, de 2 a 4 jogadores. Crie uma sala com amigos ou jogue contra o computador.",
+    tagline: "O jogo da velha com anéis, de 2 a 4 jogadores.",
+    keywords: ["otrio online", "otrio", "jogar otrio grátis", "jogo da velha com anéis", "jogo da velha para 4", "otrio jogo de tabuleiro"],
+    genre: "Jogo de tabuleiro (estratégia)",
+    players: { min: 1, max: 4 },
+    modes: "Multiplayer online de 2 a 4 jogadores em salas privadas, com lugares completados pelo computador, e modo solo contra 1 a 3 IAs.",
+    howTo: {
+      title: "Como jogar Otrio: regras e formas de vencer",
+      description: "Aprenda as regras do Otrio: anéis pequenos, médios e grandes, as três formas de vencer (linha, escada e alvo) e como jogar com 2, 3 ou 4 pessoas.",
+    },
+    faq: [
+      { q: "Qual é o objetivo do Otrio?", a: "Fazer uma trinca com a sua cor: três anéis do mesmo tamanho em linha, três em linha do menor ao maior (ou do maior ao menor), ou os três tamanhos na mesma casa." },
+      { q: "Quantas peças cada jogador tem?", a: "Nove por cor: três pequenas, três médias e três grandes. Cada peça ocupa o encaixe do seu tamanho numa casa do tabuleiro 3×3, e uma casa pode ter os três tamanhos." },
+      { q: "Como funciona o Otrio com 2 jogadores?", a: "Cada um controla duas cores e as joga em sequência alternada com o adversário. Vence com qualquer das duas, mas a trinca precisa ser de uma cor só." },
+      { q: "E se ninguém conseguir jogar?", a: "Quem não tem peça que caiba num encaixe livre passa a vez. Se ninguém mais consegue jogar e não houve trinca, a partida termina empatada." },
+      { q: "Dá para jogar Otrio online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue com até 4 pessoas sem cadastro. Lugares vazios podem ser completados pelo computador, e há modo solo contra 1 a 3 IAs." },
     ],
   },
 ];

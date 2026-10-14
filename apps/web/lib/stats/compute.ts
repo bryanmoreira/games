@@ -49,6 +49,8 @@ export interface RivalryRow {
   theirPlace: number | null;
 }
 
+const OTRIO_WINS: Record<string, string> = { line: "Linha", stair: "Escada", stack: "Alvo" };
+
 const LEVELS: [string, string][] = [
   ["easy", "Fácil"],
   ["medium", "Médio"],
@@ -107,6 +109,14 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
     case "connect4":
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "pieces")).filter(Number.isFinite))));
       break;
+    case "otrio": {
+      chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "colorPieces")).filter(Number.isFinite))));
+      // forma de trinca com mais vitórias (empate: a primeira da lista)
+      const hows = (["line", "stair", "stack"] as const).map((k) => [k, wins.filter((r) => r.data.how === k).length] as const);
+      const fav = hows.reduce((a, b) => (b[1] > a[1] ? b : a));
+      chip("Forma favorita", fav[1] ? OTRIO_WINS[fav[0]] : null);
+      break;
+    }
     case "batalha-naval": {
       const acc = wins.filter((r) => num(r, "shots") > 0).map((r) => num(r, "hits") / num(r, "shots"));
       chip("Melhor mira", ((x) => (x === null ? null : `${Math.round(x * 100)}%`))(maxOf(acc)));

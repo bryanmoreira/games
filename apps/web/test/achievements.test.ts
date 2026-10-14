@@ -80,6 +80,17 @@ const CASES: Record<string, Case> = {
   },
   "connect4:streak_5": streakCase,
 
+  "otrio:first": firstCase,
+  "otrio:quick": { ok: [win({ colorPieces: 3 })], almost: [win({ colorPieces: 4 }), loss({ pieces: 3 }), win({ pieces: 3 }), win({})] },
+  "otrio:stack": { ok: [win({ how: "stack" })], almost: [win({ how: "line" }), win({ how: "stair" }), loss({ how: "stack" }), win({})] },
+  "otrio:stair": { ok: [win({ how: "stair" })], almost: [win({ how: "line" }), win({ how: "stack" }), loss({ how: "stair" }), win({})] },
+  "otrio:all_kinds": {
+    ok: [win({ how: "line" }), loss(), win({ how: "stair" }), win({ how: "stack" })],
+    almost: [win({ how: "line" }), win({ how: "stair" }), win({ how: "line" }), loss({ how: "stack" })],
+  },
+  "otrio:full_table": { ok: [win({ players: 4 })], almost: [win({ players: 3 }), win({ players: 2 }), loss({ players: 4 }), win({})] },
+  "otrio:streak_5": streakCase,
+
   "batalha-naval:first": firstCase,
   "batalha-naval:sharp": {
     ok: [win({ hits: 6, shots: 10 })],

@@ -1,7 +1,7 @@
 import type { Action, PlayerView, Seat } from "./types";
 
 /** Jogos atendidos pelo servidor de salas. */
-export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames";
+export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames" | "otrio";
 
 export type ClientAction =
   | { type: "play"; index: number; hidden?: boolean }
@@ -15,7 +15,8 @@ export type ClientAction =
 export type ClientMsg<A = ClientAction> =
   /** `ticket`: conta logada no site (assinado pelo site), para salvar resultados. */
   | { t: "hello"; token: string; name: string; ticket?: string }
-  | { t: "create"; solo?: boolean; game?: GameId }
+  /** `bots`: no modo solo, quantas IAs sentam (padrão: a mesa cheia). */
+  | { t: "create"; solo?: boolean; game?: GameId; bots?: number }
   | { t: "join"; code: string }
   | { t: "sit"; seat: number }
   | { t: "stand" }

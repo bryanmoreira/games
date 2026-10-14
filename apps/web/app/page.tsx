@@ -10,6 +10,7 @@ import { StaticBoard } from "@/components/connect4/Board";
 import { StopLogo } from "@/components/stop/Tile";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { MiniGrid } from "@/components/codenames/Board";
+import { StaticBoard as OtrioBoard } from "@/components/otrio/Board";
 import { UserButton } from "@/components/UserButton";
 import { GameGrid, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -68,6 +69,16 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     art: (
       <div className="absolute left-1/2 top-[9%] w-[44%] -translate-x-1/2 rotate-3">
         <StaticBoard rows={["...y...", "..yr...", ".yrr.r.", "yrryry."]} win={[[0, 0], [1, 1], [2, 2], [3, 3]]} dim={false} />
+      </div>
+    ),
+  },
+  {
+    slug: "otrio",
+    title: "OTRIO",
+    sub: "TRINCA DE ANÉIS",
+    art: (
+      <div className="absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 -rotate-3">
+        <OtrioBoard cells={["r..", "..b", "..g", ".p.", "rrr", "", "p..", "b..", ".g."]} win={[12, 13, 14]} dim={false} />
       </div>
     ),
   },

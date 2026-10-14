@@ -12,6 +12,7 @@
     "@truco/codenames": "workspace:*",
     "@truco/connect4": "workspace:*",
     "@truco/game": "workspace:*",
+    "@truco/otrio": "workspace:*",
     "@truco/stop": "workspace:*"
   },
   "devDependencies": {

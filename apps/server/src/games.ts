@@ -3,6 +3,7 @@ import * as c4 from "@truco/connect4";
 import * as stop from "@truco/stop";
 import * as bn from "@truco/batalha-naval";
 import * as cn from "@truco/codenames";
+import * as otrio from "@truco/otrio";
 import type { GameId, PlayerReport } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -57,6 +58,8 @@ const DEAL_MS = 2600;
 const DROP_MS = 700;
 // Mira descendo + impacto do tiro
 const SHOT_MS = 900;
+// Anel encaixando no tabuleiro
+const RING_MS = 450;
 
 const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView> = {
   seats: 4,
@@ -218,10 +221,41 @@ const codenamesAdapter: GameAdapter<cn.GameState, cn.Action, cn.PlayerView> = {
   },
 };
 
+const otrioAdapter: GameAdapter<otrio.GameState, otrio.Action, otrio.PlayerView> = {
+  seats: otrio.MAX_PLAYERS,
+  minSeats: otrio.MIN_PLAYERS,
+  newGame: (prev, { seats }) => otrio.newGame(Math.random, seats, prev),
+  applyAction: otrio.applyAction,
+  viewFor: (s, seat) => otrio.viewFor(s, seat),
+  decide: (v) => otrio.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    return { type: "place", seat, cell: Number(m.cell), size: Number(m.size) as otrio.Size };
+  },
+  actors: (s) => {
+    const color = otrio.currentColor(s);
+    return color === null ? [] : [s.owner[color]!];
+  },
+  pause: () => null,
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => (prev && next.moves.length > prev.moves.length ? RING_MS : 0),
+  outcome: (s, seat) => ({
+    outcome: s.winner === null ? "draw" : s.winner === seat ? "win" : "loss",
+    data: {
+      pieces: s.moves.filter((m) => m.seat === seat).length,
+      // vencedor: a forma da trinca e quantas peças da cor vencedora foram usadas
+      ...(s.winner === seat && s.win ? { how: s.win.kind, colorPieces: s.moves.filter((m) => m.color === s.winColor).length } : {}),
+      players: s.players.length,
+      moves: s.moves.length,
+    },
+  }),
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
   stop: stopAdapter,
   "batalha-naval": batalhaNavalAdapter,
   codenames: codenamesAdapter,
+  otrio: otrioAdapter,
 };

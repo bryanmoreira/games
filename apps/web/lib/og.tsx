@@ -33,6 +33,7 @@ const TITLES: Record<string, [string, string]> = {
   stop: ["STOP", "ADEDONHA"],
   "batalha-naval": ["BATALHA", "NAVAL"],
   codenames: ["CODENAMES", "AGENTES SECRETOS"],
+  otrio: ["OTRIO", "TRINCA DE ANÉIS"],
 };
 
 async function art(slug: string) {
@@ -211,6 +212,44 @@ async function art(slug: string) {
               }}
             >
               {w}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case "otrio": {
+      // casas linha a linha; cada letra é um tamanho (pequena, média, grande): r/b/g/p ou "." vazio
+      const cells = ["r..", "..b", "..g", ".p.", "rrr", "", "p..", "b..", ".g."];
+      const color = { r: "#e5484d", b: "#3e7bfa", g: "#2fb36b", p: "#a065e8" } as const;
+      const radii = [16, 36, 56];
+      const W = 11;
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: 16, background: "#9a6434", border: "4px solid #3b2412", borderRadius: 34, transform: "rotate(-3deg)", boxShadow: "0 10px 24px rgba(0,0,0,0.5)" }}>
+          {[0, 1, 2].map((row) => (
+            <div key={row} style={{ display: "flex", gap: 6 }}>
+              {cells.slice(row * 3, row * 3 + 3).map((cell, i) => (
+                <div key={i} style={{ display: "flex", position: "relative", width: 132, height: 132, borderRadius: 20, background: "rgba(40,20,5,0.2)" }}>
+                  {radii.map((r, s) => {
+                    const c = cell[s] as keyof typeof color | undefined;
+                    const size = 2 * r + W;
+                    return (
+                      <div
+                        key={s}
+                        style={{
+                          display: "flex",
+                          position: "absolute",
+                          left: 66 - size / 2,
+                          top: 66 - size / 2,
+                          width: size,
+                          height: size,
+                          borderRadius: size,
+                          border: `${W}px solid ${c && c in color ? color[c] : "rgba(74,42,16,0.45)"}`,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           ))}
         </div>

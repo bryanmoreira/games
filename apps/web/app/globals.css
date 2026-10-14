@@ -222,6 +222,27 @@ body {
   animation: disc-win 0.9s ease-in-out infinite;
 }
 
+/* Otrio: anel encaixando e trinca vencedora */
+@keyframes ring-in {
+  0% { transform: scale(1.45); opacity: 0; }
+  60% { transform: scale(0.94); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.ring-in {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ring-in 0.4s cubic-bezier(0.3, 0.7, 0.4, 1) backwards;
+}
+@keyframes ring-win {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.35); }
+}
+.ring-win {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ring-win 0.9s ease-in-out infinite;
+}
+
 /* Stop */
 @keyframes stop-shout {
   0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }

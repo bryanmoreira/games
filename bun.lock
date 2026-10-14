@@ -16,6 +16,7 @@
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
+        "@truco/otrio": "workspace:*",
         "@truco/stop": "workspace:*",
       },
       "devDependencies": {
@@ -31,6 +32,7 @@
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
+        "@truco/otrio": "workspace:*",
         "@truco/spider": "workspace:*",
         "@truco/stop": "workspace:*",
         "@truco/sudoku": "workspace:*",
@@ -62,6 +64,9 @@
     },
     "packages/game": {
       "name": "@truco/game",
+    },
+    "packages/otrio": {
+      "name": "@truco/otrio",
     },
     "packages/spider": {
       "name": "@truco/spider",
@@ -369,6 +374,8 @@
     "@truco/connect4": ["@truco/connect4@workspace:packages/connect4"],
 
     "@truco/game": ["@truco/game@workspace:packages/game"],
+
+    "@truco/otrio": ["@truco/otrio@workspace:packages/otrio"],
 
     "@truco/server": ["@truco/server@workspace:apps/server"],
 
