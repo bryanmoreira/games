@@ -118,6 +118,10 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
     case "jogo-da-velha":
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "pieces")).filter(Number.isFinite))));
       break;
+    case "damas":
+      chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} lances`))(minOf(wins.map((r) => num(r, "moves")).filter((n) => n > 0))));
+      chip("Maior captura", ((n) => (n ? `${n} ${n === 1 ? "peça" : "peças"}` : null))(maxOf(rs.map((r) => num(r, "bestChain")).filter(Number.isFinite))));
+      break;
     case "otrio": {
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "colorPieces")).filter(Number.isFinite))));
       // forma de trinca com mais vitórias (empate: a primeira da lista)

@@ -272,6 +272,19 @@ body {
   animation: ink-vanish 0.4s ease-in forwards;
 }
 
+/* Damas: peça que pode andar (pulsa em dourado) e peça capturada saindo */
+@keyframes db-movable {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(242, 193, 78, 0.5), 0 0 8px rgba(242, 193, 78, 0.25); }
+  50% { box-shadow: 0 0 0 3px rgba(242, 193, 78, 0.95), 0 0 14px rgba(242, 193, 78, 0.6); }
+}
+.db-movable { animation: db-movable 1.3s ease-in-out infinite; }
+@keyframes db-out {
+  0% { opacity: 1; scale: 1; }
+  40% { opacity: 1; scale: 1.1; }
+  100% { opacity: 0; scale: 0.4; }
+}
+.db-out { animation: db-out 0.45s ease-in forwards; }
+
 /* Stop */
 @keyframes stop-shout {
   0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }

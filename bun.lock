@@ -15,6 +15,7 @@
         "@truco/batalha-naval": "workspace:*",
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
+        "@truco/damas": "workspace:*",
         "@truco/game": "workspace:*",
         "@truco/jogo-da-velha": "workspace:*",
         "@truco/otrio": "workspace:*",
@@ -32,6 +33,7 @@
         "@truco/batalha-naval": "workspace:*",
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
+        "@truco/damas": "workspace:*",
         "@truco/game": "workspace:*",
         "@truco/jogo-da-velha": "workspace:*",
         "@truco/otrio": "workspace:*",
@@ -64,6 +66,9 @@
     },
     "packages/connect4": {
       "name": "@truco/connect4",
+    },
+    "packages/damas": {
+      "name": "@truco/damas",
     },
     "packages/game": {
       "name": "@truco/game",
@@ -381,6 +386,8 @@
     "@truco/codenames": ["@truco/codenames@workspace:packages/codenames"],
 
     "@truco/connect4": ["@truco/connect4@workspace:packages/connect4"],
+
+    "@truco/damas": ["@truco/damas@workspace:packages/damas"],
 
     "@truco/game": ["@truco/game@workspace:packages/game"],
 

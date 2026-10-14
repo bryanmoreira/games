@@ -4,7 +4,8 @@ import { LEVELS, MODES, type Level, type Mode, type Settings } from "@truco/jogo
 import type { RoomInfo } from "@truco/game";
 import { send } from "@/lib/socket";
 import { Row, Segmented } from "@/components/ui/Options";
-import { BotIcon, FadeIcon, GridIcon } from "./icons";
+import { BotIcon } from "@/components/ui/icons";
+import { FadeIcon, GridIcon } from "./icons";
 
 export const MODE_LABEL: Record<Mode, string> = { classic: "CLÁSSICO", fading: "SOME" };
 export const LEVEL_LABEL: Record<Level, string> = { easy: "FÁCIL", medium: "MÉDIO", hard: "IMPOSSÍVEL" };

@@ -35,6 +35,7 @@ const TITLES: Record<string, [string, string]> = {
   codenames: ["CODENAMES", "AGENTES SECRETOS"],
   otrio: ["OTRIO", "TRINCA DE ANÉIS"],
   "jogo-da-velha": ["VELHA", "JOGO DA VELHA"],
+  damas: ["DAMAS", "CLÁSSICO"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
 };
 
@@ -280,6 +281,34 @@ async function art(slug: string) {
               return null;
             })}
             <path d="M22 22L278 278" stroke="#f2c14e" strokeWidth={10} />
+          </svg>
+        </div>
+      );
+    }
+    case "damas": {
+      // canto do tabuleiro com pedras e uma dama de cada cor
+      const rows = ["", "..b.B...", ".b...b..", "....w...", ".....W..", "w.w.....", ".w......", ""];
+      const piece = (p: string, x: number, y: number) => {
+        const white = p.toLowerCase() === "w";
+        return (
+          <g key={`${x}-${y}`}>
+            <circle cx={x + 25} cy={y + 28} r={21} fill="rgba(0,0,0,0.35)" />
+            <circle cx={x + 25} cy={y + 25} r={21} fill={white ? "#c7ad7c" : "#0f0c0a"} />
+            <circle cx={x + 25} cy={y + 23.5} r={20} fill={white ? "#f4e7cb" : "#2a2420"} />
+            <circle cx={x + 25} cy={y + 23.5} r={15} fill="none" stroke={white ? "#d9c49b" : "#4a3f37"} strokeWidth={1.5} />
+            {p === p.toUpperCase() && (
+              <path d={`M${x + 15} ${y + 29}L${x + 13.5} ${y + 18}L${x + 19.5} ${y + 23}L${x + 25} ${y + 15}L${x + 30.5} ${y + 23}L${x + 36.5} ${y + 18}L${x + 35} ${y + 29}Z`} fill="#f2c14e" stroke="#8a5a12" strokeWidth={1.5} />
+            )}
+          </g>
+        );
+      };
+      return (
+        <div style={{ display: "flex", transform: "rotate(-4deg)", borderRadius: 18, padding: 12, background: "#5b3920", boxShadow: "0 12px 30px rgba(0,0,0,0.5)" }}>
+          <svg width="400" height="400" viewBox="0 0 400 400">
+            {Array.from({ length: 64 }, (_, i) => (
+              <rect key={i} x={(i % 8) * 50} y={Math.floor(i / 8) * 50} width={50} height={50} fill={(Math.floor(i / 8) + (i % 8)) % 2 ? "#86552f" : "#e8cf9f"} />
+            ))}
+            {rows.flatMap((r, row) => [...r].flatMap((c, col) => (c === "." ? [] : [piece(c, col * 50, row * 50)])))}
           </svg>
         </div>
       );

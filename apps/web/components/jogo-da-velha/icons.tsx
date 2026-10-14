@@ -16,13 +16,3 @@ export function FadeIcon({ className = "h-5 w-5" }: { className?: string }) {
     </svg>
   );
 }
-
-/** Robô (nível da IA). */
-export function BotIcon({ className = "h-4 w-4" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="4" y="8" width="16" height="12" rx="3" />
-      <path d="M12 8V4M9 13v1M15 13v1M2 13v3M22 13v3" />
-    </svg>
-  );
-}

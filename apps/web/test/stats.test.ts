@@ -109,6 +109,20 @@ describe("gameStats: Jogo da Velha", () => {
   });
 });
 
+describe("gameStats: Damas", () => {
+  test("vitória mais rápida entre vitórias e maior captura em qualquer partida", () => {
+    expect(chips("damas", [win({ moves: 30, bestChain: 2 }), win({ moves: 24, bestChain: 1 }), loss({ moves: 10, bestChain: 4 }), draw({ moves: 5 })])).toEqual([
+      { label: "Vitória mais rápida", value: "24 lances" },
+      { label: "Maior captura", value: "4 peças" },
+    ]);
+    expect(chips("damas", [win({ moves: 20, bestChain: 1 })])).toEqual([
+      { label: "Vitória mais rápida", value: "20 lances" },
+      { label: "Maior captura", value: "1 peça" },
+    ]);
+    expect(chips("damas", [loss({ abandoned: true }), draw({ moves: 40, bestChain: 0 })])).toEqual([]);
+  });
+});
+
 describe("gameStats: Otrio", () => {
   test("vitória mais rápida pelas peças da cor e forma favorita, só entre vitórias", () => {
     const rs = [win({ colorPieces: 5, how: "line" }), win({ colorPieces: 4, how: "stack" }), win({ colorPieces: 6, how: "stack" }), loss({ pieces: 3 })];
@@ -388,6 +402,7 @@ describe("jogos", () => {
     ["/connect-4/sala/ABCD", "connect4"],
     ["/otrio/sala/ABCD", "otrio"],
     ["/jogo-da-velha/sala/ABCD", "jogo-da-velha"],
+    ["/damas/sala/ABCD", "damas"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],
     ["/paciencia-spider/jogo", "paciencia-spider"],

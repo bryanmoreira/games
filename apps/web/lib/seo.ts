@@ -237,6 +237,30 @@ export const GAMES: GameSeo[] = [
     ],
   },
   {
+    slug: "damas",
+    path: "/damas",
+    name: "Damas",
+    title: "Damas Online Grátis",
+    description:
+      "Jogue Damas online grátis pelas regras brasileiras: contra o computador em três níveis ou com um amigo numa sala. Captura obrigatória e dama voadora.",
+    tagline: "Captura obrigatória e dama voadora, contra a IA ou um amigo.",
+    keywords: ["damas online", "jogo de damas", "jogar damas grátis", "damas contra o computador", "damas brasileiras", "jogo de damas online 2 jogadores", "dama voadora"],
+    genre: "Jogo de tabuleiro (estratégia)",
+    players: { min: 1, max: 2 },
+    modes: "Multiplayer online para 2 jogadores em salas privadas e modo solo contra o computador nos níveis fácil, médio e difícil. Regras brasileiras (8×8, 12 peças).",
+    howTo: {
+      title: "Como jogar Damas: regras brasileiras, captura e dama",
+      description: "Aprenda as regras das damas brasileiras: como as pedras andam e capturam, a lei da maioria, quando a pedra vira dama e quando a partida empata.",
+    },
+    faq: [
+      { q: "Quais são as regras do jogo de damas brasileiro?", a: "Tabuleiro 8×8, 12 peças para cada lado nas casas escuras e as brancas começam. A pedra anda uma casa na diagonal para a frente e captura pulando a peça adversária, para a frente e para trás. Vence quem capturar todas as peças do outro ou deixá-lo sem lance." },
+      { q: "A captura é obrigatória?", a: "Sim. Se der para capturar, é obrigatório, inclusive em sequência. Pela lei da maioria, entre as capturas possíveis você precisa fazer a que leva mais peças; pedra e dama contam igual." },
+      { q: "Como a pedra vira dama?", a: "Terminando o lance na última fileira do outro lado. A dama anda quantas casas quiser na diagonal e captura de longe, pousando em qualquer casa vazia depois da peça capturada. Se a pedra só passar pela última fileira no meio de uma captura e continuar capturando, ela não vira dama." },
+      { q: "Quando a partida de damas empata?", a: "Quando a mesma posição aparece pela terceira vez, depois de 20 lances de cada lado só com damas e sem captura, ou depois de 5 lances de cada lado em finais como 2 damas contra 1." },
+      { q: "Dá para jogar damas online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue sem cadastro. O placar soma a cada partida e as cores trocam a cada nova partida." },
+    ],
+  },
+  {
     slug: "verbete",
     path: "/verbete",
     name: "Verbete",

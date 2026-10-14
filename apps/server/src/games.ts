@@ -5,6 +5,7 @@ import * as bn from "@truco/batalha-naval";
 import * as cn from "@truco/codenames";
 import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
+import * as damas from "@truco/damas";
 import type { GameId, PlayerReport } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -63,6 +64,8 @@ const SHOT_MS = 900;
 const RING_MS = 450;
 // Traço do X ou do O sendo riscado
 const MARK_MS = 400;
+// Cada trecho do caminho da peça de damas (deslizar + pulo)
+const DAMAS_STEP_MS = 320;
 
 const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView> = {
   seats: 4,
@@ -281,6 +284,45 @@ const velhaAdapter: GameAdapter<velha.GameState, velha.Action, velha.PlayerView>
   }),
 };
 
+const damasAdapter: GameAdapter<damas.GameState, damas.Action, damas.PlayerView> = {
+  seats: 2,
+  settings: {
+    initial: damas.DEFAULT_SETTINGS,
+    parse: (raw, prev) => damas.parseSettings(raw, prev as damas.Settings),
+  },
+  newGame: (prev, { settings }) => damas.newGame(Math.random, damas.parseSettings(settings), prev),
+  applyAction: damas.applyAction,
+  viewFor: (s, seat) => damas.viewFor(s, seat as damas.Seat),
+  decide: (v) => damas.decide(v),
+  withSeat: (a, seat) => {
+    const { from, path } = (a ?? {}) as { from?: unknown; path?: unknown };
+    return { type: "move", seat: seat as damas.Seat, from: Number(from), path: Array.isArray(path) ? path.map(Number) : [] };
+  },
+  actors: (s) => (s.phase === "playing" ? [s.turn] : []),
+  pause: () => null,
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => (prev && next.moves.length > prev.moves.length ? next.moves[next.moves.length - 1].path.length * DAMAS_STEP_MS : 0),
+  outcome: (s, seat) => {
+    const st = s.stats[seat];
+    const left = damas.piecesOf(s, seat as damas.Seat);
+    return {
+      outcome: s.winner === null ? "draw" : s.winner === seat ? "win" : "loss",
+      data: {
+        moves: s.moves.filter((m) => m.seat === seat).length,
+        captured: st.captured,
+        bestChain: st.bestChain,
+        kings: st.kings,
+        left,
+        lost: damas.PIECES - left,
+        behind: st.behind,
+        white: s.white === seat,
+        level: s.settings.level,
+        end: s.end,
+      },
+    };
+  },
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
@@ -289,4 +331,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   codenames: codenamesAdapter,
   otrio: otrioAdapter,
   "jogo-da-velha": velhaAdapter,
+  damas: damasAdapter,
 };

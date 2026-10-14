@@ -6,6 +6,7 @@ import * as bn from "@truco/batalha-naval";
 import * as cn from "@truco/codenames";
 import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
+import * as damas from "@truco/damas";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -151,6 +152,53 @@ describe("jogo-da-velha", () => {
   test("opções da sala chegam à partida", () => {
     const opts = settings!.parse({ mode: "fading", level: "easy" }, settings!.initial);
     expect(newGame(null, { seats: [0, 1], settings: opts }).settings).toEqual({ mode: "fading", level: "easy" });
+    expect(settings!.parse({ level: "nope" }, opts)).toEqual(opts);
+  });
+});
+
+describe("damas", () => {
+  const { outcome, settings, newGame, withSeat, animMs } = GAMES.damas;
+  const sq = damas.squareAt;
+
+  /** Lugar 0 de brancas com uma pedra que pega duas pretas e acaba a partida. */
+  function finished(): damas.GameState {
+    const board = Array(64).fill(0) as damas.Cell[];
+    board[sq(5, 4)] = 1;
+    board[sq(4, 3)] = -1;
+    board[sq(2, 3)] = -1;
+    const s: damas.GameState = { ...damas.newGame(() => 0, { level: "hard" }), white: 0, turn: 0, board };
+    return ok(damas.applyAction(s, { type: "move", seat: 0, from: sq(5, 4), path: [sq(3, 2), sq(1, 4)] }));
+  }
+
+  test("vitória e derrota com os números da partida", () => {
+    const s = finished();
+    expect(outcome(s, 0)).toEqual({
+      outcome: "win",
+      data: { moves: 1, captured: 2, bestChain: 2, kings: 0, left: 1, lost: 11, behind: 0, white: true, level: "hard", end: "noMoves" },
+    });
+    expect(outcome(s, 1)).toEqual({
+      outcome: "loss",
+      data: { moves: 0, captured: 0, bestChain: 0, kings: 0, left: 0, lost: 12, behind: 1, white: false, level: "hard", end: "noMoves" },
+    });
+  });
+
+  test("empate para os dois", () => {
+    const s = { ...finished(), winner: null, end: "repeat" as const };
+    expect(outcome(s, 0).outcome).toBe("draw");
+    expect(outcome(s, 1).outcome).toBe("draw");
+  });
+
+  test("ação do cliente ganha o assento; animação pelo tamanho do caminho", () => {
+    expect(withSeat({ from: "40", path: [33, "26"], seat: 1 }, 0)).toEqual({ type: "move", seat: 0, from: 40, path: [33, 26] });
+    expect(withSeat(null, 1)).toEqual({ type: "move", seat: 1, from: NaN, path: [] });
+    const s = finished();
+    const before = { ...s, moves: [] };
+    expect(animMs(before, s)).toBeGreaterThan(animMs(before, { ...s, moves: [{ ...s.moves[0], path: [1] }] }));
+  });
+
+  test("opções da sala chegam à partida", () => {
+    const opts = settings!.parse({ level: "easy" }, settings!.initial);
+    expect(newGame(null, { seats: [0, 1], settings: opts }).settings).toEqual({ level: "easy" });
     expect(settings!.parse({ level: "nope" }, opts)).toEqual(opts);
   });
 });

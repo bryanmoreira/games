@@ -1,7 +1,7 @@
 import type { Action, PlayerView, Seat } from "./types";
 
 /** Jogos atendidos pelo servidor de salas. */
-export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames" | "otrio" | "jogo-da-velha";
+export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames" | "otrio" | "jogo-da-velha" | "damas";
 
 export type ClientAction =
   | { type: "play"; index: number; hidden?: boolean }

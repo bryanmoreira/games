@@ -11,6 +11,7 @@
     "@truco/batalha-naval": "workspace:*",
     "@truco/codenames": "workspace:*",
     "@truco/connect4": "workspace:*",
+    "@truco/damas": "workspace:*",
     "@truco/game": "workspace:*",
     "@truco/jogo-da-velha": "workspace:*",
     "@truco/otrio": "workspace:*",

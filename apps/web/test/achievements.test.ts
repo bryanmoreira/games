@@ -116,6 +116,20 @@ const CASES: Record<string, Case> = {
   "jogo-da-velha:draws_10": { ok: times(10, draw), almost: [...times(9, draw), ...times(5, win), ...times(5, loss)] },
   "jogo-da-velha:streak_5": streakCase,
 
+  "damas:first": firstCase,
+  "damas:chain": { ok: [loss({ bestChain: 3 })], almost: [win({ bestChain: 2 }), loss({ abandoned: true })] },
+  "damas:untouched": { ok: [win({ lost: 0 })], almost: [win({ lost: 1 }), loss({ lost: 0 }), draw({ lost: 0 }), win({})] },
+  "damas:kings": { ok: [draw({ kings: 3 })], almost: [win({ kings: 2 }), loss({ abandoned: true })] },
+  "damas:comeback": { ok: [win({ behind: 3 })], almost: [win({ behind: 2 }), loss({ behind: 5 }), draw({ behind: 4 })] },
+  "damas:master": {
+    ok: [win({ level: "hard" }, "ai")],
+    almost: [win({ level: "medium" }, "ai"), win({ level: "hard" }, "online"), loss({ level: "hard" }, "ai")],
+  },
+  "damas:streak_5": streakCase,
+  "damas:wins_10": winsCase(10),
+  "damas:wins_50": winsCase(50),
+  "damas:wins_100": winsCase(100),
+
   "batalha-naval:first": firstCase,
   "batalha-naval:sharp": {
     ok: [win({ hits: 6, shots: 10 })],
