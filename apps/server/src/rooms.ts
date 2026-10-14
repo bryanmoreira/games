@@ -151,7 +151,7 @@ function schedule(room: Room) {
     if (!room.state) return;
     const a = room.adapter.decide(room.adapter.viewFor(room.state, actor));
     if (a) step(room, a);
-  }, 650 + Math.random() * 650 + Math.max(0, room.dealUntil - Date.now()));
+  }, (room.adapter.botDelay?.(g) ?? 650 + Math.random() * 650) + Math.max(0, room.dealUntil - Date.now()));
 }
 
 // bots esperam a animação do cliente (distribuição, peça caindo) antes de agir

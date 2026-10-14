@@ -86,6 +86,13 @@ const CASES: Record<string, Case> = {
   },
   "connect4:streak_5": streakCase,
 
+  "ludo:first": firstCase,
+  "ludo:hunter": { ok: [loss({ captures: 5 })], almost: [win({ captures: 4 }), loss({ abandoned: true }), win({})] },
+  "ludo:untouched": { ok: [win({ lost: 0 })], almost: [win({ lost: 1 }), loss({ lost: 0 }), win({})] },
+  "ludo:comeback": { ok: [win({ comeback: true })], almost: [win({ comeback: false }), loss({ comeback: true }), win({})] },
+  "ludo:full_table": { ok: [win({ players: 4 })], almost: [win({ players: 3 }), loss({ players: 4 }), win({})] },
+  "ludo:streak_5": streakCase,
+
   "otrio:first": firstCase,
   "otrio:quick": { ok: [win({ colorPieces: 3 })], almost: [win({ colorPieces: 4 }), loss({ pieces: 3 }), win({ pieces: 3 }), win({})] },
   "otrio:stack": { ok: [win({ how: "stack" })], almost: [win({ how: "line" }), win({ how: "stair" }), loss({ how: "stack" }), win({})] },

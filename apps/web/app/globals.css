@@ -285,6 +285,26 @@ body {
 }
 .db-out { animation: db-out 0.45s ease-in forwards; }
 
+/* Ludo: peão que pode andar, dado esperando o toque e dado rolando */
+@keyframes ludo-movable {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(242, 193, 78, 0.6), 0 0 6px rgba(242, 193, 78, 0.3); }
+  50% { box-shadow: 0 0 0 3px rgba(242, 193, 78, 1), 0 0 14px rgba(242, 193, 78, 0.8); }
+}
+.ludo-movable { animation: ludo-movable 1.1s ease-in-out infinite; }
+@keyframes ludo-die-ready {
+  0%, 100% { transform: rotate(-6deg) scale(1); filter: drop-shadow(0 0 0 rgba(242, 193, 78, 0)); }
+  50% { transform: rotate(6deg) scale(1.06); filter: drop-shadow(0 0 8px rgba(242, 193, 78, 0.9)); }
+}
+.ludo-die-ready { animation: ludo-die-ready 1.2s ease-in-out infinite; }
+@keyframes ludo-rolling {
+  0% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(90deg) translateY(-6px); }
+  50% { transform: rotate(180deg) translateY(0); }
+  75% { transform: rotate(270deg) translateY(-3px); }
+  100% { transform: rotate(360deg) translateY(0); }
+}
+.ludo-rolling { animation: ludo-rolling 0.32s linear infinite; }
+
 /* Stop */
 @keyframes stop-shout {
   0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }

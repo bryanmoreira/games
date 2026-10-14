@@ -14,6 +14,7 @@ COPY packages/game/package.json packages/game/
 COPY packages/otrio/package.json packages/otrio/
 COPY packages/jogo-da-velha/package.json packages/jogo-da-velha/
 COPY packages/damas/package.json packages/damas/
+COPY packages/ludo/package.json packages/ludo/
 COPY packages/spider/package.json packages/spider/
 COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
@@ -28,6 +29,7 @@ COPY packages/game packages/game
 COPY packages/otrio packages/otrio
 COPY packages/jogo-da-velha packages/jogo-da-velha
 COPY packages/damas packages/damas
+COPY packages/ludo packages/ludo
 COPY packages/stop packages/stop
 COPY apps/server apps/server
 RUN bun run --cwd apps/server build

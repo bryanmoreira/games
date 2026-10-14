@@ -14,6 +14,7 @@ import { MiniGrid } from "@/components/codenames/Board";
 import { StaticBoard as OtrioBoard } from "@/components/otrio/Board";
 import { StaticBoard as VelhaBoard } from "@/components/jogo-da-velha/Board";
 import { StaticBoard as DamasBoard } from "@/components/damas/Board";
+import { StaticBoard as LudoBoard } from "@/components/ludo/Board";
 import { UserButton } from "@/components/UserButton";
 import { GameGrid, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -112,6 +113,24 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     art: (
       <div className="absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 -rotate-3">
         <DamasBoard rows={["", "..b.B...", ".b...b..", "....w...", ".....W..", "w.w.....", ".w......"]} />
+      </div>
+    ),
+  },
+  {
+    slug: "ludo",
+    title: "LUDO",
+    sub: "CORRIDA DE PEÕES",
+    art: (
+      <div className="absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 rotate-3">
+        <LudoBoard
+          pieces={[
+            { color: 0, piece: 0, progress: 7 },
+            { color: 1, piece: 0, progress: 3 },
+            { color: 2, piece: 0, progress: 18 },
+            { color: 3, piece: 0, progress: 52 },
+            { color: 0, piece: 1, progress: 56 },
+          ]}
+        />
       </div>
     ),
   },

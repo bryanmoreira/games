@@ -18,6 +18,7 @@ const INVITE: Record<GameId, string> = {
   otrio: "Bora jogar Otrio? Duvido fazer trinca antes de mim! 🎯",
   "jogo-da-velha": "Bora um jogo da velha? Duvido me ganhar! ❌⭕",
   damas: "Bora uma partida de damas? Duvido chegar a dama antes de mim! ⚫⚪",
+  ludo: "Bora jogar Ludo? Duvido levar os 4 peões pra casa antes de mim! 🎲",
 };
 
 /** Uma coluna do lobby: os lugares de um time (ou de um jogador). */

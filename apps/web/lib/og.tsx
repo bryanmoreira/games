@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { HOME_CELLS, SAFE, TRACK_CELLS, startOf } from "@truco/ludo";
 import { getGame } from "@/lib/seo";
 
 /** Prévia de link (Open Graph) de cada jogo: arte do jogo à esquerda, nome à direita. */
@@ -36,6 +37,7 @@ const TITLES: Record<string, [string, string]> = {
   otrio: ["OTRIO", "TRINCA DE ANÉIS"],
   "jogo-da-velha": ["VELHA", "JOGO DA VELHA"],
   damas: ["DAMAS", "CLÁSSICO"],
+  ludo: ["LUDO", "CORRIDA DE PEÕES"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
 };
 
@@ -310,6 +312,57 @@ async function art(slug: string) {
             ))}
             {rows.flatMap((r, row) => [...r].flatMap((c, col) => (c === "." ? [] : [piece(c, col * 50, row * 50)])))}
           </svg>
+        </div>
+      );
+    }
+    case "ludo": {
+      // tabuleiro em cruz com as 4 bases, peões no caminho e um dado
+      const colors = ["#e5484d", "#2fb36b", "#f0b429", "#3e7bfa"];
+      const corners = [[0, 0], [90, 0], [90, 90], [0, 90]];
+      const pawns: [number, number, number][] = [[0, 6, 3], [3, 8, 6], [1, 2, 8], [2, 12, 8], [0, 7, 3]];
+      return (
+        <div style={{ display: "flex", position: "relative", transform: "rotate(-4deg)", borderRadius: 18, padding: 12, background: "#5b3920", boxShadow: "0 12px 30px rgba(0,0,0,0.5)" }}>
+          <svg width="400" height="400" viewBox="0 0 150 150">
+            <rect width="150" height="150" fill="#fffdf7" />
+            {corners.map(([x, y], c) => (
+              <g key={c}>
+                <rect x={x} y={y} width="60" height="60" fill={colors[c]} />
+                <rect x={x + 8} y={y + 8} width="44" height="44" rx="6" fill="#fffdf7" />
+                {HOME_CELLS[c].map(([r, col], i) => (
+                  <rect key={i} x={col * 10} y={r * 10} width="10" height="10" fill={colors[c]} stroke="#cdbf9f" strokeWidth="0.5" />
+                ))}
+              </g>
+            ))}
+            {TRACK_CELLS.map(([r, c], i) => {
+              const start = [0, 1, 2, 3].find((col) => startOf(col) === i);
+              return (
+                <g key={i}>
+                  <rect x={c * 10} y={r * 10} width="10" height="10" fill={start !== undefined ? colors[start] : "#fffdf7"} stroke="#cdbf9f" strokeWidth="0.5" />
+                  {SAFE.has(i) && start === undefined && <circle cx={c * 10 + 5} cy={r * 10 + 5} r="2.4" fill="#c9b98f" />}
+                </g>
+              );
+            })}
+            <polygon points="60,60 60,90 75,75" fill={colors[0]} />
+            <polygon points="60,60 90,60 75,75" fill={colors[1]} />
+            <polygon points="90,60 90,90 75,75" fill={colors[2]} />
+            <polygon points="60,90 90,90 75,75" fill={colors[3]} />
+            {pawns.map(([c, row, col], i) => (
+              <g key={i}>
+                <circle cx={col * 10 + 5} cy={row * 10 + 6} r="4.4" fill="rgba(0,0,0,0.3)" />
+                <circle cx={col * 10 + 5} cy={row * 10 + 5} r="4.2" fill={colors[c]} stroke="#1c1917" strokeWidth="0.8" />
+                <circle cx={col * 10 + 4} cy={row * 10 + 3.8} r="1.3" fill="rgba(255,255,255,0.6)" />
+              </g>
+            ))}
+          </svg>
+          <div style={{ display: "flex", position: "absolute", right: -40, bottom: -30, transform: "rotate(14deg)" }}>
+            <svg width="120" height="120" viewBox="0 0 100 100">
+              <rect x="4" y="9" width="92" height="88" rx="20" fill="rgba(0,0,0,0.4)" />
+              <rect x="4" y="4" width="92" height="88" rx="20" fill="#fffdf7" stroke="#d6cbb5" strokeWidth="3" />
+              {[[28, 24], [72, 24], [28, 48], [72, 48], [28, 72], [72, 72]].map(([x, y], i) => (
+                <circle key={i} cx={x} cy={y} r="9" fill="#1c1917" />
+              ))}
+            </svg>
+          </div>
         </div>
       );
     }

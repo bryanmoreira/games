@@ -122,6 +122,17 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} lances`))(minOf(wins.map((r) => num(r, "moves")).filter((n) => n > 0))));
       chip("Maior captura", ((n) => (n ? `${n} ${n === 1 ? "peça" : "peças"}` : null))(maxOf(rs.map((r) => num(r, "bestChain")).filter(Number.isFinite))));
       break;
+    case "ludo":
+      chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} rodadas`))(minOf(wins.map((r) => num(r, "turns")).filter((n) => n > 0))));
+      chip("Mais capturas", ((n) => (n ? `${n} ${n === 1 ? "peça" : "peças"}` : null))(maxOf(rs.map((r) => num(r, "captures")).filter(Number.isFinite))));
+      stats.table = {
+        cols: ["Vitórias", "Partidas"],
+        rows: [2, 3, 4].map((n) => {
+          const games = rs.filter((r) => num(r, "players") === n);
+          return { label: `${n} jogadores`, values: [String(games.filter(isWin).length), String(games.length)] };
+        }),
+      };
+      break;
     case "otrio": {
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "colorPieces")).filter(Number.isFinite))));
       // forma de trinca com mais vitórias (empate: a primeira da lista)

@@ -261,6 +261,31 @@ export const GAMES: GameSeo[] = [
     ],
   },
   {
+    slug: "ludo",
+    path: "/ludo",
+    name: "Ludo",
+    title: "Ludo Online Grátis",
+    description:
+      "Jogue Ludo online grátis, de 2 a 4 jogadores: role o dado, capture as peças dos outros e leve seus 4 peões ao centro. Crie uma sala com amigos ou jogue contra o computador.",
+    tagline: "Role o dado e leve seus 4 peões ao centro, de 2 a 4 jogadores.",
+    keywords: ["ludo online", "ludo", "jogar ludo grátis", "ludo com amigos", "ludo contra o computador", "jogo de tabuleiro com dado", "ludo 4 jogadores"],
+    genre: "Jogo de tabuleiro (sorte e estratégia)",
+    players: { min: 1, max: 4 },
+    modes: "Multiplayer online de 2 a 4 jogadores em salas privadas, com lugares completados pelo computador, e modo solo contra 1 a 3 IAs.",
+    howTo: {
+      title: "Como jogar Ludo: regras, captura e casas seguras",
+      description: "Aprenda as regras do Ludo: como tirar a peça da base com 1 ou 6, quando jogar de novo, como capturar, as casas seguras e como chegar ao centro.",
+    },
+    faq: [
+      { q: "Qual é o objetivo do Ludo?", a: "Levar as suas 4 peças da base até o centro do tabuleiro, dando a volta no sentido horário e entrando na reta final da sua cor. Vence quem chegar com as 4 primeiro." },
+      { q: "Como a peça sai da base?", a: "Com 1 ou 6 no dado. A peça vai para a casa de saída da sua cor e, a partir da próxima jogada, anda o número que sair." },
+      { q: "Quando eu jogo de novo?", a: "Ao tirar 6, ao capturar uma peça e ao levar uma peça ao centro. Mas o terceiro 6 seguido na mesma vez perde a vez sem mover." },
+      { q: "Como funciona a captura?", a: "Parando numa casa com peça de outra cor, ela volta para a base. Nas casas de saída e nas estrelas não há captura, e na reta final ninguém entra além do dono da cor. Duas peças juntas não formam bloqueio." },
+      { q: "Precisa do número exato para chegar ao centro?", a: "Sim. Se o dado passar da chegada, aquela peça não anda; se nenhuma peça puder andar, a vez passa." },
+      { q: "Dá para jogar Ludo online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue com até 4 pessoas sem cadastro. Lugares vazios podem ser completados pelo computador, e há modo solo contra 1 a 3 IAs." },
+    ],
+  },
+  {
     slug: "verbete",
     path: "/verbete",
     name: "Verbete",

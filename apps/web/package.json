@@ -19,6 +19,7 @@
     "@truco/damas": "workspace:*",
     "@truco/game": "workspace:*",
     "@truco/jogo-da-velha": "workspace:*",
+    "@truco/ludo": "workspace:*",
     "@truco/otrio": "workspace:*",
     "@truco/spider": "workspace:*",
     "@truco/stop": "workspace:*",

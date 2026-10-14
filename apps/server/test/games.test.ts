@@ -7,6 +7,7 @@ import * as cn from "@truco/codenames";
 import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
+import * as ludo from "@truco/ludo";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -119,6 +120,53 @@ describe("otrio", () => {
     expect(actors(s)).toEqual([3]);
     const draw = { ...s, phase: "gameOver" as const };
     expect(outcome(draw, 1)).toEqual({ outcome: "draw", data: { pieces: 1, players: 2, moves: 1 } });
+  });
+});
+
+describe("ludo", () => {
+  const { outcome, actors, pause, animMs } = GAMES.ludo;
+  const die = (n: number) => () => (n - 1) / 6 + 0.01;
+  const seat = (s: ludo.GameState) => s.order[s.turn];
+  const roll = (s: ludo.GameState, n: number) => ok(ludo.applyAction(s, { type: "roll", seat: seat(s) }, die(n)));
+  const move = (s: ludo.GameState, piece: number) => ok(ludo.applyAction(s, { type: "move", seat: seat(s), piece }));
+
+  test("vencedor em 1º; os outros perdem com a colocação, capturas e virada", () => {
+    // vermelho perto de fechar, depois de estar com 0 enquanto o verde tinha 3
+    let s = ludo.newGame(() => 0, [0, 1, 2]);
+    s.pieces[0] = [ludo.HOME, ludo.HOME, ludo.HOME, 27];
+    s.pieces[1] = [ludo.HOME, 30, ludo.BASE, ludo.BASE];
+    s.pieces[2] = [ludo.HOME, ludo.HOME, 4, ludo.BASE];
+    s.stats[0].trailed = true;
+    s = roll(s, 3);
+    s = move(s, 3); // captura o amarelo (casa 30)
+    expect(s.pieces[2][2]).toBe(ludo.BASE);
+    s.pieces[0][3] = 50;
+    s = roll(s, 6);
+    s = move(s, 3);
+    expect(s.phase).toBe("gameOver");
+    expect(outcome(s, 0)).toEqual({
+      outcome: "win",
+      placement: 1,
+      data: { players: 3, home: 4, captures: 1, lost: 0, turns: 1, comeback: true },
+    });
+    expect(outcome(s, 2)).toEqual({
+      outcome: "loss",
+      placement: 2,
+      data: { players: 3, home: 2, captures: 0, lost: 1, turns: 0, comeback: false },
+    });
+    expect(outcome(s, 1)).toMatchObject({ outcome: "loss", placement: 3, data: { home: 1 } });
+  });
+
+  test("vez, pausa sem lance e tempo das animações", () => {
+    let s = ludo.newGame(() => 0, [0, 1]);
+    expect(actors(s)).toEqual([0]);
+    const rolled = roll(s, 3);
+    expect(actors(rolled)).toEqual([]);
+    expect(pause(rolled)).toBeGreaterThan(0);
+    expect(animMs(s, rolled)).toBeGreaterThan(0);
+    s = roll(s, 6);
+    const moved = move(s, 0);
+    expect(animMs(s, moved)).toBeGreaterThan(0);
   });
 });
 

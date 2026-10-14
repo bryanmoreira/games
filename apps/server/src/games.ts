@@ -6,6 +6,7 @@ import * as cn from "@truco/codenames";
 import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
+import * as ludo from "@truco/ludo";
 import type { GameId, PlayerReport } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -44,6 +45,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
   /** ms até um "advance" automático, ou null. */
   pause(s: S): number | null;
   over(s: S): boolean;
+  /** ms que o bot "pensa" antes de agir (sem ele, entre 650 e 1300). */
+  botDelay?(s: S): number;
   /** Tempo da animação no cliente depois desta transição (bots esperam). */
   animMs(prev: S | null, next: S): number;
   /** Identifica a fase com relógio: enquanto for a mesma, o relógio não reinicia a cada ação. */
@@ -66,6 +69,12 @@ const RING_MS = 450;
 const MARK_MS = 400;
 // Cada trecho do caminho da peça de damas (deslizar + pulo)
 const DAMAS_STEP_MS = 320;
+// Dado rolando no Ludo, cada casa andada e a peça capturada voltando à base
+const LUDO_DIE_MS = 750;
+const LUDO_STEP_MS = 150;
+const LUDO_CAPTURE_MS = 450;
+// Dado parado na tela antes de a vez passar (sem lance ou 3º seis)
+const LUDO_PASS_MS = 1300;
 
 const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView> = {
   seats: 4,
@@ -323,6 +332,49 @@ const damasAdapter: GameAdapter<damas.GameState, damas.Action, damas.PlayerView>
   },
 };
 
+const ludoAdapter: GameAdapter<ludo.GameState, ludo.Action, ludo.PlayerView> = {
+  seats: ludo.MAX_PLAYERS,
+  minSeats: ludo.MIN_PLAYERS,
+  newGame: (prev, { seats }) => ludo.newGame(Math.random, seats, prev),
+  applyAction: (s, a) => ludo.applyAction(s, a),
+  viewFor: (s, seat) => ludo.viewFor(s, seat),
+  decide: (v) => ludo.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    return m.type === "roll" ? { type: "roll", seat } : { type: "move", seat, piece: Number(m.piece) };
+  },
+  actors: (s) => (s.phase === "roll" || s.phase === "move" ? [s.order[s.turn]] : []),
+  pause: (s) => (s.phase === "pass" ? LUDO_PASS_MS : null),
+  // rolar o dado é rápido; escolher a peça leva um pouco mais
+  botDelay: (s) => (s.phase === "roll" ? 250 + Math.random() * 250 : 450 + Math.random() * 350),
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => {
+    if (!prev) return 0;
+    if (next.rolls > prev.rolls) return LUDO_DIE_MS;
+    if (next.moves.length > prev.moves.length) {
+      const m = next.moves[next.moves.length - 1];
+      return Math.max(1, m.to - Math.max(0, m.from)) * LUDO_STEP_MS + (m.captured.length ? LUDO_CAPTURE_MS : 0);
+    }
+    return 0;
+  },
+  outcome: (s, seat) => {
+    const st = s.stats[seat];
+    const color = s.colorOf[seat]!;
+    return {
+      outcome: s.winner === seat ? "win" : "loss",
+      placement: ludo.placementOf(s, seat),
+      data: {
+        players: s.players.length,
+        home: ludo.homeCount(s, color),
+        captures: st.captures,
+        lost: st.lost,
+        turns: st.turns,
+        comeback: s.winner === seat && st.trailed,
+      },
+    };
+  },
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
@@ -332,4 +384,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   otrio: otrioAdapter,
   "jogo-da-velha": velhaAdapter,
   damas: damasAdapter,
+  ludo: ludoAdapter,
 };

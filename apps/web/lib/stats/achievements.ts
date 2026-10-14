@@ -292,6 +292,41 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   wins("damas", 50),
   wins("damas", 100),
 
+  first("ludo"),
+  {
+    code: "ludo:hunter",
+    game: "ludo",
+    title: "Caçador",
+    desc: "Capturar 5 peças ou mais numa partida",
+    icon: "target",
+    check: ({ results }) => results.some((r) => num(r, "captures") >= 5),
+  },
+  {
+    code: "ludo:untouched",
+    game: "ludo",
+    title: "Intocável",
+    desc: "Vencer sem ter nenhuma peça capturada",
+    icon: "shield",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "lost") === 0),
+  },
+  {
+    code: "ludo:comeback",
+    game: "ludo",
+    title: "Virada",
+    desc: "Vencer depois de estar com 0 peças na chegada e um adversário com 3",
+    icon: "star",
+    check: ({ results }) => winsOf(results).some((r) => r.data.comeback === true),
+  },
+  {
+    code: "ludo:full_table",
+    game: "ludo",
+    title: "Mesa cheia",
+    desc: "Vencer uma partida com 4 jogadores",
+    icon: "crown",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "players") === 4),
+  },
+  streak5("ludo"),
+
   first("batalha-naval"),
   {
     code: "batalha-naval:sharp",

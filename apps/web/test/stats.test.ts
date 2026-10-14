@@ -123,6 +123,34 @@ describe("gameStats: Damas", () => {
   });
 });
 
+describe("gameStats: Ludo", () => {
+  test("vitória mais rápida em rodadas, mais capturas e tabela por tamanho de mesa", () => {
+    const rs = [
+      win({ turns: 40, captures: 2, players: 2 }),
+      win({ turns: 31, captures: 1, players: 4 }),
+      loss({ turns: 20, captures: 6, players: 4 }),
+      loss({ abandoned: true }),
+    ];
+    const s = gameStats("ludo", rs);
+    expect(s.chips).toEqual([
+      { label: "Vitória mais rápida", value: "31 rodadas" },
+      { label: "Mais capturas", value: "6 peças" },
+    ]);
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Partidas"],
+      rows: [
+        { label: "2 jogadores", values: ["1", "1"] },
+        { label: "3 jogadores", values: ["0", "0"] },
+        { label: "4 jogadores", values: ["1", "2"] },
+      ],
+    });
+  });
+
+  test("sem capturas nem vitórias: sem chips", () => {
+    expect(chips("ludo", [loss({ turns: 10, captures: 0, players: 2 })])).toEqual([]);
+  });
+});
+
 describe("gameStats: Otrio", () => {
   test("vitória mais rápida pelas peças da cor e forma favorita, só entre vitórias", () => {
     const rs = [win({ colorPieces: 5, how: "line" }), win({ colorPieces: 4, how: "stack" }), win({ colorPieces: 6, how: "stack" }), loss({ pieces: 3 })];
@@ -403,6 +431,7 @@ describe("jogos", () => {
     ["/otrio/sala/ABCD", "otrio"],
     ["/jogo-da-velha/sala/ABCD", "jogo-da-velha"],
     ["/damas/sala/ABCD", "damas"],
+    ["/ludo/sala/ABCD", "ludo"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],
     ["/paciencia-spider/jogo", "paciencia-spider"],
