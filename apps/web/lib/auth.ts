@@ -46,6 +46,8 @@ export const auth = betterAuth({
     additionalFields: {
       // perfil público em /perfil/<username>; o jogador liga/desliga em Perfil > Conta
       profilePublic: { type: "boolean", defaultValue: true, required: false, input: true },
+      // user | admin; o jogador não muda (input: false). Promover: bun run admin <email>
+      role: { type: "string", defaultValue: "user", required: false, input: false },
     },
   },
   // toda conta nova já nasce com um username (o jogador pode trocar em Perfil > Conta)

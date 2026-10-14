@@ -21,6 +21,8 @@ model User {
   profilePublic   Boolean   @default(true)
   // última vez com o site aberto (aviso a cada minuto); amigos veem quem está online
   lastSeenAt      DateTime?
+  // user | admin. Admin vê /admin; promover com: bun run admin <email>
+  role            String    @default("user")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]

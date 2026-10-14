@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { BackButton } from "@/components/BackButton";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileNav } from "@/components/profile/ProfileNav";
+import { isAdmin } from "@/lib/admin";
 import { auth } from "@/lib/auth";
 import { countFriendRequests } from "@/lib/friends";
 import { loginHref } from "@/lib/login";
@@ -27,7 +28,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
         <ProfileHeader user={{ name, email, image: image ?? null, username: username ?? null }} />
         <div className="flex flex-col gap-6 md:grid md:grid-cols-[200px_1fr] md:gap-10">
-          <ProfileNav badges={{ "/perfil/amigos": requests }} />
+          <ProfileNav badges={{ "/perfil/amigos": requests }} admin={isAdmin(session.user)} />
           <section className="min-w-0">{children}</section>
         </div>
       </div>

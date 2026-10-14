@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { ShieldIcon } from "@/components/admin/AdminNav";
 import { authClient } from "@/lib/auth-client";
 import { refreshIdentity } from "@/lib/socket";
 
@@ -54,8 +55,8 @@ const ITEMS: Item[] = [
   },
 ];
 
-/** `badges`: número ao lado da opção (ex.: convites de amizade em /perfil/amigos). */
-export function ProfileNav({ badges = {} }: { badges?: Record<string, number> }) {
+/** `badges`: número ao lado da opção (ex.: convites de amizade em /perfil/amigos). `admin`: atalho para /admin. */
+export function ProfileNav({ badges = {}, admin = false }: { badges?: Record<string, number>; admin?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -99,7 +100,15 @@ export function ProfileNav({ badges = {} }: { badges?: Record<string, number> })
             </li>
           );
         })}
-        <li className="shrink-0 md:mt-4 md:border-t md:border-white/10 md:pt-4">
+        {admin && (
+          <li className="shrink-0 md:mt-4 md:border-t md:border-white/10 md:pt-4">
+            <Link href="/admin" aria-label="Admin" title="Admin" className={`${base} text-gold/70 hover:bg-gold/10 hover:text-gold`}>
+              <ShieldIcon />
+              <span className="hidden md:inline">Admin</span>
+            </Link>
+          </li>
+        )}
+        <li className={`shrink-0 ${admin ? "" : "md:mt-4 md:border-t md:border-white/10 md:pt-4"}`}>
           <button onClick={signOut} aria-label="Sair" title="Sair" className={`${base} w-full text-white/50 hover:bg-white/5 hover:text-white`}>
             {svg(
               <>

@@ -61,6 +61,7 @@ bun run test    # regras dos jogos, servidor de salas e site
 - **Recordes e conquistas**: cada partida terminada vira uma linha em `game_result` (`lib/stats/`). Sudoku e Spider mandam pelo navegador (`/api/results`); os jogos online e contra IA são registrados pelo servidor de salas, que sabe quem está logado por um ticket assinado com `GAME_SECRET` e envia para `/api/internal/results`. Quem sai no meio de uma partida online leva derrota. Conquistas novas: `lib/stats/achievements.ts`.
 - Para rodar local, copie também `apps/server/.env.example` para `apps/server/.env` com o mesmo `GAME_SECRET` do site.
 - Para mandar alguém logar e voltar: `loginHref("/caminho")` (`lib/login.ts`).
+- **Admin**: coluna `role` (`user` | `admin`). Admin vê `/admin` (listagem de usuários; atalho no menu do perfil); os outros recebem 404. Promover: `bun run --cwd apps/web admin <email>` (`--remove` tira). Em produção, no Postgres: `UPDATE "user" SET role = 'admin' WHERE email = '...';`. Seção nova: linha em `components/admin/AdminNav.tsx` + página em `app/admin/<rota>` chamando `requireAdmin()` (`lib/admin.ts`).
 
 - No Google Cloud, em **Credenciais > ID do cliente OAuth**, adicione os URIs de redirecionamento:
   - `http://localhost:3000/api/auth/callback/google`
