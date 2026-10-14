@@ -234,7 +234,7 @@ export function Table({ mode, daily }: { mode: Mode; daily?: DailyWords }) {
   return (
     <main className="flex h-dvh touch-manipulation select-none flex-col overflow-hidden">
       <header className={HEADER}>
-        <nav className="flex items-center gap-1 justify-self-start rounded-full bg-black/30 p-1" aria-label="Modo">
+        <nav className="col-start-1 flex items-center gap-1 justify-self-start rounded-full bg-black/30 p-1" aria-label="Modo">
           {MODES.map((m) => (
             <Link
               key={m}
@@ -253,15 +253,15 @@ export function Table({ mode, daily }: { mode: Mode; daily?: DailyWords }) {
         </nav>
 
         {daily ? (
-          <DailyBadge day={daily.day} className="hidden rounded-full bg-black/30 px-3 py-1.5 text-white/70 sm:flex" />
+          <DailyBadge day={daily.day} className="col-start-2 hidden rounded-full bg-black/30 px-3 py-1.5 text-white/70 sm:flex" />
         ) : (
-          <span className="hidden items-center gap-1.5 rounded-full bg-black/30 px-3 py-1.5 font-display text-xs text-white/70 sm:flex" title="Livre">
+          <span className="col-start-2 hidden items-center gap-1.5 rounded-full bg-black/30 px-3 py-1.5 font-display text-xs text-white/70 sm:flex" title="Livre">
             <InfinityIcon className="h-4 w-4 text-gold" />
             LIVRE
           </span>
         )}
 
-        <div className="flex items-center gap-1 justify-self-end sm:gap-2">
+        <div className="col-start-3 flex items-center gap-1 justify-self-end sm:gap-2">
           {st !== "playing" && !showEnd && (
             <IconButton label="Resultado" onClick={() => setShowEnd(true)} active>
               <BarsIcon />
@@ -269,7 +269,7 @@ export function Table({ mode, daily }: { mode: Mode; daily?: DailyWords }) {
           )}
           <HelpButton onClick={() => setHelp(true)} />
           <MuteButton />
-          <ExitConfirm onExit={() => router.push(home)} ask={st === "playing" && game.guesses.length > 0} />
+          <ExitConfirm onExit={() => router.push(home)} ask={st === "playing"} />
         </div>
       </header>
 
