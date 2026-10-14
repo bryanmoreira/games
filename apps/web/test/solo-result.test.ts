@@ -116,3 +116,50 @@ describe("pedido inválido", () => {
     expect(parseSoloResult("paciencia-spider", 5000)).toBeNull();
   });
 });
+
+describe("verbete", () => {
+  const vb = (over: Record<string, unknown> = {}) => ({ mode: 1, answers: ["festa"], guesses: ["tempo", "festa"], ...over });
+
+  test("vitória: refaz os chutes e guarda só os campos esperados", () => {
+    expect(parseSoloResult("verbete", vb({ extra: 1 }))).toEqual({
+      game: "verbete",
+      outcome: "win",
+      data: { mode: 1, attempts: 2, answers: ["festa"], guesses: ["tempo", "festa"] },
+    });
+  });
+
+  test("derrota: os 6 chutes sem acertar", () => {
+    const r = parseSoloResult("verbete", vb({ guesses: Array(6).fill("tempo") }));
+    expect(r?.outcome).toBe("loss");
+    expect(r?.data.attempts).toBe(6);
+  });
+
+  test("acento é tirado antes de guardar", () => {
+    expect(parseSoloResult("verbete", vb({ answers: ["suíte"], guesses: ["SUITE"] }))?.data).toEqual({ mode: 1, attempts: 1, answers: ["suite"], guesses: ["suite"] });
+  });
+
+  test("dueto e quarteto", () => {
+    expect(parseSoloResult("verbete", vb({ mode: 2, answers: ["festa", "livro"], guesses: ["livro", "festa"] }))?.outcome).toBe("win");
+    expect(parseSoloResult("verbete", vb({ mode: 4, answers: ["festa", "livro", "porta", "mundo"], guesses: Array(9).fill("tempo") }))?.outcome).toBe("loss");
+  });
+
+  test("partida sem terminar: recusa", () => {
+    expect(parseSoloResult("verbete", vb({ guesses: ["tempo"] }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ guesses: [] }))).toBeNull();
+  });
+
+  test("chute inválido, chute depois do fim ou chutes demais: recusa", () => {
+    expect(parseSoloResult("verbete", vb({ guesses: ["zzzzz", "festa"] }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ guesses: ["festa", "tempo"] }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ guesses: Array(7).fill("tempo") }))).toBeNull();
+  });
+
+  test("respostas erradas para o modo, repetidas ou fora das respostas: recusa", () => {
+    expect(parseSoloResult("verbete", vb({ mode: 2 }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ mode: 3 }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ mode: 2, answers: ["festa", "festa"], guesses: ["festa"] }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ answers: ["ababa"], guesses: ["ababa"] }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ answers: "festa" }))).toBeNull();
+    expect(parseSoloResult("verbete", vb({ guesses: [1, 2] }))).toBeNull();
+  });
+});

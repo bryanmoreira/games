@@ -24,6 +24,12 @@ const times = (n: number, make: () => ResultRow) => Array.from({ length: n }, ma
 const ctx = (results: ResultRow[], bestDays = 0) => ({ results, bestDays });
 /** Desafio do dia `day` terminado em `at` (padrão: no próprio dia, meio-dia de Brasília). */
 const dailyRow = (day: string, at = day, outcome = "win"): ResultRow => ({ ...row(outcome, {}, "solo"), daily: day, createdAt: new Date(`${at}T12:00:00-03:00`) });
+/** Palavra do dia do Verbete: a chave guarda o modo (`AAAA-MM-DD:2`). */
+const verbeteDay = (day: string, mode: number, at = day, outcome = "win"): ResultRow => ({
+  ...row(outcome, { mode, attempts: 3 }, "solo"),
+  daily: `${day}:${mode}`,
+  createdAt: new Date(`${at}T12:00:00-03:00`),
+});
 /** `n` dias seguidos a partir de 01/08/2026. */
 const run = (n: number, from = 1) => Array.from({ length: n }, (_, i) => `2026-08-${String(i + from).padStart(2, "0")}`);
 const dailyCases = (): Record<string, Case> => ({
@@ -157,6 +163,31 @@ const CASES: Record<string, Case> = {
   "paciencia-spider:wins_50": winsCase(50),
   "paciencia-spider:wins_100": winsCase(100),
   ...withGame("paciencia-spider", dailyCases()),
+
+  "verbete:first": { ok: [loss({ mode: 1 }, "solo"), win({ mode: 1 }, "solo")], almost: [loss({ mode: 1 }, "solo"), loss({ mode: 4 }, "solo")] },
+  "verbete:seer": {
+    ok: [win({ mode: 1, attempts: 1 }, "solo")],
+    almost: [win({ mode: 1, attempts: 2 }, "solo"), win({ mode: 2, attempts: 1 }, "solo"), loss({ mode: 1, attempts: 1 }, "solo")],
+  },
+  "verbete:close": {
+    ok: [win({ mode: 2, attempts: 7 }, "solo")],
+    almost: [win({ mode: 1, attempts: 5 }, "solo"), loss({ mode: 1, attempts: 6 }, "solo"), win({ mode: 4, attempts: 8 }, "solo"), win({ attempts: 6 }, "solo")],
+  },
+  "verbete:duo_4": {
+    ok: [win({ mode: 2, attempts: 4 }, "solo")],
+    almost: [win({ mode: 2, attempts: 5 }, "solo"), win({ mode: 1, attempts: 3 }, "solo"), loss({ mode: 2, attempts: 4 }, "solo")],
+  },
+  "verbete:quartet": { ok: [win({ mode: 4, attempts: 9 }, "solo")], almost: [loss({ mode: 4, attempts: 9 }, "solo"), win({ mode: 2, attempts: 2 }, "solo")] },
+  "verbete:daily_5": {
+    // um modo vencido por dia basta, e cada dia conta uma vez
+    ok: run(5).map((d, i) => verbeteDay(d, [1, 2, 4][i % 3])),
+    almost: [
+      ...run(4).flatMap((d) => [verbeteDay(d, 1), verbeteDay(d, 2), verbeteDay(d, 4)]),
+      verbeteDay("2026-08-05", 1, "2026-08-06"),
+      verbeteDay("2026-08-05", 2, "2026-08-05", "loss"),
+    ],
+  },
+  "verbete:wins_50": winsCase(50),
 };
 
 const codes = ACHIEVEMENTS.map((a) => a.code);

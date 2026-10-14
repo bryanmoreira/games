@@ -58,6 +58,12 @@ const LEVELS: [string, string][] = [
   ["expert", "Expert"],
 ];
 
+const VERBETE_MODES: [number, string][] = [
+  [1, "Verbete"],
+  [2, "Dueto"],
+  [4, "Quarteto"],
+];
+
 const num = (r: ResultRow, k: string) => Number(r.data[k] ?? NaN);
 const isWin = (r: ResultRow) => r.outcome === "win";
 
@@ -162,6 +168,21 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
           return {
             label: `${suits} naipe${suits > 1 ? "s" : ""}`,
             values: [String(w.length), best === null ? null : formatMs(best), score === null ? null : String(score), moves === null ? null : String(moves)],
+          };
+        }),
+      };
+      break;
+    case "verbete":
+      stats.table = {
+        cols: ["Jogos", "Vitórias", "Média", "Sequência"],
+        rows: VERBETE_MODES.map(([mode, label]) => {
+          const games = rs.filter((r) => num(r, "mode") === mode);
+          const tries = games.filter(isWin).map((r) => num(r, "attempts")).filter(Number.isFinite);
+          const avg = tries.length ? (tries.reduce((a, b) => a + b, 0) / tries.length).toFixed(1).replace(".", ",") : null;
+          const streak = dailyStreaks(games).best;
+          return {
+            label,
+            values: [String(games.length), games.length ? `${Math.round((tries.length / games.length) * 100)}%` : null, avg, streak ? String(streak) : null],
           };
         }),
       };

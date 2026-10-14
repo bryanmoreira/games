@@ -16,6 +16,7 @@ COPY packages/jogo-da-velha/package.json packages/jogo-da-velha/
 COPY packages/spider/package.json packages/spider/
 COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
+COPY packages/verbete/package.json packages/verbete/
 RUN bun install --frozen-lockfile --linker=hoisted
 
 COPY tsconfig.base.json ./

@@ -12,8 +12,8 @@ export interface UnlockedAchievement {
 
 export const ACHIEVEMENTS_EVENT = "mesa:achievements";
 
-/** Vitória num jogo solo: vai para o perfil (só se estiver logado; senão o site ignora). `daily`: era o desafio deste dia. */
-export function reportSoloWin(game: SoloGame, data: Record<string, unknown>, daily?: { day: string; seed: number }) {
+/** Partida terminada num jogo solo: vai para o perfil (só se estiver logado; senão o site ignora). `daily`: era o desafio deste dia. */
+export function reportSoloResult(game: SoloGame, data: Record<string, unknown>, daily?: { day: string; seed: number }) {
   const body = daily ? { game, data, daily: daily.day, seed: daily.seed } : { game, data };
   fetch("/api/results", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
     .then((r) => (r.ok ? r.json() : null))
@@ -22,3 +22,6 @@ export function reportSoloWin(game: SoloGame, data: Record<string, unknown>, dai
     })
     .catch(() => {});
 }
+
+/** Vitória num jogo solo (Sudoku e Spider só mandam vitórias). */
+export const reportSoloWin = reportSoloResult;

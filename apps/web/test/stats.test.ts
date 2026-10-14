@@ -254,6 +254,38 @@ describe("gameStats: desafio diário", () => {
   });
 });
 
+describe("gameStats: Verbete", () => {
+  const vb = (mode: number, attempts: number, outcome = "win", day?: string, at = day): ResultRow => ({
+    ...row(outcome, { mode, attempts }, "solo"),
+    ...(day ? { daily: `${day}:${mode}`, createdAt: new Date(`${at}T12:00:00-03:00`) } : {}),
+  });
+
+  test("tabela por modo: jogos, vitórias, média de tentativas nas vitórias e maior sequência de dias", () => {
+    const rs = [
+      vb(1, 3, "win", "2026-08-01"),
+      vb(1, 4, "win", "2026-08-02"),
+      vb(1, 6, "loss", "2026-08-03"),
+      vb(1, 2),
+      vb(2, 7, "loss"),
+      vb(4, 9, "win", "2026-08-01", "2026-08-05"),
+    ];
+    expect(gameStats("verbete", rs).table).toEqual({
+      cols: ["Jogos", "Vitórias", "Média", "Sequência"],
+      rows: [
+        { label: "Verbete", values: ["4", "75%", "3,0", "2"] },
+        { label: "Dueto", values: ["1", "0%", null, null] },
+        // vencido em outro dia: não conta na sequência
+        { label: "Quarteto", values: ["1", "100%", "9,0", null] },
+      ],
+    });
+  });
+
+  test("palavras do dia de vários modos no mesmo dia contam como um dia", () => {
+    const rs = [vb(1, 3, "win", "2026-08-01"), vb(2, 5, "win", "2026-08-01"), vb(4, 8, "win", "2026-08-02")];
+    expect(chips("verbete", rs)).toContainEqual({ label: "Desafios seguidos", value: "recorde 2" });
+  });
+});
+
 describe("statsByGame", () => {
   test("agrupa por jogo na ordem da tela, pula jogos sem partida e ignora jogos desconhecidos", () => {
     const rs = [

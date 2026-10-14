@@ -1,12 +1,18 @@
 import { DIFFICULTIES } from "@truco/sudoku";
+import { isMode, MAX_GUESSES, replay, status } from "@truco/verbete";
+import type { Outcome } from "@/lib/stats/games";
 
 const int = (v: unknown, min: number, max: number) => (Number.isInteger(v) && (v as number) >= min && (v as number) <= max ? (v as number) : null);
 
-export type SoloGame = "sudoku" | "paciencia-spider";
+export type SoloGame = "sudoku" | "paciencia-spider" | "verbete";
 
-/** Dados de uma vitória solo (Sudoku/Spider) mandados pelo navegador, validados. null = inválido. */
-export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; data: Record<string, unknown> } | null {
+/**
+ * Dados de uma partida solo mandados pelo navegador, validados. null = inválido.
+ * Sudoku e Spider só mandam vitória; o Verbete manda vitória e derrota, e o resultado sai dos chutes refeitos aqui.
+ */
+export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; data: Record<string, unknown>; outcome?: Outcome } | null {
   const d = (raw ?? {}) as Record<string, unknown>;
+  if (game === "verbete") return parseVerbete(d);
   const timeMs = int(d.timeMs, 1000, 24 * 60 * 60 * 1000);
   if (timeMs === null) return null;
   if (game === "sudoku") {
@@ -23,4 +29,24 @@ export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; 
     return { game, data: { suits, moves, score, timeMs } };
   }
   return null;
+}
+
+const words = (v: unknown, max: number): string[] | null =>
+  Array.isArray(v) && v.length <= max && v.every((w) => typeof w === "string" && w.length <= 10) ? (v as string[]) : null;
+
+/** Verbete: refaz a partida com as respostas e os chutes; só vale partida terminada. */
+function parseVerbete(d: Record<string, unknown>) {
+  const mode = d.mode;
+  if (!isMode(mode)) return null;
+  const answers = words(d.answers, mode);
+  const guesses = words(d.guesses, MAX_GUESSES[mode]);
+  if (!answers || !guesses) return null;
+  const s = replay(mode, answers, guesses);
+  const st = s && status(s);
+  if (!s || st === "playing") return null;
+  return {
+    game: "verbete" as const,
+    outcome: st === "won" ? ("win" as const) : ("loss" as const),
+    data: { mode, attempts: s.guesses.length, answers: s.answers, guesses: s.guesses },
+  };
 }

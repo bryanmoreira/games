@@ -8,9 +8,10 @@ import { SPIDER_PATH } from "@/lib/spider/paths";
 import { STOP_PATH } from "@/lib/stop/paths";
 import { SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { TRUCO_PATH } from "@/lib/truco/paths";
+import { VERBETE_PATH } from "@/lib/verbete/paths";
 
 /** Jogos que guardam resultado no perfil. Online: o servidor de salas manda; solo: o navegador manda. */
-export const SOLO_GAMES = ["sudoku", "paciencia-spider"] as const;
+export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete"] as const;
 export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "batalha-naval", "stop", "codenames"] as const satisfies readonly GameId[];
 
 export type SoloGame = (typeof SOLO_GAMES)[number];
@@ -26,6 +27,7 @@ export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
   "batalha-naval": { name: "Batalha Naval", path: BATALHA_PATH },
   stop: { name: "Stop", path: STOP_PATH },
   codenames: { name: "Codenames", path: CODENAMES_PATH },
+  verbete: { name: "Verbete", path: VERBETE_PATH },
   sudoku: { name: "Sudoku", path: SUDOKU_PATH },
   "paciencia-spider": { name: "Paciência Spider", path: SPIDER_PATH },
 };

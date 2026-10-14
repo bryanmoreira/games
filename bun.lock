@@ -38,6 +38,7 @@
         "@truco/spider": "workspace:*",
         "@truco/stop": "workspace:*",
         "@truco/sudoku": "workspace:*",
+        "@truco/verbete": "workspace:*",
         "better-auth": "^1.7.7",
         "next": "^16.4.0",
         "pg": "^8.23.1",
@@ -81,6 +82,9 @@
     },
     "packages/sudoku": {
       "name": "@truco/sudoku",
+    },
+    "packages/verbete": {
+      "name": "@truco/verbete",
     },
   },
   "packages": {
@@ -391,6 +395,8 @@
     "@truco/stop": ["@truco/stop@workspace:packages/stop"],
 
     "@truco/sudoku": ["@truco/sudoku@workspace:packages/sudoku"],
+
+    "@truco/verbete": ["@truco/verbete@workspace:packages/verbete"],
 
     "@truco/web": ["@truco/web@workspace:apps/web"],
 

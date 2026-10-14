@@ -16,7 +16,7 @@ export async function getChallenge(game: DailyGame, day: string): Promise<DailyC
   if (!isOpenDay(day)) return null;
   const found = await findChallenge(game, day);
   if (found) return found;
-  const data = makeChallenge(game) as unknown as Prisma.InputJsonValue;
+  const data = makeChallenge(game, undefined, day) as unknown as Prisma.InputJsonValue;
   // dois pedidos ao mesmo tempo: vale o que entrou primeiro
   await prisma.dailyChallenge.createMany({ data: [{ game, day, data }], skipDuplicates: true });
   return findChallenge(game, day);
@@ -33,6 +33,15 @@ export async function ensureDailies(today = dayKey(new Date())): Promise<{ game:
     }
   }
   return created;
+}
+
+/** Palavras do dia que o jogador terminou (vencidas ou não), por `AAAA-MM-DD:modo`. */
+export async function verbeteDone(userId: string): Promise<Record<string, { won: boolean; attempts: number }>> {
+  const rows = await prisma.gameResult.findMany({
+    where: { userId, game: "verbete", daily: { not: null } },
+    select: { daily: true, outcome: true, data: true },
+  });
+  return Object.fromEntries(rows.map((r) => [r.daily!, { won: r.outcome === "win", attempts: Number((r.data as Record<string, unknown>)?.attempts ?? 0) }]));
 }
 
 /** Desafios que o jogador venceu, por dia. */

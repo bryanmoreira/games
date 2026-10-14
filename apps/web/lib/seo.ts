@@ -236,6 +236,39 @@ export const GAMES: GameSeo[] = [
       { q: "Dá para jogar Jogo da Velha online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue sem cadastro. O placar soma a cada partida e quem começa alterna." },
     ],
   },
+  {
+    slug: "verbete",
+    path: "/verbete",
+    name: "Verbete",
+    title: "Verbete: Jogo da Palavra do Dia Grátis",
+    description:
+      "Jogue Verbete grátis: descubra a palavra de 5 letras em 6 chutes, com as cores de cada letra. Tem Dueto, Quarteto, palavra do dia e modo livre.",
+    tagline: "Descubra a palavra de 5 letras. Uma nova todo dia.",
+    keywords: [
+      "verbete",
+      "palavra do dia",
+      "jogo de palavras",
+      "dueto",
+      "quarteto",
+      "jogo da palavra",
+      "palavra de 5 letras",
+      "adivinhar palavra",
+    ],
+    genre: "Jogo de palavras",
+    players: { min: 1, max: 1 },
+    modes: "Jogo solo no navegador: palavra do dia igual para todos (Verbete com 1 palavra, Dueto com 2 e Quarteto com 4), calendário com os dias anteriores e modo livre com palavras sorteadas.",
+    howTo: {
+      title: "Como jogar Verbete: regras das cores, Dueto e Quarteto",
+      description: "Aprenda as regras do Verbete: o que significam o verde, o amarelo e o cinza, letras repetidas, acentos e como funcionam o Dueto e o Quarteto.",
+    },
+    faq: [
+      { q: "Quais são as regras do Verbete?", a: "Descubra a palavra de 5 letras em até 6 chutes. Depois de cada chute, as letras ficam verdes (lugar certo), amarelas (estão na palavra, em outro lugar) ou cinza (não estão). Cada chute precisa ser uma palavra aceita." },
+      { q: "O que significam as cores?", a: "Verde: a letra está na palavra e no lugar certo. Amarelo: a letra está na palavra, mas em outro lugar. Cinza: a letra não está na palavra (ou já foi marcada todas as vezes que aparece)." },
+      { q: "Como funcionam o Dueto e o Quarteto?", a: "No Dueto você descobre 2 palavras em 7 chutes e no Quarteto, 4 palavras em 9 chutes. Cada chute vale para todas as palavras ao mesmo tempo, e a que você acertar para de receber chutes." },
+      { q: "Preciso digitar acento?", a: "Não. Acentos e cedilha entram sozinhos e não contam nas cores: digitar SUITE vira SUÍTE." },
+      { q: "Quando muda a palavra do dia?", a: "À meia-noite de Brasília, com uma palavra nova para cada modo, a mesma para todos os jogadores. Os dias anteriores ficam no calendário, e o modo livre sorteia palavras sem limite." },
+    ],
+  },
 ];
 
 export function getGame(slug: string): GameSeo {
@@ -278,6 +311,10 @@ export const DAILY_SEO: Record<string, { title: string; description: string }> =
   "paciencia-spider": {
     title: "Paciência Spider Diária: o desafio do dia",
     description: "Uma Paciência Spider de 4 naipes nova todo dia, a mesma distribuição para todos. Jogue o desafio de hoje e rejogue os dias anteriores.",
+  },
+  verbete: {
+    title: "Verbete: palavra do dia, Dueto e Quarteto",
+    description: "Palavras novas todo dia à meia-noite, as mesmas para todos: Verbete, Dueto e Quarteto. Jogue as de hoje e rejogue os dias anteriores no calendário.",
   },
 };
 

@@ -1,11 +1,11 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import { isDailyGame, isOpenDay, matchesChallenge } from "@/lib/daily/challenge";
+import { dailyKey, isDailyGame, isOpenDay, matchesChallenge } from "@/lib/daily/challenge";
 import { findChallenge } from "@/lib/daily/db";
 import { recordResults } from "@/lib/stats/record";
 import { parseSoloResult } from "@/lib/stats/solo-result";
 
-/** Vitória num jogo solo, mandada pelo navegador. Com `daily`, é o desafio daquele dia (confere com o guardado). */
+/** Partida de um jogo solo, mandada pelo navegador. Com `daily`, é o desafio daquele dia (confere com o guardado). */
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return new Response(null, { status: 401 });
@@ -18,10 +18,11 @@ export async function POST(req: Request) {
     if (!isDailyGame(parsed.game) || !isOpenDay(body.daily)) return Response.json({ error: "inválido" }, { status: 400 });
     const ch = await findChallenge(parsed.game, body.daily);
     if (!ch || !matchesChallenge(ch, parsed.data, body.seed)) return Response.json({ error: "inválido" }, { status: 400 });
-    daily = body.daily;
+    daily = dailyKey(parsed.game, body.daily, parsed.data);
   }
 
-  const unlocked = await recordResults(parsed.game, "solo", null, [{ userId: session.user.id, outcome: "win", data: parsed.data, daily }]);
+  const outcome = parsed.outcome ?? "win";
+  const unlocked = await recordResults(parsed.game, "solo", null, [{ userId: session.user.id, outcome, data: parsed.data, daily }]);
   const fresh = unlocked.get(session.user.id) ?? [];
   return Response.json({ achievements: fresh.map(({ code, title, desc, icon }) => ({ code, title, desc, icon })) });
 }

@@ -1,4 +1,5 @@
 import { DIFFICULTIES } from "@truco/sudoku";
+import { isMode, MAX_GUESSES } from "@truco/verbete";
 import type { Mode, Outcome, StatGame } from "@/lib/stats/games";
 
 /** Resultado como vem do banco (só o que as regras usam). */
@@ -84,8 +85,12 @@ const streak5 = (game: StatGame): AchievementDef => ({
 /** Desafios diários vencidos. */
 export const dailyWins = (rs: ResultRow[]) => rs.filter((r) => r.daily && isWin(r));
 
+/** Dia de um desafio (o Verbete guarda o modo junto: `AAAA-MM-DD:2`). */
+const dailyDay = (daily: string) => daily.slice(0, 10);
+
 /** Sequência de desafios vencidos no próprio dia (rejogar um dia antigo não conta). */
-export const dailyStreaks = (rs: ResultRow[]) => dayStreaks(dailyWins(rs).flatMap((r) => (dayKey(r.createdAt) === r.daily ? [r.daily!] : [])));
+export const dailyStreaks = (rs: ResultRow[]) =>
+  dayStreaks(dailyWins(rs).flatMap((r) => (dayKey(r.createdAt) === dailyDay(r.daily!) ? [dailyDay(r.daily!)] : [])));
 
 const daily = (game: StatGame): AchievementDef[] => [
   {
@@ -357,6 +362,49 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   wins("paciencia-spider", 50),
   wins("paciencia-spider", 100),
   ...daily("paciencia-spider"),
+
+  { ...first("verbete"), desc: "Acertar a primeira palavra" },
+  {
+    code: "verbete:seer",
+    game: "verbete",
+    title: "Vidente",
+    desc: "Acertar o Verbete na 1ª tentativa",
+    icon: "target",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "mode") === 1 && num(r, "attempts") === 1),
+  },
+  {
+    code: "verbete:close",
+    game: "verbete",
+    title: "Ufa!",
+    desc: "Vencer na última tentativa",
+    icon: "shield",
+    check: ({ results }) => winsOf(results).some((r) => isMode(r.data.mode) && num(r, "attempts") === MAX_GUESSES[r.data.mode]),
+  },
+  {
+    code: "verbete:duo_4",
+    game: "verbete",
+    title: "Dupla afinada",
+    desc: "Vencer o Dueto em até 4 tentativas",
+    icon: "bolt",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "mode") === 2 && num(r, "attempts") <= 4),
+  },
+  {
+    code: "verbete:quartet",
+    game: "verbete",
+    title: "Quarteto completo",
+    desc: "Vencer o Quarteto",
+    icon: "grid",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "mode") === 4),
+  },
+  {
+    code: "verbete:daily_5",
+    game: "verbete",
+    title: "Embalado",
+    desc: "5 dias seguidos vencendo uma palavra do dia, no próprio dia",
+    icon: "flame",
+    check: ({ results }) => dailyStreaks(results).best >= 5,
+  },
+  { ...wins("verbete", 50), title: "Viciado" },
 ];
 
 export const ACHIEVEMENT_BY_CODE = new Map(ACHIEVEMENTS.map((a) => [a.code, a]));

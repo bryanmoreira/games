@@ -6,15 +6,13 @@ import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/BackButton";
 import { AchievementIcon } from "@/components/stats/AchievementIcon";
 import { formatTime } from "@/components/sudoku/common";
-import { CalendarIcon, CheckIcon, ChevronIcon } from "@/components/ui/icons";
-import { DAILY_START, msToNextDay, type DailyDone, type DailyGame } from "@/lib/daily/challenge";
+import { CalendarIcon, CheckIcon } from "@/components/ui/icons";
+import { msToNextDay, type DailyDone, type DailyGame } from "@/lib/daily/challenge";
 import { localDailies, type LocalDaily } from "@/lib/daily/storage";
 import { loginHref } from "@/lib/login";
 import { dayStreaks } from "@/lib/stats/achievements";
 import { longDay } from "./common";
-
-const WEEK = ["D", "S", "T", "Q", "Q", "S", "S"];
-const MONTH = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric", timeZone: "UTC" });
+import { MonthCalendar, monthOf } from "./MonthCalendar";
 
 interface Day {
   won: boolean;
@@ -28,13 +26,6 @@ function merge(server: Record<string, DailyDone>, local: Record<string, LocalDai
   for (const [d, l] of Object.entries(local)) out[d] = { won: l.won, timeMs: l.won ? l.elapsed : null, started: l.started };
   for (const [d, s] of Object.entries(server)) out[d] = { won: true, timeMs: s.timeMs, started: true };
   return out;
-}
-
-const monthOf = (day: string) => day.slice(0, 7);
-function shiftMonth(month: string, n: number) {
-  const d = new Date(`${month}-01T12:00:00Z`);
-  d.setUTCMonth(d.getUTCMonth() + n);
-  return d.toISOString().slice(0, 7);
 }
 
 /** Calendário do desafio diário: hoje em destaque e os dias anteriores para rejogar. */
@@ -83,14 +74,6 @@ export function DailyHub({
 
   const t = days[today];
   const play = (day: string) => router.push(`${path}/${day}`);
-
-  // grade do mês: começa no domingo
-  const first = new Date(`${month}-01T12:00:00Z`);
-  const blanks = first.getUTCDay();
-  const count = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate();
-  const cells = Array.from({ length: count }, (_, i) => `${month}-${String(i + 1).padStart(2, "0")}`);
-  const canPrev = month > monthOf(DAILY_START);
-  const canNext = month < monthOf(today);
 
   return (
     <main className="mx-auto flex min-h-full max-w-sm flex-col items-center gap-7 px-4 py-10">
@@ -146,66 +129,30 @@ export function DailyHub({
       </div>
 
       {/* dias anteriores */}
-      <div className="flex w-full flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => setMonth(shiftMonth(month, -1))}
-            disabled={!canPrev}
-            aria-label="Mês anterior"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white disabled:opacity-0"
-          >
-            <ChevronIcon left className="h-5 w-5" />
-          </button>
-          <span className="font-display text-sm capitalize text-white/80">{MONTH.format(first).replace(" de ", " ")}</span>
-          <button
-            onClick={() => setMonth(shiftMonth(month, 1))}
-            disabled={!canNext}
-            aria-label="Próximo mês"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white disabled:opacity-0"
-          >
-            <ChevronIcon className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="grid grid-cols-7 gap-1.5 text-center">
-          {WEEK.map((w, i) => (
-            <span key={i} className="font-display text-[10px] text-white/35">
-              {w}
-            </span>
-          ))}
-          {Array.from({ length: blanks }, (_, i) => (
-            <span key={`b${i}`} />
-          ))}
-          {cells.map((d) => {
-            const open = d >= DAILY_START && d <= today;
-            const s = days[d];
-            const n = Number(d.slice(8));
-            if (!open) {
-              return (
-                <span key={d} className="flex aspect-square items-center justify-center rounded-lg font-display text-xs text-white/15">
-                  {n}
-                </span>
-              );
-            }
-            return (
-              <button
-                key={d}
-                onClick={() => play(d)}
-                title={`${longDay(d)}${s?.won && s.timeMs !== null ? ` · ${formatTime(s.timeMs)}` : ""}`}
-                className={`relative flex aspect-square flex-col items-center justify-center rounded-lg font-display text-xs transition ${
-                  s?.won ? "bg-gold text-stone-900 hover:brightness-110" : "bg-white/5 text-white/80 hover:bg-white/15 hover:text-white"
-                } ${d === today ? "ring-2 ring-gold ring-offset-2 ring-offset-[#0f1813]" : ""}`}
-              >
-                {n}
-                {s?.won ? (
-                  <CheckIcon className="absolute bottom-0.5 h-2.5 w-2.5" />
-                ) : (
-                  s?.started && <span className="absolute bottom-1 h-1 w-1 rounded-full bg-emerald-400" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <MonthCalendar
+        today={today}
+        month={month}
+        onMonth={setMonth}
+        cell={(d, n) => {
+          const s = days[d];
+          return (
+            <button
+              onClick={() => play(d)}
+              title={`${longDay(d)}${s?.won && s.timeMs !== null ? ` · ${formatTime(s.timeMs)}` : ""}`}
+              className={`relative flex aspect-square flex-col items-center justify-center rounded-lg font-display text-xs transition ${
+                s?.won ? "bg-gold text-stone-900 hover:brightness-110" : "bg-white/5 text-white/80 hover:bg-white/15 hover:text-white"
+              } ${d === today ? "ring-2 ring-gold ring-offset-2 ring-offset-[#0f1813]" : ""}`}
+            >
+              {n}
+              {s?.won ? (
+                <CheckIcon className="absolute bottom-0.5 h-2.5 w-2.5" />
+              ) : (
+                s?.started && <span className="absolute bottom-1 h-1 w-1 rounded-full bg-emerald-400" />
+              )}
+            </button>
+          );
+        }}
+      />
 
       {!loggedIn && (
         <Link href={loginHref(path)} className="font-display text-xs text-white/50 transition hover:text-white">

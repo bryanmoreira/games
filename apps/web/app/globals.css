@@ -430,3 +430,31 @@ body {
 .invite-in {
   animation: invite-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
+
+/* Verbete: casa vira mostrando a cor (--vb-bg, no style da casa) depois de tombar; antes do atraso fica como casa digitada */
+@keyframes vb-flip {
+  0% { transform: rotateX(0deg); background-color: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.45); }
+  50% { transform: rotateX(90deg); background-color: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.45); }
+  50.01% { transform: rotateX(90deg); background-color: var(--vb-bg); border-color: var(--vb-bg); }
+  100% { transform: rotateX(0deg); background-color: var(--vb-bg); border-color: var(--vb-bg); }
+}
+.vb-flip {
+  animation: vb-flip 0.5s ease-in-out backwards;
+}
+@keyframes vb-pop {
+  50% { transform: scale(1.12); }
+}
+.vb-pop {
+  animation: vb-pop 0.12s ease-out;
+}
+@keyframes vb-jump {
+  0%, 100% { transform: none; }
+  35% { transform: translateY(-32%); }
+  60% { transform: translateY(6%); }
+}
+.vb-jump {
+  animation: vb-jump 0.5s ease-out backwards;
+}
+.vb-shake {
+  animation: shake 0.4s ease-out;
+}

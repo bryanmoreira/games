@@ -1,8 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { dealGame, newGame as newSpider } from "@truco/spider";
 import { gameFrom, newGame as newSudoku } from "@truco/sudoku";
+import { dailyWords, isAnswer } from "@truco/verbete";
 import {
   DAILY_START,
+  dailyKey,
+  dayNumber,
   isDailyGame,
   isDayKey,
   isOpenDay,
@@ -13,6 +16,7 @@ import {
   type DailyChallenge,
   type SpiderDaily,
   type SudokuDaily,
+  type VerbeteDaily,
 } from "@/lib/daily/challenge";
 
 describe("dias", () => {
@@ -111,5 +115,48 @@ describe("dias sem desafio", () => {
 
   test("antes do primeiro dia: nada", () => {
     expect(missingDays([], "2026-10-11")).toEqual([]);
+  });
+});
+
+describe("Verbete: palavras do dia", () => {
+  const verbete: DailyChallenge = { game: "verbete", day: "2026-10-12", data: { seed: 7, words: { 1: ["festa"], 2: ["livro", "suíte"], 4: ["porta", "mundo", "tempo", "noite"] } } };
+
+  test("sete respostas diferentes, as mesmas para o mesmo seed", () => {
+    const data = makeChallenge("verbete", 5) as VerbeteDaily;
+    expect(data.seed).toBe(5);
+    const all = [...data.words[1], ...data.words[2], ...data.words[4]];
+    expect(all).toHaveLength(7);
+    expect(new Set(all).size).toBe(7);
+    expect(all.every(isAnswer)).toBe(true);
+    expect(makeChallenge("verbete", 5)).toEqual(data);
+    expect(isDailyGame("verbete")).toBe(true);
+  });
+
+  test("as palavras saem da sequência fixa pelo dia, não do seed", () => {
+    expect((makeChallenge("verbete", 1, DAILY_START) as VerbeteDaily).words).toEqual(dailyWords(0));
+    expect((makeChallenge("verbete", 2, DAILY_START) as VerbeteDaily).words).toEqual(dailyWords(0));
+    expect((makeChallenge("verbete", 1, "2026-10-14") as VerbeteDaily).words).toEqual(dailyWords(2));
+    expect(dayNumber(DAILY_START)).toBe(1);
+    expect(dayNumber("2026-11-01")).toBe(21);
+  });
+
+  test("vale com o mesmo seed e as palavras do modo, com ou sem acento", () => {
+    expect(matchesChallenge(verbete, { mode: 1, answers: ["festa"] }, 7)).toBe(true);
+    expect(matchesChallenge(verbete, { mode: 2, answers: ["livro", "suite"] }, 7)).toBe(true);
+    expect(matchesChallenge(verbete, { mode: 4, answers: ["porta", "mundo", "tempo", "noite"] }, 7)).toBe(true);
+  });
+
+  test("outro seed, outras palavras, outra ordem ou modo errado: não vale", () => {
+    expect(matchesChallenge(verbete, { mode: 1, answers: ["festa"] }, 8)).toBe(false);
+    expect(matchesChallenge(verbete, { mode: 1, answers: ["livro"] }, 7)).toBe(false);
+    expect(matchesChallenge(verbete, { mode: 2, answers: ["suite", "livro"] }, 7)).toBe(false);
+    expect(matchesChallenge(verbete, { mode: 2, answers: ["livro"] }, 7)).toBe(false);
+    expect(matchesChallenge(verbete, { mode: 3, answers: ["festa"] }, 7)).toBe(false);
+    expect(matchesChallenge(verbete, { mode: 1 }, 7)).toBe(false);
+  });
+
+  test("chave do resultado: um por dia e modo no Verbete, um por dia nos outros", () => {
+    expect(dailyKey("verbete", "2026-10-12", { mode: 2 })).toBe("2026-10-12:2");
+    expect(dailyKey("sudoku", "2026-10-12", { mode: 2 })).toBe("2026-10-12");
   });
 });

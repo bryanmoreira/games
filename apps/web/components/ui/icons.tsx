@@ -133,3 +133,53 @@ export function CalendarIcon({ className }: P) {
 export function ChevronIcon({ className, left }: P & { left?: boolean }) {
   return <Icon className={className}>{left ? <path d="m15 18-6-6 6-6" /> : <path d="m9 18 6-6-6-6" />}</Icon>;
 }
+
+/** Apagar letra (tecla ⌫). */
+export function BackspaceIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <path d="M9 5h11a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 20 19H9l-6.5-7Z" />
+      <path d="m16.5 9.5-5 5M11.5 9.5l5 5" />
+    </Icon>
+  );
+}
+
+/** Enviar (tecla Enter). */
+export function EnterIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <path d="M20 5v6a3 3 0 0 1-3 3H5" />
+      <path d="m9 10-4 4 4 4" />
+    </Icon>
+  );
+}
+
+export function ShareIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <circle cx="18" cy="5.5" r="2.5" />
+      <circle cx="6" cy="12" r="2.5" />
+      <circle cx="18" cy="18.5" r="2.5" />
+      <path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1" />
+    </Icon>
+  );
+}
+
+/** Estatísticas (barras). */
+export function BarsIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <path d="M5 20v-6M12 20V5M19 20v-10" />
+    </Icon>
+  );
+}
+
+/** Ver o tabuleiro (fecha a tela de fim). */
+export function EyeIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </Icon>
+  );
+}

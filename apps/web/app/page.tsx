@@ -6,6 +6,7 @@ import { SITE_TAGLINE, getGame, homeLd } from "@/lib/seo";
 import { makeCard } from "@truco/game";
 import { CardImg } from "@/components/cards/Card";
 import { MiniBoard } from "@/components/sudoku/common";
+import { MiniTiles } from "@/components/verbete/Tile";
 import { StaticBoard } from "@/components/connect4/Board";
 import { StopLogo } from "@/components/stop/Tile";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
@@ -60,6 +61,16 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     art: (
       <div className="absolute left-1/2 top-[8%] w-[36%] -translate-x-1/2 -rotate-6 text-[clamp(7px,2.2vw,12px)]">
         <MiniBoard />
+      </div>
+    ),
+  },
+  {
+    slug: "verbete",
+    title: "VERBETE",
+    sub: "PALAVRA DO DIA",
+    art: (
+      <div className="absolute left-1/2 top-[9%] -translate-x-1/2 -rotate-3 text-[clamp(10px,3vw,15px)]">
+        <MiniTiles />
       </div>
     ),
   },

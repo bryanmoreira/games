@@ -35,6 +35,7 @@ const TITLES: Record<string, [string, string]> = {
   codenames: ["CODENAMES", "AGENTES SECRETOS"],
   otrio: ["OTRIO", "TRINCA DE ANÉIS"],
   "jogo-da-velha": ["VELHA", "JOGO DA VELHA"],
+  verbete: ["VERBETE", "PALAVRA DO DIA"],
 };
 
 async function art(slug: string) {
@@ -280,6 +281,44 @@ async function art(slug: string) {
             })}
             <path d="M22 22L278 278" stroke="#f2c14e" strokeWidth={10} />
           </svg>
+        </div>
+      );
+    }
+    case "verbete": {
+      // chutes até VERBO, com as cores do jogo (MARK_BG em components/verbete/Tile.tsx)
+      const color = { r: "#2a9d68", p: "#d39b26", a: "#2a2f2c" } as const;
+      const rows: [string, string][] = [
+        ["PORTA", "apraa"],
+        ["SONHO", "aaaar"],
+        ["VERSO", "rrrar"],
+        ["VERBO", "rrrrr"],
+      ];
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, transform: "rotate(-4deg)" }}>
+          {rows.map(([word, marks]) => (
+            <div key={word} style={{ display: "flex", gap: 10 }}>
+              {[...word].map((l, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    width: 78,
+                    height: 78,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 10,
+                    background: color[marks[i] as keyof typeof color],
+                    color: marks[i] === "a" ? "rgba(255,255,255,0.55)" : "white",
+                    fontFamily: "Bungee",
+                    fontSize: 42,
+                    boxShadow: "0 6px 14px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  {l}
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       );
     }

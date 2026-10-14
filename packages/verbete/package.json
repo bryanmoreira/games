@@ -1,0 +1,8 @@
+{
+  "name": "@truco/verbete",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "sideEffects": false
+}
