@@ -1,11 +1,19 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { applyFriendAction } from "@/lib/friends";
+import { applyFriendAction, listFriends } from "@/lib/friends";
 import type { FriendAction } from "@/lib/friends-rules";
 import { normalizeUsername } from "@/lib/username";
 
 const ACTIONS: FriendAction[] = ["add", "accept", "remove"];
+
+/** Meus amigos (online primeiro), para chamar para a sala. */
+export async function GET() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return new Response(null, { status: 401 });
+  const { friends } = await listFriends(session.user.id);
+  return Response.json({ friends }, { headers: { "cache-control": "no-store" } });
+}
 
 /** Convite de amizade: { username, action: add | accept | remove }. Responde o status novo. */
 export async function POST(req: Request) {

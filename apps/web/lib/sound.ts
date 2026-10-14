@@ -121,3 +121,12 @@ export function playCountdownSound(last: boolean) {
   if (!ac) return;
   tone(ac, last ? 1046.5 : 880, ac.currentTime, last ? 0.3 : 0.1, 0.08, "square");
 }
+
+/** Convite de um amigo para jogar: "ding-dong" curto. */
+export function playInviteSound() {
+  const ac = audio();
+  if (!ac) return;
+  const t = ac.currentTime;
+  tone(ac, 987.77, t, 0.4, 0.09, "sine");
+  tone(ac, 783.99, t + 0.18, 0.6, 0.09, "sine");
+}

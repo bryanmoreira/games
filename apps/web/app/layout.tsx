@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { AccountSync } from "@/components/AccountSync";
 import { Presence } from "@/components/Presence";
+import { GameInvites } from "@/components/GameInvites";
 import "./globals.css";
 
 const bungee = Bungee({ weight: "400", subsets: ["latin"], variable: "--font-bungee" });
@@ -41,6 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="antialiased">
         <AccountSync />
         <Presence />
+        <GameInvites />
         {children}
       </body>
     </html>

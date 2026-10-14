@@ -29,6 +29,8 @@ model User {
   achievements  Achievement[]
   friendsSent     Friendship[] @relation("FriendRequester")
   friendsReceived Friendship[] @relation("FriendAddressee")
+  invitesSent     GameInvite[] @relation("InviteFrom")
+  invitesReceived GameInvite[] @relation("InviteTo")
 
   @@map("user")
 }
@@ -143,4 +145,21 @@ model Friendship {
   @@unique([requesterId, addresseeId])
   @@index([addresseeId, status])
   @@map("friendship")
+}
+
+// Convite de um amigo para a sala de um jogo online. Vale por alguns minutos (lib/invites-rules.ts);
+// some quando o convidado entra ou dispensa. Convidar de novo para a mesma sala renova o horário.
+model GameInvite {
+  id        String   @id @default(cuid())
+  fromId    String
+  from      User     @relation("InviteFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  toId      String
+  to        User     @relation("InviteTo", fields: [toId], references: [id], onDelete: Cascade)
+  game      String // GameId (ver lib/stats/games.ts)
+  code      String // código da sala
+  createdAt DateTime @default(now())
+
+  @@unique([fromId, toId, code])
+  @@index([toId, createdAt])
+  @@map("game_invite")
 }

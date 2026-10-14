@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { GameId, RoomInfo } from "@truco/game";
 import { send } from "@/lib/socket";
 import { WhatsAppInvite } from "@/components/ui/WhatsAppInvite";
+import { FriendInvite } from "@/components/ui/FriendInvite";
 import { SeatFace } from "@/components/ui/SeatFace";
 
 /** Chamada da mensagem de convite de cada jogo online */
@@ -71,10 +72,13 @@ export function Lobby({
           <span className="font-display text-6xl tracking-[0.2em] text-gold">{room.code}</span>
           <span className="text-sm text-white/50 group-hover:text-white/80">{copied ? "✓ link copiado" : "🔗 copiar link"}</span>
         </button>
-        <WhatsAppInvite
-          campaign={room.game}
-          message={(url) => `${INVITE[room.game]} Entra na minha sala (${room.code}): ${url}`}
-        />
+        <div className="flex flex-wrap justify-center gap-3">
+          <WhatsAppInvite
+            campaign={room.game}
+            message={(url) => `${INVITE[room.game]} Entra na minha sala (${room.code}): ${url}`}
+          />
+          <FriendInvite room={room} />
+        </div>
       </div>
 
       <div className="grid w-full grid-cols-2 gap-4">

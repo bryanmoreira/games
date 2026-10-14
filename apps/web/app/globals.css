@@ -392,3 +392,12 @@ body {
 .achievement-pop {
   animation: achievement-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
 }
+
+/* convite de amigo para jogar (cartão no topo da tela) */
+@keyframes invite-in {
+  from { opacity: 0; transform: translateY(-16px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.invite-in {
+  animation: invite-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
