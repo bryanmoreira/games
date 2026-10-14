@@ -35,34 +35,38 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const since = new Date(session.user.createdAt).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
 
   return (
-    // tela larga: duas colunas, para os campos não esticarem
+    // tela larga: duas colunas que empilham sozinhas, sem buracos entre cartões de alturas diferentes
     <div className="grid items-start gap-4 lg:grid-cols-2">
-      <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 sm:p-5">
-        <h2 className="mb-3 text-sm text-white/50">Nome de usuário</h2>
-        <UsernameField current={session.user.username ?? null} />
+      <div className="flex flex-col gap-4">
+        <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 sm:p-5">
+          <h2 className="mb-3 text-sm text-white/50">Nome de usuário</h2>
+          <UsernameField current={session.user.username ?? null} />
+        </div>
+
+        <div className="rounded-2xl bg-white/5 ring-1 ring-white/10">
+          <PrivacyToggle initial={session.user.profilePublic ?? true} />
+        </div>
+
+        <div className="divide-y divide-white/10 rounded-2xl bg-white/5 ring-1 ring-white/10">
+          <Row label="E-mail">{session.user.email}</Row>
+          <Row label="Membro desde">{since}</Row>
+        </div>
       </div>
 
-      <div className="rounded-2xl bg-white/5 ring-1 ring-white/10">
-        <PrivacyToggle initial={session.user.profilePublic ?? true} />
-      </div>
+      <div className="flex flex-col gap-4">
+        <div className="rounded-2xl bg-white/5 ring-1 ring-white/10">
+          <h2 className="px-4 pb-1 pt-4 text-sm text-white/50 sm:px-5">Formas de entrar</h2>
+          {error && (
+            <p role="alert" className="mx-4 my-2 rounded-xl bg-red-950/60 px-3 py-2 text-xs text-red-200 ring-1 ring-red-500/30 sm:mx-5">
+              {linkError(error)}
+            </p>
+          )}
+          <LinkedAccounts linked={accounts.map((a) => ({ id: a.id, providerId: a.providerId }))} />
+        </div>
 
-      <div className="rounded-2xl bg-white/5 ring-1 ring-white/10">
-        <h2 className="px-4 pb-1 pt-4 text-sm text-white/50 sm:px-5">Formas de entrar</h2>
-        {error && (
-          <p role="alert" className="mx-4 my-2 rounded-xl bg-red-950/60 px-3 py-2 text-xs text-red-200 ring-1 ring-red-500/30 sm:mx-5">
-            {linkError(error)}
-          </p>
-        )}
-        <LinkedAccounts linked={accounts.map((a) => ({ id: a.id, providerId: a.providerId }))} />
-      </div>
-
-      <div className="divide-y divide-white/10 rounded-2xl bg-white/5 ring-1 ring-white/10">
-        <Row label="E-mail">{session.user.email}</Row>
-        <Row label="Membro desde">{since}</Row>
-      </div>
-
-      <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 lg:col-start-2">
-        <DeleteAccount providers={accounts.map((a) => a.providerId)} startOpen={excluir === "1"} />
+        <div className="rounded-2xl bg-white/5 ring-1 ring-white/10">
+          <DeleteAccount providers={accounts.map((a) => a.providerId)} startOpen={excluir === "1"} />
+        </div>
       </div>
 
       <LegalLinks className="lg:col-span-2" />
