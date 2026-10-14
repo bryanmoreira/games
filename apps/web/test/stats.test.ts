@@ -100,6 +100,15 @@ describe("gameStats: Connect 4", () => {
   });
 });
 
+describe("gameStats: Jogo da Velha", () => {
+  test("vitória mais rápida, só entre vitórias", () => {
+    expect(chips("jogo-da-velha", [win({ pieces: 5 }), win({ pieces: 3 }), loss({ pieces: 3 }), draw({ pieces: 4 })])).toEqual([
+      { label: "Vitória mais rápida", value: "3 peças" },
+    ]);
+    expect(chips("jogo-da-velha", [loss({ pieces: 3 }), draw({})])).toEqual([]);
+  });
+});
+
 describe("gameStats: Otrio", () => {
   test("vitória mais rápida pelas peças da cor e forma favorita, só entre vitórias", () => {
     const rs = [win({ colorPieces: 5, how: "line" }), win({ colorPieces: 4, how: "stack" }), win({ colorPieces: 6, how: "stack" }), loss({ pieces: 3 })];
@@ -346,6 +355,7 @@ describe("jogos", () => {
     ["/connect-4", "connect4"],
     ["/connect-4/sala/ABCD", "connect4"],
     ["/otrio/sala/ABCD", "otrio"],
+    ["/jogo-da-velha/sala/ABCD", "jogo-da-velha"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],
     ["/paciencia-spider/jogo", "paciencia-spider"],

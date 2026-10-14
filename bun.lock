@@ -16,6 +16,7 @@
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
+        "@truco/jogo-da-velha": "workspace:*",
         "@truco/otrio": "workspace:*",
         "@truco/stop": "workspace:*",
       },
@@ -32,6 +33,7 @@
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/game": "workspace:*",
+        "@truco/jogo-da-velha": "workspace:*",
         "@truco/otrio": "workspace:*",
         "@truco/spider": "workspace:*",
         "@truco/stop": "workspace:*",
@@ -64,6 +66,9 @@
     },
     "packages/game": {
       "name": "@truco/game",
+    },
+    "packages/jogo-da-velha": {
+      "name": "@truco/jogo-da-velha",
     },
     "packages/otrio": {
       "name": "@truco/otrio",
@@ -374,6 +379,8 @@
     "@truco/connect4": ["@truco/connect4@workspace:packages/connect4"],
 
     "@truco/game": ["@truco/game@workspace:packages/game"],
+
+    "@truco/jogo-da-velha": ["@truco/jogo-da-velha@workspace:packages/jogo-da-velha"],
 
     "@truco/otrio": ["@truco/otrio@workspace:packages/otrio"],
 

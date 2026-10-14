@@ -109,6 +109,9 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
     case "connect4":
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "pieces")).filter(Number.isFinite))));
       break;
+    case "jogo-da-velha":
+      chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "pieces")).filter(Number.isFinite))));
+      break;
     case "otrio": {
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "colorPieces")).filter(Number.isFinite))));
       // forma de trinca com mais vitórias (empate: a primeira da lista)

@@ -5,6 +5,7 @@ import { roomPath as stopRoom } from "./stop/paths";
 import { roomPath as batalhaRoom } from "./batalha-naval/paths";
 import { roomPath as codenamesRoom } from "./codenames/paths";
 import { roomPath as otrioRoom } from "./otrio/paths";
+import { roomPath as velhaRoom } from "./jogo-da-velha/paths";
 
 /** Rota da sala de cada jogo online (para redirecionar quem abre o código pela rota errada). */
 export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
@@ -14,4 +15,5 @@ export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
   "batalha-naval": batalhaRoom,
   codenames: codenamesRoom,
   otrio: otrioRoom,
+  "jogo-da-velha": velhaRoom,
 };

@@ -15,7 +15,7 @@ export function Row({ icon, label, value, children }: { icon: React.ReactNode; l
   );
 }
 
-export function Segmented<T extends number>({
+export function Segmented<T extends string | number>({
   options,
   value,
   disabled,
@@ -23,7 +23,7 @@ export function Segmented<T extends number>({
   render,
 }: {
   options: readonly T[];
-  value: number;
+  value: T;
   disabled: boolean;
   onPick: (v: T) => void;
   render: (v: T) => React.ReactNode;

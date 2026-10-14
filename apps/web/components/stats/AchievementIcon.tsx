@@ -37,6 +37,7 @@ const PATHS: Record<Kind, React.ReactNode> = {
       <path d="m9 16 2 2 4-4" />
     </>
   ),
+  grid: <path d="M9 3v18M15 3v18M3 9h18M3 15h18" />,
 };
 
 export function AchievementIcon({ icon, className = "h-5 w-5" }: { icon: Kind; className?: string }) {

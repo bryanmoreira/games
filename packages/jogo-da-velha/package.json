@@ -1,0 +1,7 @@
+{
+  "name": "@truco/jogo-da-velha",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts"
+}

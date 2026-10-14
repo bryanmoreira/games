@@ -5,6 +5,7 @@ import * as stop from "@truco/stop";
 import * as bn from "@truco/batalha-naval";
 import * as cn from "@truco/codenames";
 import * as otrio from "@truco/otrio";
+import * as velha from "@truco/jogo-da-velha";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -117,6 +118,40 @@ describe("otrio", () => {
     expect(actors(s)).toEqual([3]);
     const draw = { ...s, phase: "gameOver" as const };
     expect(outcome(draw, 1)).toEqual({ outcome: "draw", data: { pieces: 1, players: 2, moves: 1 } });
+  });
+});
+
+describe("jogo-da-velha", () => {
+  const { outcome, settings, newGame } = GAMES["jogo-da-velha"];
+
+  /** O lugar 0 começa (X); as casas são jogadas em sequência alternada. */
+  function play(cells: number[], mode: velha.Mode = "classic"): velha.GameState {
+    let s = { ...velha.newGame(() => 0, { mode, level: "hard" }), turn: 0 as velha.Seat, starter: 0 as velha.Seat };
+    for (const cell of cells) s = ok(velha.applyAction(s, { type: "place", seat: s.turn, cell }));
+    return s;
+  }
+
+  test("vitória com garfo; quem perde não leva o garfo", () => {
+    const s = play([0, 4, 8, 2, 6, 3, 7]);
+    expect(outcome(s, 0)).toEqual({ outcome: "win", data: { pieces: 4, starter: true, mode: "classic", level: "hard", fork: true } });
+    expect(outcome(s, 1)).toEqual({ outcome: "loss", data: { pieces: 3, starter: false, mode: "classic", level: "hard" } });
+  });
+
+  test("vitória do O, sem garfo", () => {
+    const s = play([0, 4, 1, 2, 8, 6]);
+    expect(outcome(s, 1)).toEqual({ outcome: "win", data: { pieces: 3, starter: false, mode: "classic", level: "hard", fork: false } });
+  });
+
+  test("velha é empate para os dois", () => {
+    const s = play([0, 1, 2, 4, 3, 5, 7, 6, 8]);
+    expect(outcome(s, 0).outcome).toBe("draw");
+    expect(outcome(s, 1)).toEqual({ outcome: "draw", data: { pieces: 4, starter: false, mode: "classic", level: "hard" } });
+  });
+
+  test("opções da sala chegam à partida", () => {
+    const opts = settings!.parse({ mode: "fading", level: "easy" }, settings!.initial);
+    expect(newGame(null, { seats: [0, 1], settings: opts }).settings).toEqual({ mode: "fading", level: "easy" });
+    expect(settings!.parse({ level: "nope" }, opts)).toEqual(opts);
   });
 });
 

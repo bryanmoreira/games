@@ -38,6 +38,7 @@ Use o navegador embutido (servidores do `.claude/launch.json`: `server` na 3001,
 - **Esperar um cenário raro** (ex.: manilha na mão): o mesmo laço, parando quando a condição aparecer no DOM.
 - **Cenários de placar** (mão de 11, fim de jogo): comando de debug temporário no servidor + uma conexão WS extra no console com o mesmo token, depois recarregar a aba (a conexão extra derruba a da aba com código 4000). Remova o comando depois.
 - **Medir em vez de olhar**: `getBoundingClientRect` para checar sobreposição (avatar × placar, painel × carta jogada), `header.scrollWidth` para checar se o cabeçalho estoura, centros verticais para alinhamento.
+- **Portas ocupadas por outra conversa**: se a 3000/3001 já são de outro chat (o mesmo código, com recarga), suba só o `server` (o preview escolhe outra porta, ex.: 3002), abra `http://localhost:3000/...` e, em cada aba, rode `window.__ENV__ = { WS_URL: 'ws://localhost:3002' }`: a próxima reconexão do socket usa esse endereço. Recarregar a aba apaga o ajuste.
 - **Hover em React**: eventos sintéticos `mouseover`/`mouseout` com `bubbles: true` e `relatedTarget` disparam `onMouseEnter/Leave`. A ferramenta de hover por coordenada às vezes pega a carta vizinha, porque a mão se mexe ao levantar.
 - O painel do navegador pode estar oculto ou sendo redimensionado pelo usuário: screenshots falham ou mudam de escala. Prefira `get_page_text`/`javascript_tool`, tire um screenshot novo antes de clicar por coordenada, e lembre que o usuário pode estar jogando no mesmo painel ao mesmo tempo.
 

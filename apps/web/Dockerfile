@@ -14,6 +14,7 @@ COPY packages/codenames/package.json packages/codenames/
 COPY packages/connect4/package.json packages/connect4/
 COPY packages/game/package.json packages/game/
 COPY packages/otrio/package.json packages/otrio/
+COPY packages/jogo-da-velha/package.json packages/jogo-da-velha/
 COPY packages/spider/package.json packages/spider/
 COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
@@ -25,6 +26,7 @@ COPY packages/codenames packages/codenames
 COPY packages/connect4 packages/connect4
 COPY packages/game packages/game
 COPY packages/otrio packages/otrio
+COPY packages/jogo-da-velha packages/jogo-da-velha
 COPY packages/spider packages/spider
 COPY packages/stop packages/stop
 COPY packages/sudoku packages/sudoku

@@ -34,6 +34,7 @@ const TITLES: Record<string, [string, string]> = {
   "batalha-naval": ["BATALHA", "NAVAL"],
   codenames: ["CODENAMES", "AGENTES SECRETOS"],
   otrio: ["OTRIO", "TRINCA DE ANÉIS"],
+  "jogo-da-velha": ["VELHA", "JOGO DA VELHA"],
 };
 
 async function art(slug: string) {
@@ -252,6 +253,33 @@ async function art(slug: string) {
               ))}
             </div>
           ))}
+        </div>
+      );
+    }
+    case "jogo-da-velha": {
+      // grade riscada a giz, X dourado e O vermelho, diagonal vencedora
+      const cells = "XO.OX...X";
+      const c = (i: number) => [(i % 3) * 100 + 50, Math.floor(i / 3) * 100 + 50];
+      return (
+        <div style={{ display: "flex", transform: "rotate(3deg)" }}>
+          <svg width="420" height="420" viewBox="-10 -10 320 320" fill="none" strokeLinecap="round">
+            {["M100 14Q105 150 98 286", "M201 12Q195 152 203 288", "M14 101Q150 95 286 99", "M12 199Q152 205 288 202"].map((d) => (
+              <path key={d} d={d} stroke="rgba(255,255,255,0.85)" strokeWidth={7} />
+            ))}
+            {[...cells].map((m, i) => {
+              const [x, y] = c(i);
+              if (m === "X")
+                return (
+                  <g key={i} stroke="#f2c14e" strokeWidth={13}>
+                    <path d={`M${x - 27} ${y - 28}Q${x} ${y - 2} ${x + 28} ${y + 27}`} />
+                    <path d={`M${x + 27} ${y - 27}Q${x + 2} ${y} ${x - 28} ${y + 28}`} />
+                  </g>
+                );
+              if (m === "O") return <circle key={i} cx={x} cy={y} r={30} stroke="#f87171" strokeWidth={13} />;
+              return null;
+            })}
+            <path d="M22 22L278 278" stroke="#f2c14e" strokeWidth={10} />
+          </svg>
         </div>
       );
     }

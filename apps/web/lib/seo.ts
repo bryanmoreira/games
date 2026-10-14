@@ -6,7 +6,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Stop, Codenames, Batalha Naval, Connect 4, Otrio, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Stop, Codenames, Batalha Naval, Connect 4, Otrio, Jogo da Velha, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
@@ -210,6 +210,30 @@ export const GAMES: GameSeo[] = [
       { q: "Como funciona o Otrio com 2 jogadores?", a: "Cada um controla duas cores e as joga em sequência alternada com o adversário. Vence com qualquer das duas, mas a trinca precisa ser de uma cor só." },
       { q: "E se ninguém conseguir jogar?", a: "Quem não tem peça que caiba num encaixe livre passa a vez. Se ninguém mais consegue jogar e não houve trinca, a partida termina empatada." },
       { q: "Dá para jogar Otrio online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue com até 4 pessoas sem cadastro. Lugares vazios podem ser completados pelo computador, e há modo solo contra 1 a 3 IAs." },
+    ],
+  },
+  {
+    slug: "jogo-da-velha",
+    path: "/jogo-da-velha",
+    name: "Jogo da Velha",
+    title: "Jogo da Velha Online Grátis",
+    description:
+      "Jogue Jogo da Velha online grátis: contra o computador em três níveis (até o impossível) ou com um amigo numa sala. Tem também o modo em que a peça mais antiga some.",
+    tagline: "Três em linha vence. Contra a IA ou um amigo.",
+    keywords: ["jogo da velha online", "jogo da velha", "jogar jogo da velha grátis", "jogo da velha contra o computador", "jogo da velha 2 jogadores", "tic tac toe online", "jogo da velha impossível"],
+    genre: "Jogo de tabuleiro (estratégia)",
+    players: { min: 1, max: 2 },
+    modes: "Multiplayer online para 2 jogadores em salas privadas e modo solo contra o computador nos níveis fácil, médio e impossível. Modo clássico ou modo some.",
+    howTo: {
+      title: "Como jogar Jogo da Velha: regras, velha e modo some",
+      description: "Aprenda as regras do Jogo da Velha: como fazer 3 em linha, quando dá velha, o modo em que a peça mais antiga some e os níveis da IA.",
+    },
+    faq: [
+      { q: "Qual é o objetivo do Jogo da Velha?", a: "Fazer 3 marcas iguais em linha no tabuleiro 3×3: na horizontal, na vertical ou na diagonal. Cada jogador marca uma casa por vez, e quem começa joga de X." },
+      { q: "O que é \"deu velha\"?", a: "É o empate: o tabuleiro enche sem ninguém fazer 3 em linha. Jogando sem errar, as duas pessoas sempre empatam." },
+      { q: "Como funciona o modo some?", a: "Cada jogador fica com no máximo 3 peças. Ao colocar a 4ª, a mais antiga dele some do tabuleiro, então a partida não trava. Se ninguém vencer em 30 lances, dá velha." },
+      { q: "Dá para ganhar da IA no impossível?", a: "No modo clássico, não: a IA impossível joga perfeito, e o melhor resultado possível é empatar. Nos níveis fácil e médio ela erra, e um garfo (duas ameaças de uma vez) costuma vencer." },
+      { q: "Dá para jogar Jogo da Velha online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue sem cadastro. O placar soma a cada partida e quem começa alterna." },
     ],
   },
 ];

@@ -91,6 +91,25 @@ const CASES: Record<string, Case> = {
   "otrio:full_table": { ok: [win({ players: 4 })], almost: [win({ players: 3 }), win({ players: 2 }), loss({ players: 4 }), win({})] },
   "otrio:streak_5": streakCase,
 
+  "jogo-da-velha:first": firstCase,
+  "jogo-da-velha:fork": { ok: [win({ fork: true })], almost: [win({ fork: false }), loss({ fork: true }), win({})] },
+  "jogo-da-velha:second": {
+    ok: [win({ starter: false, level: "medium" }, "ai")],
+    almost: [
+      win({ starter: false, level: "easy" }, "ai"),
+      win({ starter: true, level: "hard" }, "ai"),
+      win({ starter: false, level: "medium" }, "online"),
+      loss({ starter: false, level: "hard" }, "ai"),
+      win({}, "ai"),
+    ],
+  },
+  "jogo-da-velha:wall": {
+    ok: times(5, () => row("draw", { level: "hard" }, "ai")),
+    almost: [...times(4, () => row("draw", { level: "hard" }, "ai")), row("draw", { level: "medium" }, "ai"), row("draw", { level: "hard" }, "online"), loss({ level: "hard" }, "ai")],
+  },
+  "jogo-da-velha:draws_10": { ok: times(10, draw), almost: [...times(9, draw), ...times(5, win), ...times(5, loss)] },
+  "jogo-da-velha:streak_5": streakCase,
+
   "batalha-naval:first": firstCase,
   "batalha-naval:sharp": {
     ok: [win({ hits: 6, shots: 10 })],

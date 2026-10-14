@@ -299,7 +299,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       seats: Array.from({ length: adapter.seats }, emptySlot),
       state: null,
       prev: null,
-      settings: adapter.settings?.initial ?? null,
+      settings: adapter.settings ? adapter.settings.parse(msg.settings, adapter.settings.initial) : null,
       timerKey: null,
       deadline: null,
       dealUntil: 0,

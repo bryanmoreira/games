@@ -4,6 +4,7 @@ import * as stop from "@truco/stop";
 import * as bn from "@truco/batalha-naval";
 import * as cn from "@truco/codenames";
 import * as otrio from "@truco/otrio";
+import * as velha from "@truco/jogo-da-velha";
 import type { GameId, PlayerReport } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -60,6 +61,8 @@ const DROP_MS = 700;
 const SHOT_MS = 900;
 // Anel encaixando no tabuleiro
 const RING_MS = 450;
+// Traço do X ou do O sendo riscado
+const MARK_MS = 400;
 
 const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView> = {
   seats: 4,
@@ -251,6 +254,33 @@ const otrioAdapter: GameAdapter<otrio.GameState, otrio.Action, otrio.PlayerView>
   }),
 };
 
+const velhaAdapter: GameAdapter<velha.GameState, velha.Action, velha.PlayerView> = {
+  seats: 2,
+  settings: {
+    initial: velha.DEFAULT_SETTINGS,
+    parse: (raw, prev) => velha.parseSettings(raw, prev as velha.Settings),
+  },
+  newGame: (prev, { settings }) => velha.newGame(Math.random, velha.parseSettings(settings), prev),
+  applyAction: velha.applyAction,
+  viewFor: (s, seat) => velha.viewFor(s, seat as velha.Seat),
+  decide: (v) => velha.decide(v),
+  withSeat: (a, seat) => ({ type: "place", cell: Number((a as { cell?: unknown })?.cell), seat: seat as velha.Seat }),
+  actors: (s) => (s.phase === "playing" ? [s.turn] : []),
+  pause: () => null,
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => (prev && next.moves.length > prev.moves.length ? MARK_MS : 0),
+  outcome: (s, seat) => ({
+    outcome: s.winner === null ? "draw" : s.winner === seat ? "win" : "loss",
+    data: {
+      pieces: s.moves.filter((m) => m.seat === seat).length,
+      starter: s.starter === seat,
+      mode: s.settings.mode,
+      level: s.settings.level,
+      ...(s.winner === seat ? { fork: s.fork } : {}),
+    },
+  }),
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
@@ -258,4 +288,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   "batalha-naval": batalhaNavalAdapter,
   codenames: codenamesAdapter,
   otrio: otrioAdapter,
+  "jogo-da-velha": velhaAdapter,
 };

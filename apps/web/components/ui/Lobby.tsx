@@ -16,6 +16,7 @@ const INVITE: Record<GameId, string> = {
   "batalha-naval": "Bora jogar Batalha Naval? 🚢",
   codenames: "Bora jogar Codenames? 🕵️",
   otrio: "Bora jogar Otrio? Duvido fazer trinca antes de mim! 🎯",
+  "jogo-da-velha": "Bora um jogo da velha? Duvido me ganhar! ❌⭕",
 };
 
 /** Uma coluna do lobby: os lugares de um time (ou de um jogador). */

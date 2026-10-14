@@ -12,7 +12,7 @@ export interface ResultRow {
   createdAt: Date;
 }
 
-export type AchievementIcon = "trophy" | "star" | "bolt" | "flame" | "target" | "shield" | "crown" | "calendar";
+export type AchievementIcon = "trophy" | "star" | "bolt" | "flame" | "target" | "shield" | "crown" | "calendar" | "grid";
 
 interface Ctx {
   /** Resultados deste jogo, do mais antigo ao mais novo. */
@@ -204,6 +204,42 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: ({ results }) => winsOf(results).some((r) => num(r, "players") === 4),
   },
   streak5("otrio"),
+
+  first("jogo-da-velha"),
+  {
+    code: "jogo-da-velha:fork",
+    game: "jogo-da-velha",
+    title: "Garfo",
+    desc: "Vencer depois de ameaçar duas linhas de uma vez",
+    icon: "bolt",
+    check: ({ results }) => winsOf(results).some((r) => r.data.fork === true),
+  },
+  {
+    code: "jogo-da-velha:second",
+    game: "jogo-da-velha",
+    title: "De trás pra frente",
+    desc: "Vencer a IA no Médio ou no Impossível jogando de O",
+    icon: "star",
+    check: ({ results }) =>
+      winsOf(results).some((r) => r.mode === "ai" && r.data.starter === false && (r.data.level === "medium" || r.data.level === "hard")),
+  },
+  {
+    code: "jogo-da-velha:wall",
+    game: "jogo-da-velha",
+    title: "Muralha",
+    desc: "Empatar 5 vezes com a IA no Impossível",
+    icon: "shield",
+    check: ({ results }) => results.filter((r) => r.outcome === "draw" && r.mode === "ai" && r.data.level === "hard").length >= 5,
+  },
+  {
+    code: "jogo-da-velha:draws_10",
+    game: "jogo-da-velha",
+    title: "Deu velha!",
+    desc: "Empatar 10 partidas",
+    icon: "grid",
+    check: ({ results }) => results.filter((r) => r.outcome === "draw").length >= 10,
+  },
+  streak5("jogo-da-velha"),
 
   first("batalha-naval"),
   {

@@ -243,6 +243,35 @@ body {
   animation: ring-win 0.9s ease-in-out infinite;
 }
 
+/* Jogo da velha: traço riscado, peça que vai sumir e peça sumindo */
+@keyframes ink-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+.ink-draw {
+  stroke-dasharray: 1;
+  animation: ink-draw 0.2s ease-out backwards;
+}
+.ink-draw-2 { animation-delay: 0.16s; }
+.ink-win {
+  animation-duration: 0.45s;
+  animation-delay: 0.35s;
+}
+@keyframes ink-fading {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+.ink-fading { animation: ink-fading 1.4s ease-in-out infinite; }
+@keyframes ink-vanish {
+  from { opacity: 0.45; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.5); }
+}
+.ink-vanish {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ink-vanish 0.4s ease-in forwards;
+}
+
 /* Stop */
 @keyframes stop-shout {
   0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
