@@ -11,6 +11,9 @@ type User = { name: string; email: string; image: string | null; username: strin
 
 export const MAX_NAME = 24;
 
+/** Cabeçalho do perfil em cima da mesma mesa de feltro dos jogos (a borda de madeira é sombra, por isso a margem). */
+export const PROFILE_TABLE = "felt m-3 flex items-center gap-5 rounded-[40px] px-6 py-6 sm:gap-8 sm:rounded-[96px] sm:px-14 sm:py-8";
+
 export function Avatar({ user, className = "" }: { user: { name: string; image: string | null }; className?: string }) {
   return (
     <div className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-gold/20 font-display text-gold ring-4 ring-gold/40 ${className}`}>
@@ -50,7 +53,7 @@ export function ProfileHeader({ user }: { user: User }) {
   };
 
   return (
-    <header className="flex items-center gap-5 sm:gap-8">
+    <header className={PROFILE_TABLE}>
       <Avatar user={user} className="h-24 w-24 text-4xl sm:h-36 sm:w-36 sm:text-6xl" />
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
