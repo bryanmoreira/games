@@ -7,6 +7,7 @@ import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
 import * as ludo from "@truco/ludo";
+import * as xadrez from "@truco/xadrez";
 import type { GameId, PlayerReport } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -49,6 +50,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
   botDelay?(s: S): number;
   /** Tempo da animação no cliente depois desta transição (bots esperam). */
   animMs(prev: S | null, next: S): number;
+  /** ms até acabar o tempo de quem está na vez (relógio de xadrez), ou null; aí o servidor manda "advance". */
+  clock?(s: S): number | null;
   /** Identifica a fase com relógio: enquanto for a mesma, o relógio não reinicia a cada ação. */
   phaseKey?(s: S): string;
   /** Ação que avisa o jogo de quem está desconectado (null se nada mudou). */
@@ -73,6 +76,8 @@ const DAMAS_STEP_MS = 320;
 const LUDO_DIE_MS = 750;
 const LUDO_STEP_MS = 150;
 const LUDO_CAPTURE_MS = 450;
+// Peça deslizando no xadrez
+const XADREZ_MOVE_MS = 300;
 // Dado parado na tela antes de a vez passar (sem lance ou 3º seis)
 const LUDO_PASS_MS = 1300;
 
@@ -375,6 +380,49 @@ const ludoAdapter: GameAdapter<ludo.GameState, ludo.Action, ludo.PlayerView> = {
   },
 };
 
+const xadrezAdapter: GameAdapter<xadrez.GameState, xadrez.Action, xadrez.PlayerView> = {
+  seats: 2,
+  settings: {
+    initial: xadrez.DEFAULT_SETTINGS,
+    parse: (raw, prev) => xadrez.parseSettings(raw, prev as xadrez.Settings),
+  },
+  newGame: (prev, { settings }) => xadrez.newGame(Math.random, xadrez.parseSettings(settings), prev, Date.now()),
+  // o relógio da partida é o do servidor: toda ação leva a hora em que chegou; "advance" confere o tempo
+  applyAction: (s, a) => xadrez.applyAction(s, (a as { type: string }).type === "advance" ? { type: "flag", at: Date.now() } : { ...a, at: Date.now() }),
+  viewFor: (s, seat) => xadrez.viewFor(s, seat as xadrez.Seat, Date.now()),
+  decide: (v) => xadrez.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    const s = seat as xadrez.Seat;
+    if (m.type === "resign" || m.type === "offerDraw") return { type: m.type, seat: s };
+    if (m.type === "answerDraw") return { type: "answerDraw", seat: s, accept: m.accept === true };
+    return { type: "move", seat: s, from: Number(m.from), to: Number(m.to), ...(m.promo ? { promo: Number(m.promo) } : {}) };
+  },
+  // quem recebeu a oferta de empate também pode agir (a IA responde)
+  actors: (s) => (s.phase !== "playing" ? [] : s.drawOffer !== null && s.drawOffer === s.turn ? [s.turn, 1 - s.turn] : [s.turn]),
+  pause: () => null,
+  clock: (s) => (s.clock && s.phase === "playing" ? xadrez.timeLeft(s, Date.now())![s.turn] : null),
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => (prev && next.moves.length > prev.moves.length ? XADREZ_MOVE_MS : 0),
+  outcome: (s, seat) => {
+    const st = s.stats[seat];
+    return {
+      outcome: s.winner === null ? "draw" : s.winner === seat ? "win" : "loss",
+      data: {
+        moves: s.moves.filter((m) => m.seat === seat).length,
+        captured: st.captured,
+        behind: st.behind,
+        promotions: st.promotions,
+        lostQueen: st.lostQueen,
+        white: s.white === seat,
+        level: s.settings.level,
+        clock: s.settings.clock,
+        end: s.end,
+      },
+    };
+  },
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
@@ -385,4 +433,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   "jogo-da-velha": velhaAdapter,
   damas: damasAdapter,
   ludo: ludoAdapter,
+  xadrez: xadrezAdapter,
 };

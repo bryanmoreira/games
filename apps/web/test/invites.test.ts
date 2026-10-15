@@ -9,7 +9,7 @@ describe("convite para jogar", () => {
 
   test("recusa jogo solo, jogo que não existe e código fora do padrão das salas", () => {
     expect(parseInvite({ username: "ana", game: "sudoku", code: "ABCD" })).toBeNull();
-    expect(parseInvite({ username: "ana", game: "xadrez", code: "ABCD" })).toBeNull();
+    expect(parseInvite({ username: "ana", game: "gamao", code: "ABCD" })).toBeNull();
     expect(parseInvite({ username: "ana", game: "stop", code: "ABC" })).toBeNull();
     expect(parseInvite({ username: "ana", game: "stop", code: "AB1D" })).toBeNull();
     // I e O não saem no gerador de código

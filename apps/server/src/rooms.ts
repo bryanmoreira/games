@@ -33,6 +33,8 @@ interface Room {
   /** Opções do lobby (jogos que têm). */
   settings: unknown;
   timer?: ReturnType<typeof setTimeout>;
+  /** Fim do tempo de quem está na vez (relógio de xadrez). */
+  clockTimer?: ReturnType<typeof setTimeout>;
   /** Fase do relógio atual e quando ele termina (ver `phaseKey`). */
   timerKey: string | null;
   deadline: number | null;
@@ -129,7 +131,20 @@ function findBotActor(room: Room): Seat | null {
   return bots[0];
 }
 
+/** Relógio da vez: quando acabar o tempo, o jogo confere e encerra a partida. */
+function scheduleClock(room: Room) {
+  clearTimeout(room.clockTimer);
+  const g = room.state;
+  const ms = g && !room.adapter.over(g) ? (room.adapter.clock?.(g) ?? null) : null;
+  if (ms === null) return;
+  room.clockTimer = setTimeout(() => {
+    // ainda não acabou (lance chegou no limite): confere de novo
+    if (step(room, { type: "advance" })) scheduleClock(room);
+  }, ms + 50);
+}
+
 function schedule(room: Room) {
+  scheduleClock(room);
   const g = room.state;
   // mesma fase com relógio: o tempo continua correndo (não reinicia a cada ação)
   const key = g && room.adapter.phaseKey ? room.adapter.phaseKey(g) : null;
@@ -218,6 +233,7 @@ function startGame(room: Room) {
 
 function deleteRoom(room: Room) {
   clearTimeout(room.timer);
+  clearTimeout(room.clockTimer);
   clearTimeout(room.cleanup);
   for (const t of room.members.keys()) {
     roomOf.delete(t);
@@ -376,6 +392,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       // quem saiu durante a partida libera o lugar
       room.seats = room.seats.map((s) => (s.kind === "empty" ? emptySlot() : s));
       clearTimeout(room.timer);
+      clearTimeout(room.clockTimer);
       room.deadline = null;
       room.timerKey = null;
       break;

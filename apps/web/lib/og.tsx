@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { HOME_CELLS, SAFE, TRACK_CELLS, startOf } from "@truco/ludo";
+import { fromFen } from "@truco/xadrez";
+import { PieceArt } from "@/components/xadrez/Piece";
 import { getGame } from "@/lib/seo";
 
 /** Prévia de link (Open Graph) de cada jogo: arte do jogo à esquerda, nome à direita. */
@@ -37,6 +39,7 @@ const TITLES: Record<string, [string, string]> = {
   otrio: ["OTRIO", "TRINCA DE ANÉIS"],
   "jogo-da-velha": ["VELHA", "JOGO DA VELHA"],
   damas: ["DAMAS", "CLÁSSICO"],
+  xadrez: ["XADREZ", "XEQUE-MATE"],
   ludo: ["LUDO", "CORRIDA DE PEÕES"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
 };
@@ -311,6 +314,28 @@ async function art(slug: string) {
               <rect key={i} x={(i % 8) * 50} y={Math.floor(i / 8) * 50} width={50} height={50} fill={(Math.floor(i / 8) + (i % 8)) % 2 ? "#86552f" : "#e8cf9f"} />
             ))}
             {rows.flatMap((r, row) => [...r].flatMap((c, col) => (c === "." ? [] : [piece(c, col * 50, row * 50)])))}
+          </svg>
+        </div>
+      );
+    }
+    case "xadrez": {
+      // abertura italiana com as peças do jogo
+      const board = fromFen("r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").board;
+      return (
+        <div style={{ display: "flex", transform: "rotate(-4deg)", borderRadius: 18, padding: 12, background: "#5b3920", boxShadow: "0 12px 30px rgba(0,0,0,0.5)" }}>
+          <svg width="400" height="400" viewBox="0 0 400 400">
+            {Array.from({ length: 64 }, (_, i) => (
+              <rect key={i} x={(i % 8) * 50} y={Math.floor(i / 8) * 50} width={50} height={50} fill={(Math.floor(i / 8) + (i % 8)) % 2 ? "#a06c41" : "#ecd6ac"} />
+            ))}
+            {board.flatMap((p, i) =>
+              p
+                ? [
+                    <g key={i} transform={`translate(${(i % 8) * 50 + 1} ${Math.floor(i / 8) * 50 + 1}) scale(0.48)`}>
+                      {PieceArt({ p })}
+                    </g>,
+                  ]
+                : [],
+            )}
           </svg>
         </div>
       );

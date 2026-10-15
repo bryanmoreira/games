@@ -261,6 +261,31 @@ export const GAMES: GameSeo[] = [
     ],
   },
   {
+    slug: "xadrez",
+    path: "/xadrez",
+    name: "Xadrez",
+    title: "Xadrez Online Grátis",
+    description:
+      "Jogue Xadrez online grátis: contra o computador em três níveis ou com um amigo numa sala, com relógio opcional. Roque, en passant, promoção e xeque-mate pelas regras oficiais.",
+    tagline: "Contra a IA em três níveis ou com um amigo, com relógio se quiser.",
+    keywords: ["xadrez online", "jogar xadrez", "xadrez grátis", "xadrez contra o computador", "xadrez com amigos", "xadrez online 2 jogadores", "jogo de xadrez"],
+    genre: "Jogo de tabuleiro (estratégia)",
+    players: { min: 1, max: 2 },
+    modes: "Multiplayer online para 2 jogadores em salas privadas e modo solo contra o computador nos níveis fácil, médio e difícil. Relógio opcional: 3+2, 5+0 ou 10+0.",
+    howTo: {
+      title: "Como jogar Xadrez: regras, movimentos das peças e xeque-mate",
+      description: "Aprenda as regras do xadrez: como cada peça se move, roque, en passant, promoção do peão, xeque, xeque-mate e quando a partida empata.",
+    },
+    faq: [
+      { q: "Como cada peça do xadrez se move?", a: "O rei anda uma casa em qualquer direção. A dama anda quantas casas quiser em linha reta ou na diagonal; a torre, em linha reta; o bispo, na diagonal. O cavalo anda em L e pode pular peças. O peão anda uma casa para a frente (duas no primeiro lance) e captura na diagonal." },
+      { q: "O que é xeque-mate?", a: "É quando o rei está atacado (em xeque) e não há lance que o tire do ataque. Quem dá xeque-mate vence a partida. Nenhum jogador pode fazer um lance que deixe o próprio rei em xeque." },
+      { q: "Como funciona o roque?", a: "O rei anda duas casas em direção a uma torre e a torre pula para o outro lado dele. Só vale se nenhum dos dois andou antes, se não há peças entre eles e se o rei não está em xeque nem passa ou para em casa atacada." },
+      { q: "O que é en passant e promoção?", a: "En passant: quando um peão adversário anda duas casas e para ao lado do seu, você pode capturá-lo como se tivesse andado uma, mas só no lance seguinte. Promoção: o peão que chega à última fileira vira dama, torre, bispo ou cavalo, à sua escolha." },
+      { q: "Quando a partida de xadrez empata?", a: "Por afogamento (quem joga não está em xeque e não tem lance), quando não sobra material para dar mate, quando a mesma posição aparece pela terceira vez, depois de 50 lances de cada lado sem captura nem lance de peão, ou quando os dois combinam o empate." },
+      { q: "Dá para jogar xadrez online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue sem cadastro, com ou sem relógio (3+2, 5+0 ou 10+0). O placar soma a cada partida e as cores trocam a cada nova partida." },
+    ],
+  },
+  {
     slug: "ludo",
     path: "/ludo",
     name: "Ludo",

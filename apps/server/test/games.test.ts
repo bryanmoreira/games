@@ -8,6 +8,7 @@ import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
 import * as ludo from "@truco/ludo";
+import * as xadrez from "@truco/xadrez";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -248,6 +249,70 @@ describe("damas", () => {
     const opts = settings!.parse({ level: "easy" }, settings!.initial);
     expect(newGame(null, { seats: [0, 1], settings: opts }).settings).toEqual({ level: "easy" });
     expect(settings!.parse({ level: "nope" }, opts)).toEqual(opts);
+  });
+});
+
+describe("xadrez", () => {
+  const { outcome, settings, newGame, withSeat, actors, clock, applyAction, viewFor } = GAMES.xadrez;
+  const sq = xadrez.squareOf;
+  const mv = (s: xadrez.GameState, from: string, to: string) => ok(xadrez.applyAction(s, { type: "move", seat: s.turn, from: sq(from), to: sq(to) }));
+
+  /** Mate do pastor: o lugar 0 joga de brancas e vence em 4 lances. */
+  function finished(): xadrez.GameState {
+    let s: xadrez.GameState = { ...xadrez.newGame(() => 0, { level: "hard", clock: "none" }), white: 0, turn: 0 };
+    for (const [a, b] of [["e2", "e4"], ["e7", "e5"], ["f1", "c4"], ["b8", "c6"], ["d1", "h5"], ["g8", "f6"], ["h5", "f7"]]) s = mv(s, a, b);
+    return s;
+  }
+
+  test("vitória e derrota com os números da partida", () => {
+    const s = finished();
+    expect(outcome(s, 0)).toEqual({
+      outcome: "win",
+      data: { moves: 4, captured: 1, behind: 0, promotions: 0, lostQueen: false, white: true, level: "hard", clock: "none", end: "mate" },
+    });
+    expect(outcome(s, 1)).toEqual({
+      outcome: "loss",
+      data: { moves: 3, captured: 0, behind: 1, promotions: 0, lostQueen: false, white: false, level: "hard", clock: "none", end: "mate" },
+    });
+  });
+
+  test("empate para os dois", () => {
+    const s = { ...finished(), winner: null, end: "agreed" as const };
+    expect(outcome(s, 0).outcome).toBe("draw");
+    expect(outcome(s, 1).outcome).toBe("draw");
+  });
+
+  test("ação do cliente ganha o assento", () => {
+    expect(withSeat({ type: "move", from: "52", to: 36, seat: 1 }, 0)).toEqual({ type: "move", seat: 0, from: 52, to: 36 });
+    expect(withSeat({ type: "move", from: 12, to: 4, promo: 2 }, 1)).toEqual({ type: "move", seat: 1, from: 12, to: 4, promo: 2 });
+    expect(withSeat({ type: "resign" }, 1)).toEqual({ type: "resign", seat: 1 });
+    expect(withSeat({ type: "answerDraw", accept: "sim" }, 1)).toEqual({ type: "answerDraw", seat: 1, accept: false });
+  });
+
+  test("quem recebe a oferta de empate também age", () => {
+    let s: xadrez.GameState = { ...xadrez.newGame(() => 0), white: 0, turn: 0 };
+    s = mv(mv(s, "e2", "e4"), "e7", "e5");
+    expect(actors(s)).toEqual([0]);
+    s = ok(xadrez.applyAction(s, { type: "offerDraw", seat: 0 }));
+    expect(actors(s)).toEqual([0, 1]);
+  });
+
+  test("relógio: tempo da vez e advance que confere o fim do tempo", () => {
+    const s = newGame(null, { seats: [0, 1], settings: { level: "easy", clock: "3+2" } });
+    expect(clock!(s)).toBeGreaterThan(179_000);
+    expect(applyAction(s, { type: "advance" }).ok).toBe(false);
+    const late = { ...s, clock: { ...s.clock!, since: Date.now() - 181_000 } };
+    expect(clock!(late)).toBe(0);
+    expect(viewFor(late, 1).timeLeft[s.turn]).toBe(0);
+    const r = applyAction(late, { type: "advance" });
+    expect(r.ok && r.state.end).toBe("time");
+    expect(clock!(newGame(null, { seats: [0, 1], settings: {} }))).toBeNull();
+  });
+
+  test("opções da sala chegam à partida", () => {
+    const opts = settings!.parse({ level: "easy", clock: "5+0" }, settings!.initial);
+    expect(newGame(null, { seats: [0, 1], settings: opts }).settings).toEqual({ level: "easy", clock: "5+0" });
+    expect(settings!.parse({ level: "nope", clock: "1+0" }, opts)).toEqual(opts);
   });
 });
 

@@ -16,7 +16,8 @@
     "@truco/jogo-da-velha": "workspace:*",
     "@truco/ludo": "workspace:*",
     "@truco/otrio": "workspace:*",
-    "@truco/stop": "workspace:*"
+    "@truco/stop": "workspace:*",
+    "@truco/xadrez": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2"

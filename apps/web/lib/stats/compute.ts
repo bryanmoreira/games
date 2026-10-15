@@ -118,6 +118,17 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
     case "jogo-da-velha":
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "pieces")).filter(Number.isFinite))));
       break;
+    case "xadrez":
+      chip("Mate mais rápido", ((n) => (n === null ? null : `${n} lances`))(minOf(wins.filter((r) => r.data.end === "mate").map((r) => num(r, "moves")).filter((n) => n > 0))));
+      if (rs.some((r) => r.mode === "ai"))
+        stats.table = {
+          cols: ["Vitórias", "Partidas"],
+          rows: LEVELS.slice(0, 3).map(([k, label]) => {
+            const games = rs.filter((r) => r.mode === "ai" && r.data.level === k);
+            return { label: `IA ${label}`, values: [String(games.filter(isWin).length), String(games.length)] };
+          }),
+        };
+      break;
     case "damas":
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} lances`))(minOf(wins.map((r) => num(r, "moves")).filter((n) => n > 0))));
       chip("Maior captura", ((n) => (n ? `${n} ${n === 1 ? "peça" : "peças"}` : null))(maxOf(rs.map((r) => num(r, "bestChain")).filter(Number.isFinite))));

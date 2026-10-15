@@ -25,6 +25,7 @@
     "@truco/stop": "workspace:*",
     "@truco/sudoku": "workspace:*",
     "@truco/verbete": "workspace:*",
+    "@truco/xadrez": "workspace:*",
     "better-auth": "^1.7.7",
     "next": "^16.4.0",
     "pg": "^8.23.1",

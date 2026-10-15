@@ -11,10 +11,11 @@ import { STOP_PATH } from "@/lib/stop/paths";
 import { SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { TRUCO_PATH } from "@/lib/truco/paths";
 import { VERBETE_PATH } from "@/lib/verbete/paths";
+import { XADREZ_PATH } from "@/lib/xadrez/paths";
 
 /** Jogos que guardam resultado no perfil. Online: o servidor de salas manda; solo: o navegador manda. */
 export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete"] as const;
-export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "damas", "ludo", "batalha-naval", "stop", "codenames"] as const satisfies readonly GameId[];
+export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "damas", "ludo", "batalha-naval", "stop", "codenames"] as const satisfies readonly GameId[];
 
 export type SoloGame = (typeof SOLO_GAMES)[number];
 export type StatGame = SoloGame | GameId;
@@ -26,6 +27,7 @@ export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
   connect4: { name: "Connect 4", path: CONNECT4_PATH },
   otrio: { name: "Otrio", path: OTRIO_PATH },
   "jogo-da-velha": { name: "Jogo da Velha", path: VELHA_PATH },
+  xadrez: { name: "Xadrez", path: XADREZ_PATH },
   damas: { name: "Damas", path: DAMAS_PATH },
   ludo: { name: "Ludo", path: LUDO_PATH },
   "batalha-naval": { name: "Batalha Naval", path: BATALHA_PATH },

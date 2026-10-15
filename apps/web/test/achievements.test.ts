@@ -123,6 +123,20 @@ const CASES: Record<string, Case> = {
   "jogo-da-velha:draws_10": { ok: times(10, draw), almost: [...times(9, draw), ...times(5, win), ...times(5, loss)] },
   "jogo-da-velha:streak_5": streakCase,
 
+  "xadrez:first": firstCase,
+  "xadrez:blitz": { ok: [win({ end: "mate", moves: 20 })], almost: [win({ end: "mate", moves: 21 }), win({ end: "resign", moves: 10 }), loss({ end: "mate", moves: 5 }), win({})] },
+  "xadrez:promotion": { ok: [win({ promotions: 1 })], almost: [win({ promotions: 0 }), loss({ promotions: 2 }), draw({ promotions: 1 }), win({})] },
+  "xadrez:comeback": { ok: [win({ behind: 5 })], almost: [win({ behind: 4 }), loss({ behind: 9 }), draw({ behind: 6 })] },
+  "xadrez:untouched": { ok: [win({ lostQueen: false })], almost: [win({ lostQueen: true }), loss({ lostQueen: false }), win({ abandoned: true })] },
+  "xadrez:master": {
+    ok: [win({ level: "hard" }, "ai")],
+    almost: [win({ level: "medium" }, "ai"), win({ level: "hard" }, "online"), loss({ level: "hard" }, "ai")],
+  },
+  "xadrez:streak_5": streakCase,
+  "xadrez:wins_10": winsCase(10),
+  "xadrez:wins_50": winsCase(50),
+  "xadrez:wins_100": winsCase(100),
+
   "damas:first": firstCase,
   "damas:chain": { ok: [loss({ bestChain: 3 })], almost: [win({ bestChain: 2 }), loss({ abandoned: true })] },
   "damas:untouched": { ok: [win({ lost: 0 })], almost: [win({ lost: 1 }), loss({ lost: 0 }), draw({ lost: 0 }), win({})] },

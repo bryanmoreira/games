@@ -109,6 +109,30 @@ describe("gameStats: Jogo da Velha", () => {
   });
 });
 
+describe("gameStats: Xadrez", () => {
+  test("mate mais rápido só entre vitórias por mate e tabela por nível contra a IA", () => {
+    const rs = [
+      win({ end: "mate", moves: 30, level: "easy" }, "ai"),
+      win({ end: "resign", moves: 10, level: "hard" }, "ai"),
+      win({ end: "mate", moves: 22 }),
+      loss({ end: "mate", moves: 8, level: "hard" }, "ai"),
+    ];
+    const s = gameStats("xadrez", rs);
+    expect(s.chips).toEqual([{ label: "Mate mais rápido", value: "22 lances" }]);
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Partidas"],
+      rows: [
+        { label: "IA Fácil", values: ["1", "1"] },
+        { label: "IA Médio", values: ["0", "0"] },
+        { label: "IA Difícil", values: ["1", "2"] },
+      ],
+    });
+    const none = gameStats("xadrez", [win({ end: "agreed", moves: 4 }), loss({ abandoned: true })]);
+    expect(none.chips).toEqual([]);
+    expect(none.table).toBeUndefined();
+  });
+});
+
 describe("gameStats: Damas", () => {
   test("vitória mais rápida entre vitórias e maior captura em qualquer partida", () => {
     expect(chips("damas", [win({ moves: 30, bestChain: 2 }), win({ moves: 24, bestChain: 1 }), loss({ moves: 10, bestChain: 4 }), draw({ moves: 5 })])).toEqual([
@@ -431,6 +455,7 @@ describe("jogos", () => {
     ["/otrio/sala/ABCD", "otrio"],
     ["/jogo-da-velha/sala/ABCD", "jogo-da-velha"],
     ["/damas/sala/ABCD", "damas"],
+    ["/xadrez/sala/ABCD", "xadrez"],
     ["/ludo/sala/ABCD", "ludo"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],
@@ -450,7 +475,7 @@ describe("jogos", () => {
   });
 
   test("nomes fora da lista não são jogo", () => {
-    for (const g of ["", "xadrez", "Sudoku", "connect-4"]) {
+    for (const g of ["", "gamao", "Sudoku", "connect-4"]) {
       expect(isOnlineGame(g)).toBe(false);
       expect(isSoloGame(g)).toBe(false);
     }

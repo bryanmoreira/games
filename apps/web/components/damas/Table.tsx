@@ -11,8 +11,8 @@ import { HelpButton, MuteButton, TipsButton, useTips } from "@/components/ui/but
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { SeatFace } from "@/components/ui/SeatFace";
-import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
-import { playCaptureSound, playDrawSound, playKingSound, playStepSound } from "@/lib/damas/sound";
+import { playDrawSound, playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
+import { playCaptureSound, playKingSound, playStepSound } from "@/lib/damas/sound";
 import { Board, PieceShape, piecesOf, type Mark, type UiPiece } from "./Board";
 import { HowToPlay } from "./HowToPlay";
 import { DrawIcon } from "./icons";

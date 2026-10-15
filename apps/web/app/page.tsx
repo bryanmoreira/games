@@ -15,6 +15,7 @@ import { StaticBoard as OtrioBoard } from "@/components/otrio/Board";
 import { StaticBoard as VelhaBoard } from "@/components/jogo-da-velha/Board";
 import { StaticBoard as DamasBoard } from "@/components/damas/Board";
 import { StaticBoard as LudoBoard } from "@/components/ludo/Board";
+import { StaticBoard as ChessBoard } from "@/components/xadrez/Board";
 import { UserButton } from "@/components/UserButton";
 import { GameGrid, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -103,6 +104,16 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     art: (
       <div className="absolute left-1/2 top-[9%] w-[34%] -translate-x-1/2 rotate-3">
         <VelhaBoard cells="XO.OX...X" win={[0, 4, 8]} />
+      </div>
+    ),
+  },
+  {
+    slug: "xadrez",
+    title: "XADREZ",
+    sub: "XEQUE-MATE",
+    art: (
+      <div className="absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 rotate-3">
+        <ChessBoard fen="r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R" />
       </div>
     ),
   },

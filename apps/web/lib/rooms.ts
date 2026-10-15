@@ -8,6 +8,7 @@ import { roomPath as otrioRoom } from "./otrio/paths";
 import { roomPath as velhaRoom } from "./jogo-da-velha/paths";
 import { roomPath as damasRoom } from "./damas/paths";
 import { roomPath as ludoRoom } from "./ludo/paths";
+import { roomPath as xadrezRoom } from "./xadrez/paths";
 
 /** Rota da sala de cada jogo online (para redirecionar quem abre o código pela rota errada). */
 export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
@@ -20,4 +21,5 @@ export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
   "jogo-da-velha": velhaRoom,
   damas: damasRoom,
   ludo: ludoRoom,
+  xadrez: xadrezRoom,
 };
