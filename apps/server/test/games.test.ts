@@ -9,6 +9,7 @@ import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
 import * as ludo from "@truco/ludo";
 import * as xadrez from "@truco/xadrez";
+import * as futebol from "@truco/futebol-de-botao";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -168,6 +169,59 @@ describe("ludo", () => {
     s = roll(s, 6);
     const moved = move(s, 0);
     expect(animMs(s, moved)).toBeGreaterThan(0);
+  });
+});
+
+describe("futebol-de-botao", () => {
+  const { outcome, withSeat, canStart, actors, realtime } = GAMES["futebol-de-botao"];
+
+  /** Bola chutada para o gol de `team` atacar, com o último toque de `seat`. */
+  function goal(s: futebol.GameState, team: futebol.Team, seat: number) {
+    s.phase = "play";
+    s.ball = { x: team === 0 ? 400 : -400, y: 0, vx: team === 0 ? 8 : -8, vy: 0 };
+    s.lastTouch = seat;
+    while (s.phase === "play" || s.phase === "kickoff") realtime!.step(s);
+    while (s.phase === "goal") realtime!.step(s);
+  }
+
+  test("vitória e derrota com placar, gols de cada um, tamanho, tempo, virada e gol de ouro", () => {
+    const s = futebol.newGame([0, 1, 3]);
+    goal(s, 1, 1);
+    goal(s, 1, 3);
+    goal(s, 0, 0);
+    s.timeLeft = 1;
+    s.phase = "play";
+    realtime!.step(s);
+    // 1 × 2 no fim do tempo: azul vence
+    expect(s.phase as string).toBe("over");
+    expect(outcome(s, 3)).toEqual({
+      outcome: "win",
+      data: { gf: 2, ga: 1, goals: 1, size: 2, ms: Math.round(s.tick * futebol.TICK_MS), golden: false, deficit: 0 },
+    });
+    expect(outcome(s, 0)).toEqual({
+      outcome: "loss",
+      data: { gf: 1, ga: 2, goals: 1, size: 2, ms: Math.round(s.tick * futebol.TICK_MS), golden: false, deficit: 2 },
+    });
+  });
+
+  test("gol de ouro e gol contra não conta para quem fez", () => {
+    const s = futebol.newGame([0, 1]);
+    s.timeLeft = 1;
+    s.phase = "play";
+    realtime!.step(s);
+    expect(s.golden).toBe(true);
+    goal(s, 1, 0); // contra
+    expect(s.phase as string).toBe("over");
+    expect(outcome(s, 1)).toMatchObject({ outcome: "win", data: { gf: 1, ga: 0, goals: 0, golden: true, size: 1 } });
+    expect(outcome(s, 0)).toMatchObject({ outcome: "loss", data: { goals: 0, golden: true } });
+  });
+
+  test("entrada do cliente, mesa válida e quem age", () => {
+    expect(withSeat({ dx: 1, dy: -1, kick: true }, 3)).toEqual({ type: "input", seat: 3, dx: 1, dy: -1, kick: true });
+    expect(withSeat({ dx: "x", kick: "sim" }, 2)).toMatchObject({ seat: 2, kick: false });
+    expect(canStart!([0, 2])).toBe(false);
+    expect(canStart!([0, 3])).toBe(true);
+    expect(actors(futebol.newGame([0, 1, 2]))).toEqual([0, 1, 2]);
   });
 });
 

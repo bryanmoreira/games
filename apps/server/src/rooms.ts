@@ -41,6 +41,10 @@ interface Room {
   dealUntil: number;
   cleanup?: ReturnType<typeof setTimeout>;
   match: Match | null;
+  /** Jogo em tempo real: o laço dos passos e quantos já rodaram desde `loopStart`. */
+  loop?: ReturnType<typeof setInterval>;
+  loopStart: number;
+  loopTicks: number;
 }
 
 const BOT_NAMES = ["Zé", "Tião", "Cida", "Juca", "Nena", "Dito", "Lurdes", "Chico"];
@@ -143,7 +147,65 @@ function scheduleClock(room: Room) {
   }, ms + 50);
 }
 
+/** Visão de cada um, só o jogo (tempo real: vai várias vezes por segundo). */
+function broadcastFrame(room: Room) {
+  for (const token of room.members.keys()) {
+    const ws = sockets.get(token);
+    if (!ws) continue;
+    const seat = seatOf(room, token);
+    const view = seat !== null ? room.adapter.viewFor(room.state, seat) : room.adapter.spectate?.(room.state);
+    if (view) send(ws, { t: "frame", view });
+  }
+}
+
+function stopLoop(room: Room) {
+  clearInterval(room.loop);
+  room.loop = undefined;
+}
+
+/**
+ * Jogo em tempo real: roda os passos no ritmo do jogo (compensando o atraso do setInterval), os bots
+ * decidem pela visão deles e quem caiu também vira bot. Para quando a partida acaba.
+ */
+function runLoop(room: Room) {
+  const rt = room.adapter.realtime!;
+  if (room.loop || !room.state || room.adapter.over(room.state)) return;
+  room.loopStart = performance.now();
+  room.loopTicks = 0;
+  room.loop = setInterval(() => {
+    const due = Math.min(10, Math.floor((performance.now() - room.loopStart) / rt.tickMs) - room.loopTicks);
+    let sent = false;
+    for (let i = 0; i < due && room.state; i++) {
+      const n = room.loopTicks++;
+      if (n % rt.botEvery === 0) {
+        for (const seat of room.adapter.actors(room.state) as Seat[]) {
+          if (humanControlled(room, seat)) continue;
+          const a = room.adapter.decide(room.adapter.viewFor(room.state, seat));
+          const r = a && room.adapter.applyAction(room.state, a);
+          if (r && r.ok) room.state = r.state;
+        }
+      }
+      room.state = rt.step(room.state);
+      if (room.adapter.over(room.state)) {
+        stopLoop(room);
+        endMatch(room);
+        refresh(room);
+        return;
+      }
+      if (n % rt.frameEvery === 0) sent = true;
+    }
+    // atrasou muito (servidor ocupado): esquece os passos perdidos em vez de acelerar
+    if (due >= 10) room.loopTicks = Math.floor((performance.now() - room.loopStart) / rt.tickMs);
+    if (sent) broadcastFrame(room);
+  }, rt.tickMs / 2);
+}
+
 function schedule(room: Room) {
+  if (room.adapter.realtime) {
+    if (room.state && !room.adapter.over(room.state)) runLoop(room);
+    else stopLoop(room);
+    return;
+  }
   scheduleClock(room);
   const g = room.state;
   // mesma fase com relógio: o tempo continua correndo (não reinicia a cada ação)
@@ -198,6 +260,8 @@ function step(room: Room, action: unknown): string | null {
   const r = room.adapter.applyAction(prev, action);
   if (!r.ok) return r.error;
   room.state = r.state;
+  // tempo real: a entrada só muda o estado; o laço avisa todo mundo no próximo quadro
+  if (room.adapter.realtime) return null;
   markAnim(room, prev);
   if (!room.adapter.over(prev) && room.adapter.over(r.state)) endMatch(room);
   refresh(room);
@@ -232,6 +296,7 @@ function startGame(room: Room) {
 }
 
 function deleteRoom(room: Room) {
+  stopLoop(room);
   clearTimeout(room.timer);
   clearTimeout(room.clockTimer);
   clearTimeout(room.cleanup);
@@ -320,6 +385,8 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       deadline: null,
       dealUntil: 0,
       match: null,
+      loopStart: 0,
+      loopTicks: 0,
     };
     rooms.set(room.code, room);
     joinRoom(room, token, name);
@@ -391,6 +458,7 @@ export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
       room.state = null;
       // quem saiu durante a partida libera o lugar
       room.seats = room.seats.map((s) => (s.kind === "empty" ? emptySlot() : s));
+      stopLoop(room);
       clearTimeout(room.timer);
       clearTimeout(room.clockTimer);
       room.deadline = null;

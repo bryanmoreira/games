@@ -175,6 +175,36 @@ describe("gameStats: Ludo", () => {
   });
 });
 
+describe("gameStats: Futebol de Botão", () => {
+  test("maior goleada, mais gols, vitória mais rápida, total de gols e tabela por tamanho", () => {
+    const rs = [
+      win({ gf: 3, ga: 1, goals: 2, size: 1, ms: 95_000 }),
+      win({ gf: 3, ga: 0, goals: 1, size: 2, ms: 70_000 }),
+      loss({ gf: 2, ga: 3, goals: 2, size: 2, ms: 120_000 }),
+      loss({ abandoned: true }),
+    ];
+    const s = gameStats("futebol-de-botao", rs);
+    expect(s.chips).toEqual([
+      { label: "Maior goleada", value: "3 × 0" },
+      { label: "Mais gols numa partida", value: "2" },
+      { label: "Vitória mais rápida", value: "1:10" },
+      { label: "Gols", value: "5" },
+    ]);
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Partidas"],
+      rows: [
+        { label: "1×1", values: ["1", "1"] },
+        { label: "2×2", values: ["1", "2"] },
+        { label: "3×3", values: ["0", "0"] },
+      ],
+    });
+  });
+
+  test("sem gols nem vitórias: sem chips", () => {
+    expect(chips("futebol-de-botao", [loss({ gf: 0, ga: 3, goals: 0, size: 1, ms: 50_000 })])).toEqual([]);
+  });
+});
+
 describe("gameStats: Otrio", () => {
   test("vitória mais rápida pelas peças da cor e forma favorita, só entre vitórias", () => {
     const rs = [win({ colorPieces: 5, how: "line" }), win({ colorPieces: 4, how: "stack" }), win({ colorPieces: 6, how: "stack" }), loss({ pieces: 3 })];
@@ -457,6 +487,7 @@ describe("jogos", () => {
     ["/damas/sala/ABCD", "damas"],
     ["/xadrez/sala/ABCD", "xadrez"],
     ["/ludo/sala/ABCD", "ludo"],
+    ["/futebol-de-botao/sala/ABCD", "futebol-de-botao"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],
     ["/paciencia-spider/jogo", "paciencia-spider"],

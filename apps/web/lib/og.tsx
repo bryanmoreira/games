@@ -41,6 +41,7 @@ const TITLES: Record<string, [string, string]> = {
   damas: ["DAMAS", "CLÁSSICO"],
   xadrez: ["XADREZ", "XEQUE-MATE"],
   ludo: ["LUDO", "CORRIDA DE PEÕES"],
+  "futebol-de-botao": ["FUTEBOL", "DE BOTÃO"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
 };
 
@@ -336,6 +337,34 @@ async function art(slug: string) {
                   ]
                 : [],
             )}
+          </svg>
+        </div>
+      );
+    }
+    case "futebol-de-botao": {
+      // campo visto de cima com os botões dos dois times e a bola
+      const red = "#e5484d";
+      const blue = "#3e7bfa";
+      const discs: [number, number, string][] = [[170, 92, red], [95, 150, red], [235, 70, blue], [300, 118, blue]];
+      return (
+        <div style={{ display: "flex", transform: "rotate(-4deg)", borderRadius: 20, boxShadow: "0 12px 30px rgba(0,0,0,0.5)" }}>
+          <svg width="460" height="260" viewBox="0 0 400 226">
+            <rect width="400" height="226" rx="12" fill="#3f7f33" />
+            {Array.from({ length: 8 }, (_, i) => (
+              <rect key={i} x={24 + i * 44} y="16" width="44.5" height="194" fill={i % 2 ? "#4c9a3e" : "#55a646"} />
+            ))}
+            <rect x="6" y="85" width="18" height="56" fill="rgba(229,72,77,0.45)" stroke="#fff" strokeWidth="2" />
+            <rect x="376" y="85" width="18" height="56" fill="rgba(62,123,250,0.45)" stroke="#fff" strokeWidth="2" />
+            <rect x="24" y="16" width="352" height="194" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2.5" />
+            <path d="M200 16V210" stroke="rgba(255,255,255,0.85)" strokeWidth="2.5" />
+            <circle cx="200" cy="113" r="32" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2.5" />
+            {discs.map(([x, y, c], i) => (
+              <g key={i}>
+                <circle cx={x + 2} cy={y + 3} r="15" fill="rgba(0,0,0,0.25)" />
+                <circle cx={x} cy={y} r="15" fill={c} stroke={i === 0 ? "#fff" : "rgba(0,0,0,0.45)"} strokeWidth="3" />
+              </g>
+            ))}
+            <circle cx="191" cy="104" r="8" fill="#fff" stroke="#111" strokeWidth="2" />
           </svg>
         </div>
       );

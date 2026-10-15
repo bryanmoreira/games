@@ -144,6 +144,22 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
         }),
       };
       break;
+    case "futebol-de-botao": {
+      const margin = maxOf(wins.map((r) => num(r, "gf") - num(r, "ga")).filter(Number.isFinite));
+      const best = wins.find((r) => num(r, "gf") - num(r, "ga") === margin);
+      chip("Maior goleada", best ? `${num(best, "gf")} × ${num(best, "ga")}` : null);
+      chip("Mais gols numa partida", ((n) => (n ? n : null))(maxOf(rs.map((r) => num(r, "goals")).filter(Number.isFinite))));
+      chip("Vitória mais rápida", ((n) => (n === null ? null : formatMs(n)))(minOf(wins.map((r) => num(r, "ms")).filter((n) => n > 0))));
+      chip("Gols", rs.reduce((n, r) => n + (num(r, "goals") || 0), 0) || null);
+      stats.table = {
+        cols: ["Vitórias", "Partidas"],
+        rows: [1, 2, 3].map((n) => {
+          const games = rs.filter((r) => num(r, "size") === n);
+          return { label: `${n}×${n}`, values: [String(games.filter(isWin).length), String(games.length)] };
+        }),
+      };
+      break;
+    }
     case "otrio": {
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "colorPieces")).filter(Number.isFinite))));
       // forma de trinca com mais vitórias (empate: a primeira da lista)

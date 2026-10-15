@@ -16,6 +16,7 @@ COPY packages/jogo-da-velha/package.json packages/jogo-da-velha/
 COPY packages/damas/package.json packages/damas/
 COPY packages/xadrez/package.json packages/xadrez/
 COPY packages/ludo/package.json packages/ludo/
+COPY packages/futebol-de-botao/package.json packages/futebol-de-botao/
 COPY packages/spider/package.json packages/spider/
 COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
@@ -32,6 +33,7 @@ COPY packages/jogo-da-velha packages/jogo-da-velha
 COPY packages/damas packages/damas
 COPY packages/xadrez packages/xadrez
 COPY packages/ludo packages/ludo
+COPY packages/futebol-de-botao packages/futebol-de-botao
 COPY packages/stop packages/stop
 COPY apps/server apps/server
 RUN bun run --cwd apps/server build

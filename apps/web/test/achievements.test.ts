@@ -92,6 +92,16 @@ const CASES: Record<string, Case> = {
   "ludo:comeback": { ok: [win({ comeback: true })], almost: [win({ comeback: false }), loss({ comeback: true }), win({})] },
   "ludo:full_table": { ok: [win({ players: 4 })], almost: [win({ players: 3 }), loss({ players: 4 }), win({})] },
   "ludo:streak_5": streakCase,
+  "futebol-de-botao:first": firstCase,
+  "futebol-de-botao:hat_trick": { ok: [win({ goals: 3 })], almost: [win({ goals: 2 }), loss({ goals: 3 }), win({})] },
+  "futebol-de-botao:wall": { ok: [win({ ga: 0 })], almost: [win({ ga: 1 }), loss({ ga: 0 }), win({})] },
+  "futebol-de-botao:lightning": { ok: [win({ ms: 59_000 })], almost: [win({ ms: 60_000 }), loss({ ms: 30_000 }), win({})] },
+  "futebol-de-botao:comeback": { ok: [win({ deficit: 2 })], almost: [win({ deficit: 1 }), loss({ deficit: 3 }), win({})] },
+  "futebol-de-botao:golden": { ok: [win({ golden: true })], almost: [win({ golden: false }), loss({ golden: true }), win({})] },
+  "futebol-de-botao:scorer": {
+    ok: [...times(16, () => loss({ goals: 3 })), win({ goals: 2 })],
+    almost: [...times(16, () => win({ goals: 3 })), loss({ goals: 1 }), loss({ abandoned: true })],
+  },
 
   "otrio:first": firstCase,
   "otrio:quick": { ok: [win({ colorPieces: 3 })], almost: [win({ colorPieces: 4 }), loss({ pieces: 3 }), win({ pieces: 3 }), win({})] },

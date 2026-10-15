@@ -94,7 +94,10 @@ export function connect() {
   };
   sock.onmessage = (e) => {
     const msg: ServerMsg<unknown> = JSON.parse(e.data);
-    if (msg.t === "room") set({ room: msg.room, view: msg.view, error: null });
+    if (msg.t === "frame") {
+      frameListeners.forEach((l) => l(msg.view));
+      set({ view: msg.view });
+    } else if (msg.t === "room") set({ room: msg.room, view: msg.view, error: null });
     else if (msg.t === "created") set({ created: msg.code });
     else if (msg.t === "left") set({ room: null, view: null });
     else if (msg.t === "error") set({ error: msg.message });
@@ -106,6 +109,17 @@ export function connect() {
     set({ status: "closed" });
     if (e.code === 4000) return;
     setTimeout(connect, Math.min(5000, 500 * 2 ** retry++));
+  };
+}
+
+const frameListeners = new Set<(view: unknown) => void>();
+
+/** Jogo em tempo real: cada quadro na hora em que chega (para desenhar sem esperar o React). */
+export function onFrame<V>(listener: (view: V) => void) {
+  const l = listener as (view: unknown) => void;
+  frameListeners.add(l);
+  return () => {
+    frameListeners.delete(l);
   };
 }
 

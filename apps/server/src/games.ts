@@ -8,6 +8,7 @@ import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
 import * as ludo from "@truco/ludo";
 import * as xadrez from "@truco/xadrez";
+import * as futebol from "@truco/futebol-de-botao";
 import type { GameId, PlayerReport } from "@truco/game";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -56,6 +57,11 @@ export interface GameAdapter<S = any, A = any, V = any> {
   phaseKey?(s: S): string;
   /** Ação que avisa o jogo de quem está desconectado (null se nada mudou). */
   away?(s: S, seats: number[]): A | null;
+  /**
+   * Jogo em tempo real: o servidor roda `step` a cada `tickMs` sem esperar ação, os bots decidem a cada
+   * `botEvery` passos e a visão sai a cada `frameEvery` passos (mensagem `frame`, sem os dados da sala).
+   */
+  realtime?: { tickMs: number; step(s: S): S; botEvery: number; frameEvery: number };
   /** Resultado de um lugar na partida terminada (o que vai para o perfil). */
   outcome(s: S, seat: number): Omit<PlayerReport, "userId">;
 }
@@ -423,6 +429,44 @@ const xadrezAdapter: GameAdapter<xadrez.GameState, xadrez.Action, xadrez.PlayerV
   },
 };
 
+const futebolAdapter: GameAdapter<futebol.GameState, futebol.Action, futebol.PlayerView> = {
+  seats: futebol.MAX_PLAYERS,
+  minSeats: 2,
+  // pelo menos um botão em cada time
+  canStart: (seats) => seats.some((s) => futebol.teamOf(s) === 0) && seats.some((s) => futebol.teamOf(s) === 1),
+  newGame: (_prev, { seats }) => futebol.newGame(seats),
+  applyAction: futebol.applyAction,
+  viewFor: (s, seat) => futebol.viewFor(s, seat),
+  spectate: (s) => futebol.viewFor(s, null),
+  decide: (v) => futebol.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    return { type: "input", seat, dx: Number(m.dx), dy: Number(m.dy), kick: m.kick === true };
+  },
+  actors: (s) => (s.phase === "over" ? [] : s.players.map((p) => p.seat)),
+  pause: () => null,
+  over: futebol.isOver,
+  animMs: () => 0,
+  realtime: { tickMs: futebol.TICK_MS, step: futebol.step, botEvery: 3, frameEvery: 2 },
+  outcome: (s, seat) => {
+    const team = futebol.teamOf(seat);
+    const other = (1 - team) as futebol.Team;
+    const size = (t: number) => s.players.filter((p) => p.team === t).length;
+    return {
+      outcome: s.winner === team ? "win" : "loss",
+      data: {
+        gf: s.score[team],
+        ga: s.score[other],
+        goals: s.goals.filter((g) => g.seat === seat && !g.own).length,
+        size: Math.max(size(0), size(1)),
+        ms: Math.round(s.tick * futebol.TICK_MS),
+        golden: s.golden,
+        deficit: s.maxDeficit[team],
+      },
+    };
+  },
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
@@ -434,4 +478,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   damas: damasAdapter,
   ludo: ludoAdapter,
   xadrez: xadrezAdapter,
+  "futebol-de-botao": futebolAdapter,
 };

@@ -16,6 +16,7 @@
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/damas": "workspace:*",
+        "@truco/futebol-de-botao": "workspace:*",
         "@truco/game": "workspace:*",
         "@truco/jogo-da-velha": "workspace:*",
         "@truco/ludo": "workspace:*",
@@ -36,6 +37,7 @@
         "@truco/codenames": "workspace:*",
         "@truco/connect4": "workspace:*",
         "@truco/damas": "workspace:*",
+        "@truco/futebol-de-botao": "workspace:*",
         "@truco/game": "workspace:*",
         "@truco/jogo-da-velha": "workspace:*",
         "@truco/ludo": "workspace:*",
@@ -73,6 +75,9 @@
     },
     "packages/damas": {
       "name": "@truco/damas",
+    },
+    "packages/futebol-de-botao": {
+      "name": "@truco/futebol-de-botao",
     },
     "packages/game": {
       "name": "@truco/game",
@@ -398,6 +403,8 @@
     "@truco/connect4": ["@truco/connect4@workspace:packages/connect4"],
 
     "@truco/damas": ["@truco/damas@workspace:packages/damas"],
+
+    "@truco/futebol-de-botao": ["@truco/futebol-de-botao@workspace:packages/futebol-de-botao"],
 
     "@truco/game": ["@truco/game@workspace:packages/game"],
 

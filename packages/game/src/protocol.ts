@@ -1,7 +1,7 @@
 import type { Action, PlayerView, Seat } from "./types";
 
 /** Jogos atendidos pelo servidor de salas. */
-export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames" | "otrio" | "jogo-da-velha" | "damas" | "ludo" | "xadrez";
+export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames" | "otrio" | "jogo-da-velha" | "damas" | "ludo" | "xadrez" | "futebol-de-botao";
 
 export type ClientAction =
   | { type: "play"; index: number; hidden?: boolean }
@@ -64,6 +64,8 @@ export interface RoomInfo {
 /** `V` é a visão do jogo da sala. */
 export type ServerMsg<V = PlayerView> =
   | { t: "room"; room: RoomInfo; view: V | null }
+  /** Jogo em tempo real: só a visão nova, várias vezes por segundo. */
+  | { t: "frame"; view: V }
   | { t: "created"; code: string }
   | { t: "left" }
   | { t: "error"; message: string };

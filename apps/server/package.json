@@ -12,6 +12,7 @@
     "@truco/codenames": "workspace:*",
     "@truco/connect4": "workspace:*",
     "@truco/damas": "workspace:*",
+    "@truco/futebol-de-botao": "workspace:*",
     "@truco/game": "workspace:*",
     "@truco/jogo-da-velha": "workspace:*",
     "@truco/ludo": "workspace:*",
