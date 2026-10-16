@@ -4,6 +4,7 @@ import { ImageResponse } from "next/og";
 import { HOME_CELLS, SAFE, TRACK_CELLS, startOf } from "@truco/ludo";
 import { fromFen } from "@truco/xadrez";
 import { PieceArt } from "@/components/xadrez/Piece";
+import { TileFace } from "@/components/domino/Tile";
 import { getGame } from "@/lib/seo";
 
 /** Prévia de link (Open Graph) de cada jogo: arte do jogo à esquerda, nome à direita. */
@@ -41,6 +42,7 @@ const TITLES: Record<string, [string, string]> = {
   damas: ["DAMAS", "CLÁSSICO"],
   xadrez: ["XADREZ", "XEQUE-MATE"],
   ludo: ["LUDO", "CORRIDA DE PEÕES"],
+  domino: ["DOMINÓ", "BATIDA"],
   "futebol-de-botao": ["FUTEBOL", "DE BOTÃO"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
 };
@@ -365,6 +367,30 @@ async function art(slug: string) {
               </g>
             ))}
             <circle cx="191" cy="104" r="8" fill="#fff" stroke="#111" strokeWidth="2" />
+          </svg>
+        </div>
+      );
+    }
+    case "domino": {
+      // pedaço de mesa: sena no meio, peças nas duas pontas e duas peças em pé
+      const chain: [number, number, number, number, number][] = [
+        [-3.5, 0, 90, 4, 2],
+        [-1.5, 0, 90, 6, 4],
+        [0, 0, 0, 6, 6],
+        [1.5, 0, -90, 6, 3],
+        [3, 0, 0, 3, 3],
+      ];
+      return (
+        <div style={{ display: "flex", position: "relative", width: 460, height: 420 }}>
+          <svg width="460" height="420" viewBox="-4.9 -4.2 9.8 9">
+            {chain.map(([x, y, rot, a, b], i) => (
+              <g key={i} transform={`translate(${x} ${y}) rotate(${rot})`}>
+                {TileFace({ a, b })}
+              </g>
+            ))}
+            <g transform="translate(-1.6 -2.6) rotate(-14) scale(1.25)">{TileFace({ a: 5, b: 5 })}</g>
+            <g transform="translate(1.5 -2.4) rotate(12) scale(1.25)">{TileFace({ a: 1, b: 3 })}</g>
+            <g transform="translate(-0.2 2.7) rotate(4) scale(1.25)">{TileFace({ a: 0, b: 2 })}</g>
           </svg>
         </div>
       );

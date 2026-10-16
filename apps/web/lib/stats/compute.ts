@@ -1,4 +1,4 @@
-import { bestStreak, currentStreak, dailyStreaks, dailyWins, type ResultRow } from "@/lib/stats/achievements";
+import { bestStreak, currentStreak, dailyStreaks, dailyWins, dominoScore, dominoWins, type ResultRow } from "@/lib/stats/achievements";
 import { STAT_GAMES, type StatGame } from "@/lib/stats/games";
 
 // Cálculos do perfil sobre linhas já lidas do banco (sem banco aqui, para testar).
@@ -144,6 +144,22 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
         }),
       };
       break;
+    case "domino": {
+      const kinds = ["simples", "carroca", "laelo", "cruzada"];
+      const margin = maxOf(wins.map((r) => dominoScore(r)[0] - dominoScore(r)[1]).filter(Number.isFinite));
+      const best = wins.find((r) => dominoScore(r)[0] - dominoScore(r)[1] === margin);
+      chip("Maior vitória", best ? dominoScore(best).join(" × ") : null);
+      chip("Batidas", rs.reduce((n, r) => n + kinds.reduce((m, k) => m + dominoWins(r, k), 0), 0) || null);
+      chip("Cruzadas", rs.reduce((n, r) => n + dominoWins(r, "cruzada"), 0) || null);
+      stats.table = {
+        cols: ["Vitórias", "Partidas"],
+        rows: (["duplas", "1x1"] as const).map((m) => {
+          const games = rs.filter((r) => r.data.mode === m);
+          return { label: m === "duplas" ? "Duplas" : "1×1", values: [String(games.filter(isWin).length), String(games.length)] };
+        }),
+      };
+      break;
+    }
     case "futebol-de-botao": {
       const margin = maxOf(wins.map((r) => num(r, "gf") - num(r, "ga")).filter(Number.isFinite));
       const best = wins.find((r) => num(r, "gf") - num(r, "ga") === margin);

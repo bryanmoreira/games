@@ -20,6 +20,7 @@
     "@truco/futebol-de-botao": "workspace:*",
     "@truco/game": "workspace:*",
     "@truco/jogo-da-velha": "workspace:*",
+    "@truco/domino": "workspace:*",
     "@truco/ludo": "workspace:*",
     "@truco/otrio": "workspace:*",
     "@truco/spider": "workspace:*",

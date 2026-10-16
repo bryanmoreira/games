@@ -36,6 +36,13 @@ export interface AchievementDef {
 const num = (r: ResultRow, k: string) => Number(r.data[k] ?? NaN);
 const isWin = (r: ResultRow) => r.outcome === "win";
 const winsOf = (rs: ResultRow[]) => rs.filter(isWin);
+/** Dominó: placar final [nós, eles]. */
+export const dominoScore = (r: ResultRow): [number, number] => {
+  const s = r.data.scores;
+  return Array.isArray(s) ? [Number(s[0]), Number(s[1])] : [NaN, NaN];
+};
+/** Dominó: batidas de um tipo que o jogador fez na partida. */
+export const dominoWins = (r: ResultRow, kind: string) => Number((r.data.wins as Record<string, unknown> | undefined)?.[kind] ?? 0) || 0;
 
 /** Maior sequência de vitórias (empate e derrota quebram). */
 export function bestStreak(rs: ResultRow[]): number {
@@ -372,6 +379,52 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: ({ results }) => winsOf(results).some((r) => num(r, "players") === 4),
   },
   streak5("ludo"),
+
+  first("domino"),
+  {
+    code: "domino:pneu",
+    game: "domino",
+    title: "Pneu",
+    desc: "Vencer uma partida por 6 a 0 (ou mais)",
+    icon: "flame",
+    check: ({ results }) => winsOf(results).some((r) => dominoScore(r)[1] === 0),
+  },
+  {
+    code: "domino:comeback",
+    game: "domino",
+    title: "Virada",
+    desc: "Vencer depois de estar perdendo por 4 pontos ou mais",
+    icon: "star",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "deficit") >= 4),
+  },
+  {
+    code: "domino:cruzada",
+    game: "domino",
+    title: "Cruzada",
+    desc: "Bater com uma cruzada (vale 4)",
+    icon: "bolt",
+    check: ({ results }) => results.some((r) => dominoWins(r, "cruzada") > 0),
+  },
+  {
+    code: "domino:laelo",
+    game: "domino",
+    title: "Lá-e-lô",
+    desc: "Bater com um lá-e-lô (vale 3)",
+    icon: "target",
+    check: ({ results }) => results.some((r) => dominoWins(r, "laelo") > 0),
+  },
+  {
+    code: "domino:both_modes",
+    game: "domino",
+    title: "Mano a mano",
+    desc: "Vencer uma partida no 1×1 e uma em duplas",
+    icon: "shield",
+    check: ({ results }) => winsOf(results).some((r) => r.data.mode === "1x1") && winsOf(results).some((r) => r.data.mode === "duplas"),
+  },
+  streak5("domino"),
+  wins("domino", 10),
+  wins("domino", 50),
+  wins("domino", 100),
 
   first("futebol-de-botao"),
   {

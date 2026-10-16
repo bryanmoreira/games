@@ -8,6 +8,7 @@ import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
 import * as ludo from "@truco/ludo";
+import * as domino from "@truco/domino";
 import * as xadrez from "@truco/xadrez";
 import * as futebol from "@truco/futebol-de-botao";
 import { GAMES } from "../src/games";
@@ -169,6 +170,50 @@ describe("ludo", () => {
     s = roll(s, 6);
     const moved = move(s, 0);
     expect(animMs(s, moved)).toBeGreaterThan(0);
+  });
+});
+
+describe("domino", () => {
+  const { outcome, animMs, canStart, withSeat } = GAMES.domino;
+
+  test("mesa de 4 ou 1×1 em lados opostos", () => {
+    expect(canStart!([0, 1, 2, 3])).toBe(true);
+    expect(canStart!([1, 2])).toBe(true);
+    expect(canStart!([0, 2])).toBe(false);
+  });
+
+  test("ação do cliente com o assento de quem mandou", () => {
+    expect(withSeat({ type: "play", tile: [3, 5], side: "left" }, 2)).toEqual({ type: "play", seat: 2, tile: [3, 5], side: "left" });
+    expect(withSeat({ type: "draw" }, 1)).toEqual({ type: "draw", seat: 1 });
+  });
+
+  test("vitória da dupla para os dois, com placar, batidas de quem jogou e a maior desvantagem", () => {
+    const s = domino.newGame(seeded(2), [0, 1, 2, 3]);
+    s.hands = [[[1, 2]], [[3, 3]], [[4, 4]], [[5, 5]]];
+    s.opening = null;
+    s.turn = 0;
+    s.scores = [4, 5];
+    s.maxDeficit = [4, 0];
+    s.board = { first: { tile: [1, 6], inner: 2, outer: 1, seat: 1, n: 0 }, left: [], right: [] };
+    // 1-2 nas pontas 2 | 1: lá-e-lô, 3 pontos
+    let e = ok(domino.applyAction(s, { type: "play", seat: 0, tile: [1, 2], side: "left" }));
+    e = ok(domino.applyAction(e, { type: "advance" }));
+    expect(e.phase).toBe("gameOver");
+    expect(outcome(e, 0)).toEqual({
+      outcome: "win",
+      data: { mode: "duplas", scores: [7, 5], hands: 1, wins: { simples: 0, carroca: 0, laelo: 1, cruzada: 0 }, closed: 0, deficit: 4 },
+    });
+    expect(outcome(e, 2).outcome).toBe("win");
+    expect(outcome(e, 1)).toMatchObject({ outcome: "loss", data: { scores: [5, 7], mode: "duplas" } });
+  });
+
+  test("1×1 vai no modo; distribuição e peça jogada esperam a animação", () => {
+    const s = domino.newGame(seeded(3), [0, 1]);
+    expect(animMs(null, s)).toBeGreaterThan(1000);
+    const a = domino.decide(domino.viewFor(s, s.turn))!;
+    const n = ok(domino.applyAction(s, a));
+    expect(animMs(s, n)).toBeGreaterThan(0);
+    expect(outcome(n, 0).data.mode).toBe("1x1");
   });
 });
 

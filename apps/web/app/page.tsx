@@ -17,6 +17,7 @@ import { StaticBoard as DamasBoard } from "@/components/damas/Board";
 import { StaticBoard as LudoBoard } from "@/components/ludo/Board";
 import { StaticBoard as ChessBoard } from "@/components/xadrez/Board";
 import { FieldArt } from "@/components/futebol-de-botao/Field";
+import { Domino } from "@/components/domino/Tile";
 import { UserButton } from "@/components/UserButton";
 import { GameGrid, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -143,6 +144,19 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
             { color: 0, piece: 1, progress: 56 },
           ]}
         />
+      </div>
+    ),
+  },
+  {
+    slug: "domino",
+    title: "DOMINÓ",
+    sub: "BATIDA",
+    art: (
+      <div className="absolute left-1/2 top-[20%] flex w-[68%] -translate-x-1/2 -rotate-6 items-center justify-center drop-shadow-[0_4px_0_rgba(0,0,0,0.3)]">
+        <Domino a={2} b={6} flat className="w-[30%]" />
+        <Domino a={6} b={6} className="w-[15%]" />
+        <Domino a={6} b={3} flat className="w-[30%]" />
+        <Domino a={3} b={3} className="w-[15%]" />
       </div>
     ),
   },

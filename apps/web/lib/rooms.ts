@@ -8,6 +8,7 @@ import { roomPath as otrioRoom } from "./otrio/paths";
 import { roomPath as velhaRoom } from "./jogo-da-velha/paths";
 import { roomPath as damasRoom } from "./damas/paths";
 import { roomPath as ludoRoom } from "./ludo/paths";
+import { roomPath as dominoRoom } from "./domino/paths";
 import { roomPath as xadrezRoom } from "./xadrez/paths";
 import { roomPath as futebolRoom } from "./futebol-de-botao/paths";
 
@@ -22,6 +23,7 @@ export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
   "jogo-da-velha": velhaRoom,
   damas: damasRoom,
   ludo: ludoRoom,
+  domino: dominoRoom,
   xadrez: xadrezRoom,
   "futebol-de-botao": futebolRoom,
 };

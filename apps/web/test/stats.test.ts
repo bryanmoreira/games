@@ -175,6 +175,34 @@ describe("gameStats: Ludo", () => {
   });
 });
 
+describe("gameStats: Dominó", () => {
+  test("maior vitória, batidas, cruzadas e tabela por modo", () => {
+    const rs = [
+      win({ mode: "duplas", scores: [6, 4], wins: { simples: 2, carroca: 1, laelo: 0, cruzada: 0 } }),
+      win({ mode: "1x1", scores: [7, 1], wins: { simples: 1, carroca: 0, laelo: 1, cruzada: 1 } }),
+      loss({ mode: "duplas", scores: [2, 6], wins: { simples: 1, carroca: 0, laelo: 0, cruzada: 1 } }),
+      loss({ abandoned: true }),
+    ];
+    const s = gameStats("domino", rs);
+    expect(s.chips).toEqual([
+      { label: "Maior vitória", value: "7 × 1" },
+      { label: "Batidas", value: "8" },
+      { label: "Cruzadas", value: "2" },
+    ]);
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Partidas"],
+      rows: [
+        { label: "Duplas", values: ["1", "2"] },
+        { label: "1×1", values: ["1", "1"] },
+      ],
+    });
+  });
+
+  test("sem vitórias nem batidas: sem chips", () => {
+    expect(chips("domino", [loss({ mode: "duplas", scores: [0, 6], wins: { simples: 0, carroca: 0, laelo: 0, cruzada: 0 } })])).toEqual([]);
+  });
+});
+
 describe("gameStats: Futebol de Botão", () => {
   test("maior goleada, mais gols, vitória mais rápida, total de gols e tabela por tamanho", () => {
     const rs = [
@@ -487,6 +515,7 @@ describe("jogos", () => {
     ["/damas/sala/ABCD", "damas"],
     ["/xadrez/sala/ABCD", "xadrez"],
     ["/ludo/sala/ABCD", "ludo"],
+    ["/domino/sala/ABCD", "domino"],
     ["/futebol-de-botao/sala/ABCD", "futebol-de-botao"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],

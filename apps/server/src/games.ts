@@ -7,6 +7,7 @@ import * as otrio from "@truco/otrio";
 import * as velha from "@truco/jogo-da-velha";
 import * as damas from "@truco/damas";
 import * as ludo from "@truco/ludo";
+import * as domino from "@truco/domino";
 import * as xadrez from "@truco/xadrez";
 import * as futebol from "@truco/futebol-de-botao";
 import type { GameId, PlayerReport } from "@truco/game";
@@ -84,6 +85,13 @@ const LUDO_STEP_MS = 150;
 const LUDO_CAPTURE_MS = 450;
 // Peça deslizando no xadrez
 const XADREZ_MOVE_MS = 300;
+// Peças distribuídas no dominó, peça entrando na mesa, aviso de quem passou e peça comprada
+const DOMINO_DEAL_MS = 1500;
+const DOMINO_PLAY_MS = 450;
+const DOMINO_PASS_MS = 900;
+const DOMINO_DRAW_MS = 300;
+// Mãos abertas e pontos da mão na tela antes da próxima
+const DOMINO_HAND_END_MS = 4200;
 // Dado parado na tela antes de a vez passar (sem lance ou 3º seis)
 const LUDO_PASS_MS = 1300;
 
@@ -386,6 +394,52 @@ const ludoAdapter: GameAdapter<ludo.GameState, ludo.Action, ludo.PlayerView> = {
   },
 };
 
+const dominoAdapter: GameAdapter<domino.GameState, domino.Action, domino.PlayerView> = {
+  seats: domino.SEATS,
+  minSeats: 2,
+  canStart: domino.validPlayers,
+  newGame: (prev, { seats }) => domino.newGame(Math.random, seats, prev),
+  applyAction: (s, a) => domino.applyAction(s, a),
+  viewFor: (s, seat) => domino.viewFor(s, seat),
+  decide: (v) => domino.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    if (m.type === "draw") return { type: "draw", seat };
+    const t = Array.isArray(m.tile) ? m.tile.map(Number) : [];
+    return {
+      type: "play",
+      seat,
+      tile: [t[0], t[1]] as domino.Tile,
+      ...(m.side === "left" || m.side === "right" ? { side: m.side } : {}),
+    };
+  },
+  actors: (s) => (s.phase === "playing" ? [s.turn] : []),
+  pause: (s) => (s.phase === "handEnd" ? DOMINO_HAND_END_MS : null),
+  // comprar é rápido; escolher a peça leva um pouco mais
+  botDelay: (s) => (domino.canPlaySeat(s, s.turn) ? 700 + Math.random() * 600 : 300 + Math.random() * 200),
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => {
+    if (!prev || prev.handNo !== next.handNo || prev.gameNo !== next.gameNo) return DOMINO_DEAL_MS;
+    const added = next.events.slice(prev.events.length);
+    return added.reduce((ms, e) => ms + (e.kind === "play" ? DOMINO_PLAY_MS : e.kind === "pass" ? DOMINO_PASS_MS : DOMINO_DRAW_MS), 0);
+  },
+  outcome: (s, seat) => {
+    const team = domino.teamOf(seat);
+    const st = s.stats[seat];
+    return {
+      outcome: s.winner === team ? "win" : "loss",
+      data: {
+        mode: s.mode,
+        scores: [s.scores[team], s.scores[1 - team]],
+        hands: s.handNo,
+        wins: { ...st.wins },
+        closed: st.closed,
+        deficit: s.maxDeficit[team],
+      },
+    };
+  },
+};
+
 const xadrezAdapter: GameAdapter<xadrez.GameState, xadrez.Action, xadrez.PlayerView> = {
   seats: 2,
   settings: {
@@ -477,6 +531,7 @@ export const GAMES: Record<GameId, GameAdapter> = {
   "jogo-da-velha": velhaAdapter,
   damas: damasAdapter,
   ludo: ludoAdapter,
+  domino: dominoAdapter,
   xadrez: xadrezAdapter,
   "futebol-de-botao": futebolAdapter,
 };
