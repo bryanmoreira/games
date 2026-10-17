@@ -70,12 +70,9 @@ export function GameGrid({ games }: { games: GameTile[] }) {
         )}
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid w-full grid-cols-1 gap-x-12 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((g) => (
-          <div key={g.slug} className="flex flex-col gap-3">
-            {g.card}
-            <GameTags players={g.players} />
-          </div>
+          <div key={g.slug}>{g.card}</div>
         ))}
         {mode === "all" && (
           <div className="flex aspect-[4/3] items-center justify-center rounded-3xl border-2 border-dashed border-white/15 font-display text-white/30">
@@ -104,30 +101,27 @@ function StepBtn({ label, disabled, onClick, children }: { label: string; disabl
   );
 }
 
-/** Selos embaixo do card: modos (solo / multiplayer) e quantidade de jogadores */
-function GameTags({ players: p }: { players: Players }) {
+/** Selo no canto do card: pessoa = dá para jogar sozinho; pessoas + número = quantos jogam juntos. */
+export function PlayersBadge({ players: p }: { players: Players }) {
   const range = p.min === p.max ? `${p.min}` : `${p.min}–${p.max}`;
-  const players = `${range} ${p.max === 1 ? "jogador" : "jogadores"}`;
-  const tag = "flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 font-display text-[10px] leading-none";
+  // com o ícone de solo ao lado, o número do multiplayer começa em 2
+  const lo = Math.max(p.min, 2);
+  const multi = lo === p.max ? `${lo}` : `${lo}–${p.max}`;
+  const label = [isSolo(p) && "Solo", isMulti(p) && "Multiplayer", `${range} ${p.max === 1 ? "jogador" : "jogadores"}`].filter(Boolean).join(" · ");
   return (
-    <div className="flex flex-wrap justify-center gap-1.5">
-      {isSolo(p) && (
-        <span className={`${tag} text-white/70`}>
-          <PersonIcon className="h-3.5 w-3.5" />
-          Solo
-        </span>
-      )}
+    <span
+      title={label}
+      className="absolute right-3 top-3 flex items-center gap-2 rounded-full bg-black/35 px-2.5 py-1.5 font-display text-[11px] leading-none text-white/80 ring-1 ring-white/10 backdrop-blur-sm"
+    >
+      <span className="sr-only">{label}</span>
+      {isSolo(p) && <PersonIcon className="h-3.5 w-3.5" />}
+      {isSolo(p) && isMulti(p) && <span aria-hidden="true" className="h-3 w-px bg-white/20" />}
       {isMulti(p) && (
-        <span className={`${tag} text-white/70`}>
+        <span aria-hidden="true" className="flex items-center gap-1 text-gold">
           <PeopleIcon className="h-3.5 w-3.5" />
-          Multiplayer
+          {multi}
         </span>
       )}
-      <span className={`${tag} text-gold`} title={players}>
-        <PeopleIcon className="h-3.5 w-3.5" />
-        <span className="sr-only">{players}</span>
-        <span aria-hidden="true">{range}</span>
-      </span>
-    </div>
+    </span>
   );
 }

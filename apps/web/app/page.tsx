@@ -19,7 +19,7 @@ import { StaticBoard as ChessBoard } from "@/components/xadrez/Board";
 import { FieldArt } from "@/components/futebol-de-botao/Field";
 import { Domino } from "@/components/domino/Tile";
 import { UserButton } from "@/components/UserButton";
-import { GameGrid, type GameTile } from "@/components/home/GameGrid";
+import { GameGrid, PlayersBadge, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TableDecor } from "@/components/home/TableDecor";
 
@@ -236,6 +236,7 @@ const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
         className={`felt ${FELT[slug] ?? ""} group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition duration-300 hover:-translate-y-1.5`}
       >
         {art}
+        <PlayersBadge players={g.players} />
         <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
           <span className="font-display text-3xl text-gold transition-[text-shadow] duration-300 group-hover:[text-shadow:0_0_18px_rgba(242,193,78,0.55)]">{title}</span>
           <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">{sub}</span>
