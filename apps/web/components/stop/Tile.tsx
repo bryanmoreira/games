@@ -13,11 +13,12 @@ export function Tile({ letter, className = "h-12 w-12 text-3xl", style }: { lett
 }
 
 /** "STOP" em quatro peças levemente tortas. */
-export function StopLogo({ className = "h-14 w-14 text-4xl" }: { className?: string }) {
+/** `hop`: as letras pulam uma a uma ao passar o mouse no card da home (.hc-hop). */
+export function StopLogo({ className = "h-14 w-14 text-4xl", hop = false }: { className?: string; hop?: boolean }) {
   return (
     <div className="flex gap-[0.15em]">
       {"STOP".split("").map((l, i) => (
-        <Tile key={i} letter={l} className={className} style={{ transform: `rotate(${[-6, 4, -3, 7][i]}deg) translateY(${[0, -4, 2, -2][i]}%)` }} />
+        <Tile key={i} letter={l} className={`${className} ${hop ? "hc-hop" : ""}`} style={{ transform: `rotate(${[-6, 4, -3, 7][i]}deg) translateY(${[0, -4, 2, -2][i]}%)`, "--d": i } as React.CSSProperties} />
       ))}
     </div>
   );

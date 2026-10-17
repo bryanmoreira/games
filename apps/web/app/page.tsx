@@ -7,15 +7,9 @@ import { makeCard } from "@truco/game";
 import { CardImg } from "@/components/cards/Card";
 import { MiniBoard } from "@/components/sudoku/common";
 import { MiniTiles } from "@/components/verbete/Tile";
-import { StaticBoard } from "@/components/connect4/Board";
 import { StopLogo } from "@/components/stop/Tile";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { MiniGrid } from "@/components/codenames/Board";
-import { StaticBoard as OtrioBoard } from "@/components/otrio/Board";
-import { StaticBoard as VelhaBoard } from "@/components/jogo-da-velha/Board";
-import { StaticBoard as DamasBoard } from "@/components/damas/Board";
-import { StaticBoard as LudoBoard } from "@/components/ludo/Board";
-import { StaticBoard as ChessBoard } from "@/components/xadrez/Board";
 import { FieldArt } from "@/components/futebol-de-botao/Field";
 import { Domino } from "@/components/domino/Tile";
 import { UserButton } from "@/components/UserButton";
@@ -23,6 +17,8 @@ import { GameGrid, PlayersBadge, type GameTile } from "@/components/home/GameGri
 import { SiteFooter } from "@/components/SiteFooter";
 import { TableDecor } from "@/components/home/TableDecor";
 import { DailyRibbon } from "@/components/home/DailyRibbon";
+import { HoverCard } from "@/components/home/HoverCard";
+import { ChessArt, Connect4Art, DamasArt, LudoArt, OtrioArt, VelhaArt } from "@/components/home/BoardArts";
 import { isDailyGame } from "@/lib/daily/challenge";
 import { SPIDER_DAILY_PATH } from "@/lib/spider/paths";
 import { SUDOKU_DAILY_PATH } from "@/lib/sudoku/paths";
@@ -93,7 +89,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "9 × 9",
     art: (
       <div className={`absolute left-1/2 top-[8%] w-[36%] -translate-x-1/2 -rotate-6 text-[clamp(7px,2.2vw,12px)] ${HOVER}`}>
-        <MiniBoard />
+        <MiniBoard solve />
       </div>
     ),
   },
@@ -103,7 +99,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "PALAVRA DO DIA",
     art: (
       <div className={`absolute left-1/2 top-[9%] -translate-x-1/2 -rotate-3 text-[clamp(10px,3vw,15px)] ${HOVER}`}>
-        <MiniTiles />
+        <MiniTiles flip />
       </div>
     ),
   },
@@ -113,7 +109,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "4 EM LINHA",
     art: (
       <div className={`absolute left-1/2 top-[9%] w-[44%] -translate-x-1/2 rotate-3 ${HOVER}`}>
-        <StaticBoard rows={["...y...", "..yr...", ".yrr.r.", "yrryry."]} win={[[0, 0], [1, 1], [2, 2], [3, 3]]} dim={false} />
+        <Connect4Art />
       </div>
     ),
   },
@@ -123,7 +119,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "TRINCA DE ANÉIS",
     art: (
       <div className={`absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 -rotate-3 ${HOVER}`}>
-        <OtrioBoard cells={["r..", "..b", "..g", ".p.", "rrr", "", "p..", "b..", ".g."]} win={[12, 13, 14]} dim={false} />
+        <OtrioArt />
       </div>
     ),
   },
@@ -133,7 +129,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "JOGO DA VELHA",
     art: (
       <div className={`absolute left-1/2 top-[9%] w-[34%] -translate-x-1/2 rotate-3 ${HOVER}`}>
-        <VelhaBoard cells="XO.OX...X" win={[0, 4, 8]} />
+        <VelhaArt />
       </div>
     ),
   },
@@ -143,7 +139,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "XEQUE-MATE",
     art: (
       <div className={`absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 rotate-3 ${HOVER}`}>
-        <ChessBoard fen="r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R" />
+        <ChessArt />
       </div>
     ),
   },
@@ -153,7 +149,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "CLÁSSICO",
     art: (
       <div className={`absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 -rotate-3 ${HOVER}`}>
-        <DamasBoard rows={["", "..b.B...", ".b...b..", "....w...", ".....W..", "w.w.....", ".w......"]} />
+        <DamasArt />
       </div>
     ),
   },
@@ -163,15 +159,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "CORRIDA DE PEÕES",
     art: (
       <div className={`absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 rotate-3 ${HOVER}`}>
-        <LudoBoard
-          pieces={[
-            { color: 0, piece: 0, progress: 7 },
-            { color: 1, piece: 0, progress: 3 },
-            { color: 2, piece: 0, progress: 18 },
-            { color: 3, piece: 0, progress: 52 },
-            { color: 0, piece: 1, progress: 56 },
-          ]}
-        />
+        <LudoArt />
       </div>
     ),
   },
@@ -181,10 +169,10 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "BATIDA",
     art: (
       <div className={`absolute left-1/2 top-[20%] flex w-[68%] -translate-x-1/2 -rotate-6 items-center justify-center gap-0 transition-[gap] duration-300 motion-safe:group-hover:gap-[2%] drop-shadow-[0_4px_0_rgba(0,0,0,0.3)] ${HOVER}`}>
-        <Domino a={2} b={6} flat className="w-[30%]" />
-        <Domino a={6} b={6} className="w-[15%]" />
-        <Domino a={6} b={3} flat className="w-[30%]" />
-        <Domino a={3} b={3} className="w-[15%]" />
+        <Domino a={2} b={6} flat className="hc-drop w-[30%] [--d:0]" />
+        <Domino a={6} b={6} className="hc-drop w-[15%] [--d:1]" />
+        <Domino a={6} b={3} flat className="hc-drop w-[30%] [--d:2]" />
+        <Domino a={3} b={3} className="hc-drop w-[15%] [--d:3]" />
       </div>
     ),
   },
@@ -194,7 +182,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "DE BOTÃO",
     art: (
       <div className={`absolute left-1/2 top-[14%] w-[62%] -translate-x-1/2 -rotate-3 drop-shadow-[0_4px_0_rgba(0,0,0,0.35)] ${HOVER}`}>
-        <FieldArt className="w-full" />
+        <FieldArt className="w-full" shot />
       </div>
     ),
   },
@@ -204,7 +192,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "ADEDONHA",
     art: (
       <div className={`absolute left-1/2 top-[20%] -translate-x-1/2 -rotate-3 text-[clamp(28px,9vw,44px)] ${HOVER}`}>
-        <StopLogo className="h-[1.5em] w-[1.5em]" />
+        <StopLogo className="h-[1.5em] w-[1.5em]" hop />
       </div>
     ),
   },
@@ -214,7 +202,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "NAVAL",
     art: (
       <div className={`absolute left-1/2 top-[9%] w-[40%] -translate-x-1/2 rotate-3 ${HOVER}`}>
-        <SeaLogo />
+        <SeaLogo salvo={[[4, 3], [4, 4], [4, 5]]} />
       </div>
     ),
   },
@@ -224,7 +212,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     sub: "AGENTES SECRETOS",
     art: (
       <div className={`absolute left-1/2 top-[10%] w-[44%] -translate-x-1/2 -rotate-3 ${HOVER}`}>
-        <MiniGrid />
+        <MiniGrid reveal={{ 1: 1, 3: 0, 5: "neutral" }} />
       </div>
     ),
   },
@@ -240,7 +228,7 @@ const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
     players: g.players,
     card: (
       // a fita do desafio é outro link, por isso fica ao lado do card (e o hover vale para os dois)
-      <div className="group relative transition duration-300 hover:-translate-y-1.5">
+      <HoverCard className="group relative transition duration-300 hover:-translate-y-1.5">
         <Link href={g.path} className={`felt ${FELT[slug] ?? ""} relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5`}>
           {art}
           <PlayersBadge players={g.players} />
@@ -250,7 +238,7 @@ const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
           </span>
         </Link>
         {isDailyGame(slug) && <DailyRibbon href={DAILY_PATH[slug]} />}
-      </div>
+      </HoverCard>
     ),
   };
 });

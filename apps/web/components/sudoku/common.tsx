@@ -56,7 +56,8 @@ export const SAMPLE = "534678912672195348198342567859761423426853791713924856961
 const SHOWN = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
 
 /** Grade 9×9 de enfeite (página inicial e hub). */
-export function MiniBoard({ className = "", digits = true }: { className?: string; digits?: boolean }) {
+/** `solve`: as casas vazias guardam a resposta, que aparece em onda ao passar o mouse no card da home (.hc-fill). */
+export function MiniBoard({ className = "", digits = true, solve = false }: { className?: string; digits?: boolean; solve?: boolean }) {
   return (
     <div className={`grid aspect-square grid-cols-3 gap-[3%] rounded-[6%] bg-[#5b3a1e] p-[3%] shadow-[0_6px_20px_rgba(0,0,0,0.5)] ${className}`}>
       {Array.from({ length: 9 }, (_, b) => (
@@ -66,7 +67,12 @@ export function MiniBoard({ className = "", digits = true }: { className?: strin
             const v = SHOWN[i] !== "0" ? SHOWN[i] : "";
             return (
               <div key={k} className="flex aspect-square items-center justify-center bg-felt font-display leading-none text-white/90 [font-size:inherit]">
-                {digits ? v : ""}
+                {digits && v}
+                {solve && !v && (
+                  <span className="hc-fill text-gold" style={{ "--d": Math.floor(i / 9) + (i % 9) } as React.CSSProperties}>
+                    {SAMPLE[i]}
+                  </span>
+                )}
               </div>
             );
           })}

@@ -501,7 +501,8 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
 }
 
 /** Desenho do campo em SVG (página do jogo, "Como jogar" e prévia de link). */
-export function FieldArt({ className, players = DEFAULT_ART }: { className?: string; players?: { x: number; y: number; team: Team; n: number; kick?: boolean }[] }) {
+/** `shot`: a bola vai para o gol ao passar o mouse no card da home (.hc-shot). */
+export function FieldArt({ className, players = DEFAULT_ART, shot = false }: { className?: string; players?: { x: number; y: number; team: Team; n: number; kick?: boolean }[]; shot?: boolean }) {
   const ball = { x: 60, y: -20 };
   return (
     <svg viewBox={`${-WX} ${-WY} ${WX * 2} ${WY * 2}`} className={className} aria-hidden="true">
@@ -544,7 +545,9 @@ export function FieldArt({ className, players = DEFAULT_ART }: { className?: str
           </text>
         </g>
       ))}
-      <SoccerBallSvg x={ball.x} y={ball.y} r={BALL_R * 1.6} />
+      <g className={shot ? "hc-shot" : undefined}>
+        <SoccerBallSvg x={ball.x} y={ball.y} r={BALL_R * 1.6} />
+      </g>
     </svg>
   );
 }

@@ -56,7 +56,8 @@ const ART: { word: string; marks: Mark[] }[] = [
 ];
 
 /** Arte do jogo: algumas linhas marcadas (card da home e página do jogo). */
-export function MiniTiles({ className = "", rows = 3 }: { className?: string; rows?: number }) {
+/** `flip`: as peças viram uma a uma ao passar o mouse no card da home (.hc-flip). */
+export function MiniTiles({ className = "", rows = 3, flip = false }: { className?: string; rows?: number; flip?: boolean }) {
   return (
     <span className={`flex flex-col gap-[0.25em] ${className}`}>
       {ART.slice(ART.length - rows).map((r, i) => (
@@ -64,8 +65,8 @@ export function MiniTiles({ className = "", rows = 3 }: { className?: string; ro
           {[...r.word].map((l, j) => (
             <span
               key={j}
-              className={`flex h-[2em] w-[2em] items-center justify-center rounded-[0.3em] font-display leading-none ${r.marks[j] === "absent" ? "text-white/55" : "text-white"}`}
-              style={{ backgroundColor: MARK_BG[r.marks[j]] }}
+              className={`flex h-[2em] w-[2em] items-center justify-center rounded-[0.3em] font-display leading-none ${r.marks[j] === "absent" ? "text-white/55" : "text-white"} ${flip ? "hc-flip" : ""}`}
+              style={{ backgroundColor: MARK_BG[r.marks[j]], "--d": i * r.word.length + j } as React.CSSProperties}
             >
               {l}
             </span>

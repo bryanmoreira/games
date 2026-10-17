@@ -178,16 +178,25 @@ export function WordCard({
 }
 
 /** Logo/ilustração: grade 3×3 de cartões, alguns revelados. */
-export function MiniGrid({ className = "" }: { className?: string }) {
+/** `reveal`: cartas cobertas que viram ao passar o mouse no card da home (.hc-reveal), uma por vez, mostrando o agente. */
+export function MiniGrid({ className = "", reveal = {} }: { className?: string; reveal?: Partial<Record<number, Key>> }) {
   const cells: (Key | null)[] = [0, null, 1, null, "assassin", null, 1, "neutral", 0];
   return (
     <div className={`grid grid-cols-3 gap-[6%] ${className}`}>
       {cells.map((k, i) => (
         <span
           key={i}
-          className={`flex aspect-[3/2] items-center justify-center rounded-[12%/18%] ${k === null ? COVERED.hidden : REVEALED[String(k)]}`}
+          className={`relative flex aspect-[3/2] items-center justify-center rounded-[12%/18%] ${k === null ? COVERED.hidden : REVEALED[String(k)]}`}
         >
           {k === null ? <span className="h-[14%] w-[60%] rounded-full bg-stone-800/30" /> : <KeyIcon k={k} className="h-[65%] w-[65%] opacity-60" />}
+          {k === null && reveal[i] !== undefined && (
+            <span
+              className={`hc-reveal absolute inset-0 flex items-center justify-center rounded-[12%/18%] ${REVEALED[String(reveal[i])]}`}
+              style={{ "--d": Object.keys(reveal).indexOf(String(i)) } as React.CSSProperties}
+            >
+              <KeyIcon k={reveal[i]!} className="h-[65%] w-[65%] opacity-60" />
+            </span>
+          )}
         </span>
       ))}
     </div>

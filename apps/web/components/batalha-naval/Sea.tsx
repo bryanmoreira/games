@@ -193,7 +193,8 @@ export function FleetRow({ sunk, tone = "steel", className = "" }: { sunk?: Set<
 }
 
 /** Mar ampliado (6×6) de enfeite: logo do hub e da página do jogo. */
-export function SeaLogo({ className = "" }: { className?: string }) {
+/** `salvo`: tiros que acertam ao passar o mouse no card da home (.hc-pop), um por vez. */
+export function SeaLogo({ className = "", salvo = [] }: { className?: string; salvo?: [number, number][] }) {
   const N = 6;
   const at = (col: number, row: number, w = 1, h = 1): React.CSSProperties => ({
     left: `${(col * 100) / N}%`,
@@ -241,6 +242,11 @@ export function SeaLogo({ className = "" }: { className?: string }) {
       <span className="absolute p-[2%]" style={at(4, 1)}>
         <Crosshair />
       </span>
+      {salvo.map(([c, r], i) => (
+        <span key={`h${c}${r}`} className="hc-pop absolute" style={{ ...at(c, r), "--d": i } as React.CSSProperties}>
+          <Fire />
+        </span>
+      ))}
     </div>
   );
 }
