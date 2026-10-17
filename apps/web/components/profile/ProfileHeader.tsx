@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckIcon, PencilIcon } from "@/components/ui/icons";
 import { authClient } from "@/lib/auth-client";
+import { ChipAvatar } from "@/components/ui/ChipFrame";
 import { refreshIdentity, setName as setGameName } from "@/lib/socket";
 
 type User = { name: string; email: string; image: string | null; username: string | null };
@@ -54,7 +55,7 @@ export function ProfileHeader({ user }: { user: User }) {
 
   return (
     <header className={PROFILE_TABLE}>
-      <Avatar user={user} className="h-24 w-24 text-4xl sm:h-36 sm:w-36 sm:text-6xl" />
+      <ChipAvatar user={user} className="h-24 w-24 text-3xl sm:h-32 sm:w-32 sm:text-5xl" />
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         {editing ? (

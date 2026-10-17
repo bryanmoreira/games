@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { loginHref } from "@/lib/login";
+import { ChipAvatar } from "@/components/ui/ChipFrame";
 
 /** "Entrar" (vai para /login) ou avatar que leva ao perfil. */
 export function UserButton({ className = "" }: { className?: string }) {
@@ -29,18 +30,9 @@ export function UserButton({ className = "" }: { className?: string }) {
   }
 
   return (
-    <Link
-      href="/perfil"
-      aria-label="Perfil"
-      title={user.name}
-      className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gold/20 font-display text-gold ring-2 ring-gold/40 transition hover:ring-gold ${className}`}
-    >
-      {user.image ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={user.image} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
-      ) : (
-        user.name.charAt(0).toUpperCase()
-      )}
+    <Link href="/perfil" aria-label="Perfil" title={user.name} className={`group h-10 w-10 ${className}`}>
+      {/* a borda gira um pouco ao passar o mouse */}
+      <ChipAvatar user={user} className="h-full w-full" frameClassName="transition-transform duration-500 group-hover:rotate-[60deg]" />
     </Link>
   );
 }
