@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ShieldIcon } from "@/components/admin/AdminNav";
+import { PageTitle, Stat, ago, dateFmt, icon } from "@/components/admin/ui";
 import { SOCIAL_PROVIDERS } from "@/components/auth/providers";
 import { Avatar } from "@/components/profile/ProfileHeader";
 import { type AdminUser, isAdmin, listUsers, requireAdmin } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Usuários" };
-
-const TZ = "America/Sao_Paulo";
-const dateFmt = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit", timeZone: TZ });
-
-/** "agora", "5 min", "3 h", "2 d", depois a data. */
-function ago(d: Date, now: Date): string {
-  const min = Math.floor((now.getTime() - d.getTime()) / 60_000);
-  if (min < 1) return "agora";
-  if (min < 60) return `${min} min`;
-  if (min < 60 * 24) return `${Math.floor(min / 60)} h`;
-  if (min < 60 * 24 * 30) return `${Math.floor(min / 1440)} d`;
-  return dateFmt.format(d);
-}
 
 function href(q: string, page: number) {
   const p = new URLSearchParams();
@@ -26,21 +14,6 @@ function href(q: string, page: number) {
   if (page > 1) p.set("p", String(page));
   const s = p.toString();
   return `/admin/usuarios${s ? `?${s}` : ""}`;
-}
-
-const icon = (d: React.ReactNode, className = "h-3.5 w-3.5") => (
-  <svg viewBox="0 0 24 24" className={`shrink-0 ${className}`} fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    {d}
-  </svg>
-);
-
-function Stat({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="flex flex-col rounded-2xl bg-white/5 px-4 py-3 ring-1 ring-white/10">
-      <span className="font-display text-2xl tabular-nums text-gold">{value}</span>
-      <span className="text-[11px] uppercase tracking-wider text-white/50">{label}</span>
-    </div>
-  );
 }
 
 function Row({ user, now }: { user: AdminUser; now: Date }) {
@@ -63,13 +36,9 @@ function Row({ user, now }: { user: AdminUser; now: Date }) {
           {user.online && <span title="Online" className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-[#0f1813]" />}
         </div>
         <div className="flex min-w-0 flex-col">
-          {user.username ? (
-            <Link href={`/perfil/${user.username}`} className="min-w-0 transition hover:text-gold [&_span]:hover:text-gold">
-              {name}
-            </Link>
-          ) : (
-            name
-          )}
+          <Link href={`/admin/usuarios/${user.id}`} className="min-w-0 transition hover:text-gold [&_span]:hover:text-gold">
+            {name}
+          </Link>
           <span className="truncate text-xs text-white/50">
             {user.username && <>@{user.username} · </>}
             {user.email}
@@ -134,7 +103,7 @@ export default async function AdminUsers({ searchParams }: { searchParams: Promi
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="font-display text-2xl text-gold drop-shadow-[0_2px_0_#7a4e0c] sm:text-3xl">Usuários</h1>
+      <PageTitle>Usuários</PageTitle>
 
       <div className="grid grid-cols-3 gap-2 sm:max-w-md">
         <Stat value={total} label={q ? "achados" : "contas"} />
