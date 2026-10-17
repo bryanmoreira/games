@@ -48,6 +48,14 @@ body {
     0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
+/* home: cor do feltro por tipo de jogo (o verde de .felt fica para cartas e peças) */
+.felt-wine {
+  --color-felt: #6b2230;
+}
+.felt-blue {
+  --color-felt: #1d4a73;
+}
+
 .card-face {
   aspect-ratio: 500 / 726;
   border-radius: 7%/5%;

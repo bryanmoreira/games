@@ -26,6 +26,21 @@ import { TableDecor } from "@/components/home/TableDecor";
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
 
+/** Cor do feltro na home por tipo de jogo: cartas e peças no verde, tabuleiro no vinho, palavras e lógica no azul. */
+const FELT: Record<string, string> = {
+  sudoku: "felt-blue",
+  verbete: "felt-blue",
+  stop: "felt-blue",
+  "connect-4": "felt-wine",
+  otrio: "felt-wine",
+  "jogo-da-velha": "felt-wine",
+  xadrez: "felt-wine",
+  damas: "felt-wine",
+  ludo: "felt-wine",
+  "batalha-naval": "felt-wine",
+  "futebol-de-botao": "felt-wine",
+};
+
 /** Card de cada jogo na home: arte (posicionada sobre o feltro), título e subtítulo */
 const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
   {
@@ -211,7 +226,7 @@ const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
     card: (
       <Link
         href={g.path}
-        className="felt group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1"
+        className={`felt ${FELT[slug] ?? ""} group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1`}
       >
         {art}
         <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
