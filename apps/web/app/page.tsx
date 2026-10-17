@@ -22,6 +22,11 @@ import { UserButton } from "@/components/UserButton";
 import { GameGrid, PlayersBadge, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TableDecor } from "@/components/home/TableDecor";
+import { DailyRibbon } from "@/components/home/DailyRibbon";
+import { isDailyGame } from "@/lib/daily/challenge";
+import { SPIDER_DAILY_PATH } from "@/lib/spider/paths";
+import { SUDOKU_DAILY_PATH } from "@/lib/sudoku/paths";
+import { VERBETE_DAILY_PATH } from "@/lib/verbete/paths";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
@@ -225,23 +230,27 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
   },
 ];
 
+/** Jogos com desafio do dia: a fita do card leva direto a ele. */
+const DAILY_PATH = { sudoku: SUDOKU_DAILY_PATH, "paciencia-spider": SPIDER_DAILY_PATH, verbete: VERBETE_DAILY_PATH };
+
 const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
   const g = getGame(slug);
   return {
     slug,
     players: g.players,
     card: (
-      <Link
-        href={g.path}
-        className={`felt ${FELT[slug] ?? ""} group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition duration-300 hover:-translate-y-1.5`}
-      >
-        {art}
-        <PlayersBadge players={g.players} />
-        <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
-          <span className="font-display text-3xl text-gold transition-[text-shadow] duration-300 group-hover:[text-shadow:0_0_18px_rgba(242,193,78,0.55)]">{title}</span>
-          <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">{sub}</span>
-        </span>
-      </Link>
+      // a fita do desafio é outro link, por isso fica ao lado do card (e o hover vale para os dois)
+      <div className="group relative transition duration-300 hover:-translate-y-1.5">
+        <Link href={g.path} className={`felt ${FELT[slug] ?? ""} relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5`}>
+          {art}
+          <PlayersBadge players={g.players} />
+          <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
+            <span className="font-display text-3xl text-gold transition-[text-shadow] duration-300 group-hover:[text-shadow:0_0_18px_rgba(242,193,78,0.55)]">{title}</span>
+            <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">{sub}</span>
+          </span>
+        </Link>
+        {isDailyGame(slug) && <DailyRibbon href={DAILY_PATH[slug]} />}
+      </div>
     ),
   };
 });
