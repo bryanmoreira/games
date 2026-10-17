@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo";
 import { SITE_TAGLINE, getGame, homeLd } from "@/lib/seo";
@@ -26,6 +26,9 @@ import { TableDecor } from "@/components/home/TableDecor";
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
 
+/** Arte no hover do card: endireita e cresce um pouco (sem movimento para quem pediu menos animação). */
+const HOVER = "transition-[rotate,scale] duration-300 ease-out motion-safe:group-hover:rotate-0 motion-safe:group-hover:scale-110";
+
 /** Cor do feltro na home por tipo de jogo: cartas e peças no verde, tabuleiro no vinho, palavras e lógica no azul. */
 const FELT: Record<string, string> = {
   sudoku: "felt-blue",
@@ -48,12 +51,12 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "TRUCO",
     sub: "PAULISTA",
     art: (
-      <div className="absolute inset-x-0 top-[12%] mx-auto h-1/2 w-1/2">
+      <div className={`absolute inset-x-0 top-[12%] mx-auto h-1/2 w-1/2 ${HOVER}`}>
         {TRUCO_FAN.map((c, i) => (
           <div
             key={c.id}
-            className="absolute bottom-0 left-1/2 w-[38%] origin-bottom transition-transform duration-300"
-            style={{ transform: `translateX(-50%) rotate(${(i - 1) * 16}deg)` }}
+            className="absolute bottom-0 left-1/2 w-[38%] origin-bottom transition-transform duration-300 ease-out [transform:translateX(-50%)_rotate(var(--r))] motion-safe:group-hover:[transform:translateX(-50%)_rotate(var(--rh))]"
+            style={{ "--r": `${(i - 1) * 16}deg`, "--rh": `${(i - 1) * 28}deg` } as CSSProperties}
           >
             <CardImg card={c} />
           </div>
@@ -66,9 +69,13 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "PACIÊNCIA",
     sub: "SPIDER",
     art: (
-      <div className="absolute left-1/2 top-[8%] h-[58%] w-[19%] -translate-x-1/2">
+      <div className="absolute left-1/2 top-[8%] h-[58%] w-[19%] -translate-x-1/2 transition-[top] duration-300 ease-out motion-safe:group-hover:top-[4%]">
         {SPIDER_CASCADE.map((c, i) => (
-          <div key={c.rank} className="absolute left-0 w-full" style={{ top: `${i * 13}%` }}>
+          <div
+            key={c.rank}
+            className="absolute left-0 w-full transition-[top] duration-300 ease-out [top:calc(var(--i)*13%)] motion-safe:group-hover:[top:calc(var(--i)*15.5%)]"
+            style={{ "--i": i } as CSSProperties}
+          >
             <CardImg card={c} />
           </div>
         ))}
@@ -80,7 +87,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "SUDOKU",
     sub: "9 × 9",
     art: (
-      <div className="absolute left-1/2 top-[8%] w-[36%] -translate-x-1/2 -rotate-6 text-[clamp(7px,2.2vw,12px)]">
+      <div className={`absolute left-1/2 top-[8%] w-[36%] -translate-x-1/2 -rotate-6 text-[clamp(7px,2.2vw,12px)] ${HOVER}`}>
         <MiniBoard />
       </div>
     ),
@@ -90,7 +97,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "VERBETE",
     sub: "PALAVRA DO DIA",
     art: (
-      <div className="absolute left-1/2 top-[9%] -translate-x-1/2 -rotate-3 text-[clamp(10px,3vw,15px)]">
+      <div className={`absolute left-1/2 top-[9%] -translate-x-1/2 -rotate-3 text-[clamp(10px,3vw,15px)] ${HOVER}`}>
         <MiniTiles />
       </div>
     ),
@@ -100,7 +107,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "CONNECT",
     sub: "4 EM LINHA",
     art: (
-      <div className="absolute left-1/2 top-[9%] w-[44%] -translate-x-1/2 rotate-3">
+      <div className={`absolute left-1/2 top-[9%] w-[44%] -translate-x-1/2 rotate-3 ${HOVER}`}>
         <StaticBoard rows={["...y...", "..yr...", ".yrr.r.", "yrryry."]} win={[[0, 0], [1, 1], [2, 2], [3, 3]]} dim={false} />
       </div>
     ),
@@ -110,7 +117,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "OTRIO",
     sub: "TRINCA DE ANÉIS",
     art: (
-      <div className="absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 -rotate-3">
+      <div className={`absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 -rotate-3 ${HOVER}`}>
         <OtrioBoard cells={["r..", "..b", "..g", ".p.", "rrr", "", "p..", "b..", ".g."]} win={[12, 13, 14]} dim={false} />
       </div>
     ),
@@ -120,7 +127,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "VELHA",
     sub: "JOGO DA VELHA",
     art: (
-      <div className="absolute left-1/2 top-[9%] w-[34%] -translate-x-1/2 rotate-3">
+      <div className={`absolute left-1/2 top-[9%] w-[34%] -translate-x-1/2 rotate-3 ${HOVER}`}>
         <VelhaBoard cells="XO.OX...X" win={[0, 4, 8]} />
       </div>
     ),
@@ -130,7 +137,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "XADREZ",
     sub: "XEQUE-MATE",
     art: (
-      <div className="absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 rotate-3">
+      <div className={`absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 rotate-3 ${HOVER}`}>
         <ChessBoard fen="r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R" />
       </div>
     ),
@@ -140,7 +147,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "DAMAS",
     sub: "CLÁSSICO",
     art: (
-      <div className="absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 -rotate-3">
+      <div className={`absolute left-1/2 top-[8%] w-[38%] -translate-x-1/2 -rotate-3 ${HOVER}`}>
         <DamasBoard rows={["", "..b.B...", ".b...b..", "....w...", ".....W..", "w.w.....", ".w......"]} />
       </div>
     ),
@@ -150,7 +157,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "LUDO",
     sub: "CORRIDA DE PEÕES",
     art: (
-      <div className="absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 rotate-3">
+      <div className={`absolute left-1/2 top-[7%] w-[40%] -translate-x-1/2 rotate-3 ${HOVER}`}>
         <LudoBoard
           pieces={[
             { color: 0, piece: 0, progress: 7 },
@@ -168,7 +175,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "DOMINÓ",
     sub: "BATIDA",
     art: (
-      <div className="absolute left-1/2 top-[20%] flex w-[68%] -translate-x-1/2 -rotate-6 items-center justify-center drop-shadow-[0_4px_0_rgba(0,0,0,0.3)]">
+      <div className={`absolute left-1/2 top-[20%] flex w-[68%] -translate-x-1/2 -rotate-6 items-center justify-center gap-0 transition-[gap] duration-300 motion-safe:group-hover:gap-[2%] drop-shadow-[0_4px_0_rgba(0,0,0,0.3)] ${HOVER}`}>
         <Domino a={2} b={6} flat className="w-[30%]" />
         <Domino a={6} b={6} className="w-[15%]" />
         <Domino a={6} b={3} flat className="w-[30%]" />
@@ -181,7 +188,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "FUTEBOL",
     sub: "DE BOTÃO",
     art: (
-      <div className="absolute left-1/2 top-[14%] w-[62%] -translate-x-1/2 -rotate-3 drop-shadow-[0_4px_0_rgba(0,0,0,0.35)]">
+      <div className={`absolute left-1/2 top-[14%] w-[62%] -translate-x-1/2 -rotate-3 drop-shadow-[0_4px_0_rgba(0,0,0,0.35)] ${HOVER}`}>
         <FieldArt className="w-full" />
       </div>
     ),
@@ -191,7 +198,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "STOP",
     sub: "ADEDONHA",
     art: (
-      <div className="absolute left-1/2 top-[20%] -translate-x-1/2 -rotate-3 text-[clamp(28px,9vw,44px)]">
+      <div className={`absolute left-1/2 top-[20%] -translate-x-1/2 -rotate-3 text-[clamp(28px,9vw,44px)] ${HOVER}`}>
         <StopLogo className="h-[1.5em] w-[1.5em]" />
       </div>
     ),
@@ -201,7 +208,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "BATALHA",
     sub: "NAVAL",
     art: (
-      <div className="absolute left-1/2 top-[9%] w-[40%] -translate-x-1/2 rotate-3">
+      <div className={`absolute left-1/2 top-[9%] w-[40%] -translate-x-1/2 rotate-3 ${HOVER}`}>
         <SeaLogo />
       </div>
     ),
@@ -211,7 +218,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     title: "CODENAMES",
     sub: "AGENTES SECRETOS",
     art: (
-      <div className="absolute left-1/2 top-[10%] w-[44%] -translate-x-1/2 -rotate-3">
+      <div className={`absolute left-1/2 top-[10%] w-[44%] -translate-x-1/2 -rotate-3 ${HOVER}`}>
         <MiniGrid />
       </div>
     ),
@@ -226,11 +233,11 @@ const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
     card: (
       <Link
         href={g.path}
-        className={`felt ${FELT[slug] ?? ""} group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition hover:-translate-y-1`}
+        className={`felt ${FELT[slug] ?? ""} group relative flex aspect-[4/3] flex-col items-center justify-end overflow-hidden rounded-3xl pb-5 transition duration-300 hover:-translate-y-1.5`}
       >
         {art}
         <span className="flex flex-col items-center leading-none drop-shadow-[0_2px_0_#000]">
-          <span className="font-display text-3xl text-gold">{title}</span>
+          <span className="font-display text-3xl text-gold transition-[text-shadow] duration-300 group-hover:[text-shadow:0_0_18px_rgba(242,193,78,0.55)]">{title}</span>
           <span className="mt-1 font-display text-xs tracking-[0.35em] text-white/80">{sub}</span>
         </span>
       </Link>
