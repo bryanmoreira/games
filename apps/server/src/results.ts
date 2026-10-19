@@ -14,6 +14,9 @@ export interface Account {
   name: string;
   image: string | null;
   username: string | null;
+  /** moldura e baralho da loja (o site confere as chaves ao desenhar) */
+  frame: string | null;
+  deck: string | null;
 }
 
 /** Ticket do site: `dados.assinatura` (dados em base64url). Devolve a conta se for válido e não venceu. */
@@ -24,9 +27,10 @@ export function verifyTicket(ticket: unknown): Account | null {
   const want = createHmac("sha256", SECRET).update(payload).digest("hex");
   if (sig.length !== want.length || !timingSafeEqual(Buffer.from(sig), Buffer.from(want))) return null;
   try {
-    const d = JSON.parse(Buffer.from(payload, "base64url").toString()) as { u: string; n: string; i: string | null; h: string | null; e: number };
+    const d = JSON.parse(Buffer.from(payload, "base64url").toString()) as { u: string; n: string; i: string | null; h: string | null; f?: unknown; k?: unknown; e: number };
     if (!(d.e > Date.now()) || typeof d.u !== "string") return null;
-    return { userId: d.u, name: String(d.n || "Jogador").slice(0, 24), image: d.i ?? null, username: d.h ?? null };
+    const key = (v: unknown) => (typeof v === "string" && /^[a-z]{1,20}$/.test(v) ? v : null);
+    return { userId: d.u, name: String(d.n || "Jogador").slice(0, 24), image: d.i ?? null, username: d.h ?? null, frame: key(d.f), deck: key(d.k) };
   } catch {
     return null;
   }

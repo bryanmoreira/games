@@ -29,6 +29,8 @@ export type AdminUser = {
   image: string | null;
   username: string | null;
   role: string;
+  equippedFrame: string | null;
+  chips: number;
   providers: string[];
   games: number;
   createdAt: Date;
@@ -61,6 +63,8 @@ export async function listUsers({ q = "", page = 1 }: { q?: string; page?: numbe
         image: true,
         username: true,
         role: true,
+        equippedFrame: true,
+        chips: true,
         createdAt: true,
         lastSeenAt: true,
         accounts: { select: { providerId: true } },

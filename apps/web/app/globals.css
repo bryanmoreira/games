@@ -133,6 +133,11 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
 }
 
+/* baralho da loja: o SVG já tem borda e cantos; só a sombra (filter acompanha os cantos redondos) */
+.card-deck {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
+}
+
 .card-back {
   aspect-ratio: 500 / 726;
   border-radius: 7%/5%;

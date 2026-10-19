@@ -1,5 +1,7 @@
 import { isRed, RANK_LABEL, type Card, type Suit } from "@truco/spider";
-import { CardBack, CardImg } from "@/components/cards/Card";
+import { CardBack, CardImg, useDeck } from "@/components/cards/Card";
+import { deckPalette } from "@/lib/shop/art";
+import { DEFAULT_DECK } from "@/lib/shop/catalog";
 
 /** Abaixo desta largura (px) o índice da PNG fica ilegível: usa a face compacta. */
 export const COMPACT_BELOW = 64;
@@ -28,9 +30,13 @@ export function SuitIcon({ suit, className = "", size }: { suit: Suit; className
 
 /** Face desenhada para cartas pequenas: valor e naipe grandes no topo (a parte que aparece na pilha). */
 function CompactFace({ card, width }: { card: Card; width: number }) {
+  const deck = useDeck();
   const color = isRed(card.suit) ? "text-[#d40000]" : "text-stone-900";
+  // baralho da loja: fundo, borda e tinta do próprio baralho
+  const p = deck === DEFAULT_DECK ? null : deckPalette(deck);
+  const style = p ? { background: p.bg, color: isRed(card.suit) ? p.red : p.black, boxShadow: `inset 0 0 0 1.5px ${p.edge}, 0 2px 6px rgba(0,0,0,.45)` } : undefined;
   return (
-    <div className={`card-face relative flex w-full flex-col overflow-hidden ${color}`}>
+    <div className={`card-face relative flex w-full flex-col overflow-hidden ${p ? "" : color}`} style={style}>
       <div className="flex items-center leading-none" style={{ padding: `${width * 0.06}px ${width * 0.08}px` }}>
         <span className="font-display tracking-tighter" style={{ fontSize: width * (card.rank === 10 ? 0.36 : 0.42) }}>
           {RANK_LABEL[card.rank]}

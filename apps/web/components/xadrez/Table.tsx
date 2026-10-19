@@ -30,6 +30,7 @@ import { BarsIcon, CheckIcon } from "@/components/ui/icons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 import { playCountdownSound, playDrawSound, playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playCaptureSound, playCastleSound, playCheckSound, playMoveSound, playOfferSound, playPromoteSound } from "@/lib/xadrez/sound";
 import { Board, piecesOf, place, type Mark, type UiPiece } from "./Board";
@@ -485,13 +486,15 @@ function PlayerStrip({
   const info = room.seats[seat];
   return (
     <div className="flex h-10 items-center gap-2">
-      <div
-        className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-[3px] bg-stone-800 font-display text-white shadow-lg shadow-black/40 ${
-          mine ? "border-gold/80" : "border-red-400/80"
-        } ${running ? "turn-glow" : ""} ${info.connected ? "" : "opacity-40"}`}
-      >
-        <SeatFace seat={info} />
-      </div>
+      <Framed frame={info?.frame}>
+        <div
+          className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-[3px] bg-stone-800 font-display text-white shadow-lg shadow-black/40 ${
+            mine ? "border-gold/80" : "border-red-400/80"
+          } ${running ? "turn-glow" : ""} ${info.connected ? "" : "opacity-40"}`}
+        >
+          <SeatFace seat={info} />
+        </div>
+      </Framed>
       <div className="flex min-w-0 flex-1 flex-col leading-tight">
         <span className={`truncate text-xs font-semibold ${running ? (mine ? "text-gold" : "text-white") : "text-white/70"}`}>{info.name}</span>
         <span className="flex h-4 items-center">

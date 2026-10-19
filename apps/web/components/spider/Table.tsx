@@ -30,6 +30,8 @@ import { useClock } from "@/lib/useClock";
 import { formatTime } from "@/components/sudoku/common";
 import { SPIDER_DAILY_PATH, SPIDER_PATH } from "@/lib/spider/paths";
 import { COMPACT_BELOW, SpiderCard, SuitIcon } from "./SpiderCard";
+import { DeckProvider } from "@/components/cards/Card";
+import { authClient } from "@/lib/auth-client";
 import { HowToPlay } from "./HowToPlay";
 import { HintIcon, UndoIcon } from "@/components/ui/icons";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
@@ -203,6 +205,8 @@ export type SpiderChallenge = Extract<DailyChallenge, { game: "paciencia-spider"
 
 /** `daily`: o desafio do dia (sempre a mesma distribuição, salva à parte por dia). */
 export function Table({ daily }: { daily?: SpiderChallenge }) {
+  // baralho da loja de quem está logado (o Spider é sozinho: todas as cartas usam o dele)
+  const { data: session } = authClient.useSession();
   const router = useRouter();
   const home = daily ? SPIDER_DAILY_PATH : SPIDER_PATH;
   const fresh = (c: SpiderChallenge) => dealGame(c.data.suits, c.data.seed, c.data.deck);
@@ -439,151 +443,153 @@ export function Table({ daily }: { daily?: SpiderChallenge }) {
   const stuck = !hint && !game.won;
 
   return (
-    <main className="flex h-dvh flex-col overflow-hidden">
-      <header className={HEADER}>
-        <div className="flex items-center gap-3 rounded-2xl bg-black/40 px-3 py-1.5 font-display sm:gap-4 sm:px-4 sm:py-2">
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-[10px] text-gold/80">PONTOS</span>
-            <span className="text-2xl text-gold sm:text-3xl">{scoreOf(game)}</span>
-          </div>
-          {/* no celular não cabe tudo: jogadas aparecem na tela de vitória */}
-          <div className="hidden flex-col items-center leading-none sm:flex">
-            <span className="text-[10px] text-white/60">JOGADAS</span>
-            <span className="text-3xl">{game.moves}</span>
-          </div>
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-[10px] text-white/60">TEMPO</span>
-            <span className="text-2xl tabular-nums sm:text-3xl">{formatTime(game.won ? game.elapsed : clock.now())}</span>
-          </div>
-        </div>
-
-        {daily ? (
-          <DailyBadge day={daily.day} className="hidden rounded-full bg-black/30 px-3 py-1.5 text-white/70 md:flex" />
-        ) : (
-          <div className="hidden items-center gap-1 rounded-full bg-black/30 px-3 py-1.5 text-white/70 md:flex" title={`${game.suits} naipe${game.suits > 1 ? "s" : ""}`}>
-            {SUIT_SETS[game.suits].map((s) => (
-              <SuitIcon key={s} suit={s} className={`h-4 w-4 ${s === "hearts" || s === "diamonds" ? "text-red-400" : ""}`} />
-            ))}
-          </div>
-        )}
-
-        <div className="flex items-center gap-1 sm:gap-2">
-          <IconButton label="Desfazer" onClick={() => dispatch({ type: "undo" })} disabled={!game.history.length}>
-            <UndoIcon />
-          </IconButton>
-          <IconButton label="Dica" onClick={showHint} disabled={game.won}>
-            <HintIcon />
-          </IconButton>
-          <HelpButton onClick={() => setHelp(true)} />
-          <TipsButton on={tips} onClick={toggleTips} />
-          <MuteButton />
-          <ExitConfirm onExit={() => router.push(home)} ask={!game.won} />
-        </div>
-      </header>
-
-      <section
-        ref={feltRef}
-        className={FELT}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-      >
-        {/* lugares vazios das colunas, do monte e das sequências */}
-        {game.cols.map((_, c) => (
-          <div
-            key={`slot-${c}`}
-            className={`absolute rounded-[7%/5%] border-2 border-dashed transition-colors ${warn && targets.includes(c) ? "border-red-400 bg-red-500/20" : "border-white/15"}`}
-            style={{ left: colX(L, c), top: L.pad, width: L.cardW, height: L.cardH }}
-          />
-        ))}
-        <div
-          className="absolute rounded-[7%/5%] border-2 border-dashed border-white/10"
-          style={{ left: L.left, top: L.bottomY, width: L.cardW, height: L.cardH }}
-        />
-        <button
-          onClick={deal}
-          aria-label="Distribuir"
-          title="Distribuir"
-          className={`absolute rounded-[7%/5%] border-2 border-dashed border-white/10 ${groups ? "" : "pointer-events-none"} ${flash?.stock ? "target-glow" : ""}`}
-          style={{ left: stockX(L) - Math.max(0, groups - 1) * pileStep(L), top: L.bottomY, width: L.cardW + Math.max(0, groups - 1) * pileStep(L), height: L.cardH }}
-        />
-
-        {[...pos.entries()].map(([id, p]) => {
-          const card = cardOf(id, game.suits);
-          const moving = anim?.moving.has(id);
-          const z = moving ? 1000 + (p.where === "done" ? p.z : p.idx * 10 + Math.max(0, p.col)) : p.z;
-          const t = `translate3d(${p.x}px, ${p.y}px, 0)`;
-          const tr = transition(id);
-          const flipping = anim?.flip.has(id) && p.up;
-          const canGrab = p.where === "col" && p.up && !game.won && isRun(game, p.col, p.idx);
-          return (
-            <div
-              key={id}
-              ref={(el) => {
-                if (el) els.current.set(id, el);
-                else els.current.delete(id);
-              }}
-              data-t={t}
-              data-z={z}
-              data-tr={tr}
-              className={`absolute left-0 top-0 ${glow.has(id) ? "hint-glow" : ""}`}
-              style={{
-                width: L.cardW,
-                transform: t,
-                zIndex: z,
-                transition: tr,
-                cursor: canGrab ? "grab" : p.where === "stock" ? "pointer" : "default",
-              }}
-              onPointerDown={(e) => onPointerDown(e, id)}
-              onPointerEnter={(e) => e.pointerType === "mouse" && setHover(id)}
-              onPointerLeave={(e) => e.pointerType === "mouse" && setHover((h) => (h === id ? null : h))}
-            >
-              {flipping ? (
-                <div key="flip" className="flip-in" style={{ animationDelay: `${(anim?.delay.get(id) ?? 0) + MOVE_MS * 0.5}ms` }}>
-                  <div>
-                    <SpiderCard card={card} up width={L.cardW} />
-                  </div>
-                  <div className="flip-back">
-                    <SpiderCard card={card} up={false} width={L.cardW} />
-                  </div>
-                </div>
-              ) : (
-                <div key="still">
-                  <SpiderCard card={card} up={p.up} width={L.cardW} />
-                </div>
-              )}
+    <DeckProvider deck={session?.user.equippedDeck}>
+      <main className="flex h-dvh flex-col overflow-hidden">
+        <header className={HEADER}>
+          <div className="flex items-center gap-3 rounded-2xl bg-black/40 px-3 py-1.5 font-display sm:gap-4 sm:px-4 sm:py-2">
+            <div className="flex flex-col items-center leading-none">
+              <span className="text-[10px] text-gold/80">PONTOS</span>
+              <span className="text-2xl text-gold sm:text-3xl">{scoreOf(game)}</span>
             </div>
-          );
-        })}
+            {/* no celular não cabe tudo: jogadas aparecem na tela de vitória */}
+            <div className="hidden flex-col items-center leading-none sm:flex">
+              <span className="text-[10px] text-white/60">JOGADAS</span>
+              <span className="text-3xl">{game.moves}</span>
+            </div>
+            <div className="flex flex-col items-center leading-none">
+              <span className="text-[10px] text-white/60">TEMPO</span>
+              <span className="text-2xl tabular-nums sm:text-3xl">{formatTime(game.won ? game.elapsed : clock.now())}</span>
+            </div>
+          </div>
 
-        {/* destinos possíveis */}
-        {!warn &&
-          targets.map((c) => {
-            const r = dropRect(game, L, pos, c);
+          {daily ? (
+            <DailyBadge day={daily.day} className="hidden rounded-full bg-black/30 px-3 py-1.5 text-white/70 md:flex" />
+          ) : (
+            <div className="hidden items-center gap-1 rounded-full bg-black/30 px-3 py-1.5 text-white/70 md:flex" title={`${game.suits} naipe${game.suits > 1 ? "s" : ""}`}>
+              {SUIT_SETS[game.suits].map((s) => (
+                <SuitIcon key={s} suit={s} className={`h-4 w-4 ${s === "hearts" || s === "diamonds" ? "text-red-400" : ""}`} />
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center gap-1 sm:gap-2">
+            <IconButton label="Desfazer" onClick={() => dispatch({ type: "undo" })} disabled={!game.history.length}>
+              <UndoIcon />
+            </IconButton>
+            <IconButton label="Dica" onClick={showHint} disabled={game.won}>
+              <HintIcon />
+            </IconButton>
+            <HelpButton onClick={() => setHelp(true)} />
+            <TipsButton on={tips} onClick={toggleTips} />
+            <MuteButton />
+            <ExitConfirm onExit={() => router.push(home)} ask={!game.won} />
+          </div>
+        </header>
+
+        <section
+          ref={feltRef}
+          className={FELT}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        >
+          {/* lugares vazios das colunas, do monte e das sequências */}
+          {game.cols.map((_, c) => (
+            <div
+              key={`slot-${c}`}
+              className={`absolute rounded-[7%/5%] border-2 border-dashed transition-colors ${warn && targets.includes(c) ? "border-red-400 bg-red-500/20" : "border-white/15"}`}
+              style={{ left: colX(L, c), top: L.pad, width: L.cardW, height: L.cardH }}
+            />
+          ))}
+          <div
+            className="absolute rounded-[7%/5%] border-2 border-dashed border-white/10"
+            style={{ left: L.left, top: L.bottomY, width: L.cardW, height: L.cardH }}
+          />
+          <button
+            onClick={deal}
+            aria-label="Distribuir"
+            title="Distribuir"
+            className={`absolute rounded-[7%/5%] border-2 border-dashed border-white/10 ${groups ? "" : "pointer-events-none"} ${flash?.stock ? "target-glow" : ""}`}
+            style={{ left: stockX(L) - Math.max(0, groups - 1) * pileStep(L), top: L.bottomY, width: L.cardW + Math.max(0, groups - 1) * pileStep(L), height: L.cardH }}
+          />
+
+          {[...pos.entries()].map(([id, p]) => {
+            const card = cardOf(id, game.suits);
+            const moving = anim?.moving.has(id);
+            const z = moving ? 1000 + (p.where === "done" ? p.z : p.idx * 10 + Math.max(0, p.col)) : p.z;
+            const t = `translate3d(${p.x}px, ${p.y}px, 0)`;
+            const tr = transition(id);
+            const flipping = anim?.flip.has(id) && p.up;
+            const canGrab = p.where === "col" && p.up && !game.won && isRun(game, p.col, p.idx);
             return (
               <div
-                key={`target-${c}`}
-                className="target-glow pointer-events-none absolute rounded-[7%/5%]"
-                style={{ left: r.x, top: r.y, width: L.cardW, height: L.cardH, zIndex: 2000 }}
-              />
+                key={id}
+                ref={(el) => {
+                  if (el) els.current.set(id, el);
+                  else els.current.delete(id);
+                }}
+                data-t={t}
+                data-z={z}
+                data-tr={tr}
+                className={`absolute left-0 top-0 ${glow.has(id) ? "hint-glow" : ""}`}
+                style={{
+                  width: L.cardW,
+                  transform: t,
+                  zIndex: z,
+                  transition: tr,
+                  cursor: canGrab ? "grab" : p.where === "stock" ? "pointer" : "default",
+                }}
+                onPointerDown={(e) => onPointerDown(e, id)}
+                onPointerEnter={(e) => e.pointerType === "mouse" && setHover(id)}
+                onPointerLeave={(e) => e.pointerType === "mouse" && setHover((h) => (h === id ? null : h))}
+              >
+                {flipping ? (
+                  <div key="flip" className="flip-in" style={{ animationDelay: `${(anim?.delay.get(id) ?? 0) + MOVE_MS * 0.5}ms` }}>
+                    <div>
+                      <SpiderCard card={card} up width={L.cardW} />
+                    </div>
+                    <div className="flip-back">
+                      <SpiderCard card={card} up={false} width={L.cardW} />
+                    </div>
+                  </div>
+                ) : (
+                  <div key="still">
+                    <SpiderCard card={card} up={p.up} width={L.cardW} />
+                  </div>
+                )}
+              </div>
             );
           })}
 
-        {flash?.none && (
-          <div className="banner pointer-events-none absolute left-1/2 top-1/2 z-[2500] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-stone-950/85 px-5 py-3 font-display text-lg text-white/80 ring-1 ring-white/10">
-            SEM JOGADAS
-          </div>
-        )}
-      </section>
+          {/* destinos possíveis */}
+          {!warn &&
+            targets.map((c) => {
+              const r = dropRect(game, L, pos, c);
+              return (
+                <div
+                  key={`target-${c}`}
+                  className="target-glow pointer-events-none absolute rounded-[7%/5%]"
+                  style={{ left: r.x, top: r.y, width: L.cardW, height: L.cardH, zIndex: 2000 }}
+                />
+              );
+            })}
 
-      {stuck && !flash && <StuckBar onUndo={() => dispatch({ type: "undo" })} canUndo={!!game.history.length} onNew={newSame} />}
-      {game.won && !anim && <Victory game={game} day={daily?.day} onAgain={newSame} onLeave={() => router.push(home)} />}
-      {help && (
-        <HowToPlayModal game="PACIÊNCIA SPIDER" onClose={() => setHelp(false)}>
-          <HowToPlay />
-        </HowToPlayModal>
-      )}
-    </main>
+          {flash?.none && (
+            <div className="banner pointer-events-none absolute left-1/2 top-1/2 z-[2500] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-stone-950/85 px-5 py-3 font-display text-lg text-white/80 ring-1 ring-white/10">
+              SEM JOGADAS
+            </div>
+          )}
+        </section>
+
+        {stuck && !flash && <StuckBar onUndo={() => dispatch({ type: "undo" })} canUndo={!!game.history.length} onNew={newSame} />}
+        {game.won && !anim && <Victory game={game} day={daily?.day} onAgain={newSame} onLeave={() => router.push(home)} />}
+        {help && (
+          <HowToPlayModal game="PACIÊNCIA SPIDER" onClose={() => setHelp(false)}>
+            <HowToPlay />
+          </HowToPlayModal>
+        )}
+      </main>
+    </DeckProvider>
   );
 }
 

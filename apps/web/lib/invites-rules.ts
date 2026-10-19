@@ -15,7 +15,7 @@ export interface GameInviteEntry {
   id: string;
   game: GameId;
   code: string;
-  from: { name: string; image: string | null; username: string | null };
+  from: { name: string; image: string | null; username: string | null; equippedFrame?: string | null };
 }
 
 /** Corpo do POST: `{ username, game, code }`. Inválido: null. */

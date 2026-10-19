@@ -115,6 +115,9 @@ export async function getAdminUser(id: string) {
       username: true,
       role: true,
       profilePublic: true,
+      equippedFrame: true,
+      equippedDeck: true,
+      chips: true,
       createdAt: true,
       lastSeenAt: true,
       accounts: { select: { providerId: true, createdAt: true } },
@@ -126,7 +129,7 @@ export async function getAdminUser(id: string) {
     },
   });
   if (!user) return null;
-  const USER = { select: { id: true, name: true, image: true, username: true, lastSeenAt: true } } as const;
+  const USER = { select: { id: true, name: true, image: true, username: true, lastSeenAt: true, equippedFrame: true } } as const;
   const [stats, recent, friendships, invites] = await Promise.all([
     getProfileStats(id),
     prisma.gameResult.findMany({

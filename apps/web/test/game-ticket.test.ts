@@ -27,7 +27,7 @@ describe("ticket", () => {
   });
 
   test("leva conta, nome, foto, username e vence em 12h", () => {
-    expect(split(signTicket(ANA)!).data).toEqual({ u: "u1", n: "Ana Maria", i: "https://img/ana.png", h: "ana", e: NOW.getTime() + TTL });
+    expect(split(signTicket(ANA)!).data).toEqual({ u: "u1", n: "Ana Maria", i: "https://img/ana.png", h: "ana", f: null, k: null, e: NOW.getTime() + TTL });
   });
 
   test("sem foto ou username: null", () => {

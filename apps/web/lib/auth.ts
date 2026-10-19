@@ -48,6 +48,9 @@ export const auth = betterAuth({
       profilePublic: { type: "boolean", defaultValue: true, required: false, input: true },
       // user | admin; o jogador não muda (input: false). Promover: bun run admin <email>
       role: { type: "string", defaultValue: "user", required: false, input: false },
+      // loja: moldura e baralho em uso (só mudam por /api/shop, que confere se o jogador tem)
+      equippedFrame: { type: "string", required: false, input: false },
+      equippedDeck: { type: "string", required: false, input: false },
     },
   },
   // toda conta nova já nasce com um username (o jogador pode trocar em Perfil > Conta)

@@ -16,6 +16,7 @@ import { cellStyle, Crosshair, Fire, FleetRow, Sea, SeaShip, ShipShape, ShotFx, 
 import { Placement } from "./Placement";
 import { HowToPlay } from "./HowToPlay";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 
 // Mira descendo até o impacto (ver .bn-aim / .bn-pop)
 const IMPACT_MS = 350;
@@ -246,13 +247,15 @@ function Opponent({ room, seat, turn, ready }: { room: RoomInfo; seat: Seat; tur
   return (
     <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 -translate-y-6 flex-col items-center sm:-translate-y-7 lg:-translate-y-8">
       <div className={`relative flex flex-col items-center ${info.connected ? "" : "opacity-40"}`}>
-        <div
-          className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] border-red-400/80 bg-stone-800 font-display text-xl text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
-            turn ? "turn-glow" : ""
-          }`}
-        >
-          <SeatFace seat={info} />
-        </div>
+        <Framed frame={info?.frame}>
+          <div
+            className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] border-red-400/80 bg-stone-800 font-display text-xl text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
+              turn ? "turn-glow" : ""
+            }`}
+          >
+            <SeatFace seat={info} />
+          </div>
+        </Framed>
         {ready && (
           <span className="banner absolute -right-1 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white ring-2 ring-stone-900" title="Pronto">
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

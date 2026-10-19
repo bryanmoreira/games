@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { friendStatus, groupFriends, planFriendAction, type FriendAction, type FriendStatus } from "@/lib/friends-rules";
 
-const USER = { select: { id: true, name: true, image: true, username: true, lastSeenAt: true } } as const;
+const USER = { select: { id: true, name: true, image: true, username: true, lastSeenAt: true, equippedFrame: true } } as const;
 
 // a linha do par, em qualquer direção
 const pair = (a: string, b: string) => ({

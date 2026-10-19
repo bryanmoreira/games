@@ -17,6 +17,9 @@ interface Slot {
   /** Foto e @usuario de quem está logado no site. */
   image?: string | null;
   username?: string | null;
+  /** Moldura e baralho da loja de quem está logado. */
+  frame?: string | null;
+  deck?: string | null;
 }
 
 interface Room {
@@ -58,7 +61,9 @@ const accounts = new Map<string, Account>(); // token -> conta do site (só loga
 /** Como a pessoa aparece no lugar: logado, nome e foto da conta; senão, o nome digitado. */
 const who = (token: string, name: string) => {
   const a = accounts.get(token);
-  return a ? { name: a.name, image: a.image, username: a.username } : { name, image: null, username: null };
+  return a
+    ? { name: a.name, image: a.image, username: a.username, frame: a.frame, deck: a.deck }
+    : { name, image: null, username: null, frame: null, deck: null };
 };
 
 const emptySlot = (): Slot => ({ kind: "empty", name: "" });
@@ -107,6 +112,8 @@ function info(room: Room, token: string): RoomInfo {
       connected: s.kind === "bot" || (s.kind === "human" && isConnected(s.token)),
       image: s.kind === "human" ? (s.image ?? null) : null,
       username: s.kind === "human" ? (s.username ?? null) : null,
+      frame: s.kind === "human" ? (s.frame ?? null) : null,
+      deck: s.kind === "human" ? (s.deck ?? null) : null,
     })),
     waiting: [...room.members].filter(([t]) => !seated.has(t)).map(([, n]) => n),
     minSeats: room.adapter.minSeats ?? room.adapter.seats,

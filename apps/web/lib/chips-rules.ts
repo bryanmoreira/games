@@ -2,7 +2,7 @@
 import { nextDay } from "@/lib/stats/achievements";
 import type { AchievementDef, AchievementTier } from "@/lib/stats/achievements";
 
-export type ChipReason = "welcome" | "achievement" | "login";
+export type ChipReason = "welcome" | "achievement" | "login" | "purchase" | "admin";
 
 /** Presente da conta nova (quem já jogava antes das fichas também ganha). */
 export const WELCOME_CHIPS = 100;

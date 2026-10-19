@@ -1,3 +1,6 @@
+import { FrameRing } from "@/components/shop/Art";
+import { frameKey } from "@/lib/shop/catalog";
+
 /** Borda de ficha de pôquer (vermelha com listras brancas) para pôr atrás de uma foto redonda. Ocupa o pai inteiro (absolute). */
 export function ChipFrame({ className = "" }: { className?: string }) {
   return (
@@ -9,18 +12,35 @@ export function ChipFrame({ className = "" }: { className?: string }) {
   );
 }
 
-/** Foto (ou inicial) dentro da ficha: o miolo ocupa 70%, o resto é a borda. */
-export function ChipAvatar({ user, className = "", frameClassName = "" }: { user: { name: string; image?: string | null }; className?: string; frameClassName?: string }) {
+/**
+ * Foto (ou inicial) dentro da ficha: o miolo ocupa 70%, o resto é a borda.
+ * `frame`: moldura da loja no lugar da ficha vermelha (a foto continua do mesmo tamanho).
+ */
+export function ChipAvatar({
+  user,
+  frame,
+  className = "",
+  frameClassName = "",
+}: {
+  user: { name: string; image?: string | null };
+  frame?: string | null;
+  className?: string;
+  frameClassName?: string;
+}) {
+  const shop = frameKey(frame);
   return (
     <span className={`relative flex shrink-0 items-center justify-center rounded-full drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)] ${className}`}>
-      <ChipFrame className={frameClassName} />
-      <span className="relative flex h-[70%] w-[70%] items-center justify-center overflow-hidden rounded-full bg-[#3b2a10] font-display text-gold">
-        {user.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={user.image} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
-        ) : (
-          user.name.charAt(0).toUpperCase()
-        )}
+      {!shop && <ChipFrame className={frameClassName} />}
+      <span className="relative h-[70%] w-[70%]">
+        <span className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-[#3b2a10] font-display text-gold">
+          {user.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.image} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+          ) : (
+            user.name.charAt(0).toUpperCase()
+          )}
+        </span>
+        {shop && <FrameRing frame={shop} className={frameClassName} />}
       </span>
     </span>
   );

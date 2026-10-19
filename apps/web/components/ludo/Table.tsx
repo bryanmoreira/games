@@ -11,6 +11,7 @@ import { HelpButton, MuteButton } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playCaptureSound, playDiceSound, playExitSound, playHomeSound, playPassSound, playStepSound } from "@/lib/ludo/sound";
 import { Board, cornerOf, DieFace, LUDO_COLORS, Pawn, turnsFor, type UiPiece } from "./Board";
@@ -207,13 +208,15 @@ function Plate({
   const home = homeCount(view, color);
   return (
     <div className={`flex min-w-0 flex-1 items-center gap-2 ${right ? "flex-row-reverse" : ""} ${info?.connected ? "" : "opacity-40"}`}>
-      <div
-        className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border-[3px] bg-stone-800 font-display text-lg text-white shadow-lg shadow-black/40 sm:h-12 sm:w-12 ${
-          LUDO_COLORS[color].border
-        } ${turn ? "turn-glow" : ""}`}
-      >
-        <SeatFace seat={info} />
-      </div>
+      <Framed frame={info?.frame}>
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border-[3px] bg-stone-800 font-display text-lg text-white shadow-lg shadow-black/40 sm:h-12 sm:w-12 ${
+            LUDO_COLORS[color].border
+          } ${turn ? "turn-glow" : ""}`}
+        >
+          <SeatFace seat={info} />
+        </div>
+      </Framed>
       <div className={`flex min-w-0 flex-col gap-1 ${right ? "items-end" : ""}`}>
         <span className={`max-w-full truncate text-xs font-semibold sm:text-sm ${turn ? "text-gold" : mine ? "text-white" : "text-white/80"}`}>{info?.name}</span>
         <span className="flex gap-0.5" title="Na chegada">

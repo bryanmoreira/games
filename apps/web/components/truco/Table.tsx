@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@truco/game";
 import { send } from "@/lib/socket";
 import { TRUCO_PATH } from "@/lib/truco/paths";
-import { CardBack, CardImg } from "@/components/cards/Card";
+import { CardBack, CardImg, DeckProvider } from "@/components/cards/Card";
 import { DealAnimation, dealtTo, useDeal } from "./Deal";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { HelpButton, MuteButton, TipsButton, useTips } from "@/components/ui/buttons";
@@ -16,6 +16,7 @@ import { CardInfo } from "./CardInfo";
 import { playCardSound, useAudioUnlock } from "@/lib/sound";
 import { playTrucoSound } from "@/lib/truco/sound";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 
 type Pos = "bottom" | "right" | "top" | "left";
 const POS: Pos[] = ["bottom", "right", "top", "left"];
@@ -60,83 +61,87 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   useSounds(view);
   const visible = (seat: Seat) => Math.min(view.handCounts[seat], dealtTo(deal, view.dealer, seat));
 
+  // cada um joga com o próprio baralho: a mão virada e a carta jogada usam o do dono; o resto (vira, monte), o meu
   return (
-    <main className="flex h-dvh flex-col overflow-hidden">
-      <header className="relative z-40 flex items-center justify-between gap-1.5 px-2 py-2 sm:gap-2 sm:px-6">
-        <div className="flex items-center gap-1.5 rounded-2xl bg-black/40 px-3 py-2 font-display sm:gap-3 sm:px-4">
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-[10px] text-gold/80">NÓS</span>
-            <span className="text-3xl text-gold">{us}</span>
+    <DeckProvider deck={room.seats[me]?.deck}>
+      <main className="flex h-dvh flex-col overflow-hidden">
+        <header className="relative z-40 flex items-center justify-between gap-1.5 px-2 py-2 sm:gap-2 sm:px-6">
+          <div className="flex items-center gap-1.5 rounded-2xl bg-black/40 px-3 py-2 font-display sm:gap-3 sm:px-4">
+            <div className="flex flex-col items-center leading-none">
+              <span className="text-[10px] text-gold/80">NÓS</span>
+              <span className="text-3xl text-gold">{us}</span>
+            </div>
+            {/* espaçador do rótulo + altura da linha dos números, para o × alinhar com os placares */}
+            <div className="flex flex-col items-center leading-none" aria-hidden="true">
+              <span className="invisible text-[10px]">×</span>
+              <span className="flex h-[1em] items-center text-3xl">
+                <span className="text-base text-white/30">×</span>
+              </span>
+            </div>
+            <div className="flex flex-col items-center leading-none">
+              <span className="text-[10px] text-white/60">ELES</span>
+              <span className="text-3xl">{them}</span>
+            </div>
           </div>
-          {/* espaçador do rótulo + altura da linha dos números, para o × alinhar com os placares */}
-          <div className="flex flex-col items-center leading-none" aria-hidden="true">
-            <span className="invisible text-[10px]">×</span>
-            <span className="flex h-[1em] items-center text-3xl">
-              <span className="text-base text-white/30">×</span>
-            </span>
+
+          <HandInfo view={view} />
+
+          <div className="flex items-center gap-1 sm:gap-2">
+            {!room.solo && <span className="hidden font-display text-white/40 sm:inline">{room.code}</span>}
+            <HelpButton onClick={() => setHelp(true)} />
+            <TipsButton on={tips} onClick={toggleTips} />
+            <MuteButton />
+            <ExitConfirm onExit={leave} ask={view.phase !== "gameOver"} onOpenChange={setLeaving} />
           </div>
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-[10px] text-white/60">ELES</span>
-            <span className="text-3xl">{them}</span>
-          </div>
-        </div>
+          {tips && hoveredCard && !leaving && (
+            <div className="pointer-events-none absolute right-2 top-full mt-1 sm:right-6 [@media(hover:none)]:hidden">
+              <CardInfo card={hoveredCard} manilha={view.manilha} />
+            </div>
+          )}
+        </header>
 
-        <HandInfo view={view} />
+        <section className="relative mx-auto mb-3 mt-8 w-[calc(100%-1.5rem)] max-w-[1100px] flex-1 sm:mt-10 lg:mt-11 sm:w-[calc(100%-7rem)]">
+          <div className="felt absolute inset-0 rounded-[48px] sm:rounded-[120px]" />
 
-        <div className="flex items-center gap-1 sm:gap-2">
-          {!room.solo && <span className="hidden font-display text-white/40 sm:inline">{room.code}</span>}
-          <HelpButton onClick={() => setHelp(true)} />
-          <TipsButton on={tips} onClick={toggleTips} />
-          <MuteButton />
-          <ExitConfirm onExit={leave} ask={view.phase !== "gameOver"} onOpenChange={setLeaving} />
-        </div>
-        {tips && hoveredCard && !leaving && (
-          <div className="pointer-events-none absolute right-2 top-full mt-1 sm:right-6 [@media(hover:none)]:hidden">
-            <CardInfo card={hoveredCard} manilha={view.manilha} />
-          </div>
-        )}
-      </header>
-
-      <section className="relative mx-auto mb-3 mt-8 w-[calc(100%-1.5rem)] max-w-[1100px] flex-1 sm:mt-10 lg:mt-11 sm:w-[calc(100%-7rem)]">
-        <div className="felt absolute inset-0 rounded-[48px] sm:rounded-[120px]" />
-
-        {(["top", "left", "right"] as const).map((pos) => (
-          <Opponent key={pos} pos={pos} seat={seatAt(pos)} room={room} view={view} count={visible(seatAt(pos))} />
-        ))}
-
-        {!deal && <Vira view={view} />}
-
-        <div className="absolute left-1/2 top-[55%] h-[min(34vh,320px)] w-[44vw] sm:w-[min(62vw,360px)] -translate-x-1/2 -translate-y-1/2">
-          {round.plays.map((p, i) => (
-            <PlayedCard
-              key={`${view.handNo}-${view.rounds.length}-${p.seat}`}
-              play={p}
-              pos={relPos(p.seat, me)}
-              order={i}
-              winning={view.phase !== "playing" && round.winningSeat === p.seat}
-              mine={p.seat === me}
-            />
+          {(["top", "left", "right"] as const).map((pos) => (
+            <Opponent key={pos} pos={pos} seat={seatAt(pos)} room={room} view={view} count={visible(seatAt(pos))} />
           ))}
-        </div>
 
-        <CenterStatus view={view} />
+          {!deal && <Vira view={view} />}
 
-        {deal && <DealAnimation key={`deal-${deal.hand}`} deal={deal} dealer={view.dealer} me={me} />}
+          <div className="absolute left-1/2 top-[55%] h-[min(34vh,320px)] w-[44vw] sm:w-[min(62vw,360px)] -translate-x-1/2 -translate-y-1/2">
+            {round.plays.map((p, i) => (
+              <DeckProvider key={`${view.handNo}-${view.rounds.length}-${p.seat}`} deck={room.seats[p.seat]?.deck}>
+                <PlayedCard
+                  play={p}
+                  pos={relPos(p.seat, me)}
+                  order={i}
+                  winning={view.phase !== "playing" && round.winningSeat === p.seat}
+                  mine={p.seat === me}
+                />
+              </DeckProvider>
+            ))}
+          </div>
 
-        {view.shout && (
-          <ShoutBubble key={`shout-${view.shout.id}`} text={shoutText(view.shout)} pos={relPos(view.shout.seat, me)} />
+          <CenterStatus view={view} />
+
+          {deal && <DealAnimation key={`deal-${deal.hand}`} deal={deal} dealer={view.dealer} me={me} />}
+
+          {view.shout && (
+            <ShoutBubble key={`shout-${view.shout.id}`} text={shoutText(view.shout)} pos={relPos(view.shout.seat, me)} />
+          )}
+        </section>
+
+        <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} onHover={setHovered} />
+
+        {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={leave} />}
+        {help && (
+          <HowToPlayModal game="TRUCO PAULISTA" onClose={() => setHelp(false)}>
+            <HowToPlay />
+          </HowToPlayModal>
         )}
-      </section>
-
-      <MyArea view={view} room={room} visible={visible(me)} dealing={!!deal} onHover={setHovered} />
-
-      {view.phase === "gameOver" && <GameOver view={view} room={room} onLeave={leave} />}
-      {help && (
-        <HowToPlayModal game="TRUCO PAULISTA" onClose={() => setHelp(false)}>
-          <HowToPlay />
-        </HowToPlayModal>
-      )}
-    </main>
+      </main>
+    </DeckProvider>
   );
 }
 
@@ -212,19 +217,23 @@ function Opponent({ pos, seat, room, view, count }: { pos: Exclude<Pos, "bottom"
   return (
     <div className={`absolute z-10 flex items-center gap-1.5 sm:gap-2 ${SEAT_POS[pos]}`}>
       <div className={`relative flex flex-col items-center ${info.connected ? "" : "opacity-40"}`}>
-        <div
-          className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] font-display text-xl shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
-            partner ? "border-gold bg-gold text-stone-900" : "border-red-400/80 bg-stone-800 text-white"
-          } ${turn ? "turn-glow" : ""}`}
-        >
-          <SeatFace seat={info} />
-        </div>
+        <Framed frame={info?.frame}>
+          <div
+            className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] font-display text-xl shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
+              partner ? "border-gold bg-gold text-stone-900" : "border-red-400/80 bg-stone-800 text-white"
+            } ${turn ? "turn-glow" : ""}`}
+          >
+            <SeatFace seat={info} />
+          </div>
+        </Framed>
         <span className="relative -mt-2 max-w-24 truncate rounded-full bg-stone-950/90 px-2 py-0.5 text-[11px] font-semibold lg:text-xs ring-1 ring-white/10">
           {info.name}
         </span>
         {view.dealer === seat && <DealerChip className="absolute -right-1.5 -top-1" />}
       </div>
-      <Fan count={count} vertical={pos !== "top"} />
+      <DeckProvider deck={info?.deck}>
+        <Fan count={count} vertical={pos !== "top"} />
+      </DeckProvider>
     </div>
   );
 }

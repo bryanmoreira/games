@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ShieldIcon } from "@/components/admin/AdminNav";
+import { UserShop } from "@/components/admin/UserShop";
+import { ChipsView } from "@/components/chips/ChipsView";
 import { CARD, ago, dateFmt, dateTimeFmt, icon } from "@/components/admin/ui";
 import { SOCIAL_PROVIDERS } from "@/components/auth/providers";
 import { Avatar } from "@/components/profile/ProfileHeader";
@@ -9,7 +11,9 @@ import { ProfileStatsView } from "@/components/stats/ProfileStats";
 import { isAdmin, requireAdmin } from "@/lib/admin";
 import { deviceLabel } from "@/lib/admin-rules";
 import { getAdminUser } from "@/lib/admin-stats";
+import { chipHistory, chipsState } from "@/lib/chips";
 import { prisma } from "@/lib/db";
+import { inventory } from "@/lib/shop/shop";
 import { GAME_INFO, type StatGame } from "@/lib/stats/games";
 
 type Props = { params: Promise<{ id: string }> };
@@ -46,6 +50,7 @@ export default async function AdminUser({ params }: Props) {
   const data = await getAdminUser(id);
   if (!data) notFound();
   const { user, stats, recent, friends, pendingFriends } = data;
+  const [items, chips, history] = await Promise.all([inventory(id, true), chipsState(id), chipHistory(id, 60)]);
   const now = new Date();
 
   const facts: [React.ReactNode, string, string][] = [
@@ -139,6 +144,16 @@ export default async function AdminUser({ params }: Props) {
           ))}
         </div>
       </header>
+
+      <Section title="Fichas e itens" count={items.filter((i) => !i.removedAt).length}>
+        <UserShop userId={user.id} chips={user.chips} items={JSON.parse(JSON.stringify(items))} />
+      </Section>
+
+      {chips && (
+        <Section title="Histórico de fichas" count={history.length}>
+          <ChipsView state={chips} history={history} />
+        </Section>
+      )}
 
       <Section title="Partidas recentes" count={recent.length}>
         {recent.length ? (

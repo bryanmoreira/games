@@ -44,6 +44,16 @@ const ITEMS: Item[] = [
     ),
   },
   {
+    href: "/perfil/itens",
+    label: "Itens",
+    icon: svg(
+      <>
+        <rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" />
+        <rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" />
+      </>,
+    ),
+  },
+  {
     href: "/perfil/amigos",
     label: "Amigos",
     icon: svg(

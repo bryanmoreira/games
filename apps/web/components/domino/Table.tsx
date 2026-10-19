@@ -11,6 +11,7 @@ import { HelpButton, MuteButton } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playBatidaSound, playClosedSound, playDrawSound, playPassSound, playShuffleSound, playTileSound } from "@/lib/domino/sound";
 import { Board } from "./Board";
@@ -187,13 +188,15 @@ function Opponent({ pos, seat, room, view, passKey }: { pos: Exclude<Pos, "botto
   return (
     <div className={`absolute z-10 flex items-center gap-1 ${SEAT_POS[pos]}`}>
       <div className={`relative flex flex-col items-center ${info?.connected ? "" : "opacity-40"}`}>
-        <div
-          className={`flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-[3px] font-display text-lg shadow-lg shadow-black/40 sm:h-14 sm:w-14 sm:text-xl ${
-            partner ? "border-gold bg-gold text-stone-900" : "border-red-400/80 bg-stone-800 text-white"
-          } ${turn ? "turn-glow" : ""}`}
-        >
-          <SeatFace seat={info} />
-        </div>
+        <Framed frame={info?.frame}>
+          <div
+            className={`flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-[3px] font-display text-lg shadow-lg shadow-black/40 sm:h-14 sm:w-14 sm:text-xl ${
+              partner ? "border-gold bg-gold text-stone-900" : "border-red-400/80 bg-stone-800 text-white"
+            } ${turn ? "turn-glow" : ""}`}
+          >
+            <SeatFace seat={info} />
+          </div>
+        </Framed>
         <span className="relative -mt-2 max-w-20 truncate rounded-full bg-stone-950/90 px-2 py-0.5 text-[11px] font-semibold ring-1 ring-white/10">
           {info?.name}
         </span>

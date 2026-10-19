@@ -12,6 +12,8 @@ export interface ChipGrant {
 export interface ChipEntry extends ChipGrant {
   id: string;
   at: Date;
+  /** admin: motivo escrito por ele */
+  note?: string | null;
 }
 
 export interface ChipsState {
@@ -92,5 +94,5 @@ export async function chipsState(userId: string): Promise<ChipsState | null> {
 /** Fichas ganhas e gastas, da mais nova para a mais velha. */
 export async function chipHistory(userId: string, take = 200): Promise<ChipEntry[]> {
   const rows = await prisma.chipTransaction.findMany({ where: { userId }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take });
-  return rows.map((r) => ({ id: r.id, reason: r.reason as ChipReason, ref: r.ref, delta: r.delta, at: r.createdAt }));
+  return rows.map((r) => ({ id: r.id, reason: r.reason as ChipReason, ref: r.ref, delta: r.delta, at: r.createdAt, note: r.note }));
 }

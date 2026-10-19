@@ -11,6 +11,7 @@ import { HelpButton, MuteButton, TipsButton, useTips } from "@/components/ui/but
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { GameEnd } from "@/components/ui/GameEnd";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playRingSound } from "@/lib/otrio/sound";
 import { Board, ColorMark, RING_COLORS, RingIcon, SIZE_NAMES, type Marker } from "./Board";
@@ -227,13 +228,15 @@ function Opponent({ view, room, seat, pos, turn }: { view: PlayerView; room: Roo
   return (
     <div className={`absolute z-10 flex flex-col items-center ${pos}`}>
       <div className={`relative flex flex-col items-center ${info?.connected ? "" : "opacity-40"}`}>
-        <div
-          className={`flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-[3px] bg-stone-800 font-display text-lg text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
-            RING_COLORS[seat].border
-          } ${turn ? "turn-glow" : ""}`}
-        >
-          <SeatFace seat={info} />
-        </div>
+        <Framed frame={info?.frame}>
+          <div
+            className={`flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-[3px] bg-stone-800 font-display text-lg text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
+              RING_COLORS[seat].border
+            } ${turn ? "turn-glow" : ""}`}
+          >
+            <SeatFace seat={info} />
+          </div>
+        </Framed>
         <span className="relative -mt-2 max-w-24 truncate rounded-full bg-stone-950/90 px-2 py-0.5 text-[11px] font-semibold ring-1 ring-white/10 sm:max-w-28 lg:text-xs">
           {info?.name}
         </span>

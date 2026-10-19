@@ -5,7 +5,7 @@ export type FriendStatus = "none" | "sent" | "received" | "friends";
 
 export type FriendAction = "add" | "accept" | "remove";
 
-export type FriendUser = { id: string; name: string; image: string | null; username: string | null };
+export type FriendUser = { id: string; name: string; image: string | null; username: string | null; equippedFrame?: string | null };
 
 /** Amigo na lista: `online` só vale para amizades aceitas. */
 export type FriendEntry = FriendUser & { online: boolean };

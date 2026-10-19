@@ -38,6 +38,9 @@ export interface SeatInfo {
   image?: string | null;
   /** @usuario da conta (só de quem está logado), para abrir o perfil. */
   username?: string | null;
+  /** Moldura e baralho da loja (só de quem está logado; chaves de apps/web/lib/shop/catalog.ts). */
+  frame?: string | null;
+  deck?: string | null;
 }
 
 export interface RoomInfo {

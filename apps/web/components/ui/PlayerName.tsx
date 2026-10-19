@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 import { authClient } from "@/lib/auth-client";
 
 /**
@@ -39,9 +40,11 @@ export function PlayerName({
         title="Nome e foto mudam no perfil"
         className="group flex h-[52px] w-full items-center gap-3 rounded-xl bg-white/10 px-3 ring-1 ring-white/10 transition hover:bg-white/15"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gold/20 font-display text-gold ring-2 ring-gold/50">
-          <SeatFace seat={{ kind: "human", name: user.name, image: user.image ?? null }} />
-        </span>
+        <Framed frame={user.equippedFrame}>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gold/20 font-display text-gold ring-2 ring-gold/50">
+            <SeatFace seat={{ kind: "human", name: user.name, image: user.image ?? null }} />
+          </span>
+        </Framed>
         <span className="min-w-0 flex-1 truncate text-left text-lg">{user.name}</span>
         <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-white/40 transition group-hover:text-white/80" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <rect x="4" y="11" width="16" height="10" rx="2" />

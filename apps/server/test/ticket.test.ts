@@ -22,14 +22,22 @@ describe("ticket", () => {
       name: "Ana",
       image: "https://img/a.png",
       username: "ana",
+      frame: null,
+      deck: null,
     });
   });
 
   test("assinado pelo site é aceito pelo servidor", () => {
     const t = signTicket({ id: "u2", name: "Bia", image: null, username: "bia" });
     expect(t).not.toBeNull();
-    expect(verifyTicket(t)).toEqual({ userId: "u2", name: "Bia", image: null, username: "bia" });
-    expect(verifyTicket(signTicket({ id: "u3", name: "Caio" }))).toEqual({ userId: "u3", name: "Caio", image: null, username: null });
+    expect(verifyTicket(t)).toEqual({ userId: "u2", name: "Bia", image: null, username: "bia", frame: null, deck: null });
+    expect(verifyTicket(signTicket({ id: "u3", name: "Caio" }))).toEqual({ userId: "u3", name: "Caio", image: null, username: null, frame: null, deck: null });
+  });
+
+  test("leva moldura e baralho; chave estranha vira null", () => {
+    const t = signTicket({ id: "u4", name: "Duda", equippedFrame: "coroa", equippedDeck: "noite" });
+    expect(verifyTicket(t)).toMatchObject({ frame: "coroa", deck: "noite" });
+    expect(verifyTicket(ticket({ u: "u1", n: "Ana", i: null, h: null, f: "<script>", k: 7, e: later() }))).toMatchObject({ frame: null, deck: null });
   });
 
   test("nome vazio vira Jogador; nome longo corta em 24", () => {

@@ -11,6 +11,7 @@ import { HelpButton, MuteButton, TipsButton, useTips } from "@/components/ui/but
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { Framed } from "@/components/shop/Art";
 import { playDrawSound, playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playCaptureSound, playKingSound, playStepSound } from "@/lib/damas/sound";
 import { Board, PieceShape, piecesOf, type Mark, type UiPiece } from "./Board";
@@ -234,13 +235,15 @@ function Opponent({ room, seat, side, pieces, turn }: { room: RoomInfo; seat: Se
   return (
     <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 -translate-y-6 flex-col items-center sm:-translate-y-7 lg:-translate-y-8">
       <div className={`relative flex flex-col items-center ${info.connected ? "" : "opacity-40"}`}>
-        <div
-          className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] border-red-400/80 bg-stone-800 font-display text-xl text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
-            turn ? "turn-glow" : ""
-          }`}
-        >
-          <SeatFace seat={info} />
-        </div>
+        <Framed frame={info?.frame}>
+          <div
+            className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-[3px] border-red-400/80 bg-stone-800 font-display text-xl text-white shadow-lg shadow-black/40 sm:h-14 sm:w-14 lg:h-16 lg:w-16 lg:text-2xl ${
+              turn ? "turn-glow" : ""
+            }`}
+          >
+            <SeatFace seat={info} />
+          </div>
+        </Framed>
         <span className="relative -mt-2 flex max-w-36 items-center gap-1 truncate rounded-full bg-stone-950/90 py-0.5 pl-2 pr-0.5 text-[11px] font-semibold ring-1 ring-white/10 lg:text-xs">
           <span className="truncate">{info.name}</span>
           <Count side={side} n={pieces} />

@@ -4,10 +4,20 @@ import { AchievementIcon } from "@/components/stats/AchievementIcon";
 import { loginDayOf, type ChipEntry, type ChipsState } from "@/lib/chips";
 import { ACHIEVEMENT_BY_CODE, dayKey, prevDay } from "@/lib/stats/achievements";
 import { GAME_INFO } from "@/lib/stats/games";
+import { ITEM_BY_ID } from "@/lib/shop/catalog";
+import { ShieldIcon } from "@/components/admin/AdminNav";
 
 const CARD = "rounded-2xl bg-white/5 ring-1 ring-white/10";
 const DAY_FMT = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", day: "numeric", month: "short", year: "numeric" });
 const TIME_FMT = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" });
+
+function StoreIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 9l1.5-5h15L21 9M3 9h18M3 9v11h18V9M9 20v-6h6v6" />
+    </svg>
+  );
+}
 
 /** Ícone, título e detalhe de cada linha. */
 function describe(e: ChipEntry): { icon: React.ReactNode; title: string; sub: string } {
@@ -21,6 +31,11 @@ function describe(e: ChipEntry): { icon: React.ReactNode; title: string; sub: st
     };
   }
   if (e.reason === "login") return { icon: <AchievementIcon icon="calendar" className={cls} />, title: "Login diário", sub: `Dia ${loginDayOf(e.delta)}` };
+  if (e.reason === "purchase") {
+    const it = ITEM_BY_ID.get(e.ref.split(":").slice(0, 2).join(":"));
+    return { icon: <StoreIcon className={cls} />, title: it?.name ?? "Item", sub: it?.type === "deck" ? "Baralho" : "Moldura" };
+  }
+  if (e.reason === "admin") return { icon: <ShieldIcon className={cls} />, title: e.note || (e.delta > 0 ? "Presente" : "Ajuste"), sub: "Admin" };
   return { icon: <GiftIcon className={cls} />, title: "Boas-vindas", sub: "Conta nova" };
 }
 

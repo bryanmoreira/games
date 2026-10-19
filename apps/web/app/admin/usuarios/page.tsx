@@ -4,6 +4,7 @@ import { ShieldIcon } from "@/components/admin/AdminNav";
 import { PageTitle, Stat, ago, dateFmt, icon } from "@/components/admin/ui";
 import { SOCIAL_PROVIDERS } from "@/components/auth/providers";
 import { Avatar } from "@/components/profile/ProfileHeader";
+import { ChipIcon } from "@/components/chips/ChipIcon";
 import { type AdminUser, isAdmin, listUsers, requireAdmin } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Usuários" };
@@ -67,6 +68,10 @@ function Row({ user, now }: { user: AdminUser; now: Date }) {
             </>,
           )}
           {user.games}
+        </span>
+        <span className="flex w-16 items-center gap-1 tabular-nums" title="Fichas">
+          <ChipIcon className="h-3.5 w-3.5" />
+          {user.chips.toLocaleString("pt-BR")}
         </span>
         <span className="flex w-20 items-center gap-1 tabular-nums" title={`Cadastro: ${dateFmt.format(user.createdAt)}`}>
           {icon(

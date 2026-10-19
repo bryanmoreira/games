@@ -14,7 +14,7 @@ export async function GET() {
   if (!id) return new Response(null, { status: 401 });
   const rows = await prisma.gameInvite.findMany({
     where: { toId: id, createdAt: { gte: inviteCutoff() } },
-    include: { from: { select: { name: true, image: true, username: true } } },
+    include: { from: { select: { name: true, image: true, username: true, equippedFrame: true } } },
     orderBy: { createdAt: "desc" },
   });
   const invites: GameInviteEntry[] = rows.flatMap((r) => (isOnlineGame(r.game) ? [{ id: r.id, game: r.game, code: r.code, from: r.from }] : []));

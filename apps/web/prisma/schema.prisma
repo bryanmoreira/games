@@ -27,6 +27,9 @@ model User {
   chips           Int       @default(0)
   loginStreak     Int       @default(0)
   lastLoginDay    String? // AAAA-MM-DD (horário de Brasília)
+  // loja: o que o jogador está usando (chave em lib/shop/catalog.ts). null = ficha vermelha / baralho clássico
+  equippedFrame   String?
+  equippedDeck    String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
@@ -38,6 +41,7 @@ model User {
   invitesSent     GameInvite[] @relation("InviteFrom")
   invitesReceived GameInvite[] @relation("InviteTo")
   chipTransactions ChipTransaction[]
+  items            UserItem[]
 
   @@map("user")
 }
@@ -178,11 +182,35 @@ model ChipTransaction {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   delta     Int
-  reason    String // welcome | achievement | login
-  ref       String // achievement: código; login: AAAA-MM-DD; welcome: "welcome"
+  reason    String // welcome | achievement | login | purchase | admin
+  ref       String // achievement: código; login: AAAA-MM-DD; welcome: "welcome"; purchase: item:hora; admin: id único
+  // admin: quem deu/tirou e por quê
+  byId      String?
+  note      String?
   createdAt DateTime @default(now())
 
   @@unique([userId, reason, ref])
   @@index([userId, createdAt])
   @@map("chip_transaction")
+}
+
+// Item da loja que o jogador tem (ou teve). Uma linha por jogador + item: comprar de novo ou ganhar de novo
+// depois de tirado reaproveita a linha. removedAt preenchido = o admin tirou (fica no histórico).
+model UserItem {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId      String // ver lib/shop/catalog.ts ("frame:madeira", "deck:noite")
+  source      String // purchase | admin
+  // fichas pagas (compra) ou null (presente do admin)
+  price       Int?
+  // admin que deu (source admin)
+  grantedById String?
+  acquiredAt  DateTime  @default(now())
+  removedAt   DateTime?
+  removedById String?
+
+  @@unique([userId, itemId])
+  @@index([userId, acquiredAt])
+  @@map("user_item")
 }

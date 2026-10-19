@@ -17,6 +17,7 @@ import { CheckIcon, ClockIcon } from "@/components/ui/icons";
 import { useCountdown } from "@/lib/countdown";
 import { HowToPlay } from "./HowToPlay";
 import { SeatFace } from "@/components/ui/SeatFace";
+import { FrameRing } from "@/components/shop/Art";
 
 const WRITE_DEBOUNCE = 300;
 
@@ -110,6 +111,10 @@ function Players({ room, view }: { room: RoomInfo; view: PlayerView }) {
                 }`}
               >
                 <SeatFace seat={room.seats[p]} />
+              </span>
+              {/* a moldura fica por cima do círculo (e do anel de progresso) */}
+              <span className="pointer-events-none absolute inset-[5px]">
+                <FrameRing frame={room.seats[p]?.frame} />
               </span>
               {ready && (
                 <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white ring-2 ring-stone-900">
