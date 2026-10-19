@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { achievementChips } from "@/lib/chips-rules";
 import { ACHIEVEMENT_BY_CODE } from "@/lib/stats/achievements";
 
 /** Conquistas desbloqueadas agora há pouco (para mostrar na tela de fim da partida). */
@@ -16,7 +17,7 @@ export async function GET(req: Request) {
   });
   const achievements = rows.flatMap((r) => {
     const a = ACHIEVEMENT_BY_CODE.get(r.code);
-    return a && (a.game === null || a.game === game) ? [{ code: a.code, title: a.title, desc: a.desc, icon: a.icon }] : [];
+    return a && (a.game === null || a.game === game) ? [{ code: a.code, title: a.title, desc: a.desc, icon: a.icon, chips: achievementChips(a) }] : [];
   });
   return Response.json({ achievements }, { headers: { "cache-control": "no-store" } });
 }

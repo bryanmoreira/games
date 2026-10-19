@@ -8,6 +8,8 @@ export interface UnlockedAchievement {
   title: string;
   desc: string;
   icon: AchievementIcon;
+  /** fichas que a conquista pagou */
+  chips?: number;
 }
 
 export const ACHIEVEMENTS_EVENT = "mesa:achievements";

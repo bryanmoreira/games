@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { AchievementIcon } from "@/components/stats/AchievementIcon";
+import { ChipStack } from "@/components/chips/ChipIcon";
+import { achievementChips, achievementTier, TIER_LEVEL } from "@/lib/chips-rules";
 import { ACHIEVEMENTS, type AchievementDef } from "@/lib/stats/achievements";
 import { GAME_INFO, STAT_GAMES } from "@/lib/stats/games";
 import type { GameStats, ModeStats, ProfileStats, Rivalry } from "@/lib/stats/summary";
@@ -114,7 +116,7 @@ function GameCard({ s }: { s: GameStats }) {
 function AchievementCard({ def, at, detailed }: { def: AchievementDef; at?: Date; detailed?: boolean }) {
   return (
     <div
-      title={`${def.desc}${at ? ` · ${at.toLocaleDateString("pt-BR")}` : ""}`}
+      title={`${def.desc} · ${achievementChips(def)} fichas${at ? ` · ${at.toLocaleDateString("pt-BR")}` : ""}`}
       className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 ring-1 ${at ? "bg-gold/10 ring-gold/30" : "bg-white/[0.03] ring-white/5"}`}
     >
       <span className={`flex shrink-0 items-center justify-center rounded-full ${detailed ? "h-10 w-10" : "h-8 w-8"} ${at ? "bg-gold text-stone-900" : "bg-white/5 text-white/20"}`}>
@@ -125,6 +127,7 @@ function AchievementCard({ def, at, detailed }: { def: AchievementDef; at?: Date
         <span className="truncate text-[10px] text-white/35">{detailed ? def.desc : def.game ? GAME_INFO[def.game].name : "Geral"}</span>
         {detailed && at && <span className="mt-0.5 text-[10px] text-gold/70">{at.toLocaleDateString("pt-BR")}</span>}
       </span>
+      <ChipStack level={TIER_LEVEL[achievementTier(def)]} className={`ml-auto shrink-0 ${at ? "" : "opacity-30 grayscale"}`} />
     </div>
   );
 }

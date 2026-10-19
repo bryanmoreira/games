@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AchievementIcon } from "@/components/stats/AchievementIcon";
+import { ChipIcon } from "@/components/chips/ChipIcon";
+import { refreshChips } from "@/lib/chips-client";
 import { gameFromPath } from "@/lib/stats/games";
 import { ACHIEVEMENTS_EVENT, type UnlockedAchievement } from "@/lib/stats/report";
 
@@ -37,6 +39,7 @@ export function NewAchievements() {
       const fresh = items.filter((a) => !seen.has(a.code));
       if (!fresh.length) return;
       markShown(fresh.map((a) => a.code));
+      void refreshChips();
       setList((l) => [...l, ...fresh.filter((a) => !l.some((x) => x.code === a.code))]);
     };
     const load = () =>
@@ -68,6 +71,12 @@ export function NewAchievements() {
             <span className="font-display text-[10px] tracking-wider text-gold/80">CONQUISTA</span>
             <span className="text-sm font-semibold text-white">{a.title}</span>
           </span>
+          {a.chips ? (
+            <span className="ml-auto flex items-center gap-1 font-display text-sm text-gold">
+              +{a.chips}
+              <ChipIcon className="h-5 w-5" />
+            </span>
+          ) : null}
         </div>
       ))}
     </div>

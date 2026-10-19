@@ -28,8 +28,12 @@ export interface AchievementDef {
   title: string;
   desc: string;
   icon: AchievementIcon;
+  /** Quanto vale em fichas (ver lib/chips-rules.ts). Sem nível: média. */
+  tier?: AchievementTier;
   check(ctx: Ctx): boolean;
 }
+
+export type AchievementTier = "easy" | "medium" | "hard";
 
 // ---------- ajudantes ----------
 
@@ -68,6 +72,7 @@ const wins = (game: StatGame, n: number, icon: AchievementIcon = n >= 100 ? "cro
   title: `${n} vitórias`,
   desc: `Vencer ${n} partidas`,
   icon,
+  tier: n >= 50 ? "hard" : "medium",
   check: ({ results }) => winsOf(results).length >= n,
 });
 
@@ -77,6 +82,7 @@ const first = (game: StatGame): AchievementDef => ({
   title: "Primeira vitória",
   desc: "Vencer a primeira partida",
   icon: "trophy",
+  tier: "easy",
   check: ({ results }) => results.some(isWin),
 });
 
@@ -106,6 +112,7 @@ const daily = (game: StatGame): AchievementDef[] => [
     title: "Desafio do dia",
     desc: "Completar um desafio diário",
     icon: "calendar",
+    tier: "easy",
     check: ({ results }) => dailyWins(results).length > 0,
   },
   {
@@ -122,6 +129,7 @@ const daily = (game: StatGame): AchievementDef[] => [
     title: "30 desafios",
     desc: "Completar 30 desafios diários",
     icon: "crown",
+    tier: "hard",
     check: ({ results }) => dailyWins(results).length >= 30,
   },
 ];
@@ -132,6 +140,7 @@ const days = (n: number): AchievementDef => ({
   title: `${n} dias seguidos`,
   desc: `Jogar ${n} dias seguidos`,
   icon: "calendar",
+  tier: n >= 30 ? "hard" : "medium",
   check: ({ bestDays }) => bestDays >= n,
 });
 
@@ -241,6 +250,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Muralha",
     desc: "Empatar 5 vezes com a IA no Impossível",
     icon: "shield",
+    tier: "hard",
     check: ({ results }) => results.filter((r) => r.outcome === "draw" && r.mode === "ai" && r.data.level === "hard").length >= 5,
   },
   {
@@ -276,6 +286,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Virada",
     desc: "Vencer depois de estar 5 pontos de material atrás",
     icon: "star",
+    tier: "hard",
     check: ({ results }) => winsOf(results).some((r) => num(r, "behind") >= 5),
   },
   {
@@ -292,6 +303,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Grão-mestre",
     desc: "Vencer a IA no Difícil",
     icon: "target",
+    tier: "hard",
     check: ({ results }) => winsOf(results).some((r) => r.mode === "ai" && r.data.level === "hard"),
   },
   streak5("xadrez"),
@@ -338,6 +350,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Mestre",
     desc: "Vencer a IA no Difícil",
     icon: "target",
+    tier: "hard",
     check: ({ results }) => winsOf(results).some((r) => r.mode === "ai" && r.data.level === "hard"),
   },
   streak5("damas"),
@@ -368,6 +381,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Virada",
     desc: "Vencer depois de estar com 0 peças na chegada e um adversário com 3",
     icon: "star",
+    tier: "hard",
     check: ({ results }) => winsOf(results).some((r) => r.data.comeback === true),
   },
   {
@@ -548,6 +562,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Todos os níveis",
     desc: "Vencer no fácil, médio, difícil e expert",
     icon: "star",
+    tier: "hard",
     check: ({ results }) => DIFFICULTIES.every((d) => winsOf(results).some((r) => r.data.difficulty === d)),
   },
   {
@@ -564,6 +579,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Expert relâmpago",
     desc: "Vencer o expert em menos de 20 minutos",
     icon: "bolt",
+    tier: "hard",
     check: ({ results }) => winsOf(results).some((r) => r.data.difficulty === "expert" && num(r, "timeMs") < 20 * 60_000),
   },
   wins("sudoku", 10),
@@ -586,6 +602,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Quatro naipes",
     desc: "Vencer com 4 naipes",
     icon: "crown",
+    tier: "hard",
     check: ({ results }) => winsOf(results).some((r) => num(r, "suits") === 4),
   },
   wins("paciencia-spider", 10),
@@ -600,6 +617,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     title: "Vidente",
     desc: "Acertar o Verbete na 1ª tentativa",
     icon: "target",
+    tier: "hard",
     check: ({ results }) => winsOf(results).some((r) => num(r, "mode") === 1 && num(r, "attempts") === 1),
   },
   {

@@ -33,6 +33,17 @@ const ITEMS: Item[] = [
     icon: svg(<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z" />),
   },
   {
+    href: "/perfil/fichas",
+    label: "Fichas",
+    icon: svg(
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="4.5" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </>,
+    ),
+  },
+  {
     href: "/perfil/amigos",
     label: "Amigos",
     icon: svg(

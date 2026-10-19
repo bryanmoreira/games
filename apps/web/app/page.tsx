@@ -13,6 +13,7 @@ import { MiniGrid } from "@/components/codenames/Board";
 import { FieldArt } from "@/components/futebol-de-botao/Field";
 import { Domino } from "@/components/domino/Tile";
 import { UserButton } from "@/components/UserButton";
+import { ChipBalance } from "@/components/chips/ChipBalance";
 import { GameGrid, PlayersBadge, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TableDecor } from "@/components/home/TableDecor";
@@ -249,7 +250,8 @@ export default function Home() {
   return (
     <div className="table-texture relative isolate min-h-dvh bg-[#0f1813]">
       <TableDecor />
-      <header className="relative z-10 mx-auto flex max-w-6xl justify-end px-4 pt-4">
+      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-end gap-3 px-4 pt-4">
+        <ChipBalance />
         <UserButton />
       </header>
       <main className="relative mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 pb-12 pt-2">

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { grantAchievements } from "@/lib/chips";
 import { dayStreaks, newAchievements, type AchievementDef } from "@/lib/stats/achievements";
 import type { Mode, Outcome, StatGame } from "@/lib/stats/games";
 import type { Prisma } from "@/lib/generated/prisma/client";
@@ -64,6 +65,9 @@ async function checkAchievements(userId: string, game: StatGame): Promise<Achiev
     { results: results.map((r) => ({ ...r, data: (r.data ?? {}) as Record<string, unknown> })), bestDays: dayStreaks(days).best },
     new Set(have.map((a) => a.code)),
   );
-  if (fresh.length) await prisma.achievement.createMany({ data: fresh.map((a) => ({ userId, code: a.code })), skipDuplicates: true });
+  if (fresh.length) {
+    await prisma.achievement.createMany({ data: fresh.map((a) => ({ userId, code: a.code })), skipDuplicates: true });
+    await grantAchievements(userId, fresh);
+  }
   return fresh;
 }

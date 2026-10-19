@@ -23,6 +23,10 @@ model User {
   lastSeenAt      DateTime?
   // user | admin. Admin vê /admin; promover com: bun run admin <email>
   role            String    @default("user")
+  // fichas: saldo (soma de chip_transaction) e sequência do login diário (ver lib/chips-rules.ts)
+  chips           Int       @default(0)
+  loginStreak     Int       @default(0)
+  lastLoginDay    String? // AAAA-MM-DD (horário de Brasília)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
@@ -33,6 +37,7 @@ model User {
   friendsReceived Friendship[] @relation("FriendAddressee")
   invitesSent     GameInvite[] @relation("InviteFrom")
   invitesReceived GameInvite[] @relation("InviteTo")
+  chipTransactions ChipTransaction[]
 
   @@map("user")
 }
@@ -164,4 +169,20 @@ model GameInvite {
   @@unique([fromId, toId, code])
   @@index([toId, createdAt])
   @@map("game_invite")
+}
+
+// Cada ficha ganha (ou gasta) é uma linha; user.chips é a soma. Único por motivo + referência:
+// a mesma conquista, o mesmo dia de login ou as boas-vindas nunca pagam duas vezes.
+model ChipTransaction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delta     Int
+  reason    String // welcome | achievement | login
+  ref       String // achievement: código; login: AAAA-MM-DD; welcome: "welcome"
+  createdAt DateTime @default(now())
+
+  @@unique([userId, reason, ref])
+  @@index([userId, createdAt])
+  @@map("chip_transaction")
 }

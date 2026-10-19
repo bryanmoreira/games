@@ -5,6 +5,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { AccountSync } from "@/components/AccountSync";
 import { Presence } from "@/components/Presence";
 import { GameInvites } from "@/components/GameInvites";
+import { ChipRewards } from "@/components/chips/ChipRewards";
 import "./globals.css";
 
 const bungee = Bungee({ weight: "400", subsets: ["latin"], variable: "--font-bungee" });
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <AccountSync />
         <Presence />
         <GameInvites />
+        <ChipRewards />
         {children}
       </body>
     </html>
