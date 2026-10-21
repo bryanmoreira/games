@@ -1,6 +1,6 @@
 "use client";
 
-import type { Mark } from "@truco/jogo-da-velha";
+import type { Mark } from "@mesa/jogo-da-velha";
 import { audio, tone } from "@/lib/sound";
 
 /** Um risco de giz: chiado áspero que sobe e desce de tom. */

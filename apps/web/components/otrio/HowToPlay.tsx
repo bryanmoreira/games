@@ -1,6 +1,6 @@
 "use client";
 
-import type { WinKind } from "@truco/otrio";
+import type { WinKind } from "@mesa/otrio";
 import { Section } from "@/components/ui/HowToSection";
 import { ColorMark, RingIcon, StaticBoard } from "./Board";
 

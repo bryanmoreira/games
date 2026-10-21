@@ -1,6 +1,6 @@
 "use client";
 
-import { applyAction, newGame, type GameState, type Seat } from "@truco/connect4";
+import { applyAction, newGame, type GameState, type Seat } from "@mesa/connect4";
 import { Section } from "@/components/ui/HowToSection";
 import { Board, Disc, StaticBoard } from "./Board";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@truco/batalha-naval",
+  "name": "@mesa/batalha-naval",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

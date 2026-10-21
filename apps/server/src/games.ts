@@ -1,16 +1,16 @@
-import * as truco from "@truco/game";
-import * as c4 from "@truco/connect4";
-import * as stop from "@truco/stop";
-import * as bn from "@truco/batalha-naval";
-import * as cn from "@truco/codenames";
-import * as otrio from "@truco/otrio";
-import * as velha from "@truco/jogo-da-velha";
-import * as damas from "@truco/damas";
-import * as ludo from "@truco/ludo";
-import * as domino from "@truco/domino";
-import * as xadrez from "@truco/xadrez";
-import * as futebol from "@truco/futebol-de-botao";
-import type { GameId, PlayerReport } from "@truco/game";
+import * as truco from "@mesa/truco";
+import * as c4 from "@mesa/connect4";
+import * as stop from "@mesa/stop";
+import * as bn from "@mesa/batalha-naval";
+import * as cn from "@mesa/codenames";
+import * as otrio from "@mesa/otrio";
+import * as velha from "@mesa/jogo-da-velha";
+import * as damas from "@mesa/damas";
+import * as ludo from "@mesa/ludo";
+import * as domino from "@mesa/domino";
+import * as xadrez from "@mesa/xadrez";
+import * as futebol from "@mesa/futebol-de-botao";
+import type { GameId, PlayerReport } from "@mesa/truco";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
 

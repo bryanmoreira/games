@@ -1,5 +1,5 @@
 {
-  "name": "@truco/stop",
+  "name": "@mesa/stop",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

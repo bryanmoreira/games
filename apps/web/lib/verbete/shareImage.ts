@@ -1,6 +1,6 @@
 "use client";
 
-import { boardMarks, LENGTH, MAX_GUESSES, status, type GameState } from "@truco/verbete";
+import { boardMarks, LENGTH, MAX_GUESSES, status, type GameState } from "@mesa/verbete";
 import { MARK_BG } from "@/components/verbete/Tile";
 
 // Imagem do resultado para postar: as grades coloridas, sem as letras.

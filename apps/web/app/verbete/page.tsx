@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MODES, status, type Mode } from "@truco/verbete";
+import { MODES, status, type Mode } from "@mesa/verbete";
 import { BackButton } from "@/components/BackButton";
 import { AdSlot } from "@/components/AdSlot";
 import { GameIntro } from "@/components/seo";

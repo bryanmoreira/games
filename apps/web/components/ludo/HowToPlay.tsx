@@ -1,6 +1,6 @@
 "use client";
 
-import { BASE, HOME } from "@truco/ludo";
+import { BASE, HOME } from "@mesa/ludo";
 import { Section } from "@/components/ui/HowToSection";
 import { DieFace, Pawn, StaticBoard, type UiPiece } from "./Board";
 

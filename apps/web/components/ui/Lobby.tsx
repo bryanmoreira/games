@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { GameId, RoomInfo } from "@truco/game";
+import type { GameId, RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { WhatsAppInvite } from "@/components/ui/WhatsAppInvite";
 import { FriendInvite } from "@/components/ui/FriendInvite";

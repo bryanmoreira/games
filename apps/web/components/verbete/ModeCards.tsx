@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MAX_GUESSES, MODES, type Mode } from "@truco/verbete";
+import { MAX_GUESSES, MODES, type Mode } from "@mesa/verbete";
 import { CheckIcon } from "@/components/ui/icons";
 import { XIcon } from "@/components/ui/buttons";
 import type { DayState } from "@/lib/verbete/storage";

@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { TICK_RATE, type PlayerView, type Team } from "@truco/futebol-de-botao";
-import type { RoomInfo } from "@truco/game";
+import { TICK_RATE, type PlayerView, type Team } from "@mesa/futebol-de-botao";
+import type { RoomInfo } from "@mesa/truco";
 import { onFrame, send } from "@/lib/socket";
 import { FUTEBOL_PATH } from "@/lib/futebol-de-botao/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

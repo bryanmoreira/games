@@ -1,6 +1,6 @@
 "use client";
 
-import { FADE_LIMIT, LEVELS } from "@truco/jogo-da-velha";
+import { FADE_LIMIT, LEVELS } from "@mesa/jogo-da-velha";
 import { Section } from "@/components/ui/HowToSection";
 import { Board, MarkIcon, StaticBoard, type Piece } from "./Board";
 import { GridIcon } from "./icons";

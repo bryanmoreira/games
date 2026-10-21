@@ -1,5 +1,5 @@
 {
-  "name": "@truco/server",
+  "name": "@mesa/server",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,18 +8,18 @@
     "start": "bun dist/index.js"
   },
   "dependencies": {
-    "@truco/batalha-naval": "workspace:*",
-    "@truco/codenames": "workspace:*",
-    "@truco/connect4": "workspace:*",
-    "@truco/damas": "workspace:*",
-    "@truco/futebol-de-botao": "workspace:*",
-    "@truco/game": "workspace:*",
-    "@truco/jogo-da-velha": "workspace:*",
-    "@truco/domino": "workspace:*",
-    "@truco/ludo": "workspace:*",
-    "@truco/otrio": "workspace:*",
-    "@truco/stop": "workspace:*",
-    "@truco/xadrez": "workspace:*"
+    "@mesa/batalha-naval": "workspace:*",
+    "@mesa/codenames": "workspace:*",
+    "@mesa/connect4": "workspace:*",
+    "@mesa/damas": "workspace:*",
+    "@mesa/futebol-de-botao": "workspace:*",
+    "@mesa/truco": "workspace:*",
+    "@mesa/jogo-da-velha": "workspace:*",
+    "@mesa/domino": "workspace:*",
+    "@mesa/ludo": "workspace:*",
+    "@mesa/otrio": "workspace:*",
+    "@mesa/stop": "workspace:*",
+    "@mesa/xadrez": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2"

@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import type { MatchReport } from "@truco/game";
+import type { MatchReport } from "@mesa/truco";
 
 // Resultados das partidas vão para o site, que guarda no banco.
 // GAME_SECRET é o mesmo nos dois serviços: assina o ticket de quem está logado e autentica o envio.

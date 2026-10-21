@@ -1,4 +1,4 @@
-import type { Mark, Mode } from "@truco/verbete";
+import type { Mark, Mode } from "@mesa/verbete";
 import { Section } from "@/components/ui/HowToSection";
 import { BackspaceIcon, CalendarIcon, ChevronIcon, EnterIcon, InfinityIcon } from "@/components/ui/icons";
 import { MARK_BG, ModeIcon, MODE_NAME, WordTiles } from "./Tile";

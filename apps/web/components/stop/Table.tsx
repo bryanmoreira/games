@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LETTERS, matchesLetter, REVIEW_MS, ROUND_END_MS, type PlayerView, type Seat } from "@truco/stop";
-import type { RoomInfo } from "@truco/game";
+import { LETTERS, matchesLetter, REVIEW_MS, ROUND_END_MS, type PlayerView, type Seat } from "@mesa/stop";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { STOP_PATH } from "@/lib/stop/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

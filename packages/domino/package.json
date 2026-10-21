@@ -1,5 +1,5 @@
 {
-  "name": "@truco/domino",
+  "name": "@mesa/domino",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

@@ -20,8 +20,8 @@ import {
   type MoveRecord,
   type PlayerView,
   type Seat,
-} from "@truco/xadrez";
-import type { RoomInfo } from "@truco/game";
+} from "@mesa/xadrez";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { XADREZ_PATH } from "@/lib/xadrez/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

@@ -1,4 +1,4 @@
-import { FLEET, type Ship } from "@truco/batalha-naval";
+import { FLEET, type Ship } from "@mesa/batalha-naval";
 import { Section } from "@/components/ui/HowToSection";
 import { Fire, Sea, SeaShip, ShipShape, Splash } from "./Sea";
 import { DiceIcon, MoveIcon, RotateIcon } from "./Placement";

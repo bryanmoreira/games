@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { cellOf, sizeOf, type Color, type Size } from "@truco/otrio";
+import { cellOf, sizeOf, type Color, type Size } from "@mesa/otrio";
 
 /** Cores das peças: base, brilho e sombra (0 vermelho, 1 azul, 2 verde, 3 roxo). */
 export const RING_COLORS = [

@@ -1,6 +1,6 @@
 "use client";
 
-import type { Mark } from "@truco/verbete";
+import type { Mark } from "@mesa/verbete";
 import { audio, tone } from "@/lib/sound";
 
 /** Letra digitada: "tec" curto de teclado. */

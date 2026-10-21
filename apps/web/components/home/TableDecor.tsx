@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { makeCard } from "@truco/game";
+import { makeCard } from "@mesa/truco";
 import { CardImg } from "@/components/cards/Card";
 
 // Enfeite do topo da home: luz de luminária sobre a mesa e cartas, fichas e dado soltos dos lados do título.

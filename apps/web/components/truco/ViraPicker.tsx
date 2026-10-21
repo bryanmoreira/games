@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { makeCard, manilhaOf, RANKS, SUITS, type Rank } from "@truco/game";
+import { makeCard, manilhaOf, RANKS, SUITS, type Rank } from "@mesa/truco";
 import { CardImg } from "@/components/cards/Card";
 
 const MANILHA_NAME = ["Pica-fumo", "Espadilha", "Copas", "Zap"];

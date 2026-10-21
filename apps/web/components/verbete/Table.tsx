@@ -17,7 +17,7 @@ import {
   status,
   type GameState,
   type Mode,
-} from "@truco/verbete";
+} from "@mesa/verbete";
 import { DailyBadge } from "@/components/daily/common";
 import { HelpButton, IconButton, MuteButton } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";

@@ -1,6 +1,6 @@
 "use client";
 
-import { makeCard, RANKS, SUITS, type Card, type Rank, type Suit } from "@truco/game";
+import { makeCard, RANKS, SUITS, type Card, type Rank, type Suit } from "@mesa/truco";
 import { CardImg } from "@/components/cards/Card";
 
 const RANK_NAME: Record<Rank, string> = {

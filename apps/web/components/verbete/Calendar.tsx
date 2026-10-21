@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MODES } from "@truco/verbete";
+import { MODES } from "@mesa/verbete";
 import { BackButton } from "@/components/BackButton";
 import { longDay } from "@/components/daily/common";
 import { MonthCalendar, monthOf } from "@/components/daily/MonthCalendar";

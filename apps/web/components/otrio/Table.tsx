@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { rivalThreats, sizeOf, slotOf, winningSlots, type Color, type PlayerView, type Seat, type Size } from "@truco/otrio";
-import type { RoomInfo } from "@truco/game";
+import { rivalThreats, sizeOf, slotOf, winningSlots, type Color, type PlayerView, type Seat, type Size } from "@mesa/otrio";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { OTRIO_PATH } from "@/lib/otrio/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

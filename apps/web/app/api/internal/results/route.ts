@@ -1,4 +1,4 @@
-import type { MatchReport } from "@truco/game";
+import type { MatchReport } from "@mesa/truco";
 import { isGameServer } from "@/lib/game-ticket";
 import { isOnlineGame } from "@/lib/stats/games";
 import { recordResults } from "@/lib/stats/record";

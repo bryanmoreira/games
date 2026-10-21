@@ -1,6 +1,6 @@
 "use client";
 
-import type { Mark } from "@truco/jogo-da-velha";
+import type { Mark } from "@mesa/jogo-da-velha";
 
 export type Ink = "gold" | "red";
 

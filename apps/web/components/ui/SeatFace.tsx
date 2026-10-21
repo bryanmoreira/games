@@ -1,4 +1,4 @@
-import type { SeatInfo } from "@truco/game";
+import type { SeatInfo } from "@mesa/truco";
 
 /**
  * Conteúdo do círculo do jogador: foto da conta (logado), 🤖 (IA) ou a inicial do nome.

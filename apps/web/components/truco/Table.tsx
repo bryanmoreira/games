@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@truco/game";
+import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat, type Shout } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { TRUCO_PATH } from "@/lib/truco/paths";
 import { CardBack, CardImg, DeckProvider } from "@/components/cards/Card";

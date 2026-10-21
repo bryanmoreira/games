@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { clueError, MAX_CLUE, OTHER_CARDS, roleOf, STARTER_CARDS, teamOf, type Key, type PlayerView, type Seat, type Team } from "@truco/codenames";
-import type { RoomInfo } from "@truco/game";
+import { clueError, MAX_CLUE, OTHER_CARDS, roleOf, STARTER_CARDS, teamOf, type Key, type PlayerView, type Seat, type Team } from "@mesa/codenames";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { CODENAMES_PATH } from "@/lib/codenames/paths";
 import { useCountdown } from "@/lib/countdown";

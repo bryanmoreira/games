@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BASE, HOME, homeCount, placementOf, target, type MoveRecord, type PlayerView, type Seat } from "@truco/ludo";
-import type { RoomInfo } from "@truco/game";
+import { BASE, HOME, homeCount, placementOf, target, type MoveRecord, type PlayerView, type Seat } from "@mesa/ludo";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { LUDO_PATH } from "@/lib/ludo/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

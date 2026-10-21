@@ -1,4 +1,4 @@
-import { isMode, type Mode } from "@truco/verbete";
+import { isMode, type Mode } from "@mesa/verbete";
 import { Table } from "@/components/verbete/Table";
 
 /** Modo livre: palavras sorteadas. `?m=2` ou `?m=4` para Dueto e Quarteto. */

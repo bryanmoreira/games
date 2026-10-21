@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { RoomInfo } from "@truco/game";
+import type { RoomInfo } from "@mesa/truco";
 import { authClient } from "@/lib/auth-client";
 import type { FriendEntry } from "@/lib/friends-rules";
 import { Avatar } from "@/components/profile/ProfileHeader";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { PlayerView, Seat } from "@truco/game";
+import type { PlayerView, Seat } from "@mesa/truco";
 import { CardBack } from "@/components/cards/Card";
 
 export const SHUFFLE_MS = 900;

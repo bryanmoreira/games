@@ -1,6 +1,6 @@
-import { generate, type Difficulty } from "@truco/sudoku";
-import { shuffledDeck, type SuitCount } from "@truco/spider";
-import { dailyWords, isMode, plain, type Mode } from "@truco/verbete";
+import { generate, type Difficulty } from "@mesa/sudoku";
+import { shuffledDeck, type SuitCount } from "@mesa/spider";
+import { dailyWords, isMode, plain, type Mode } from "@mesa/verbete";
 import { dayKey, nextDay } from "@/lib/stats/achievements";
 
 // Desafio diário: a mesma partida para todo mundo das 00h às 23h59 (horário de Brasília).

@@ -1,4 +1,4 @@
-import { isRed, RANK_LABEL, type Card, type Suit } from "@truco/spider";
+import { isRed, RANK_LABEL, type Card, type Suit } from "@mesa/spider";
 import { CardBack, CardImg, useDeck } from "@/components/cards/Card";
 import { deckPalette } from "@/lib/shop/art";
 import { DEFAULT_DECK } from "@/lib/shop/catalog";

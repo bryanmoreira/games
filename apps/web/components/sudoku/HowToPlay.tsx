@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { boxOf, colOf, MAX_MISTAKES, rowOf } from "@truco/sudoku";
+import { boxOf, colOf, MAX_MISTAKES, rowOf } from "@mesa/sudoku";
 import { Section } from "@/components/ui/HowToSection";
 import { EraseIcon, HintIcon, PencilIcon, UndoIcon } from "@/components/ui/icons";
 import { SAMPLE } from "./common";

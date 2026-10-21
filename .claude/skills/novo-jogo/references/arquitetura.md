@@ -12,22 +12,22 @@
 
 ## Monorepo
 
-Bun workspaces (`package.json` raiz: `"workspaces": ["apps/*", "packages/*"]`). O Bun 1.3 usa o linker isolado: cada app tem seu `node_modules` com links para os pacotes do workspace. Os pacotes atuais usam o escopo `@truco/*` (`@truco/game`, `@truco/server`, `@truco/web`). Mantenha esse escopo em pacotes novos, a não ser que o usuário peça para renomear (renomear mexe em todos os imports e nos Dockerfiles).
+Bun workspaces (`package.json` raiz: `"workspaces": ["apps/*", "packages/*"]`). O Bun 1.3 usa o linker isolado: cada app tem seu `node_modules` com links para os pacotes do workspace. Os pacotes usam o escopo `@mesa/*` (um por jogo, com o nome do jogo: `@mesa/truco`, `@mesa/xadrez`...; os apps são `@mesa/server` e `@mesa/web`). Mantenha esse escopo em pacotes novos, a não ser que o usuário peça para renomear (renomear mexe em todos os imports e nos Dockerfiles).
 
 Antes de criar um pacote, veja se o jogo não é uma **variante** de um existente (truco mineiro × paulista): nesse caso, prefira um campo `variant` no `GameState` e uma tabela de regras por variante no mesmo pacote. Para um jogo de outra família, crie um pacote novo:
 
 ```jsonc
 // packages/<slug>/package.json
-{ "name": "@truco/<slug>", "private": true, "type": "module", "main": "src/index.ts", "types": "src/index.ts" }
+{ "name": "@mesa/<slug>", "private": true, "type": "module", "main": "src/index.ts", "types": "src/index.ts" }
 ```
 
-Depois adicione `"@truco/<slug>": "workspace:*"` nas dependências de `apps/web` e `apps/server`, rode `bun install` e inclua o pacote em `transpilePackages` no `apps/web/next.config.ts` (o Next precisa transpilar o TypeScript do pacote). Copie também o `tsconfig.json` do `packages/game`.
+Depois adicione `"@mesa/<slug>": "workspace:*"` nas dependências de `apps/web` e `apps/server`, rode `bun install` e inclua o pacote em `transpilePackages` no `apps/web/next.config.ts` (o Next precisa transpilar o TypeScript do pacote). Copie também o `tsconfig.json` do `packages/truco`.
 
 Scripts raiz: `bun run dev` (web :3000 + ws :3001), `bun run build`, `bun run start`, `bun test packages/<slug>`.
 
 ## Engine do jogo (`packages/<slug>`)
 
-Lógica **pura e determinística**, sem I/O: o servidor e a IA dependem dela, e os testes também. Estrutura (espelhe `packages/game/src`):
+Lógica **pura e determinística**, sem I/O: o servidor e a IA dependem dela, e os testes também. Estrutura (espelhe `packages/truco/src`):
 
 - `types.ts` — `Card`, `Seat`, `Team`, `Phase`, `GameState`, `Action` (sempre com `seat`, exceto `advance`), `PlayerView`.
 - `deck.ts` — `makeDeck()`, `shuffle(items, rng = Math.random)` (rng injetável para testes), `strength(card, ...)`, `cardImage(card)` que retorna `/cards/<rank>_of_<suit>.png`.
@@ -84,7 +84,7 @@ interface GameAdapter<S, A, V> {
 }
 ```
 
-A interface real em `games.ts` também tem `withSeat` (ação do cliente + assento), `over` e `animMs(prev, next)` (no lugar de `isNewHand`: quanto tempo os bots esperam a animação do cliente). Para um jogo novo: acrescente o id em `GameId` (`packages/game/src/protocol.ts`), o adaptador em `GAMES` e a rota em `lib/rooms.ts`. A sala guarda `game` (vindo do `create`) e usa o adaptador correspondente. Registre o adaptador num mapa. Um único servidor WS atende todos os jogos, sem precisar de outro serviço no Easypanel.
+A interface real em `games.ts` também tem `withSeat` (ação do cliente + assento), `over` e `animMs(prev, next)` (no lugar de `isNewHand`: quanto tempo os bots esperam a animação do cliente). Para um jogo novo: acrescente o id em `GameId` (`packages/truco/src/protocol.ts`), o adaptador em `GAMES` e a rota em `lib/rooms.ts`. A sala guarda `game` (vindo do `create`) e usa o adaptador correspondente. Registre o adaptador num mapa. Um único servidor WS atende todos os jogos, sem precisar de outro serviço no Easypanel.
 
 Ganchos opcionais do adaptador (criados para o Stop):
 - `minSeats`: começa com esse mínimo de lugares ocupados (sem ele, a mesa precisa estar cheia). `newGame(prev, { seats, settings })` recebe os lugares ocupados.

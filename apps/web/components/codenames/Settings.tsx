@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BOARD, MAX_WORDS_TEXT, parseWords, TIME_OPTIONS, type Settings } from "@truco/codenames";
-import type { RoomInfo } from "@truco/game";
+import { BOARD, MAX_WORDS_TEXT, parseWords, TIME_OPTIONS, type Settings } from "@mesa/codenames";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { ClockIcon, ListIcon, TimeLabel } from "@/components/ui/icons";
 import { Row, Segmented } from "@/components/ui/Options";

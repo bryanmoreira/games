@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { isRed, newGame, scoreOf, SUIT_SETS, type GameState, type SuitCount } from "@truco/spider";
+import { isRed, newGame, scoreOf, SUIT_SETS, type GameState, type SuitCount } from "@mesa/spider";
 import { BackButton } from "@/components/BackButton";
 import { AdSlot } from "@/components/AdSlot";
 import { DailyButton } from "@/components/daily/DailyButton";

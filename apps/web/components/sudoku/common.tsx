@@ -1,4 +1,4 @@
-import type { Difficulty, HintReason, Technique } from "@truco/sudoku";
+import type { Difficulty, HintReason, Technique } from "@mesa/sudoku";
 
 export const LEVEL_LABEL: Record<Difficulty, string> = {
   easy: "FÁCIL",

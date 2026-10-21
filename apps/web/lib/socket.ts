@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { ClientMsg, RoomInfo, ServerMsg } from "@truco/game";
+import type { ClientMsg, RoomInfo, ServerMsg } from "@mesa/truco";
 
 // Conexão única com o servidor de salas, compartilhada por todos os jogos online.
 // Uma identidade por aba (token em sessionStorage); o nome fica salvo no aparelho.

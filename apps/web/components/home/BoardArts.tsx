@@ -1,6 +1,6 @@
 "use client";
 
-import { fromFen } from "@truco/xadrez";
+import { fromFen } from "@mesa/xadrez";
 import { Board as Connect4Board } from "@/components/connect4/Board";
 import { Board as DamasBoard } from "@/components/damas/Board";
 import { Board as VelhaBoard, type Piece as VelhaPiece } from "@/components/jogo-da-velha/Board";

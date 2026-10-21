@@ -7,7 +7,7 @@ const config: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: root,
   turbopack: { root },
-  transpilePackages: ["@truco/batalha-naval", "@truco/codenames", "@truco/connect4", "@truco/damas", "@truco/domino", "@truco/futebol-de-botao", "@truco/game", "@truco/jogo-da-velha", "@truco/ludo", "@truco/otrio", "@truco/spider", "@truco/stop", "@truco/sudoku", "@truco/verbete", "@truco/xadrez"],
+  transpilePackages: ["@mesa/batalha-naval", "@mesa/codenames", "@mesa/connect4", "@mesa/damas", "@mesa/domino", "@mesa/futebol-de-botao", "@mesa/truco", "@mesa/jogo-da-velha", "@mesa/ludo", "@mesa/otrio", "@mesa/spider", "@mesa/stop", "@mesa/sudoku", "@mesa/verbete", "@mesa/xadrez"],
 };
 
 export default config;

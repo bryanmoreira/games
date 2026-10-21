@@ -1,6 +1,6 @@
 "use client";
 
-import { DIFFICULTIES, type Difficulty, type GameState } from "@truco/sudoku";
+import { DIFFICULTIES, type Difficulty, type GameState } from "@mesa/sudoku";
 
 // A partida fica salva no aparelho: recarregar a página continua de onde parou.
 const GAME_KEY = "sudoku.game";

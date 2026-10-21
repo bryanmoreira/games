@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { isMode, type Mode } from "@truco/verbete";
+import { isMode, type Mode } from "@mesa/verbete";
 import { Table } from "@/components/verbete/Table";
 import { getChallenge } from "@/lib/daily/db";
 import { noindex } from "@/lib/seo";

@@ -1,6 +1,6 @@
 "use client";
 
-import { isMode, plain, status, type GameState, type Mode } from "@truco/verbete";
+import { isMode, plain, status, type GameState, type Mode } from "@mesa/verbete";
 
 // Cada partida fica salva no aparelho: a do dia por dia e modo, a livre por modo. Recarregar continua.
 

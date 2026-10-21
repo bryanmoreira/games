@@ -1,7 +1,7 @@
 "use client";
 
-import { LEVELS, MODES, type Level, type Mode, type Settings } from "@truco/jogo-da-velha";
-import type { RoomInfo } from "@truco/game";
+import { LEVELS, MODES, type Level, type Mode, type Settings } from "@mesa/jogo-da-velha";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { Row, Segmented } from "@/components/ui/Options";
 import { BotIcon } from "@/components/ui/icons";

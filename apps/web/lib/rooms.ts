@@ -1,4 +1,4 @@
-import type { GameId } from "@truco/game";
+import type { GameId } from "@mesa/truco";
 import { roomPath as trucoRoom } from "./truco/paths";
 import { roomPath as connect4Room } from "./connect4/paths";
 import { roomPath as stopRoom } from "./stop/paths";

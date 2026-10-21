@@ -1,4 +1,4 @@
-import type { GameId, MatchReport, PlayerReport, Seat } from "@truco/game";
+import type { GameId, MatchReport, PlayerReport, Seat } from "@mesa/truco";
 import type { GameAdapter } from "./games";
 
 /** O que o início e o fim da partida precisam saber de cada lugar da mesa. */

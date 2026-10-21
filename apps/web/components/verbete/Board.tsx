@@ -1,6 +1,6 @@
 "use client";
 
-import { accented, boardGuesses, LENGTH, MAX_GUESSES, score, solvedAt, type GameState, type Mark } from "@truco/verbete";
+import { accented, boardGuesses, LENGTH, MAX_GUESSES, score, solvedAt, type GameState, type Mark } from "@mesa/verbete";
 import { BackspaceIcon, EnterIcon } from "@/components/ui/icons";
 import { MARK_BG, Tile } from "./Tile";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { canPlaceShip, fleetError, FLEET, middleCell, randomFleet, SIZE, turnShip, type PlayerView, type Ship } from "@truco/batalha-naval";
+import { canPlaceShip, fleetError, FLEET, middleCell, randomFleet, SIZE, turnShip, type PlayerView, type Ship } from "@mesa/batalha-naval";
 import { send } from "@/lib/socket";
 import { playClickSound, playReadySound } from "@/lib/batalha-naval/sound";
 import { Icon } from "@/components/ui/buttons";

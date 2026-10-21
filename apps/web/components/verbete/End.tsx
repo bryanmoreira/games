@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { accented, isSolved, MAX_GUESSES, MODES, solvedAt, status, type GameState, type Mode } from "@truco/verbete";
+import { accented, isSolved, MAX_GUESSES, MODES, solvedAt, status, type GameState, type Mode } from "@mesa/verbete";
 import { DailyBadge } from "@/components/daily/common";
 import { formatTime } from "@/components/sudoku/common";
 import { EndStat, GameEnd } from "@/components/ui/GameEnd";

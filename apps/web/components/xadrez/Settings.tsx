@@ -1,7 +1,7 @@
 "use client";
 
-import { CLOCKS, LEVELS, type Level, type Settings } from "@truco/xadrez";
-import type { RoomInfo } from "@truco/game";
+import { CLOCKS, LEVELS, type Level, type Settings } from "@mesa/xadrez";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { Row, Segmented } from "@/components/ui/Options";
 import { BotIcon, ClockIcon, InfinityIcon } from "@/components/ui/icons";

@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { shipCells, SIZE, type Cell, type PlayerView, type Seat, type Ship } from "@truco/batalha-naval";
-import type { RoomInfo } from "@truco/game";
+import { shipCells, SIZE, type Cell, type PlayerView, type Seat, type Ship } from "@mesa/batalha-naval";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { BATALHA_PATH } from "@/lib/batalha-naval/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

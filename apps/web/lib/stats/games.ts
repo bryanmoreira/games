@@ -1,4 +1,4 @@
-import type { GameId } from "@truco/game";
+import type { GameId } from "@mesa/truco";
 import { BATALHA_PATH } from "@/lib/batalha-naval/paths";
 import { CODENAMES_PATH } from "@/lib/codenames/paths";
 import { CONNECT4_PATH } from "@/lib/connect4/paths";

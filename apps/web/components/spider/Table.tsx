@@ -15,7 +15,7 @@ import {
   targetsFor,
   type Action,
   type GameState,
-} from "@truco/spider";
+} from "@mesa/spider";
 import { HelpButton, IconButton, MuteButton, TipsButton, useTips } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

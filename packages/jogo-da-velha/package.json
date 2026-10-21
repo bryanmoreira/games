@@ -1,5 +1,5 @@
 {
-  "name": "@truco/jogo-da-velha",
+  "name": "@mesa/jogo-da-velha",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

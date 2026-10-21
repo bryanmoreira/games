@@ -1,6 +1,6 @@
 "use client";
 
-import type { Board, GameState, SuitCount } from "@truco/spider";
+import type { Board, GameState, SuitCount } from "@mesa/spider";
 
 // A partida fica salva no aparelho: recarregar a página continua de onde parou.
 const GAME_KEY = "spider.game";

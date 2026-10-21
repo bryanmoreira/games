@@ -1,4 +1,4 @@
-import type { ClientMsg } from "@truco/game";
+import type { ClientMsg } from "@mesa/truco";
 import { startDailyScheduler } from "./daily";
 import { handleClose, handleMessage, type WsData } from "./rooms";
 

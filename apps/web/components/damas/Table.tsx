@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { legalMoves, piecesOf as countOf, sideOfSeat, type EndReason, type MoveRecord, type PlayerView, type Seat } from "@truco/damas";
-import type { RoomInfo } from "@truco/game";
+import { legalMoves, piecesOf as countOf, sideOfSeat, type EndReason, type MoveRecord, type PlayerView, type Seat } from "@mesa/damas";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { DAMAS_PATH } from "@/lib/damas/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

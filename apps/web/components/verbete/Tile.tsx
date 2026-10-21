@@ -1,4 +1,4 @@
-import type { Mark, Mode } from "@truco/verbete";
+import type { Mark, Mode } from "@mesa/verbete";
 
 /** Cores das marcas: verde (lugar certo), amarelo (outro lugar), cinza (não tem). */
 export const MARK_BG: Record<Mark, string> = { right: "#2a9d68", place: "#d39b26", absent: "#2a2f2c" };

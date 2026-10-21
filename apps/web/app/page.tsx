@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo";
 import { SITE_TAGLINE, getGame, homeLd } from "@/lib/seo";
-import { makeCard } from "@truco/game";
+import { makeCard } from "@mesa/truco";
 import { CardImg } from "@/components/cards/Card";
 import { MiniBoard } from "@/components/sudoku/common";
 import { MiniTiles } from "@/components/verbete/Tile";

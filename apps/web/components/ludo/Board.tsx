@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { BASE, HOME, HOME_CELLS, SAFE, startOf, TRACK_CELLS, cellOf, type Color } from "@truco/ludo";
+import { BASE, HOME, HOME_CELLS, SAFE, startOf, TRACK_CELLS, cellOf, type Color } from "@mesa/ludo";
 
 /** Cores das peças (0 vermelho, 1 verde, 2 amarelo, 3 azul): base, brilho, sombra e casa clara do tabuleiro. */
 export const LUDO_COLORS = [

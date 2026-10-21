@@ -10,45 +10,45 @@
       },
     },
     "apps/server": {
-      "name": "@truco/server",
+      "name": "@mesa/server",
       "dependencies": {
-        "@truco/batalha-naval": "workspace:*",
-        "@truco/codenames": "workspace:*",
-        "@truco/connect4": "workspace:*",
-        "@truco/damas": "workspace:*",
-        "@truco/domino": "workspace:*",
-        "@truco/futebol-de-botao": "workspace:*",
-        "@truco/game": "workspace:*",
-        "@truco/jogo-da-velha": "workspace:*",
-        "@truco/ludo": "workspace:*",
-        "@truco/otrio": "workspace:*",
-        "@truco/stop": "workspace:*",
-        "@truco/xadrez": "workspace:*",
+        "@mesa/batalha-naval": "workspace:*",
+        "@mesa/codenames": "workspace:*",
+        "@mesa/connect4": "workspace:*",
+        "@mesa/damas": "workspace:*",
+        "@mesa/domino": "workspace:*",
+        "@mesa/futebol-de-botao": "workspace:*",
+        "@mesa/jogo-da-velha": "workspace:*",
+        "@mesa/ludo": "workspace:*",
+        "@mesa/otrio": "workspace:*",
+        "@mesa/stop": "workspace:*",
+        "@mesa/truco": "workspace:*",
+        "@mesa/xadrez": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "^1.4.2",
       },
     },
     "apps/web": {
-      "name": "@truco/web",
+      "name": "@mesa/web",
       "dependencies": {
+        "@mesa/batalha-naval": "workspace:*",
+        "@mesa/codenames": "workspace:*",
+        "@mesa/connect4": "workspace:*",
+        "@mesa/damas": "workspace:*",
+        "@mesa/domino": "workspace:*",
+        "@mesa/futebol-de-botao": "workspace:*",
+        "@mesa/jogo-da-velha": "workspace:*",
+        "@mesa/ludo": "workspace:*",
+        "@mesa/otrio": "workspace:*",
+        "@mesa/spider": "workspace:*",
+        "@mesa/stop": "workspace:*",
+        "@mesa/sudoku": "workspace:*",
+        "@mesa/truco": "workspace:*",
+        "@mesa/verbete": "workspace:*",
+        "@mesa/xadrez": "workspace:*",
         "@prisma/adapter-pg": "^7.10.0",
         "@prisma/client": "^7.10.0",
-        "@truco/batalha-naval": "workspace:*",
-        "@truco/codenames": "workspace:*",
-        "@truco/connect4": "workspace:*",
-        "@truco/damas": "workspace:*",
-        "@truco/domino": "workspace:*",
-        "@truco/futebol-de-botao": "workspace:*",
-        "@truco/game": "workspace:*",
-        "@truco/jogo-da-velha": "workspace:*",
-        "@truco/ludo": "workspace:*",
-        "@truco/otrio": "workspace:*",
-        "@truco/spider": "workspace:*",
-        "@truco/stop": "workspace:*",
-        "@truco/sudoku": "workspace:*",
-        "@truco/verbete": "workspace:*",
-        "@truco/xadrez": "workspace:*",
         "better-auth": "^1.7.7",
         "next": "^16.4.0",
         "pg": "^8.23.1",
@@ -67,49 +67,49 @@
       },
     },
     "packages/batalha-naval": {
-      "name": "@truco/batalha-naval",
+      "name": "@mesa/batalha-naval",
     },
     "packages/codenames": {
-      "name": "@truco/codenames",
+      "name": "@mesa/codenames",
     },
     "packages/connect4": {
-      "name": "@truco/connect4",
+      "name": "@mesa/connect4",
     },
     "packages/damas": {
-      "name": "@truco/damas",
+      "name": "@mesa/damas",
     },
     "packages/domino": {
-      "name": "@truco/domino",
+      "name": "@mesa/domino",
     },
     "packages/futebol-de-botao": {
-      "name": "@truco/futebol-de-botao",
-    },
-    "packages/game": {
-      "name": "@truco/game",
+      "name": "@mesa/futebol-de-botao",
     },
     "packages/jogo-da-velha": {
-      "name": "@truco/jogo-da-velha",
+      "name": "@mesa/jogo-da-velha",
     },
     "packages/ludo": {
-      "name": "@truco/ludo",
+      "name": "@mesa/ludo",
     },
     "packages/otrio": {
-      "name": "@truco/otrio",
+      "name": "@mesa/otrio",
     },
     "packages/spider": {
-      "name": "@truco/spider",
+      "name": "@mesa/spider",
     },
     "packages/stop": {
-      "name": "@truco/stop",
+      "name": "@mesa/stop",
     },
     "packages/sudoku": {
-      "name": "@truco/sudoku",
+      "name": "@mesa/sudoku",
+    },
+    "packages/truco": {
+      "name": "@mesa/truco",
     },
     "packages/verbete": {
-      "name": "@truco/verbete",
+      "name": "@mesa/verbete",
     },
     "packages/xadrez": {
-      "name": "@truco/xadrez",
+      "name": "@mesa/xadrez",
     },
   },
   "packages": {
@@ -265,6 +265,40 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
+    "@mesa/batalha-naval": ["@mesa/batalha-naval@workspace:packages/batalha-naval"],
+
+    "@mesa/codenames": ["@mesa/codenames@workspace:packages/codenames"],
+
+    "@mesa/connect4": ["@mesa/connect4@workspace:packages/connect4"],
+
+    "@mesa/damas": ["@mesa/damas@workspace:packages/damas"],
+
+    "@mesa/domino": ["@mesa/domino@workspace:packages/domino"],
+
+    "@mesa/futebol-de-botao": ["@mesa/futebol-de-botao@workspace:packages/futebol-de-botao"],
+
+    "@mesa/jogo-da-velha": ["@mesa/jogo-da-velha@workspace:packages/jogo-da-velha"],
+
+    "@mesa/ludo": ["@mesa/ludo@workspace:packages/ludo"],
+
+    "@mesa/otrio": ["@mesa/otrio@workspace:packages/otrio"],
+
+    "@mesa/server": ["@mesa/server@workspace:apps/server"],
+
+    "@mesa/spider": ["@mesa/spider@workspace:packages/spider"],
+
+    "@mesa/stop": ["@mesa/stop@workspace:packages/stop"],
+
+    "@mesa/sudoku": ["@mesa/sudoku@workspace:packages/sudoku"],
+
+    "@mesa/truco": ["@mesa/truco@workspace:packages/truco"],
+
+    "@mesa/verbete": ["@mesa/verbete@workspace:packages/verbete"],
+
+    "@mesa/web": ["@mesa/web@workspace:apps/web"],
+
+    "@mesa/xadrez": ["@mesa/xadrez@workspace:packages/xadrez"],
+
     "@next/env": ["@next/env@16.4.0", "", {}, "sha512-pyLlT5oafGlX8X7xjgGNXz5dNIDSxREm+qD6i9VLSZiZFopA/XWl8NM/KPmLx/8EG/++c49iid3gNWSQW1+2dQ=="],
 
     "@next/swc-darwin-arm64": ["@next/swc-darwin-arm64@16.4.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-yyZ+9MgViAKLLb5l1gPBGjRwnq3teNLb5Zx6JEw8LzNSTjlsnp+baUHFxTgl7PpjCmKf48VQfyipG1eBflb48Q=="],
@@ -400,40 +434,6 @@
     "@tailwindcss/oxide-win32-x64-msvc": ["@tailwindcss/oxide-win32-x64-msvc@4.3.3", "", { "os": "win32", "cpu": "x64" }, "sha512-yJ0pwIVc/nYeGoV02WtsN8KYyLQv7kyI2wDnkezyJlGGjkd4QLwDGAwl47YpPJeuI0M0ObaXGSPjvWDPeTPggw=="],
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.3.3", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.3.3", "@tailwindcss/oxide": "4.3.3", "postcss": "^8.5.16", "tailwindcss": "4.3.3" } }, "sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg=="],
-
-    "@truco/batalha-naval": ["@truco/batalha-naval@workspace:packages/batalha-naval"],
-
-    "@truco/codenames": ["@truco/codenames@workspace:packages/codenames"],
-
-    "@truco/connect4": ["@truco/connect4@workspace:packages/connect4"],
-
-    "@truco/damas": ["@truco/damas@workspace:packages/damas"],
-
-    "@truco/domino": ["@truco/domino@workspace:packages/domino"],
-
-    "@truco/futebol-de-botao": ["@truco/futebol-de-botao@workspace:packages/futebol-de-botao"],
-
-    "@truco/game": ["@truco/game@workspace:packages/game"],
-
-    "@truco/jogo-da-velha": ["@truco/jogo-da-velha@workspace:packages/jogo-da-velha"],
-
-    "@truco/ludo": ["@truco/ludo@workspace:packages/ludo"],
-
-    "@truco/otrio": ["@truco/otrio@workspace:packages/otrio"],
-
-    "@truco/server": ["@truco/server@workspace:apps/server"],
-
-    "@truco/spider": ["@truco/spider@workspace:packages/spider"],
-
-    "@truco/stop": ["@truco/stop@workspace:packages/stop"],
-
-    "@truco/sudoku": ["@truco/sudoku@workspace:packages/sudoku"],
-
-    "@truco/verbete": ["@truco/verbete@workspace:packages/verbete"],
-
-    "@truco/web": ["@truco/web@workspace:apps/web"],
-
-    "@truco/xadrez": ["@truco/xadrez@workspace:packages/xadrez"],
 
     "@types/bun": ["@types/bun@1.4.2", "", { "dependencies": { "bun-types": "1.4.2" } }, "sha512-GimotNn7+ZV0uVArItBbriZsR1oNf0+WTzPkdcFrzShI7k2norL0uzEaJT8T33dWr7O/c9ZDuAFQrctKCi72oQ=="],
 

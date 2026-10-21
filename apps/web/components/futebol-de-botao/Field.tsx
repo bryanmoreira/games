@@ -15,7 +15,7 @@ import {
   type Disc,
   type PlayerView,
   type Team,
-} from "@truco/futebol-de-botao";
+} from "@mesa/futebol-de-botao";
 
 export const TEAM_COLORS = [
   { fill: "#e5484d", dark: "#8f1d22" },

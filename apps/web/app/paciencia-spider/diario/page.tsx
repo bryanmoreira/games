@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { isRed, SUIT_SETS } from "@truco/spider";
+import { isRed, SUIT_SETS } from "@mesa/spider";
 import { DailyHub } from "@/components/daily/DailyHub";
 import { SuitIcon } from "@/components/spider/SpiderCard";
 import { auth } from "@/lib/auth";

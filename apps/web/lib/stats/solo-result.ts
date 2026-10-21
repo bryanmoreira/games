@@ -1,5 +1,5 @@
-import { DIFFICULTIES } from "@truco/sudoku";
-import { isMode, MAX_GUESSES, replay, status } from "@truco/verbete";
+import { DIFFICULTIES } from "@mesa/sudoku";
+import { isMode, MAX_GUESSES, replay, status } from "@mesa/verbete";
 import type { Outcome } from "@/lib/stats/games";
 
 const int = (v: unknown, min: number, max: number) => (Number.isInteger(v) && (v as number) >= min && (v as number) <= max ? (v as number) : null);

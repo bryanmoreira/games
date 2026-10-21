@@ -1,7 +1,7 @@
 "use client";
 
-import { LEVELS, type Level, type Settings } from "@truco/damas";
-import type { RoomInfo } from "@truco/game";
+import { LEVELS, type Level, type Settings } from "@mesa/damas";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { Row, Segmented } from "@/components/ui/Options";
 import { BotIcon } from "@/components/ui/icons";

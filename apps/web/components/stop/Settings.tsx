@@ -12,8 +12,8 @@ import {
   ROUND_OPTIONS,
   TIME_OPTIONS,
   type Settings,
-} from "@truco/stop";
-import type { RoomInfo } from "@truco/game";
+} from "@mesa/stop";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { Icon } from "@/components/ui/buttons";
 import { FlagIcon } from "./Tile";

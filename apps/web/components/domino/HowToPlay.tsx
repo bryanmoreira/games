@@ -1,6 +1,6 @@
 "use client";
 
-import type { Board as BoardState, Tile } from "@truco/domino";
+import type { Board as BoardState, Tile } from "@mesa/domino";
 import { Section } from "@/components/ui/HowToSection";
 import { Board } from "./Board";
 import { Domino } from "./Tile";

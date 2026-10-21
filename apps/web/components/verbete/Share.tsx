@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { shareText, type GameState } from "@truco/verbete";
+import { shareText, type GameState } from "@mesa/verbete";
 import { Icon, XIcon } from "@/components/ui/buttons";
 import { CheckIcon, ShareIcon } from "@/components/ui/icons";
 import { shareImage } from "@/lib/verbete/shareImage";

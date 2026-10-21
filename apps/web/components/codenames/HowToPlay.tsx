@@ -1,4 +1,4 @@
-import { TIME_OPTIONS, type Key } from "@truco/codenames";
+import { TIME_OPTIONS, type Key } from "@mesa/codenames";
 import { Section } from "@/components/ui/HowToSection";
 import { Icon } from "@/components/ui/buttons";
 import { ClockIcon, InfinityIcon, ListIcon, TimeLabel } from "@/components/ui/icons";

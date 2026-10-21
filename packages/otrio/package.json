@@ -1,5 +1,5 @@
 {
-  "name": "@truco/otrio",
+  "name": "@mesa/otrio",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

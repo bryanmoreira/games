@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import type { PlayerView } from "@truco/connect4";
-import type { RoomInfo } from "@truco/game";
+import type { PlayerView } from "@mesa/connect4";
+import type { RoomInfo } from "@mesa/truco";
 import { connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { Lobby, type SeatGroup } from "@/components/ui/Lobby";
 import { GAME_ROOM_PATH } from "@/lib/rooms";

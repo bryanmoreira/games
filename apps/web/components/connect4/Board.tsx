@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { COLS, ROWS, type Cell, type Move, type Seat } from "@truco/connect4";
+import { COLS, ROWS, type Cell, type Move, type Seat } from "@mesa/connect4";
 
 export type DiscColor = "gold" | "red";
 

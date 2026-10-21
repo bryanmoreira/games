@@ -1,5 +1,5 @@
 import type { ServerWebSocket } from "bun";
-import type { ClientMsg, GameId, RoomInfo, Seat, ServerMsg } from "@truco/game";
+import type { ClientMsg, GameId, RoomInfo, Seat, ServerMsg } from "@mesa/truco";
 import { GAMES, type GameAdapter } from "./games";
 import { canStartSeats, matchReport, newMatch, occupiedSeats, type Match } from "./match";
 import { sendReport, verifyTicket, type Account } from "./results";

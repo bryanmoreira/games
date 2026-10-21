@@ -1,6 +1,6 @@
 "use client";
 
-import { isDark, SQUARES } from "@truco/damas";
+import { isDark, SQUARES } from "@mesa/damas";
 
 /** Peça na tela: `id` estável para a transição de posição; `sq` em coordenadas do tabuleiro (visão das brancas). */
 export interface UiPiece {

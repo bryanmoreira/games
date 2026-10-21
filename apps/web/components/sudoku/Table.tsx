@@ -19,7 +19,7 @@ import {
   type Action,
   type GameState,
   type HintReason,
-} from "@truco/sudoku";
+} from "@mesa/sudoku";
 import { HelpButton, MuteButton } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

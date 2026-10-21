@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { HOME_CELLS, SAFE, TRACK_CELLS, startOf } from "@truco/ludo";
-import { fromFen } from "@truco/xadrez";
+import { HOME_CELLS, SAFE, TRACK_CELLS, startOf } from "@mesa/ludo";
+import { fromFen } from "@mesa/xadrez";
 import { PieceArt } from "@/components/xadrez/Piece";
 import { TileFace } from "@/components/domino/Tile";
 import { getGame } from "@/lib/seo";

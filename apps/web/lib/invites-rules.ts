@@ -1,5 +1,5 @@
 /** Regras do convite para jogar, sem banco (testadas em test/invites.test.ts). O banco fica em app/api/invites. */
-import type { GameId } from "@truco/game";
+import type { GameId } from "@mesa/truco";
 import { isOnlineGame } from "@/lib/stats/games";
 
 /** Depois disso a sala provavelmente já começou ou fechou. */

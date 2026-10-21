@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { COLS, ROWS, threats, type PlayerView, type Seat } from "@truco/connect4";
-import type { RoomInfo } from "@truco/game";
+import { COLS, ROWS, threats, type PlayerView, type Seat } from "@mesa/connect4";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { CONNECT4_PATH } from "@/lib/connect4/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handPips, sameTile, teamOf, type HandResult, type PlayerView, type Seat, type Side, type Tile, type Win } from "@truco/domino";
-import type { RoomInfo } from "@truco/game";
+import { handPips, sameTile, teamOf, type HandResult, type PlayerView, type Seat, type Side, type Tile, type Win } from "@mesa/domino";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { DOMINO_PATH } from "@/lib/domino/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

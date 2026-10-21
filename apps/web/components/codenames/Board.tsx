@@ -1,4 +1,4 @@
-import type { Key, Team } from "@truco/codenames";
+import type { Key, Team } from "@mesa/codenames";
 import { Icon } from "@/components/ui/buttons";
 
 /** Cores e nomes dos times (vermelho = 0, azul = 1). */

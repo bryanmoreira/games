@@ -1,5 +1,5 @@
 {
-  "name": "truco",
+  "name": "mesa-de-jogos",
   "private": true,
   "workspaces": [
     "apps/*",

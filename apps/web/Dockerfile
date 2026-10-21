@@ -12,7 +12,7 @@ COPY apps/server/package.json apps/server/
 COPY packages/batalha-naval/package.json packages/batalha-naval/
 COPY packages/codenames/package.json packages/codenames/
 COPY packages/connect4/package.json packages/connect4/
-COPY packages/game/package.json packages/game/
+COPY packages/truco/package.json packages/truco/
 COPY packages/otrio/package.json packages/otrio/
 COPY packages/jogo-da-velha/package.json packages/jogo-da-velha/
 COPY packages/damas/package.json packages/damas/
@@ -30,7 +30,7 @@ COPY tsconfig.base.json ./
 COPY packages/batalha-naval packages/batalha-naval
 COPY packages/codenames packages/codenames
 COPY packages/connect4 packages/connect4
-COPY packages/game packages/game
+COPY packages/truco packages/truco
 COPY packages/otrio packages/otrio
 COPY packages/jogo-da-velha packages/jogo-da-velha
 COPY packages/damas packages/damas

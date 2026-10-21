@@ -35,13 +35,13 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 
 | Camada | Arquivo | O que reaproveitar |
 |---|---|---|
-| Tipos | `packages/game/src/types.ts` | `GameState`, `Action`, `PlayerView` com flags `canPlay/mustRespond/...` |
-| Baralho | `packages/game/src/deck.ts` | `makeDeck`, `shuffle(rng)`, `strength`, `cardImage` |
-| Regras | `packages/game/src/rules.ts` | reducer imutável `applyAction(state, action) → {ok, state} \| {ok:false, error}`, fase `advance` |
-| Visão | `packages/game/src/view.ts` | esconde cartas alheias; calcula o que cada jogador pode fazer |
-| IA | `packages/game/src/ai.ts` | `decide(view)` usando só a visão do bot (sem trapaça) |
-| Protocolo | `packages/game/src/protocol.ts` | `ClientMsg`/`ServerMsg`, `RoomInfo`, `withSeat` |
-| Testes | `packages/game/test/rules.test.ts` | casos de regra + simulação de 300 partidas |
+| Tipos | `packages/truco/src/types.ts` | `GameState`, `Action`, `PlayerView` com flags `canPlay/mustRespond/...` |
+| Baralho | `packages/truco/src/deck.ts` | `makeDeck`, `shuffle(rng)`, `strength`, `cardImage` |
+| Regras | `packages/truco/src/rules.ts` | reducer imutável `applyAction(state, action) → {ok, state} \| {ok:false, error}`, fase `advance` |
+| Visão | `packages/truco/src/view.ts` | esconde cartas alheias; calcula o que cada jogador pode fazer |
+| IA | `packages/truco/src/ai.ts` | `decide(view)` usando só a visão do bot (sem trapaça) |
+| Protocolo | `packages/truco/src/protocol.ts` | `ClientMsg`/`ServerMsg`, `RoomInfo`, `withSeat` |
+| Testes | `packages/truco/test/rules.test.ts` | casos de regra + simulação de 300 partidas |
 | Salas | `apps/server/src/rooms.ts` | lobby, assentos, bots, `schedule`, `dealUntil`, reconexão |
 | Mesa | `apps/web/components/truco/Table.tsx` | layout, assentos, placar, botões, área de ação |
 | Distribuição | `apps/web/components/truco/Deal.tsx` | `useDeal`, `dealtTo`, `DealAnimation` |

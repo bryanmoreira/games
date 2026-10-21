@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Board as BoardState, Side, Tile } from "@truco/domino";
+import type { Board as BoardState, Side, Tile } from "@mesa/domino";
 import { bestLimit, layoutBoard, type Spot } from "./layout";
 import { TileFace } from "./Tile";
 

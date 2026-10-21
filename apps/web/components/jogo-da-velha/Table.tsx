@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { markOf, nextToFade, threats, type PlayerView, type Seat } from "@truco/jogo-da-velha";
-import type { RoomInfo } from "@truco/game";
+import { markOf, nextToFade, threats, type PlayerView, type Seat } from "@mesa/jogo-da-velha";
+import type { RoomInfo } from "@mesa/truco";
 import { send } from "@/lib/socket";
 import { VELHA_PATH } from "@/lib/jogo-da-velha/paths";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";

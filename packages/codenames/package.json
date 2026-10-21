@@ -1,5 +1,5 @@
 {
-  "name": "@truco/codenames",
+  "name": "@mesa/codenames",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

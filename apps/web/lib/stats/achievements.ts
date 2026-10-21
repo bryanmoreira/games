@@ -1,5 +1,5 @@
-import { DIFFICULTIES } from "@truco/sudoku";
-import { isMode, MAX_GUESSES } from "@truco/verbete";
+import { DIFFICULTIES } from "@mesa/sudoku";
+import { isMode, MAX_GUESSES } from "@mesa/verbete";
 import type { Mode, Outcome, StatGame } from "@/lib/stats/games";
 
 /** Resultado como vem do banco (só o que as regras usam). */

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { RoomInfo } from "@truco/game";
+import type { RoomInfo } from "@mesa/truco";
 
 /** ms até o fim da fase, a partir do `timeLeft` de cada mensagem do servidor. */
 export function useCountdown(room: RoomInfo): number | null {

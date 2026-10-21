@@ -1,4 +1,4 @@
-import { FLEET, SIZE, type Dir, type Ship } from "@truco/batalha-naval";
+import { FLEET, SIZE, type Dir, type Ship } from "@mesa/batalha-naval";
 
 /** Posição de um item no mar, em % (col/row a partir do canto de cima à esquerda). */
 export function cellStyle(col: number, row: number, w = 1, h = 1): React.CSSProperties {

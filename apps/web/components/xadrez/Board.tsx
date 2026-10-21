@@ -1,6 +1,6 @@
 "use client";
 
-import { fromFen, isDark, SQUARES } from "@truco/xadrez";
+import { fromFen, isDark, SQUARES } from "@mesa/xadrez";
 import { PieceShape } from "./Piece";
 
 /** Peça na tela: `id` estável para deslizar; `sq` em coordenadas do tabuleiro (visão das brancas). */

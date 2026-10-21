@@ -9,7 +9,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { GameIntro } from "@/components/seo";
 import { CardImg } from "@/components/cards/Card";
 import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
-import { makeCard } from "@truco/game";
+import { makeCard } from "@mesa/truco";
 import { PlayerName } from "@/components/ui/PlayerName";
 
 const FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades"), makeCard("7", "diamonds")];

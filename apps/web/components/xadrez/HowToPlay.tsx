@@ -1,6 +1,6 @@
 "use client";
 
-import { BISHOP, CLOCKS, FIFTY_LIMIT, fromFen, KING, KNIGHT, mFrom, mTo, PAWN, pseudoMoves, QUEEN, ROOK, squareOf as sq } from "@truco/xadrez";
+import { BISHOP, CLOCKS, FIFTY_LIMIT, fromFen, KING, KNIGHT, mFrom, mTo, PAWN, pseudoMoves, QUEEN, ROOK, squareOf as sq } from "@mesa/xadrez";
 import { Section } from "@/components/ui/HowToSection";
 import { BarsIcon } from "@/components/ui/icons";
 import { StaticBoard, type Mark } from "./Board";

@@ -1,5 +1,5 @@
 {
-  "name": "@truco/connect4",
+  "name": "@mesa/connect4",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { makeCard } from "@truco/game";
+import { makeCard } from "@mesa/truco";
 import { BackButton } from "@/components/BackButton";
 import { LoginOptions } from "@/components/auth/LoginOptions";
 import { errorMessage } from "@/components/auth/providers";

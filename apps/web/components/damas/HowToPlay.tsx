@@ -1,6 +1,6 @@
 "use client";
 
-import { ENDGAME_LIMIT, QUIET_LIMIT, squareAt as sq } from "@truco/damas";
+import { ENDGAME_LIMIT, QUIET_LIMIT, squareAt as sq } from "@mesa/damas";
 import { Section } from "@/components/ui/HowToSection";
 import { PieceShape, StaticBoard, type Mark } from "./Board";
 import { LEVEL_LABEL } from "./Settings";

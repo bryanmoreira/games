@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { applyAction as spiderAction, newGame as newSpider, type GameState as SpiderState } from "@truco/spider";
-import { newGame as newSudoku, type GameState as SudokuState } from "@truco/sudoku";
+import { applyAction as spiderAction, newGame as newSpider, type GameState as SpiderState } from "@mesa/spider";
+import { newGame as newSudoku, type GameState as SudokuState } from "@mesa/sudoku";
 import * as spider from "@/lib/spider/storage";
 import * as sudoku from "@/lib/sudoku/storage";
 

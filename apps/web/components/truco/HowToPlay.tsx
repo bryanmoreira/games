@@ -1,4 +1,4 @@
-import { makeCard, RANKS, type Card } from "@truco/game";
+import { makeCard, RANKS, type Card } from "@mesa/truco";
 import { CardBack, CardImg } from "@/components/cards/Card";
 import { Section } from "@/components/ui/HowToSection";
 import { ViraPicker } from "./ViraPicker";

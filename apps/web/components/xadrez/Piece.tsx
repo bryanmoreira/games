@@ -1,4 +1,4 @@
-import { BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK } from "@truco/xadrez";
+import { BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK } from "@mesa/xadrez";
 
 // Peças desenhadas para o site (viewBox 100×100): corpo preenchido com contorno, detalhes com a cor do contorno.
 

@@ -1,4 +1,4 @@
-import { isDouble, type Board, type Placed, type Side, type Tile } from "@truco/domino";
+import { isDouble, type Board, type Placed, type Side, type Tile } from "@mesa/domino";
 
 /**
  * Desenho da mesa do dominó em unidades de meia peça (peça deitada = 2 × 1). A primeira peça fica no

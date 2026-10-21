@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { DEFAULT_SETTINGS, parseSettings, type Settings } from "@truco/damas";
+import { DEFAULT_SETTINGS, parseSettings, type Settings } from "@mesa/damas";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
 import { AdSlot } from "@/components/AdSlot";

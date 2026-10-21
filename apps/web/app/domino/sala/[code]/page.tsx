@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import type { PlayerView } from "@truco/domino";
+import type { PlayerView } from "@mesa/domino";
 import { connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { Lobby, TEAMS_2X2 } from "@/components/ui/Lobby";
 import { GAME_ROOM_PATH } from "@/lib/rooms";

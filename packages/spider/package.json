@@ -1,5 +1,5 @@
 {
-  "name": "@truco/spider",
+  "name": "@mesa/spider",
   "private": true,
   "type": "module",
   "main": "src/index.ts",

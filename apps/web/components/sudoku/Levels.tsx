@@ -1,4 +1,4 @@
-import { DIFFICULTIES, type Difficulty, type Technique } from "@truco/sudoku";
+import { DIFFICULTIES, type Difficulty, type Technique } from "@mesa/sudoku";
 import { LevelBars, LEVEL_LABEL, TECHNIQUE_LABEL } from "./common";
 
 // ---------- mini grades dos exemplos ----------

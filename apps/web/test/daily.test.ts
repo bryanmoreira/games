@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { dealGame, newGame as newSpider } from "@truco/spider";
-import { gameFrom, newGame as newSudoku } from "@truco/sudoku";
-import { dailyWords, isAnswer } from "@truco/verbete";
+import { dealGame, newGame as newSpider } from "@mesa/spider";
+import { gameFrom, newGame as newSudoku } from "@mesa/sudoku";
+import { dailyWords, isAnswer } from "@mesa/verbete";
 import {
   DAILY_START,
   dailyKey,
