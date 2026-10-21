@@ -6,16 +6,15 @@ import { ChipIcon, GiftIcon } from "@/components/chips/ChipIcon";
 import { DeckPreview, backSrc, faceSrc } from "@/components/shop/Art";
 import { ChipAvatar } from "@/components/ui/ChipFrame";
 import { Inventory } from "@/components/shop/Inventory";
+import { TablePreview } from "@/components/shop/TablePreview";
 import { DEFAULT_DECK, DEFAULT_NAMES, ITEMS, TIERS, deckKey, shopAction, type ItemType, type ShopItem } from "@/lib/shop/catalog";
 import { buy, equip, type ShopStateJson } from "@/lib/shop/client";
 
-/** Item da vitrine; o padrão (ficha vermelha / clássico) tem key null no lugar da moldura. */
+/** Item da vitrine; o padrão (ficha vermelha / clássico / feltro verde) tem key "" no lugar da moldura e da mesa. */
 type Entry = ShopItem & { def: boolean };
 const DEFAULT_ENTRY = (type: ItemType): Entry => ({ id: `${type}:padrao`, type, key: type === "deck" ? DEFAULT_DECK : "", name: DEFAULT_NAMES[type], tier: "comum", price: 0, def: true });
-const ENTRIES: Record<ItemType, Entry[]> = {
-  frame: [DEFAULT_ENTRY("frame"), ...ITEMS.filter((i) => i.type === "frame").map((i) => ({ ...i, def: false }))],
-  deck: [DEFAULT_ENTRY("deck"), ...ITEMS.filter((i) => i.type === "deck").map((i) => ({ ...i, def: false }))],
-};
+const entries = (type: ItemType): Entry[] => [DEFAULT_ENTRY(type), ...ITEMS.filter((i) => i.type === type).map((i) => ({ ...i, def: false }))];
+const ENTRIES: Record<ItemType, Entry[]> = { frame: entries("frame"), deck: entries("deck"), table: entries("table") };
 
 const DATE = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "America/Sao_Paulo" });
 const fmt = (n: number) => n.toLocaleString("pt-BR");
@@ -56,6 +55,16 @@ const TABS: { type: Tab; label: string; icon: React.ReactNode }[] = [
     ),
   },
   {
+    type: "table",
+    label: "Mesas",
+    icon: (
+      <>
+        <rect x="2" y="7" width="20" height="10" rx="5" />
+        <circle cx="8" cy="12" r="2" />
+      </>
+    ),
+  },
+  {
     type: "inv",
     label: "Inventário",
     icon: (
@@ -72,12 +81,13 @@ export function ShopView({ user, initial }: { user: { name: string; image: strin
   const [state, setState] = useState(initial);
   const [tab, setTab] = useState<Tab>("frame");
   const shopTab: ItemType = tab === "inv" ? "frame" : tab;
-  const [sel, setSel] = useState<Record<ItemType, string>>({ frame: "frame:ficha", deck: "deck:noite" });
+  const [sel, setSel] = useState<Record<ItemType, string>>({ frame: "frame:ficha", deck: "deck:noite", table: "table:marmore" });
   const [busy, setBusy] = useState(false);
 
   const owned = (e: Entry) => e.def || !!state?.items.some((i) => i.itemId === e.id);
   const isEquipped = (e: Entry) =>
-    !!state && (e.type === "frame" ? (state.equipped.frame ?? "") === (e.def ? "" : e.key) : deckKey(state.equipped.deck) === e.key);
+    !!state &&
+    (e.type === "deck" ? deckKey(state.equipped.deck) === e.key : ((e.type === "frame" ? state.equipped.frame : state.equipped.table) ?? "") === (e.def ? "" : e.key));
   const entry = ENTRIES[shopTab].find((e) => e.id === sel[shopTab]) ?? ENTRIES[shopTab][0];
   const action = state ? shopAction(entry, owned(entry), isEquipped(entry), state.chips) : null;
   const got = state?.items.find((i) => i.itemId === entry.id);
@@ -127,8 +137,12 @@ export function ShopView({ user, initial }: { user: { name: string; image: strin
         <div className="flex flex-col gap-5 md:grid md:grid-cols-[1fr_320px] md:items-start">
           {/* destaque (no celular vem primeiro) */}
           <aside className="overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 md:sticky md:top-20 md:order-2" style={{ ["--r" as string]: tier.color }}>
-            <div className="felt flex h-60 items-center justify-center !rounded-none !shadow-[inset_0_0_60px_rgba(0,0,0,0.5)]">
-              {shopTab === "frame" ? (
+            <div
+              className={`flex h-60 items-center justify-center ${shopTab === "table" ? "bg-black/20" : "felt !rounded-none !shadow-[inset_0_0_60px_rgba(0,0,0,0.5)]"}`}
+            >
+              {shopTab === "table" ? (
+                <TablePreview table={entry.def ? null : entry.key} user={user} frame={state?.equipped.frame} scale={0.84} />
+              ) : shopTab === "frame" ? (
                 <ChipAvatar user={user} frame={entry.def ? null : entry.key} className="h-32 w-32 text-5xl" />
               ) : (
                 <DeckShow deck={deckKey(entry.key)} />
@@ -188,6 +202,8 @@ export function ShopView({ user, initial }: { user: { name: string; image: strin
                     <span className="flex h-28 items-center justify-center">
                       {shopTab === "frame" ? (
                         <ChipAvatar user={user} frame={e.def ? null : e.key} className="h-[72px] w-[72px] text-2xl" />
+                      ) : shopTab === "table" ? (
+                        <TablePreview table={e.def ? null : e.key} user={user} frame={state?.equipped.frame} scale={0.42} />
                       ) : (
                         <DeckPreview deck={e.key} className="h-28" />
                       )}

@@ -1,16 +1,18 @@
 import { prisma } from "@/lib/db";
-import { deckKey, frameKey, ITEM_BY_ID, type DeckKey, type FrameKey, type ItemType } from "@/lib/shop/catalog";
+import { deckKey, frameKey, ITEM_BY_ID, tableKey, type DeckKey, type FrameKey, type ItemType, type TableKey } from "@/lib/shop/catalog";
 
-// Loja no banco: inventário (user_item), o que está em uso (user.equippedFrame/Deck) e as fichas da compra.
+// Loja no banco: inventário (user_item), o que está em uso (user.equippedFrame/Deck/Table) e as fichas da compra.
 
 export interface Equipped {
   frame: FrameKey | null;
   deck: DeckKey;
+  table: TableKey | null;
 }
 
-export const equippedOf = (u: { equippedFrame?: string | null; equippedDeck?: string | null }): Equipped => ({
+export const equippedOf = (u: { equippedFrame?: string | null; equippedDeck?: string | null; equippedTable?: string | null }): Equipped => ({
   frame: frameKey(u.equippedFrame),
   deck: deckKey(u.equippedDeck),
+  table: tableKey(u.equippedTable),
 });
 
 /** Linha do inventário: quando e como o item chegou (e, para o admin, quando saiu). */
@@ -39,14 +41,15 @@ export async function inventory(userId: string, all = false): Promise<OwnedItem[
 /** Saldo, o que tem e o que usa (a página da loja). */
 export async function shopState(userId: string) {
   const [user, items] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId }, select: { chips: true, equippedFrame: true, equippedDeck: true } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { chips: true, equippedFrame: true, equippedDeck: true, equippedTable: true } }),
     inventory(userId),
   ]);
   if (!user) return null;
   return { chips: user.chips, equipped: equippedOf(user), items };
 }
 
-const field = (type: ItemType) => (type === "frame" ? "equippedFrame" : "equippedDeck");
+const FIELD = { frame: "equippedFrame", deck: "equippedDeck", table: "equippedTable" } as const;
+const field = (type: ItemType) => FIELD[type];
 
 /** Compra com as fichas do jogador e já passa a usar. Saldo conferido no próprio UPDATE (duas compras juntas não passam do saldo). */
 export async function buyItem(userId: string, itemId: string): Promise<ShopResult> {
@@ -67,7 +70,7 @@ export async function buyItem(userId: string, itemId: string): Promise<ShopResul
   });
 }
 
-/** Passa a usar um item que tem (key null = volta ao padrão: ficha vermelha / clássico). */
+/** Passa a usar um item que tem (key null = volta ao padrão: ficha vermelha / clássico / feltro verde). */
 export async function equipItem(userId: string, type: ItemType, key: string | null): Promise<ShopResult> {
   if (key !== null) {
     const it = ITEM_BY_ID.get(`${type}:${key}`);

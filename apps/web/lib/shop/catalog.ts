@@ -1,10 +1,10 @@
-/** Itens da loja (sem banco, para testar). Desenho em lib/shop/art.ts; compra e inventário em lib/shop/shop.ts. */
+/** Itens da loja (sem banco, para testar). Desenho em lib/shop/art.ts (mesas: .mesa-* em app/globals.css); compra e inventário em lib/shop/shop.ts. */
 
-export type ItemType = "frame" | "deck";
+export type ItemType = "frame" | "deck" | "table";
 export type Tier = "comum" | "rara" | "epica" | "lendaria";
 
 export interface ShopItem {
-  /** "frame:madeira", "deck:noite" — é o que fica no banco */
+  /** "frame:madeira", "deck:noite", "table:ouro" — é o que fica no banco */
   id: string;
   type: ItemType;
   /** chave do desenho (lib/shop/art.ts) */
@@ -23,10 +23,13 @@ export const TIERS: Record<Tier, { label: string; color: string }> = {
 
 export const FRAME_KEYS = ["madeira", "prata", "feltro", "ficha", "naipes", "neon", "coroa", "fogo", "royal"] as const;
 export const DECK_KEYS = ["classico", "azul", "feltro", "xadrez", "naipes", "retro", "deco", "noite", "neon", "holo", "ouro"] as const;
+/** Mesa do perfil (atrás da moldura). O feltro verde é o padrão (null). */
+export const TABLE_KEYS = ["vinho", "azul", "grafite", "madeira", "couro", "naipes", "cassino", "marmore", "noite", "neon", "ouro", "holo"] as const;
 export type FrameKey = (typeof FRAME_KEYS)[number];
 export type DeckKey = (typeof DECK_KEYS)[number];
+export type TableKey = (typeof TABLE_KEYS)[number];
 
-/** Todo mundo tem: a ficha vermelha (moldura null) e o baralho clássico. */
+/** Todo mundo tem: a ficha vermelha (moldura null), o baralho clássico e o feltro verde (mesa null). */
 export const DEFAULT_DECK: DeckKey = "classico";
 
 const item = (type: ItemType, key: string, name: string, tier: Tier, price: number): ShopItem => ({ id: `${type}:${key}`, type, key, name, tier, price });
@@ -52,15 +55,35 @@ export const ITEMS: readonly ShopItem[] = [
   item("deck", "neon", "Neon", "epica", 1200),
   item("deck", "holo", "Holográfico", "lendaria", 2500),
   item("deck", "ouro", "Ouro", "lendaria", 2500),
+
+  item("table", "vinho", "Vinho", "comum", 150),
+  item("table", "azul", "Azul", "comum", 150),
+  item("table", "grafite", "Grafite", "comum", 200),
+  item("table", "madeira", "Madeira", "rara", 450),
+  item("table", "couro", "Couro", "rara", 450),
+  item("table", "naipes", "Naipes", "rara", 500),
+  item("table", "cassino", "Cassino", "epica", 1000),
+  item("table", "marmore", "Mármore", "epica", 1000),
+  item("table", "noite", "Noite", "epica", 1200),
+  item("table", "neon", "Neon", "lendaria", 2500),
+  item("table", "ouro", "Ouro", "lendaria", 2500),
+  item("table", "holo", "Holográfica", "lendaria", 2500),
 ];
 
 export const ITEM_BY_ID = new Map(ITEMS.map((i) => [i.id, i]));
 
 /** Itens grátis que já vêm com a conta (não ficam no banco). */
-export const DEFAULT_NAMES: Record<ItemType, string> = { frame: "Ficha vermelha", deck: "Clássico" };
+export const DEFAULT_NAMES: Record<ItemType, string> = { frame: "Ficha vermelha", deck: "Clássico", table: "Feltro verde" };
 
 /** Chave válida de moldura (ou null = ficha vermelha). Qualquer outra coisa vira null. */
 export const frameKey = (k: unknown): FrameKey | null => (FRAME_KEYS as readonly unknown[]).includes(k) ? (k as FrameKey) : null;
+/** Chave válida de mesa (ou null = feltro verde). */
+export const tableKey = (k: unknown): TableKey | null => ((TABLE_KEYS as readonly unknown[]).includes(k) ? (k as TableKey) : null);
+/** Classes da mesa do perfil: o feltro de sempre e, por cima, a mesa da loja. */
+export const tableClass = (k: unknown) => {
+  const key = tableKey(k);
+  return key ? `felt mesa mesa-${key}` : "felt";
+};
 /** Chave válida de baralho; desconhecido vira o clássico. */
 export const deckKey = (k: unknown): DeckKey => ((DECK_KEYS as readonly unknown[]).includes(k) ? (k as DeckKey) : DEFAULT_DECK);
 

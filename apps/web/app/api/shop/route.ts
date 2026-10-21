@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as { action?: string; itemId?: unknown; type?: unknown; key?: unknown } | null;
   let result;
   if (body?.action === "buy" && typeof body.itemId === "string") result = await buyItem(id, body.itemId);
-  else if (body?.action === "equip" && (body.type === "frame" || body.type === "deck") && (body.key === null || typeof body.key === "string"))
+  else if (body?.action === "equip" && (body.type === "frame" || body.type === "deck" || body.type === "table") && (body.key === null || typeof body.key === "string"))
     result = await equipItem(id, body.type, body.key);
   else return new Response(null, { status: 400 });
   return Response.json({ ...result, state: await shopState(id) }, { status: result.ok ? 200 : 409 });

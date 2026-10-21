@@ -7,6 +7,8 @@ import { ItemArt, ItemList } from "@/components/shop/ItemList";
 import { ITEMS, TIERS } from "@/lib/shop/catalog";
 import type { OwnedItem, ShopError } from "@/lib/shop/shop";
 
+const GROUPS = { frame: "Molduras", deck: "Baralhos", table: "Mesas" } as const;
+
 type Row = Omit<OwnedItem, "acquiredAt" | "removedAt"> & { acquiredAt: string; removedAt: string | null };
 
 const ERRORS: Record<ShopError, string> = {
@@ -93,8 +95,8 @@ export function UserShop({ userId, chips, items }: { userId: string; chips: numb
         {give && <ItemArt itemId={give} className="h-10 w-10 shrink-0" />}
         <select value={give} onChange={(e) => setGive(e.target.value)} aria-label="Item" className={`${field} min-w-0 flex-1`}>
           <option value="">Item…</option>
-          {(["frame", "deck"] as const).map((type) => (
-            <optgroup key={type} label={type === "frame" ? "Molduras" : "Baralhos"}>
+          {(["frame", "deck", "table"] as const).map((type) => (
+            <optgroup key={type} label={GROUPS[type]}>
               {available
                 .filter((i) => i.type === type)
                 .map((i) => (

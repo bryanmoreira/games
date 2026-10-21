@@ -7,15 +7,13 @@ import { CheckIcon, PencilIcon } from "@/components/ui/icons";
 import { authClient } from "@/lib/auth-client";
 import { ChipAvatar } from "@/components/ui/ChipFrame";
 import { Framed } from "@/components/shop/Art";
+import { profileTable } from "@/components/profile/profile-table";
 import { frameKey } from "@/lib/shop/catalog";
 import { refreshIdentity, setName as setGameName } from "@/lib/socket";
 
-type User = { name: string; email: string; image: string | null; username: string | null; equippedFrame?: string | null };
+type User = { name: string; email: string; image: string | null; username: string | null; equippedFrame?: string | null; equippedTable?: string | null };
 
 export const MAX_NAME = 24;
-
-/** Cabeçalho do perfil em cima da mesma mesa de feltro dos jogos (a borda de madeira é sombra, por isso a margem). */
-export const PROFILE_TABLE = "felt m-3 flex items-center gap-5 rounded-[40px] px-6 py-6 sm:gap-8 sm:rounded-[96px] sm:px-14 sm:py-8";
 
 /** Foto redonda com aro dourado; com moldura da loja (`user.equippedFrame`), a moldura no lugar do aro. */
 export function Avatar({ user, className = "" }: { user: { name: string; image: string | null; equippedFrame?: string | null }; className?: string }) {
@@ -62,7 +60,7 @@ export function ProfileHeader({ user }: { user: User }) {
   };
 
   return (
-    <header className={PROFILE_TABLE}>
+    <header className={profileTable(user.equippedTable)}>
       <ChipAvatar user={user} frame={user.equippedFrame} className="h-24 w-24 text-3xl sm:h-32 sm:w-32 sm:text-5xl" />
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">

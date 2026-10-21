@@ -27,9 +27,10 @@ model User {
   chips           Int       @default(0)
   loginStreak     Int       @default(0)
   lastLoginDay    String? // AAAA-MM-DD (horário de Brasília)
-  // loja: o que o jogador está usando (chave em lib/shop/catalog.ts). null = ficha vermelha / baralho clássico
+  // loja: o que o jogador está usando (chave em lib/shop/catalog.ts). null = ficha vermelha / baralho clássico / feltro verde
   equippedFrame   String?
   equippedDeck    String?
+  equippedTable   String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]

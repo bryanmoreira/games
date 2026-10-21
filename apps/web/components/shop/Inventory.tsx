@@ -4,18 +4,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChipIcon, GiftIcon } from "@/components/chips/ChipIcon";
 import { DeckPreview } from "@/components/shop/Art";
+import { TablePreview } from "@/components/shop/TablePreview";
 import { ChipAvatar } from "@/components/ui/ChipFrame";
 import { DEFAULT_DECK, DEFAULT_NAMES, ITEM_BY_ID, TIERS, deckKey, type ItemType, type Tier } from "@/lib/shop/catalog";
 import { equip, type ShopStateJson } from "@/lib/shop/client";
 
 const DATE = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "America/Sao_Paulo" });
 
-/** Item do inventário: os que vêm com a conta (sem data) e os comprados/ganhos. key null = ficha vermelha. */
+/** Item do inventário: os que vêm com a conta (sem data) e os comprados/ganhos. key null = ficha vermelha / feltro verde. */
 type Slot = { type: ItemType; key: string | null; name: string; tier: Tier | null; got?: ShopStateJson["items"][number] };
 
 const SECTIONS: { type: ItemType; label: string }[] = [
   { type: "frame", label: "Molduras" },
   { type: "deck", label: "Baralhos" },
+  { type: "table", label: "Mesas" },
 ];
 
 const check = (
@@ -44,7 +46,8 @@ export function Inventory({
       return it && it.type === type ? [{ type, key: it.key, name: it.name, tier: it.tier, got }] : [];
     }),
   ];
-  const inUse = (s: Slot) => (s.type === "frame" ? (state.equipped.frame ?? null) === s.key : deckKey(state.equipped.deck) === s.key);
+  const inUse = (s: Slot) =>
+    s.type === "deck" ? deckKey(state.equipped.deck) === s.key : (s.type === "frame" ? state.equipped.frame : state.equipped.table) === s.key;
 
   const use = async (s: Slot) => {
     setBusy(true);
@@ -78,6 +81,8 @@ export function Inventory({
                     <span className="flex h-24 items-center justify-center">
                       {type === "frame" ? (
                         <ChipAvatar user={user} frame={s.key} className="h-16 w-16 text-2xl" />
+                      ) : type === "table" ? (
+                        <TablePreview table={s.key} user={user} frame={state.equipped.frame} scale={0.42} />
                       ) : (
                         <DeckPreview deck={s.key ?? DEFAULT_DECK} className="h-24" />
                       )}

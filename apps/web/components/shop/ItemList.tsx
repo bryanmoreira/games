@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChipIcon, GiftIcon } from "@/components/chips/ChipIcon";
 import { DeckPreview, frameSrc } from "@/components/shop/Art";
+import { TablePreview } from "@/components/shop/TablePreview";
 import { ITEM_BY_ID, TIERS } from "@/lib/shop/catalog";
 import type { OwnedItem } from "@/lib/shop/shop";
 
@@ -10,11 +11,17 @@ type Row = Omit<OwnedItem, "acquiredAt" | "removedAt"> & { acquiredAt: Date | st
 const DATE = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "America/Sao_Paulo" });
 const TIME = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
 
-/** Miniatura do item: a moldura sozinha ou o baralho (verso + rei). */
+/** Miniatura do item: a moldura sozinha, o baralho (verso + rei) ou a mesa. */
 export function ItemArt({ itemId, className = "h-16 w-16" }: { itemId: string; className?: string }) {
   const it = ITEM_BY_ID.get(itemId);
   if (!it) return null;
   if (it.type === "deck") return <DeckPreview deck={it.key} className={className} />;
+  if (it.type === "table")
+    return (
+      <span className={`flex items-center justify-center ${className}`}>
+        <TablePreview table={it.key} scale={0.16} />
+      </span>
+    );
   return (
     <span className={`relative flex items-center justify-center ${className}`}>
       <span className="h-[62.5%] w-[62.5%] rounded-full bg-[#2a5a40]" />

@@ -7,7 +7,7 @@ import { BackButton } from "@/components/BackButton";
 import { FriendButton } from "@/components/profile/FriendButton";
 import { ShareProfileButton } from "@/components/profile/ShareProfileButton";
 import { ProfileStatsView, RivalryCard } from "@/components/stats/ProfileStats";
-import { PROFILE_TABLE } from "@/components/profile/ProfileHeader";
+import { profileTable } from "@/components/profile/profile-table";
 import { ChipAvatar } from "@/components/ui/ChipFrame";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -31,7 +31,7 @@ type Props = { params: Promise<{ username: string }> };
 const findPlayer = cache((username: string) =>
   prisma.user.findUnique({
     where: { username: normalizeUsername(decodeURIComponent(username)) },
-    select: { id: true, name: true, image: true, username: true, createdAt: true, profilePublic: true, equippedFrame: true },
+    select: { id: true, name: true, image: true, username: true, createdAt: true, profilePublic: true, equippedFrame: true, equippedTable: true },
   }),
 );
 
@@ -61,7 +61,7 @@ export default async function PublicProfile({ params }: Props) {
     <div className="min-h-dvh bg-[#0f1813]">
       <BackButton href="/" className="fixed left-4 top-4 z-10" />
       <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
-        <header className={PROFILE_TABLE}>
+        <header className={profileTable(player.equippedTable)}>
           <ChipAvatar user={player} frame={player.equippedFrame} className="h-24 w-24 text-3xl sm:h-32 sm:w-32 sm:text-5xl" />
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <h1 className="truncate font-display text-2xl text-gold drop-shadow-[0_2px_0_#7a4e0c] sm:text-4xl">{player.name}</h1>

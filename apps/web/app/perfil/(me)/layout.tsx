@@ -21,7 +21,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
   const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } });
   if (!session) redirect(loginHref("/perfil"));
 
-  const { name, email, image, username, equippedFrame } = session.user;
+  const { name, email, image, username, equippedFrame, equippedTable } = session.user;
   const requests = await countFriendRequests(session.user.id);
 
   return (
@@ -32,7 +32,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
         <ChipBalance />
       </div>
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
-        <ProfileHeader user={{ name, email, image: image ?? null, username: username ?? null, equippedFrame: equippedFrame ?? null }} />
+        <ProfileHeader user={{ name, email, image: image ?? null, username: username ?? null, equippedFrame: equippedFrame ?? null, equippedTable: equippedTable ?? null }} />
         <div className="flex flex-col gap-6 md:grid md:grid-cols-[200px_1fr] md:gap-10">
           <ProfileNav badges={{ "/perfil/amigos": requests }} admin={isAdmin(session.user)} />
           <section className="min-w-0">{children}</section>
