@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [web, server]
+    steps:
+      - name: Dispara o deploy (${{ matrix.service }})
+        env:
+          TRIGGER_URL: ${{ matrix.service == 'web' && secrets.DEPLOY_WEB_TRIGGER || secrets.DEPLOY_SERVER_TRIGGER }}
+        run: |
+          if [ -z "$TRIGGER_URL" ]; then
+            echo "::error::Secret do trigger de ${{ matrix.service }} não configurado"
+            exit 1
+          fi
+          curl --fail --silent --show-error --max-time 30 -X POST "$TRIGGER_URL"
