@@ -30,7 +30,7 @@ export function plan(g: Game): Key[] {
   for (let r = 0; r < 4; r++) {
     for (let dx = -5; dx <= 5; dx++) {
       const keys: Key[] = [...Array<Key>(r).fill("cw"), ...Array<Key>(Math.abs(dx)).fill(dx < 0 ? "left" : "right"), "drop"];
-      const sim: Game = { ...g, board: g.board.slice(), ids: g.ids.slice(), piece: { ...g.piece! }, queue: g.queue.slice() };
+      const sim: Game = { ...g, board: g.board.slice(), piece: { ...g.piece! }, queue: g.queue.slice() };
       const lines = sim.lines;
       let ok = true;
       for (const k of keys.slice(0, -1)) ok = input(sim, k) && ok;

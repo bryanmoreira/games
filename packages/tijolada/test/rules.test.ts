@@ -171,28 +171,6 @@ describe("linhas e pontos", () => {
     expect(g.score).toBeGreaterThanOrEqual(1250);
   });
 
-  test("cada peça travada guarda o seu número; a limpeza desce os números junto", () => {
-    const g = newGame(1, "solo");
-    setPiece(g, 2);
-    input(g, "drop");
-    setPiece(g, 2);
-    input(g, "drop");
-    const ids = g.board.map((c, i) => (c ? g.ids[i] : -1)).filter((n) => n >= 0);
-    expect(new Set(ids).size).toBe(2);
-    expect(ids.filter((n) => n === ids[0]).length).toBe(4);
-    // uma linha completa embaixo: o O de cima desce e leva o número
-    const g2 = newGame(1, "solo");
-    fillRows(g2, 1, [0, 1]);
-    setPiece(g2, 2);
-    for (let i = 0; i < 4; i++) input(g2, "left");
-    input(g2, "drop");
-    expect(g2.lines).toBe(1);
-    const left = g2.board.map((c, i) => (c ? i : -1)).filter((i) => i >= 0);
-    expect(left.length).toBe(2);
-    expect(new Set(left.map((i) => g2.ids[i])).size).toBe(1);
-    expect(left.every((i) => Math.floor(i / COLS) === ROWS - 1)).toBe(true);
-  });
-
   test("linha que não completa não some", () => {
     const g = newGame(1, "solo");
     fillRows(g, 1, [0, 1, 2, 3, 4]);

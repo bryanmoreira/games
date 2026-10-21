@@ -76,11 +76,6 @@ export interface Game {
   mode: Mode;
   /** ROWS × COLS, linha a linha de cima para baixo; 0 = vazio, senão o tipo da peça que travou ali. */
   board: number[];
-  /**
-   * Qual peça ocupa cada casa (1 a 35, repetindo; 0 = vazio): a tela junta as casas da mesma peça num bloco só.
-   * Cabe num caractere na mensagem.
-   */
-  ids: number[];
   piece: Piece | null;
   hold: Kind | null;
   /** Já guardou nesta peça. */

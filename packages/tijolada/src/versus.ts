@@ -112,12 +112,10 @@ export const isVersusOver = (s: VersusState) => s.phase === "over";
 // ---------- visão ----------
 
 /** Partida na mensagem: o campo vira texto (um dígito por casa). */
-export type PackedGame = Omit<Game, "board" | "ids"> & { board: string; ids: string };
+export type PackedGame = Omit<Game, "board"> & { board: string };
 
-export const pack = (g: Game): PackedGame => ({ ...g, board: g.board.join(""), ids: g.ids.map((n) => n.toString(36)).join("") });
-// partida salva antes de existir `ids`: sem número de peça (blocos da mesma cor se juntam)
-export const unpack = (p: PackedGame): Game =>
-  structuredClone({ ...p, board: Array.from(p.board, Number), ids: p.ids ? Array.from(p.ids, (c) => parseInt(c, 36)) : new Array(p.board.length).fill(0) });
+export const pack = (g: Game): PackedGame => ({ ...g, board: g.board.join("") });
+export const unpack = (p: PackedGame): Game => structuredClone({ ...p, board: Array.from(p.board, Number) });
 
 export interface VersusPlayer {
   seat: number;

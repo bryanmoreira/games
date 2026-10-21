@@ -1,8 +1,8 @@
-import { cellParts, openOf, outline, toneColor } from "./blocks";
+import { BEVEL, bevelFacets, outline, toneColor } from "./blocks";
 import { COLORS } from "./colors";
 
 // Campo de exemplo (página do jogo, "Como jogar", home e prévia de link): 8 colunas, as 4 linhas de baixo
-// quase cheias e um I caindo no buraco. Cada letra é uma peça (pedaços de peça também valem).
+// quase cheias e um I caindo no buraco. Cada letra é uma peça (pedaços de peça também valem), que dá a cor.
 const ROWS_ART = [
   "........",
   "........",
@@ -24,16 +24,19 @@ const FALLING: [number, number][] = [
 /** As 4 linhas de baixo, que o I completa. */
 const FULL_FROM = 5;
 
-/** Casas de uma peça em SVG, juntas num bloco só (unidade = 1 casa). Chamada como função na prévia de link. */
+/** Blocos de uma peça em SVG (unidade = 1 casa). Chamada como função na prévia de link. */
 export function PieceSvg({ cells, color }: { cells: [number, number][]; color: string }) {
-  const has = new Set(cells.map(([x, y]) => `${x},${y}`));
-  const parts = cells.flatMap(([x, y]) => cellParts(x, y, openOf((dx, dy) => has.has(`${x + dx},${y + dy}`))));
   return (
-    // bordas no pixel: sem fio entre as partes nem contorno borrado
-    <g shapeRendering="crispEdges">
-      {(["base", "light", "dark"] as const).flatMap((tone) =>
-        parts.filter((p) => p.tone === tone).map((p, i) => <rect key={`${tone}-${i}`} x={p.x} y={p.y} width={p.w} height={p.h} fill={toneColor(color, tone)} />),
-      )}
+    <g>
+      {cells.map(([x, y]) => (
+        <g key={`${x}-${y}`}>
+          {/* o quadrado na cor da face por baixo: sem fio escuro nas diagonais */}
+          <rect x={x} y={y} width={1} height={1} fill={color} />
+          {bevelFacets(x, y, x + 1, y + 1, BEVEL).map((f) => (
+            <polygon key={f.tone} points={f.points.map((p) => p.join(",")).join(" ")} fill={toneColor(color, f.tone)} />
+          ))}
+        </g>
+      ))}
     </g>
   );
 }

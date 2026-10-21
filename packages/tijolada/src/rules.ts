@@ -27,8 +27,6 @@ const GRAVITY = [
   2398490,
 ];
 const LINE_POINTS = [0, 100, 300, 500, 800];
-/** Números de peça que se repetem no campo (ver `Game.ids`). */
-const PIECE_IDS = 35;
 export const COMBO_POINTS = 50;
 
 export const gravityOf = (level: number) => GRAVITY[Math.min(MAX_LEVEL, Math.max(1, level)) - 1];
@@ -60,7 +58,6 @@ export function newGame(seed: number, mode: Mode): Game {
   const g: Game = {
     mode,
     board: new Array(ROWS * COLS).fill(0),
-    ids: new Array(ROWS * COLS).fill(0),
     piece: null,
     hold: null,
     held: false,
@@ -141,11 +138,7 @@ function moveDown(g: Game): boolean {
 function lockPiece(g: Game) {
   const p = g.piece!;
   const cells = cellsOf(p);
-  const id = (g.pieces % PIECE_IDS) + 1;
-  for (const [x, y] of cells) {
-    g.board[y * COLS + x] = p.kind;
-    g.ids[y * COLS + x] = id;
-  }
+  for (const [x, y] of cells) g.board[y * COLS + x] = p.kind;
   g.pieces++;
   g.locks++;
   g.held = false;
@@ -166,8 +159,6 @@ function lockPiece(g: Game) {
     for (const y of rows) {
       g.board.splice(y * COLS, COLS);
       g.board.unshift(...new Array(COLS).fill(0));
-      g.ids.splice(y * COLS, COLS);
-      g.ids.unshift(...new Array(COLS).fill(0));
     }
     const b2b = n === 4 && g.b2b;
     let points = LINE_POINTS[n] * g.level;

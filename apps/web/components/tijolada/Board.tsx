@@ -2,34 +2,28 @@
 
 import { useEffect, useRef } from "react";
 import { cellsOf, COLS, dropY, HIDDEN, ROWS, SHAPES, VISIBLE, type Game, type Kind } from "@mesa/tijolada";
-import { cellParts, openOf, outline, toneColor, type Open } from "./blocks";
+import { BEVEL, bevelFacets, outline, toneColor } from "./blocks";
 import { PieceSvg } from "./Art";
 import { COLORS } from "./colors";
 
-/** Casas de uma peça (lados abertos já calculados), em px. Tudo em pixel inteiro: sem borda borrada nem fio entre as partes. */
-function drawCells(ctx: CanvasRenderingContext2D, cells: { x: number; y: number; open: Open }[], s: number, color: string) {
-  const px = (v: number) => Math.round(v * s);
-  for (const tone of ["base", "light", "dark"] as const) {
-    ctx.fillStyle = toneColor(color, tone);
-    for (const c of cells)
-      for (const p of cellParts(c.x, c.y, c.open)) {
-        if (p.tone !== tone) continue;
-        const x0 = px(p.x);
-        const y0 = px(p.y);
-        ctx.fillRect(x0, y0, px(p.x + p.w) - x0, px(p.y + p.h) - y0);
-      }
+/**
+ * Um bloco em relevo na casa (x, y), em pixel inteiro (sem borda borrada). O quadrado inteiro vai primeiro
+ * na cor da face, para o antisserrilhado das diagonais não deixar fio escuro entre as bordas.
+ */
+function drawBlock(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, color: string) {
+  const x0 = Math.round(x * s);
+  const y0 = Math.round(y * s);
+  const x1 = Math.round((x + 1) * s);
+  const y1 = Math.round((y + 1) * s);
+  ctx.fillStyle = color;
+  ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+  for (const f of bevelFacets(x0, y0, x1, y1, Math.max(2, Math.round(s * BEVEL)))) {
+    ctx.fillStyle = toneColor(color, f.tone);
+    ctx.beginPath();
+    f.points.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
+    ctx.closePath();
+    ctx.fill();
   }
-}
-
-/** A peça que cai (ou outra peça solta), inteira. */
-function drawPiece(ctx: CanvasRenderingContext2D, cells: [number, number][], s: number, color: string) {
-  const has = new Set(cells.map(([x, y]) => `${x},${y}`));
-  drawCells(
-    ctx,
-    cells.map(([x, y]) => ({ x, y, open: openOf((dx, dy) => has.has(`${x + dx},${y + dy}`)) })),
-    s,
-    color,
-  );
 }
 
 /** Linhas que piscam depois de sumir. */
@@ -76,23 +70,12 @@ export function Board({ game, ghost = true, className = "" }: { game: { current:
         ctx.stroke();
       }
       if (!g) return;
-      // casas travadas, por cor; vizinha aberta = mesma peça (mesmo tipo e mesmo número)
-      const at = (x: number, y: number) => (x < 0 || x >= COLS || y < 0 || y >= ROWS ? -1 : y * COLS + x);
-      for (let kind = 1; kind <= 8; kind++) {
-        const cells: { x: number; y: number; open: Open }[] = [];
-        for (let y = HIDDEN; y < ROWS; y++)
-          for (let x = 0; x < COLS; x++) {
-            const i = y * COLS + x;
-            if (g.board[i] !== kind) continue;
-            const open = openOf((dx, dy) => {
-              const j = at(x + dx, y + dy);
-              return j >= 0 && g.board[j] === kind && g.ids[j] === g.ids[i];
-            });
-            cells.push({ x, y: y - HIDDEN, open });
-          }
-        if (cells.length) drawCells(ctx, cells, s, COLORS[kind]);
-      }
-      // acabou: o campo escurece por cima (transparência nas peças marcaria onde as partes se sobrepõem)
+      for (let y = HIDDEN; y < ROWS; y++)
+        for (let x = 0; x < COLS; x++) {
+          const c = g.board[y * COLS + x];
+          if (c) drawBlock(ctx, x, y - HIDDEN, s, COLORS[c]);
+        }
+      // acabou: o campo escurece por cima
       if (g.over) {
         ctx.fillStyle = "rgba(11,18,14,0.55)";
         ctx.fillRect(0, 0, W, H);
@@ -113,7 +96,7 @@ export function Board({ game, ghost = true, className = "" }: { game: { current:
           ctx.stroke();
           ctx.globalAlpha = 1;
         }
-        drawPiece(ctx, cellsOf(p).map(([x, y]) => [x, y - HIDDEN]), s, COLORS[p.kind]);
+        for (const [x, y] of cellsOf(p)) if (y >= HIDDEN) drawBlock(ctx, x, y - HIDDEN, s, COLORS[p.kind]);
       }
       // linhas que sumiram piscam um instante
       if (g.clear && g.clear.id !== flash?.id) flash = { id: g.clear.id, rows: g.clear.rows, at: performance.now() };
