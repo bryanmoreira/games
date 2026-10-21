@@ -1,11 +1,14 @@
 import { makeDeck, manilhaOf, shuffle, strength, type Rng } from "./deck";
-import type { Action, GameState, HandMode, HandResult, HandState, Round, Seat, ShoutKind, Team } from "./types";
+import type { Action, Card, GameState, HandMode, HandResult, HandState, Round, Seat, ShoutKind, Team } from "./types";
 
 export const WIN_SCORE = 12;
 export const BET_STEPS = [1, 3, 6, 9, 12];
 
+export const ALL_SEATS: Seat[] = [0, 1, 2, 3];
+
 export const teamOf = (s: Seat): Team => (s % 2) as Team;
-export const nextSeat = (s: Seat): Seat => ((s + 1) % 4) as Seat;
+/** Próximo lugar na mesa; com `players`, pula quem não está na partida (1×1). */
+export const nextSeat = (s: Seat, players: Seat[] = ALL_SEATS): Seat => players[(players.indexOf(s) + 1) % players.length];
 export const partnerOf = (s: Seat): Seat => ((s + 2) % 4) as Seat;
 export const other = (t: Team): Team => (1 - t) as Team;
 
@@ -14,10 +17,19 @@ export function nextBetValue(value: number): number | null {
   return i >= 0 && i < BET_STEPS.length - 1 ? BET_STEPS[i + 1] : null;
 }
 
-function dealHand(dealer: Seat, scores: [number, number], rng: Rng): HandState {
+/** Lugares que formam uma mesa: 4 (duplas) ou 2 em times diferentes (1×1). */
+export function validPlayers(seats: number[]): boolean {
+  const ps = [...new Set(seats)];
+  if (ps.length === 4) return ps.every((p) => ALL_SEATS.includes(p as Seat));
+  return ps.length === 2 && ps.every((p) => ALL_SEATS.includes(p as Seat)) && teamOf(ps[0] as Seat) !== teamOf(ps[1] as Seat);
+}
+
+function dealHand(dealer: Seat, scores: [number, number], rng: Rng, players: Seat[]): HandState {
   const deck = shuffle(makeDeck(), rng);
-  const hands = [0, 1, 2, 3].map((i) => deck.slice(i * 3, i * 3 + 3));
-  const vira = deck[12];
+  // quem não está na partida (1×1) fica sem cartas
+  const hands: Card[][] = [[], [], [], []];
+  players.forEach((p, i) => (hands[p] = deck.slice(i * 3, i * 3 + 3)));
+  const vira = deck[players.length * 3];
   const at11 = [scores[0] === WIN_SCORE - 1, scores[1] === WIN_SCORE - 1];
   let mode: HandMode = "normal";
   let mao11Team: Team | null = null;
@@ -26,7 +38,7 @@ function dealHand(dealer: Seat, scores: [number, number], rng: Rng): HandState {
     mode = "mao11";
     mao11Team = at11[0] ? 0 : 1;
   }
-  const first = nextSeat(dealer);
+  const first = nextSeat(dealer, players);
   return {
     dealer,
     vira,
@@ -43,10 +55,12 @@ function dealHand(dealer: Seat, scores: [number, number], rng: Rng): HandState {
   };
 }
 
-export function newGame(rng: Rng = Math.random, dealer: Seat = 0): GameState {
+export function newGame(rng: Rng = Math.random, dealer: Seat = 0, players: Seat[] = ALL_SEATS): GameState {
+  const ps = [...new Set(players)].sort((a, b) => a - b);
+  if (!validPlayers(ps)) throw new Error("Truco precisa de 4 jogadores ou 2 em times diferentes");
   const scores: [number, number] = [0, 0];
-  const hand = dealHand(dealer, scores, rng);
-  return { scores, phase: hand.mode === "mao11" ? "mao11" : "playing", winner: null, handNo: 1, hand, shout: null };
+  const hand = dealHand(ps.includes(dealer) ? dealer : ps[0], scores, rng, ps);
+  return { players: ps, scores, phase: hand.mode === "mao11" ? "mao11" : "playing", winner: null, handNo: 1, hand, shout: null };
 }
 
 /** Vencedor da mão a partir dos resultados das vazas. null = indefinido, "tie" = ninguém pontua. */
@@ -125,8 +139,8 @@ export function applyAction(state: GameState, action: Action, rng: Rng = Math.ra
       if (hidden && h.rounds.length === 1) return fail("não pode cobrir na primeira");
       cards.splice(action.index, 1);
       round.plays.push({ seat: action.seat, card, hidden });
-      if (round.plays.length < 4) {
-        h.turn = nextSeat(action.seat);
+      if (round.plays.length < s.players.length) {
+        h.turn = nextSeat(action.seat, s.players);
       } else {
         const r = roundResult(round, h.manilha);
         round.winner = r.winner;
@@ -203,7 +217,7 @@ export function applyAction(state: GameState, action: Action, rng: Rng = Math.ra
           s.phase = "gameOver";
           return { ok: true, state: s };
         }
-        s.hand = dealHand(nextSeat(h.dealer), s.scores, rng);
+        s.hand = dealHand(nextSeat(h.dealer, s.players), s.scores, rng, s.players);
         s.handNo++;
         s.phase = s.hand.mode === "mao11" ? "mao11" : "playing";
         return { ok: true, state: s };

@@ -100,13 +100,17 @@ const LUDO_PASS_MS = 1300;
 
 const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView> = {
   seats: 4,
-  newGame: () => truco.newGame(Math.random, Math.floor(Math.random() * 4) as truco.Seat),
+  // mesa cheia (duplas) ou dois em times diferentes (1×1)
+  minSeats: 2,
+  canStart: truco.validPlayers,
+  newGame: (_prev, { seats }) =>
+    truco.newGame(Math.random, seats[Math.floor(Math.random() * seats.length)] as truco.Seat, seats as truco.Seat[]),
   applyAction: truco.applyAction,
   viewFor: (s, seat) => truco.viewFor(s, seat as truco.Seat),
   decide: (v) => truco.decide(v),
   withSeat: (a, seat) => truco.withSeat(a as truco.ClientAction, seat as truco.Seat),
   actors: (s) =>
-    [0, 1, 2, 3].filter((seat) => {
+    s.players.filter((seat) => {
       const v = truco.viewFor(s, seat as truco.Seat);
       return v.canPlay || v.mustRespond || v.mustDecideMao11;
     }),
@@ -117,7 +121,7 @@ const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView>
     const team = truco.teamOf(seat as truco.Seat);
     return {
       outcome: s.winner === team ? "win" : "loss",
-      data: { scores: [s.scores[team], s.scores[1 - team]], hands: s.handNo },
+      data: { scores: [s.scores[team], s.scores[1 - team]], hands: s.handNo, players: s.players.length },
     };
   },
 };

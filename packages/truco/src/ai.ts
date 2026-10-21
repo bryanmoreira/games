@@ -51,7 +51,7 @@ function choosePlay(v: PlayerView, rng: Rng): Action {
     return play(highest.i);
   }
 
-  const last = round.plays.length === 3;
+  const last = round.plays.length === v.players.length - 1;
   if (mate > opp && (last || mate >= 8)) return play(lowest.i, v.canHide && lowest.s < 7);
 
   const target = Math.max(opp, mate > opp ? mate : -2);
@@ -72,7 +72,8 @@ export function decide(v: PlayerView, rng: Rng = Math.random): Action | null {
   if (v.mustDecideMao11) {
     const both = [...v.myHand, ...(v.partnerHand ?? [])];
     const combined = both.reduce((s, c) => s + cardPower(c, v.manilha), 0);
-    const need = 1.8 + (v.scores[other(team)] >= 9 ? 0.4 : 0);
+    // sem parceiro (1×1) só as 3 cartas da mão: a régua cai pela metade
+    const need = (1.8 + (v.scores[other(team)] >= 9 ? 0.4 : 0)) * (both.length / 6);
     return { type: "mao11", seat, play: combined + noise() >= need };
   }
 

@@ -77,7 +77,12 @@ export default function RoomPage() {
       </Center>
     );
   }
-  return <Lobby room={room} groups={TEAMS_2X2} exitPath={TRUCO_PATH} />;
+  return (
+    <Lobby room={room} groups={TEAMS_2X2} exitPath={TRUCO_PATH}>
+      {/* 4 jogadores = duplas; 2, um em cada time = 1×1 */}
+      <p className="font-display text-sm text-white/50">2×2 · 1×1</p>
+    </Lobby>
+  );
 }
 
 function Center({ children }: { children: React.ReactNode }) {

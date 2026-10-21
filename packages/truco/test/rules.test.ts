@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
-  applyAction, decide, handWinner, makeCard, manilhaOf, newGame, roundResult, strength, viewFor,
+  applyAction, decide, handWinner, makeCard, manilhaOf, newGame, roundResult, strength, validPlayers, viewFor,
   type Action, type GameState, type Seat,
 } from "../src";
 
@@ -150,6 +150,61 @@ describe("mão de 11 e mão de ferro", () => {
     expect(viewFor(s, 0).myHand.every((c) => c === null)).toBe(true);
     expect(s.hand.value).toBe(1);
     expect(applyAction(s, { type: "truco", seat: s.hand.turn }).ok).toBe(false);
+  });
+});
+
+describe("1×1", () => {
+  test("só dois em times diferentes formam a mesa", () => {
+    expect(validPlayers([0, 1, 2, 3])).toBe(true);
+    expect(validPlayers([0, 1])).toBe(true);
+    expect(validPlayers([2, 3])).toBe(true);
+    expect(validPlayers([0, 2])).toBe(false);
+    expect(validPlayers([1, 3])).toBe(false);
+    expect(validPlayers([0])).toBe(false);
+    expect(() => newGame(Math.random, 0, [0, 2])).toThrow();
+  });
+
+  test("três cartas para cada um, vaza fecha com duas e a vez alterna", () => {
+    let s = newGame(Math.random, 3, [0, 3]);
+    expect(s.hand.hands.map((h) => h.length)).toEqual([3, 0, 0, 3]);
+    expect(s.hand.turn).toBe(0);
+    s = act(s, { type: "play", seat: 0, index: 0 });
+    expect(s.hand.turn).toBe(3);
+    s = act(s, { type: "play", seat: 3, index: 0 });
+    expect(s.phase).toBe("roundEnd");
+    s.phase = "handEnd";
+    s.hand.result = { winner: null, points: 0, reason: "tie" };
+    s = act(s, { type: "advance" });
+    expect(s.hand.dealer).toBe(0);
+    expect(s.hand.turn).toBe(3);
+  });
+
+  test("mão de 11 sem parceiro: decide só com a própria mão", () => {
+    let s = newGame(Math.random, 0, [0, 1]);
+    s.scores = [11, 4];
+    s.phase = "handEnd";
+    s = act(s, { type: "advance" });
+    expect(s.phase).toBe("mao11");
+    expect(viewFor(s, 0).partnerHand).toBeNull();
+    expect(decide(viewFor(s, 0))?.type).toBe("mao11");
+  });
+
+  test("300 partidas entre IAs terminam com vencedor em 12", () => {
+    for (let g = 0; g < 300; g++) {
+      let s = newGame(Math.random, 1, g % 2 ? [0, 1] : [1, 2]);
+      let steps = 0;
+      while (s.phase !== "gameOver") {
+        if (++steps > 5000) throw new Error("partida travada");
+        if (s.phase === "roundEnd" || s.phase === "handEnd") {
+          s = act(s, { type: "advance" });
+          continue;
+        }
+        const action = s.players.map((seat) => decide(viewFor(s, seat))).find(Boolean);
+        if (!action) throw new Error("ninguém pode agir na fase " + s.phase);
+        s = act(s, action);
+      }
+      expect(s.scores[s.winner!]).toBe(12);
+    }
   });
 });
 

@@ -58,7 +58,7 @@ describe("truco", () => {
         const team = truco.teamOf(seat);
         expect(outcome(s, seat)).toEqual({
           outcome: team === w ? "win" : "loss",
-          data: { scores: [s.scores[team], s.scores[1 - team]], hands: s.handNo },
+          data: { scores: [s.scores[team], s.scores[1 - team]], hands: s.handNo, players: 4 },
         });
       }
       expect(outcome(s, w).data.scores).toEqual([12, expect.any(Number)]);
@@ -70,6 +70,17 @@ describe("truco", () => {
     expect(outcome(s, 0)).toEqual(outcome(s, 2));
     expect(outcome(s, 1)).toEqual(outcome(s, 3));
     expect(outcome(s, 0).outcome).not.toBe(outcome(s, 1).outcome);
+  });
+
+  test("começa com 4 ou com 2 em times diferentes (1×1), sem IA", () => {
+    const { canStart, newGame, actors } = GAMES["truco-paulista"];
+    expect(canStart!([0, 1, 2, 3])).toBe(true);
+    expect(canStart!([0, 3])).toBe(true);
+    expect(canStart!([0, 2])).toBe(false);
+    expect(canStart!([0, 1, 2])).toBe(false);
+    const s = newGame(null, { seats: [1, 2], settings: null }) as truco.GameState;
+    expect(s.players).toEqual([1, 2]);
+    expect(actors(s).every((p: number) => p === 1 || p === 2)).toBe(true);
   });
 });
 

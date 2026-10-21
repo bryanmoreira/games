@@ -9,6 +9,7 @@ export function viewFor(s: GameState, seat: Seat): PlayerView {
 
   return {
     seat,
+    players: s.players,
     scores: s.scores,
     phase: s.phase,
     winner: s.winner,
@@ -17,7 +18,7 @@ export function viewFor(s: GameState, seat: Seat): PlayerView {
     vira: h.vira,
     manilha: h.manilha,
     myHand: h.hands[seat].map((c) => (ferro ? null : c)),
-    partnerHand: s.phase === "mao11" && h.mao11Team === team ? h.hands[partnerOf(seat)] : null,
+    partnerHand: s.phase === "mao11" && h.mao11Team === team && s.players.length === 4 ? h.hands[partnerOf(seat)] : null,
     handCounts: h.hands.map((c) => c.length),
     rounds: h.rounds.map((r) => ({
       ...r,

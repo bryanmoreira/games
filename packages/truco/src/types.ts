@@ -62,6 +62,8 @@ export interface HandState {
 }
 
 export interface GameState {
+  /** Lugares na partida: os 4 (duplas) ou 2 em times diferentes (1×1). */
+  players: Seat[];
   scores: [number, number];
   phase: Phase;
   winner: Team | null;
@@ -81,6 +83,7 @@ export type Action =
 
 export interface PlayerView {
   seat: Seat;
+  players: Seat[];
   scores: [number, number];
   phase: Phase;
   winner: Team | null;

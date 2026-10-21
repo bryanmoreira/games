@@ -6,7 +6,7 @@ import { teamOf, type Card, type Play, type PlayerView, type RoomInfo, type Seat
 import { send } from "@/lib/socket";
 import { TRUCO_PATH } from "@/lib/truco/paths";
 import { CardBack, CardImg, DeckProvider } from "@/components/cards/Card";
-import { DealAnimation, dealtTo, useDeal } from "./Deal";
+import { DealAnimation, dealtTo, seatPos, useDeal } from "./Deal";
 import { HowToPlayModal } from "@/components/ui/HowToPlayModal";
 import { HelpButton, MuteButton, TipsButton, useTips } from "@/components/ui/buttons";
 import { ExitConfirm } from "@/components/ui/ExitConfirm";
@@ -19,10 +19,10 @@ import { SeatFace } from "@/components/ui/SeatFace";
 import { Framed } from "@/components/shop/Art";
 
 type Pos = "bottom" | "right" | "top" | "left";
-const POS: Pos[] = ["bottom", "right", "top", "left"];
 const BET_NAME: Record<number, string> = { 3: "TRUCO!", 6: "SEIS!", 9: "NOVE!", 12: "DOZE!" };
 
-const relPos = (seat: Seat, me: Seat): Pos => POS[(seat - me + 4) % 4];
+/** Placar visto de quem joga: duplas (nós × eles) ou 1×1 (você × rival). */
+const sides = (view: PlayerView) => (view.players.length === 2 ? ["VOCÊ", "RIVAL"] : ["NÓS", "ELES"]);
 
 function shoutText(s: Shout) {
   switch (s.kind) {
@@ -44,6 +44,8 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   const us = view.scores[myTeam];
   const them = view.scores[1 - myTeam];
   const round = view.rounds[view.rounds.length - 1];
+  const [usLabel, themLabel] = sides(view);
+  const posOf = (seat: Seat) => seatPos(seat, me, view.players);
 
   const [leaving, setLeaving] = useState(false);
   const leave = () => {
@@ -51,7 +53,6 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
     router.push(TRUCO_PATH);
   };
 
-  const seatAt = (pos: Pos) => ((me + POS.indexOf(pos)) % 4) as Seat;
   const deal = useDeal(view);
   const [help, setHelp] = useState(false);
   const [tips, toggleTips] = useTips();
@@ -59,7 +60,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
   // some ao jogar a carta (o mouseleave não dispara quando ela sai da mão)
   const hoveredCard = hovered && view.myHand.some((c) => c?.id === hovered.id) ? hovered : null;
   useSounds(view);
-  const visible = (seat: Seat) => Math.min(view.handCounts[seat], dealtTo(deal, view.dealer, seat));
+  const visible = (seat: Seat) => Math.min(view.handCounts[seat], dealtTo(deal, view.dealer, seat, view.players));
 
   // cada um joga com o próprio baralho: a mão virada e a carta jogada usam o do dono; o resto (vira, monte), o meu
   return (
@@ -68,7 +69,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
         <header className="relative z-40 flex items-center justify-between gap-1.5 px-2 py-2 sm:gap-2 sm:px-6">
           <div className="flex items-center gap-1.5 rounded-2xl bg-black/40 px-3 py-2 font-display sm:gap-3 sm:px-4">
             <div className="flex flex-col items-center leading-none">
-              <span className="text-[10px] text-gold/80">NÓS</span>
+              <span className="text-[10px] text-gold/80">{usLabel}</span>
               <span className="text-3xl text-gold">{us}</span>
             </div>
             {/* espaçador do rótulo + altura da linha dos números, para o × alinhar com os placares */}
@@ -79,7 +80,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
               </span>
             </div>
             <div className="flex flex-col items-center leading-none">
-              <span className="text-[10px] text-white/60">ELES</span>
+              <span className="text-[10px] text-white/60">{themLabel}</span>
               <span className="text-3xl">{them}</span>
             </div>
           </div>
@@ -103,9 +104,11 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
         <section className="relative mx-auto mb-3 mt-8 w-[calc(100%-1.5rem)] max-w-[1100px] flex-1 sm:mt-10 lg:mt-11 sm:w-[calc(100%-7rem)]">
           <div className="felt absolute inset-0 rounded-[48px] sm:rounded-[120px]" />
 
-          {(["top", "left", "right"] as const).map((pos) => (
-            <Opponent key={pos} pos={pos} seat={seatAt(pos)} room={room} view={view} count={visible(seatAt(pos))} />
-          ))}
+          {view.players
+            .filter((seat) => seat !== me)
+            .map((seat) => (
+              <Opponent key={seat} pos={posOf(seat) as Exclude<Pos, "bottom">} seat={seat} room={room} view={view} count={visible(seat)} />
+            ))}
 
           {!deal && <Vira view={view} />}
 
@@ -114,7 +117,7 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
               <DeckProvider key={`${view.handNo}-${view.rounds.length}-${p.seat}`} deck={room.seats[p.seat]?.deck}>
                 <PlayedCard
                   play={p}
-                  pos={relPos(p.seat, me)}
+                  pos={posOf(p.seat)}
                   order={i}
                   winning={view.phase !== "playing" && round.winningSeat === p.seat}
                   mine={p.seat === me}
@@ -125,10 +128,10 @@ export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {
 
           <CenterStatus view={view} />
 
-          {deal && <DealAnimation key={`deal-${deal.hand}`} deal={deal} dealer={view.dealer} me={me} />}
+          {deal && <DealAnimation key={`deal-${deal.hand}`} deal={deal} dealer={view.dealer} me={me} players={view.players} />}
 
           {view.shout && (
-            <ShoutBubble key={`shout-${view.shout.id}`} text={shoutText(view.shout)} pos={relPos(view.shout.seat, me)} />
+            <ShoutBubble key={`shout-${view.shout.id}`} text={shoutText(view.shout)} pos={posOf(view.shout.seat)} />
           )}
         </section>
 
@@ -350,7 +353,7 @@ function CenterStatus({ view }: { view: PlayerView }) {
     else
       content = (
         <span className={r.winner === myTeam ? "text-gold" : "text-red-400"}>
-          +{r.points} {r.winner === myTeam ? "NÓS" : "ELES"}
+          +{r.points} {sides(view)[r.winner === myTeam ? 0 : 1]}
         </span>
       );
   } else if (view.bet && view.phase === "playing") {

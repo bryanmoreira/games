@@ -49,7 +49,7 @@ export function HowToPlay() {
             </span>
           </div>
         </div>
-        <p className="text-center text-sm text-white/70">Duas duplas. Parceiros sentam de frente um para o outro.</p>
+        <p className="text-center text-sm text-white/70">Duas duplas, parceiros de frente um para o outro. Ou 1×1: um de cada lado.</p>
       </Section>
 
       <Section n={2} title="Força das cartas">
@@ -169,7 +169,7 @@ export function HowToPlay() {
           <div className="flex flex-col gap-2 rounded-2xl bg-black/30 p-4">
             <span className="self-start rounded-full bg-gold/20 px-3 py-1 font-display text-xs text-gold">MÃO DE 11</span>
             <p className="text-sm text-white/70">
-              A dupla com 11 pontos vê as cartas do parceiro e decide: <b className="text-white">BORA</b> (a mão vale 3) ou{" "}
+              A dupla com 11 pontos vê as cartas do parceiro (no 1×1, só as suas) e decide: <b className="text-white">BORA</b> (a mão vale 3) ou{" "}
               <b className="text-white">CORRO</b> (adversário ganha 1). Não tem truco.
             </p>
           </div>
