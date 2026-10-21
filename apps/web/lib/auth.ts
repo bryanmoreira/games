@@ -21,10 +21,12 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   database: prismaAdapter(prisma, { provider: "postgresql" }),
-  // Atrás do proxy do Easypanel o IP real vem neste header; sem ele o rate limit usa um balde único.
+  // Atrás do proxy do Easypanel o x-forwarded-for traz uma cadeia ("cliente, proxy"); sem trustedProxies
+  // o Better Auth recusa cadeias e o rate limit cai num balde único. Pula os saltos de rede interna.
   advanced: {
     ipAddress: {
-      ipAddressHeaders: ["x-forwarded-for"],
+      ipAddressHeaders: ["x-forwarded-for", "x-real-ip"],
+      trustedProxies: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "127.0.0.1", "::1", "fc00::/7"],
     },
   },
   socialProviders: {
