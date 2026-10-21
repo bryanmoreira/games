@@ -25,4 +25,4 @@ jobs:
             echo "::error::Secret do trigger de ${{ matrix.service }} não configurado"
             exit 1
           fi
-          curl --fail --silent --show-error --max-time 30 "$TRIGGER_URL"
+          curl --fail --location --silent --show-error --max-time 30 "$TRIGGER_URL"
