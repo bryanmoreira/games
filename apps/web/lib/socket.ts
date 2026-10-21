@@ -67,7 +67,7 @@ export function setName(name: string) {
 
 declare global {
   interface Window {
-    __ENV__?: { WS_URL?: string };
+    __ENV__?: { WS_URL?: string; ADSENSE_CLIENT?: string; ADSENSE_SLOT?: string };
   }
 }
 

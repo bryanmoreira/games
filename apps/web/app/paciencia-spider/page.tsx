@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isRed, newGame, scoreOf, SUIT_SETS, type GameState, type SuitCount } from "@truco/spider";
 import { BackButton } from "@/components/BackButton";
+import { AdSlot } from "@/components/AdSlot";
 import { DailyButton } from "@/components/daily/DailyButton";
 import { GameIntro } from "@/components/seo";
 import { CardImg } from "@/components/cards/Card";
@@ -134,6 +135,7 @@ export default function SpiderHome() {
         <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-current text-xs">?</span>
         Como jogar
       </Link>
+      <AdSlot className="mt-6" />
     </main>
   );
 }

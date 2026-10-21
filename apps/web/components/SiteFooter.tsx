@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_NAME } from "@/lib/seo";
+import { AdSlot } from "@/components/AdSlot";
 
 // app/icon.svg em ASCII (26 linhas, para fontes com caractere de largura 0,6 da altura, como a Courier New): # borda, . feltro, @ carta, espaço = espada.
 // Gerado rasterizando o SVG; ao mudar o ícone, gere de novo.
@@ -73,9 +74,11 @@ function Column({ title, links }: { title: string; links: { href: string; label:
   );
 }
 
-/** Rodapé das páginas de conteúdo (home, Como jogar, Privacidade, Termos): links e o nome do site enorme, cortado embaixo. */
+/** Rodapé das páginas de conteúdo (home, Como jogar, Privacidade, Termos): anúncio, links e o nome do site enorme, cortado embaixo. */
 export function SiteFooter() {
   return (
+    <>
+    <AdSlot className="mt-16 px-4" />
     <footer className="mt-16 overflow-hidden border-t border-white/10">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-12 sm:px-6 md:grid-cols-[auto_1fr] md:gap-16">
         <div className="flex flex-col items-start gap-6">
@@ -109,5 +112,6 @@ export function SiteFooter() {
         </svg>
       </div>
     </footer>
+    </>
   );
 }

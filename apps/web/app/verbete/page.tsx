@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MODES, status, type Mode } from "@truco/verbete";
 import { BackButton } from "@/components/BackButton";
+import { AdSlot } from "@/components/AdSlot";
 import { GameIntro } from "@/components/seo";
 import { CalendarIcon, ChevronIcon, InfinityIcon } from "@/components/ui/icons";
 import { dayStates, ModeCards } from "@/components/verbete/ModeCards";
@@ -94,6 +95,7 @@ export default function VerbeteHome() {
         <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-current text-xs">?</span>
         Como jogar
       </Link>
+      <AdSlot className="mt-6" />
     </main>
   );
 }

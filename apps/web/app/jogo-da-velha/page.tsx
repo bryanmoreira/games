@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { DEFAULT_SETTINGS, parseSettings, type Settings } from "@truco/jogo-da-velha";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
+import { AdSlot } from "@/components/AdSlot";
 import { GameIntro } from "@/components/seo";
 import { StaticBoard } from "@/components/jogo-da-velha/Board";
 import { VelhaOptions } from "@/components/jogo-da-velha/Settings";
@@ -112,6 +113,7 @@ export default function VelhaHome() {
         Como jogar
       </Link>
       {error && <p className="text-sm text-red-300">{error}</p>}
+      <AdSlot className="mt-6" />
     </main>
   );
 }

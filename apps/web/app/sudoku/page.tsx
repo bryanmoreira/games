@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DIFFICULTIES, newGame, type Difficulty, type GameState } from "@truco/sudoku";
 import { BackButton } from "@/components/BackButton";
+import { AdSlot } from "@/components/AdSlot";
 import { DailyButton } from "@/components/daily/DailyButton";
 import { GameIntro } from "@/components/seo";
 import { formatTime, LevelBars, LEVEL_LABEL, MiniBoard } from "@/components/sudoku/common";
@@ -122,6 +123,7 @@ export default function SudokuHome() {
         <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-current text-xs">?</span>
         Como jogar
       </Link>
+      <AdSlot className="mt-6" />
     </main>
   );
 }

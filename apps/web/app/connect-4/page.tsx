@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
+import { AdSlot } from "@/components/AdSlot";
 import { GameIntro } from "@/components/seo";
 import { StaticBoard } from "@/components/connect4/Board";
 import { CONNECT4_PATH, roomPath } from "@/lib/connect4/paths";
@@ -97,6 +98,7 @@ export default function Connect4Home() {
         Como jogar
       </Link>
       {error && <p className="text-sm text-red-300">{error}</p>}
+      <AdSlot className="mt-6" />
     </main>
   );
 }

@@ -66,10 +66,14 @@ export default function PrivacyPage() {
             <b>Melhorar o site</b>: contagem de visitas e páginas mais usadas, sem identificar você. Base: legítimo interesse.
           </li>
           <li>
+            <b>Manter o site gratuito</b>: anúncios do Google AdSense nas páginas fora das partidas (início, páginas dos jogos e Como jogar).
+            Nunca aparecem durante uma partida. Base: legítimo interesse (art. 7º, IX).
+          </li>
+          <li>
             <b>Cumprir a lei</b>, quando uma autoridade pedir com base legal (art. 7º, II).
           </li>
         </ul>
-        <p>Não vendemos dados, não mostramos anúncios e não usamos seus dados para publicidade.</p>
+        <p>Não vendemos dados e não passamos os dados da sua conta (nome, e-mail, partidas) a anunciantes.</p>
       </Block>
 
       <Block title="O que os outros jogadores veem">
@@ -97,7 +101,19 @@ export default function PrivacyPage() {
         </ul>
         <p>
           A contagem de visitas usa o <b>Umami</b>, que não usa cookies, não segue você por outros sites e não guarda o seu IP. Não usamos
-          Google Analytics, pixels de anúncio nem cookies de terceiros.
+          Google Analytics.
+        </p>
+        <p>
+          Os <b>anúncios</b> são servidos pelo <b>Google AdSense</b>. O Google e os parceiros dele podem usar cookies e identificadores do
+          navegador para mostrar anúncios com base nas suas visitas a este e a outros sites. Você pode desativar os anúncios personalizados em{" "}
+          <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-gold underline-offset-4 hover:underline">
+            Minha central de anúncios
+          </a>{" "}
+          e saber mais em{" "}
+          <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-gold underline-offset-4 hover:underline">
+            Como o Google usa cookies em publicidade
+          </a>
+          .
         </p>
         <p>Para apagar tudo isso, limpe os dados do site nas configurações do seu navegador.</p>
       </Block>
@@ -107,6 +123,10 @@ export default function PrivacyPage() {
           <li>
             <b>Google e Discord</b>, quando você entra com eles. Eles ficam sabendo que você usou o login no {SITE_NAME} e seguem as próprias
             políticas de privacidade.
+          </li>
+          <li>
+            <b>Google AdSense</b>, nas páginas com anúncio: recebe os dados técnicos do acesso (IP, navegador, página aberta) e os próprios
+            cookies, como descrito acima.
           </li>
           <li>
             <b>Empresas de hospedagem</b> que mantêm os servidores e o banco de dados do site, só para o site funcionar.

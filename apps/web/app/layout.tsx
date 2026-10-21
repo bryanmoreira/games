@@ -31,13 +31,20 @@ function runtimeEnv(name: string): string | undefined {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   await connection();
-  const env = { WS_URL: runtimeEnv("WS_URL") ?? runtimeEnv(["NEXT_PUBLIC", "WS_URL"].join("_")) ?? "" };
+  const adsense = runtimeEnv("ADSENSE_CLIENT");
+  const env = {
+    WS_URL: runtimeEnv("WS_URL") ?? runtimeEnv(["NEXT_PUBLIC", "WS_URL"].join("_")) ?? "",
+    ADSENSE_CLIENT: adsense,
+    ADSENSE_SLOT: runtimeEnv("ADSENSE_SLOT"),
+  };
   const script = `window.__ENV__=${JSON.stringify(env).replace(/</g, "\\u003c")}`;
 
   return (
     <html lang="pt-BR" className={`${bungee.variable} ${inter.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: script }} />
+        {/* verificação do site no AdSense; o script de anúncios só carrega nas páginas com AdSlot */}
+        {adsense && <meta name="google-adsense-account" content={adsense} />}
         <script defer src="https://umami.sunfire.com.br/script.js" data-website-id="fc7700da-1558-4ba9-9882-ab404f12129e" />
       </head>
       <body className="antialiased">

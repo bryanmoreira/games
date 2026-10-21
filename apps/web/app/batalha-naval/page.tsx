@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
+import { AdSlot } from "@/components/AdSlot";
 import { GameIntro } from "@/components/seo";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { BATALHA_PATH, roomPath } from "@/lib/batalha-naval/paths";
@@ -95,6 +96,7 @@ export default function BatalhaNavalHome() {
         Como jogar
       </Link>
       {error && <p className="text-sm text-red-300">{error}</p>}
+      <AdSlot className="mt-6" />
     </main>
   );
 }

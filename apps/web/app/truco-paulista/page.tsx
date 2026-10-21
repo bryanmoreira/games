@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { BackButton } from "@/components/BackButton";
+import { AdSlot } from "@/components/AdSlot";
 import { GameIntro } from "@/components/seo";
 import { CardImg } from "@/components/cards/Card";
 import { roomPath, TRUCO_PATH } from "@/lib/truco/paths";
@@ -108,6 +109,7 @@ export default function TrucoHome() {
         Como jogar
       </Link>
       {error && <p className="text-sm text-red-300">{error}</p>}
+      <AdSlot className="mt-6" />
     </main>
   );
 }
