@@ -90,7 +90,7 @@ const FRAMES: Record<FrameKey, string> = {
     <g>${spin(3)}<circle cx="60" cy="60" r="46" fill="none" stroke="url(#g)" stroke-width="9"/></g>
     <g>${spin(5, true)}${Array.from({ length: 12 }, (_, i) => `<path d="M60 3 q4 6 0 10 q-4 -4 0 -10z" fill="${i % 2 ? "#f97316" : "#fde047"}" transform="rotate(${i * 30} 60 60)"/>`).join("")}</g>`,
   royal: `<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff7d6"/><stop offset=".25" stop-color="#f2c14e"/><stop offset=".5" stop-color="#9a6412"/><stop offset=".75" stop-color="#f2c14e"/><stop offset="1" stop-color="#fff7d6"/></linearGradient>
-    <circle cx="60" cy="60" r="46" fill="none" stroke="url(#g)" stroke-width="9"/>
+    <g>${spin(4)}<circle cx="60" cy="60" r="46" fill="none" stroke="url(#g)" stroke-width="9"/></g>
     <circle cx="60" cy="60" r="51.5" fill="none" stroke="#f2c14e" stroke-width="1"/><circle cx="60" cy="60" r="40.8" fill="none" stroke="#9a6412" stroke-width="1.2"/>
     ${["A", "K", "Q", "J", "10"]
       .map(

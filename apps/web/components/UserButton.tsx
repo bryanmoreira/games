@@ -32,7 +32,7 @@ export function UserButton({ className = "" }: { className?: string }) {
   return (
     <Link href="/perfil" aria-label="Perfil" title={user.name} className={`group h-10 w-10 ${className}`}>
       {/* a borda gira um pouco ao passar o mouse */}
-      <ChipAvatar user={user} frame={user.equippedFrame} className="h-full w-full" frameClassName="transition-transform duration-500 group-hover:rotate-[60deg]" />
+      <ChipAvatar user={user} frame={user.equippedFrame} className="h-full w-full" />
     </Link>
   );
 }
