@@ -1,3 +1,5 @@
+"use client";
+
 import { isRed, RANK_LABEL, type Card, type Suit } from "@mesa/spider";
 import { CardBack, CardImg, useDeck } from "@/components/cards/Card";
 import { deckPalette } from "@/lib/shop/art";
