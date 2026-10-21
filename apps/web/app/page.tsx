@@ -11,6 +11,7 @@ import { StopLogo } from "@/components/stop/Tile";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { MiniGrid } from "@/components/codenames/Board";
 import { FieldArt } from "@/components/futebol-de-botao/Field";
+import { TijoladaArt } from "@/components/tijolada/Art";
 import { Domino } from "@/components/domino/Tile";
 import { UserButton } from "@/components/UserButton";
 import { ChipBalance } from "@/components/chips/ChipBalance";
@@ -45,6 +46,7 @@ const FELT: Record<string, string> = {
   ludo: "felt-wine",
   "batalha-naval": "felt-wine",
   "futebol-de-botao": "felt-wine",
+  tijolada: "felt-blue",
 };
 
 /** Card de cada jogo na home: arte (posicionada sobre o feltro), título e subtítulo */
@@ -185,6 +187,16 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     art: (
       <div className={`absolute left-1/2 top-[14%] w-[62%] -translate-x-1/2 -rotate-3 drop-shadow-[0_4px_0_rgba(0,0,0,0.35)] ${HOVER}`}>
         <FieldArt className="w-full" shot />
+      </div>
+    ),
+  },
+  {
+    slug: "tijolada",
+    title: "TIJOLADA",
+    sub: "SOLO E 1×1",
+    art: (
+      <div className={`absolute left-1/2 top-[10%] w-[30%] -translate-x-1/2 rotate-3 drop-shadow-[0_4px_0_rgba(0,0,0,0.35)] ${HOVER}`}>
+        <TijoladaArt className="w-full" play />
       </div>
     ),
   },

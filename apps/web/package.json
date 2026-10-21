@@ -18,6 +18,7 @@
     "@mesa/connect4": "workspace:*",
     "@mesa/damas": "workspace:*",
     "@mesa/futebol-de-botao": "workspace:*",
+    "@mesa/tijolada": "workspace:*",
     "@mesa/truco": "workspace:*",
     "@mesa/jogo-da-velha": "workspace:*",
     "@mesa/domino": "workspace:*",

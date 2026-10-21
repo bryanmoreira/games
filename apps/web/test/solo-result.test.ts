@@ -163,3 +163,33 @@ describe("verbete", () => {
     expect(parseSoloResult("verbete", vb({ guesses: [1, 2] }))).toBeNull();
   });
 });
+
+describe("tijolada", () => {
+  const tij = (over: Record<string, unknown> = {}) => ({ score: 12_000, lines: 34, level: 4, tetras: 3, pieces: 95, timeMs: 240_000, ...over });
+
+  test("partida solo vai como derrota, só com os números esperados", () => {
+    expect(parseSoloResult("tijolada", tij({ extra: 1 }))).toEqual({
+      game: "tijolada",
+      outcome: "loss",
+      data: { score: 12_000, lines: 34, level: 4, tetras: 3, pieces: 95, timeMs: 240_000 },
+    });
+  });
+
+  test("nível tem que sair das linhas", () => {
+    expect(parseSoloResult("tijolada", tij({ level: 5 }))).toBeNull();
+    expect(parseSoloResult("tijolada", tij({ lines: 300, level: 20, pieces: 800 }))).not.toBeNull();
+    expect(parseSoloResult("tijolada", tij({ lines: 300, level: 21, pieces: 800 }))).toBeNull();
+  });
+
+  test("linhas demais para as peças, 4 linhas demais ou pontos impossíveis: recusa", () => {
+    expect(parseSoloResult("tijolada", tij({ pieces: 80 }))).toBeNull();
+    expect(parseSoloResult("tijolada", tij({ tetras: 9 }))).toBeNull();
+    expect(parseSoloResult("tijolada", tij({ score: 10_000_000 }))).toBeNull();
+  });
+
+  test("campos ausentes ou quebrados: recusa", () => {
+    expect(parseSoloResult("tijolada", tij({ score: undefined }))).toBeNull();
+    expect(parseSoloResult("tijolada", tij({ lines: 1.5 }))).toBeNull();
+    expect(parseSoloResult("tijolada", tij({ timeMs: 10 }))).toBeNull();
+  });
+});

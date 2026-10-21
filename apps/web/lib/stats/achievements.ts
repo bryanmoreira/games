@@ -490,6 +490,58 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: ({ results }) => results.reduce((n, r) => n + (num(r, "goals") || 0), 0) >= 50,
   },
 
+  { ...first("tijolada"), title: "Primeiro tijolo", desc: "Vencer a primeira partida 1×1" },
+  {
+    code: "tijolada:tetra",
+    game: "tijolada",
+    title: "Tijolada!",
+    desc: "Limpar 4 linhas de uma vez",
+    icon: "bolt",
+    tier: "easy",
+    check: ({ results }) => results.some((r) => num(r, "tetras") >= 1),
+  },
+  {
+    code: "tijolada:lines_100",
+    game: "tijolada",
+    title: "Pedreiro",
+    desc: "Fazer 100 linhas numa partida solo",
+    icon: "grid",
+    check: ({ results }) => results.some((r) => r.mode === "solo" && num(r, "lines") >= 100),
+  },
+  {
+    code: "tijolada:level_15",
+    game: "tijolada",
+    title: "Arranha-céu",
+    desc: "Chegar ao nível 15 no solo",
+    icon: "star",
+    tier: "hard",
+    check: ({ results }) => results.some((r) => r.mode === "solo" && num(r, "level") >= 15),
+  },
+  {
+    code: "tijolada:score_100k",
+    game: "tijolada",
+    title: "Obra milionária",
+    desc: "Fazer 100.000 pontos numa partida solo",
+    icon: "crown",
+    tier: "hard",
+    check: ({ results }) => results.some((r) => r.mode === "solo" && num(r, "score") >= 100_000),
+  },
+  {
+    ...streak5("tijolada"),
+    desc: "5 vitórias seguidas no 1×1",
+    // as partidas solo vão como derrota e não quebram a sequência
+    check: ({ results }) => bestStreak(results.filter((r) => r.mode !== "solo")) >= 5,
+  },
+  {
+    code: "tijolada:lines_1000",
+    game: "tijolada",
+    title: "Mestre de obras",
+    desc: "Somar 1.000 linhas",
+    icon: "shield",
+    tier: "hard",
+    check: ({ results }) => results.reduce((n, r) => n + (num(r, "lines") || 0), 0) >= 1000,
+  },
+
   first("batalha-naval"),
   {
     code: "batalha-naval:sharp",

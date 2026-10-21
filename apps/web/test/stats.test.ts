@@ -233,6 +233,30 @@ describe("gameStats: Futebol de Botão", () => {
   });
 });
 
+describe("gameStats: Tijolada", () => {
+  test("recordes do solo e mais tempo de pé no 1×1", () => {
+    const rs = [
+      loss({ score: 12_400, lines: 40, level: 5, ms: 1 }, "solo"),
+      loss({ score: 8_000, lines: 52, level: 6 }, "solo"),
+      win({ score: 999_999, lines: 300, level: 20, ms: 95_000 }),
+      loss({ score: 500, lines: 2, level: 3, ms: 130_000 }),
+      loss({ abandoned: true }),
+    ];
+    expect(chips("tijolada", rs)).toEqual([
+      { label: "Melhor pontuação", value: "12.400" },
+      { label: "Mais linhas", value: "52" },
+      { label: "Maior nível", value: "6" },
+      { label: "Mais tempo de pé", value: "2:10" },
+    ]);
+  });
+
+  test("solo não conta como vitória nem derrota do 1×1", () => {
+    const s = gameStats("tijolada", [loss({ score: 10, lines: 0, level: 1 }, "solo"), win({ ms: 60_000 })]);
+    expect(s.modes.online).toMatchObject({ games: 1, wins: 1 });
+    expect(s.modes.ai).toBeUndefined();
+  });
+});
+
 describe("gameStats: Otrio", () => {
   test("vitória mais rápida pelas peças da cor e forma favorita, só entre vitórias", () => {
     const rs = [win({ colorPieces: 5, how: "line" }), win({ colorPieces: 4, how: "stack" }), win({ colorPieces: 6, how: "stack" }), loss({ pieces: 3 })];

@@ -10,6 +10,7 @@ import * as ludo from "@mesa/ludo";
 import * as domino from "@mesa/domino";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
+import * as tijolada from "@mesa/tijolada";
 import type { GameId, PlayerReport } from "@mesa/truco";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -63,6 +64,8 @@ export interface GameAdapter<S = any, A = any, V = any> {
    * `botEvery` passos e a visão sai a cada `frameEvery` passos (mensagem `frame`, sem os dados da sala).
    */
   realtime?: { tickMs: number; step(s: S): S; botEvery: number; frameEvery: number };
+  /** Ação que tira da partida quem saiu da sala (sem ela, o lugar segue com a IA ou parado). */
+  abandon?(s: S, seat: number): A;
   /** Resultado de um lugar na partida terminada (o que vai para o perfil). */
   outcome(s: S, seat: number): Omit<PlayerReport, "userId">;
 }
@@ -521,6 +524,28 @@ const futebolAdapter: GameAdapter<futebol.GameState, futebol.Action, futebol.Pla
   },
 };
 
+const tijoladaAdapter: GameAdapter<tijolada.VersusState, tijolada.VersusAction, tijolada.VersusView> = {
+  seats: 2,
+  bots: false,
+  newGame: (prev, { seats }) => tijolada.newVersus(seats, Math.floor(Math.random() * 2 ** 31), prev),
+  applyAction: tijolada.applyVersus,
+  viewFor: (s, seat) => tijolada.versusView(s, seat),
+  spectate: (s) => tijolada.versusView(s, null),
+  decide: () => null,
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    return { type: "input", seat, tick: Number(m.tick), key: m.key as tijolada.Key };
+  },
+  actors: (s) => (s.phase === "over" ? [] : s.players),
+  pause: () => null,
+  over: tijolada.isVersusOver,
+  animMs: () => 0,
+  // cada navegador roda a própria partida; o servidor refaz e manda o campo do adversário ~10 vezes por segundo
+  realtime: { tickMs: tijolada.TICK_MS, step: tijolada.stepVersus, botEvery: 60, frameEvery: 6 },
+  abandon: (_s, seat) => ({ type: "abandon", seat }),
+  outcome: tijolada.versusOutcome,
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
@@ -534,4 +559,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   domino: dominoAdapter,
   xadrez: xadrezAdapter,
   "futebol-de-botao": futebolAdapter,
+  tijolada: tijoladaAdapter,
 };

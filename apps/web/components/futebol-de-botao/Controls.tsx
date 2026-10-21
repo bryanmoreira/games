@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import { send } from "@/lib/socket";
 import { screenToField, type Rot } from "./Field";
 
@@ -109,18 +109,6 @@ export function useInput(rot: React.RefObject<Rot>, enabled: boolean) {
     /** A tela girou: a mesma direção na tela vira outra no campo. */
     refresh: () => flush(true),
   };
-}
-
-const coarse = () => window.matchMedia("(pointer: coarse)").matches;
-const subscribeCoarse = (l: () => void) => {
-  const m = window.matchMedia("(pointer: coarse)");
-  m.addEventListener("change", l);
-  return () => m.removeEventListener("change", l);
-};
-
-/** Aparelho de toque (mostra o direcional e o botão de chute). */
-export function useTouchDevice() {
-  return useSyncExternalStore(subscribeCoarse, coarse, () => false);
 }
 
 /** Raio do direcional, em px. */

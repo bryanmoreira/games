@@ -18,6 +18,7 @@ COPY packages/xadrez/package.json packages/xadrez/
 COPY packages/domino/package.json packages/domino/
 COPY packages/ludo/package.json packages/ludo/
 COPY packages/futebol-de-botao/package.json packages/futebol-de-botao/
+COPY packages/tijolada/package.json packages/tijolada/
 COPY packages/spider/package.json packages/spider/
 COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
@@ -36,6 +37,7 @@ COPY packages/xadrez packages/xadrez
 COPY packages/domino packages/domino
 COPY packages/ludo packages/ludo
 COPY packages/futebol-de-botao packages/futebol-de-botao
+COPY packages/tijolada packages/tijolada
 COPY packages/stop packages/stop
 COPY apps/server apps/server
 RUN bun run --cwd apps/server build

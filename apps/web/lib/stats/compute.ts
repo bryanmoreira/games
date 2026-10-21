@@ -176,6 +176,14 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
       };
       break;
     }
+    case "tijolada": {
+      const solo = rs.filter((r) => r.mode === "solo");
+      chip("Melhor pontuação", ((n) => (n === null ? null : n.toLocaleString("pt-BR")))(maxOf(solo.map((r) => num(r, "score")).filter(Number.isFinite))));
+      chip("Mais linhas", maxOf(solo.map((r) => num(r, "lines")).filter(Number.isFinite)));
+      chip("Maior nível", maxOf(solo.map((r) => num(r, "level")).filter(Number.isFinite)));
+      chip("Mais tempo de pé", ((n) => (n === null ? null : formatMs(n)))(maxOf(rs.filter((r) => r.mode !== "solo").map((r) => num(r, "ms")).filter(Number.isFinite))));
+      break;
+    }
     case "otrio": {
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "colorPieces")).filter(Number.isFinite))));
       // forma de trinca com mais vitórias (empate: a primeira da lista)

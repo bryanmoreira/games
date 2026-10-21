@@ -14,10 +14,14 @@ import { TRUCO_PATH } from "@/lib/truco/paths";
 import { VERBETE_PATH } from "@/lib/verbete/paths";
 import { XADREZ_PATH } from "@/lib/xadrez/paths";
 import { FUTEBOL_PATH } from "@/lib/futebol-de-botao/paths";
+import { TIJOLADA_PATH } from "@/lib/tijolada/paths";
 
-/** Jogos que guardam resultado no perfil. Online: o servidor de salas manda; solo: o navegador manda. */
+/**
+ * Jogos que guardam resultado no perfil. Online: o servidor de salas manda; solo: o navegador manda.
+ * A Tijolada está nos online (1×1) e também manda as partidas solo pelo navegador.
+ */
 export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete"] as const;
-export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "damas", "ludo", "domino", "futebol-de-botao", "batalha-naval", "stop", "codenames"] as const satisfies readonly GameId[];
+export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames"] as const satisfies readonly GameId[];
 
 export type SoloGame = (typeof SOLO_GAMES)[number];
 export type StatGame = SoloGame | GameId;
@@ -34,6 +38,7 @@ export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
   ludo: { name: "Ludo", path: LUDO_PATH },
   domino: { name: "Dominó", path: DOMINO_PATH },
   "futebol-de-botao": { name: "Futebol de Botão", path: FUTEBOL_PATH },
+  tijolada: { name: "Tijolada", path: TIJOLADA_PATH },
   "batalha-naval": { name: "Batalha Naval", path: BATALHA_PATH },
   stop: { name: "Stop", path: STOP_PATH },
   codenames: { name: "Codenames", path: CODENAMES_PATH },

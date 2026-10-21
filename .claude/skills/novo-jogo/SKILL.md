@@ -50,7 +50,7 @@ Isto veio de várias rodadas de feedback; respeitar evita retrabalho:
 | Som | `apps/web/lib/sound.ts` (núcleo) + `lib/truco/sound.ts` | Web Audio, mudo persistido, `useAudioUnlock`; sons próprios de cada jogo em `lib/<slug>/sound.ts` |
 | Socket | `apps/web/lib/socket.ts` (compartilhado) | `useRoom<View>()`, `send`, token em `sessionStorage` |
 | Rotas | `apps/web/lib/truco/paths.ts` | constante da rota do jogo |
-| Hub | `apps/web/app/page.tsx`, `components/home/GameGrid.tsx` | card de cada jogo (entrada em `CARDS`); selos Solo/Multiplayer/quantidade e filtro vêm de `players` em `lib/seo.ts` (`min: 1` = tem solo) |
+| Hub | `apps/web/app/page.tsx`, `components/home/GameGrid.tsx` | card de cada jogo (entrada em `CARDS`); selos Solo/Multiplayer/quantidade e filtro vêm de `players` em `lib/seo.ts` (`min: 1` = tem solo). **Todo card tem uma animação própria no hover**, que mostra uma jogada do jogo: as classes `.hc-*` em `app/globals.css` (dentro do `prefers-reduced-motion: no-preference`), ligadas por uma prop na arte (`shot` no Futebol, `hop` no Stop, `play` na Tijolada) |
 | SEO | `apps/web/lib/seo.ts` (`GAMES`), `app/truco-paulista/layout.tsx` | textos de busca, FAQ, metadados, JSON-LD |
 | Prévia de link | `apps/web/lib/og.tsx`, `app/truco-paulista/opengraph-image.tsx` | arte do jogo na imagem de compartilhamento |
 | Botão voltar | `apps/web/components/BackButton.tsx` | já compartilhado |
@@ -120,6 +120,7 @@ Use como lista de tarefas; cada item existe porque já deu problema antes:
 - [ ] Regras confirmadas e documentadas; testes cobrindo regras, empates/casos especiais e simulação com IAs (`bun test`)
 - [ ] Typecheck limpo (`node_modules/.bin/tsc.exe --noEmit -p apps/web`, `-p apps/server`, `-p packages/<slug>`)
 - [ ] Rota `/<slug>` + constante em `lib/<slug>/paths.ts`; card no hub; `layout.tsx` com `gameMetadata` e `gameLd`
+- [ ] Card do hub com animação de hover própria do jogo (`.hc-*` em `globals.css`, ex.: peça caindo, bola indo para o gol, letras pulando), conferida no navegador no meio e no fim da animação. Arte de SVG que também vai para a prévia de link: a animação entra por uma prop (sem ela, a arte fica parada) e os pedaços são chamados como função, porque o Satori só aceita elementos do próprio SVG
 - [ ] SEO: entrada em `GAMES` com textos conferidos no código, `GameIntro` na página do jogo, `GameFaq` + `howToLd` no "Como jogar", `noindex` em `sala/` ou `jogo/` ([references/seo.md](references/seo.md))
 - [ ] Prévia de link: `TITLES` + `art()` em `lib/og.tsx` e `app/<slug>/opengraph-image.tsx`; PNG conferido a olho
 - [ ] Jogo online: chamada do convite em `INVITE` (`Lobby.tsx`); jogo de um jogador só não tem convite

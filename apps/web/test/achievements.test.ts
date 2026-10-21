@@ -122,6 +122,20 @@ const CASES: Record<string, Case> = {
     almost: [...times(16, () => win({ goals: 3 })), loss({ goals: 1 }), loss({ abandoned: true })],
   },
 
+  "tijolada:first": { ok: [loss({}, "solo"), win({ ms: 60_000 })], almost: [...times(5, () => loss({ lines: 200 }, "solo")), loss(), draw()] },
+  "tijolada:tetra": { ok: [loss({ tetras: 1 }, "solo")], almost: [loss({ tetras: 0 }, "solo"), win({ tetras: 0 }), loss({ abandoned: true })] },
+  "tijolada:lines_100": { ok: [loss({ lines: 100 }, "solo")], almost: [loss({ lines: 99 }, "solo"), win({ lines: 150 }), loss({ abandoned: true })] },
+  "tijolada:level_15": { ok: [loss({ level: 15 }, "solo")], almost: [loss({ level: 14 }, "solo"), win({ level: 18 })] },
+  "tijolada:score_100k": { ok: [loss({ score: 100_000 }, "solo")], almost: [loss({ score: 99_999 }, "solo"), win({ score: 200_000 })] },
+  "tijolada:streak_5": {
+    ok: [win(), win(), loss({}, "solo"), win(), win(), win()],
+    almost: [...times(4, win), loss(), ...times(4, win), draw(), ...times(4, win)],
+  },
+  "tijolada:lines_1000": {
+    ok: [...times(9, () => loss({ lines: 100 }, "solo")), win({ lines: 100 })],
+    almost: [...times(9, () => loss({ lines: 100 }, "solo")), win({ lines: 99 }), loss({ abandoned: true })],
+  },
+
   "otrio:first": firstCase,
   "otrio:quick": { ok: [win({ colorPieces: 3 })], almost: [win({ colorPieces: 4 }), loss({ pieces: 3 }), win({ pieces: 3 }), win({})] },
   "otrio:stack": { ok: [win({ how: "stack" })], almost: [win({ how: "line" }), win({ how: "stair" }), loss({ how: "stack" }), win({})] },

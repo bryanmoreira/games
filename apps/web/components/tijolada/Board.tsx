@@ -1,0 +1,158 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { cellsOf, COLS, dropY, HIDDEN, ROWS, SHAPES, VISIBLE, type Game, type Kind } from "@mesa/tijolada";
+import { cellParts, openOf, outline, toneColor, type Open } from "./blocks";
+import { PieceSvg } from "./Art";
+import { COLORS } from "./colors";
+
+/** Casas de uma peça (lados abertos já calculados), em px. Tudo em pixel inteiro: sem borda borrada nem fio entre as partes. */
+function drawCells(ctx: CanvasRenderingContext2D, cells: { x: number; y: number; open: Open }[], s: number, color: string) {
+  const px = (v: number) => Math.round(v * s);
+  for (const tone of ["base", "light", "dark"] as const) {
+    ctx.fillStyle = toneColor(color, tone);
+    for (const c of cells)
+      for (const p of cellParts(c.x, c.y, c.open)) {
+        if (p.tone !== tone) continue;
+        const x0 = px(p.x);
+        const y0 = px(p.y);
+        ctx.fillRect(x0, y0, px(p.x + p.w) - x0, px(p.y + p.h) - y0);
+      }
+  }
+}
+
+/** A peça que cai (ou outra peça solta), inteira. */
+function drawPiece(ctx: CanvasRenderingContext2D, cells: [number, number][], s: number, color: string) {
+  const has = new Set(cells.map(([x, y]) => `${x},${y}`));
+  drawCells(
+    ctx,
+    cells.map(([x, y]) => ({ x, y, open: openOf((dx, dy) => has.has(`${x + dx},${y + dy}`)) })),
+    s,
+    color,
+  );
+}
+
+/** Linhas que piscam depois de sumir. */
+const FLASH_MS = 280;
+
+/**
+ * Campo em canvas, redesenhado a cada quadro de tela a partir de `game.current` (sem passar pelo React).
+ * `ghost`: sombra de onde a peça cai.
+ */
+export function Board({ game, ghost = true, className = "" }: { game: { current: Game | null }; ghost?: boolean; className?: string }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const cv = canvas.current!;
+    const ctx = cv.getContext("2d")!;
+    let raf = 0;
+    let flash: { id: number; rows: number[]; at: number } | null = null;
+    const ro = new ResizeObserver(() => {
+      const dpr = window.devicePixelRatio || 1;
+      cv.width = Math.round(cv.clientWidth * dpr);
+      cv.height = Math.round(cv.clientHeight * dpr);
+    });
+    ro.observe(cv);
+
+    const draw = () => {
+      raf = requestAnimationFrame(draw);
+      const g = game.current;
+      const W = cv.width;
+      const H = cv.height;
+      const s = W / COLS;
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = "rgba(255,255,255,0.05)";
+      ctx.lineWidth = 1;
+      for (let x = 1; x < COLS; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x * s, 0);
+        ctx.lineTo(x * s, H);
+        ctx.stroke();
+      }
+      for (let y = 1; y < VISIBLE; y++) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * s);
+        ctx.lineTo(W, y * s);
+        ctx.stroke();
+      }
+      if (!g) return;
+      // casas travadas, por cor; vizinha aberta = mesma peça (mesmo tipo e mesmo número)
+      const at = (x: number, y: number) => (x < 0 || x >= COLS || y < 0 || y >= ROWS ? -1 : y * COLS + x);
+      for (let kind = 1; kind <= 8; kind++) {
+        const cells: { x: number; y: number; open: Open }[] = [];
+        for (let y = HIDDEN; y < ROWS; y++)
+          for (let x = 0; x < COLS; x++) {
+            const i = y * COLS + x;
+            if (g.board[i] !== kind) continue;
+            const open = openOf((dx, dy) => {
+              const j = at(x + dx, y + dy);
+              return j >= 0 && g.board[j] === kind && g.ids[j] === g.ids[i];
+            });
+            cells.push({ x, y: y - HIDDEN, open });
+          }
+        if (cells.length) drawCells(ctx, cells, s, COLORS[kind]);
+      }
+      // acabou: o campo escurece por cima (transparência nas peças marcaria onde as partes se sobrepõem)
+      if (g.over) {
+        ctx.fillStyle = "rgba(11,18,14,0.55)";
+        ctx.fillRect(0, 0, W, H);
+      }
+      const p = g.piece;
+      if (p && !g.over) {
+        if (ghost) {
+          const gy = dropY(g.board, p);
+          ctx.strokeStyle = COLORS[p.kind];
+          ctx.globalAlpha = 0.55;
+          ctx.lineWidth = Math.max(1.5, s * 0.08);
+          ctx.lineCap = "square";
+          ctx.beginPath();
+          for (const [x1, y1, x2, y2] of outline(cellsOf({ ...p, y: gy }).map(([x, y]) => [x, y - HIDDEN]))) {
+            ctx.moveTo(x1 * s, y1 * s);
+            ctx.lineTo(x2 * s, y2 * s);
+          }
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+        drawPiece(ctx, cellsOf(p).map(([x, y]) => [x, y - HIDDEN]), s, COLORS[p.kind]);
+      }
+      // linhas que sumiram piscam um instante
+      if (g.clear && g.clear.id !== flash?.id) flash = { id: g.clear.id, rows: g.clear.rows, at: performance.now() };
+      if (flash) {
+        const t = (performance.now() - flash.at) / FLASH_MS;
+        if (t < 1) {
+          ctx.fillStyle = `rgba(255,255,255,${0.7 * (1 - t)})`;
+          for (const y of flash.rows) ctx.fillRect(0, (y - HIDDEN) * s, W, s);
+        }
+      }
+    };
+    draw();
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [game, ghost]);
+
+  return (
+    <div className={`relative aspect-[1/2] rounded-md bg-[#0b120e] shadow-[0_0_0_4px_#5b3a1e,0_0_0_7px_#3b2512,0_10px_30px_rgba(0,0,0,0.5)] ${className}`}>
+      <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
+    </div>
+  );
+}
+
+/** Peça pequena (guardada e próximas), centrada na caixa. */
+export function MiniPiece({ kind, dim, className = "" }: { kind: Kind | null; dim?: boolean; className?: string }) {
+  if (!kind) return <div className={className} />;
+  const cells = SHAPES[kind][0];
+  const xs = cells.map(([x]) => x);
+  const ys = cells.map(([, y]) => y);
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  const w = Math.max(...xs) - minX + 1;
+  const h = Math.max(...ys) - minY + 1;
+  const c = COLORS[kind];
+  return (
+    <svg viewBox={`${-(4 - w) / 2} ${-(2 - h) / 2} 4 2`} className={`${className} ${dim ? "opacity-30" : ""}`} aria-label={`Peça ${kind}`}>
+      <PieceSvg cells={cells.map(([x, y]) => [x - minX, y - minY])} color={c} />
+    </svg>
+  );
+}

@@ -13,7 +13,8 @@ import { EndStat, GameEnd } from "@/components/ui/GameEnd";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { playGoalSound, playKickSound, playPostSound, playWhistleSound } from "@/lib/futebol-de-botao/sound";
 import { Field, FrameBuffer, rotationFor, TEAM_COLORS, type Rot } from "./Field";
-import { TouchControls, useInput, useTouchDevice } from "./Controls";
+import { useTouchDevice } from "@/lib/useTouchDevice";
+import { TouchControls, useInput } from "./Controls";
 import { HowToPlay } from "./HowToPlay";
 
 export function Table({ room, view }: { room: RoomInfo; view: PlayerView }) {

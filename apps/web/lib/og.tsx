@@ -5,6 +5,7 @@ import { HOME_CELLS, SAFE, TRACK_CELLS, startOf } from "@mesa/ludo";
 import { fromFen } from "@mesa/xadrez";
 import { PieceArt } from "@/components/xadrez/Piece";
 import { TileFace } from "@/components/domino/Tile";
+import { TijoladaArt } from "@/components/tijolada/Art";
 import { getGame } from "@/lib/seo";
 
 /** Prévia de link (Open Graph) de cada jogo: arte do jogo à esquerda, nome à direita. */
@@ -44,6 +45,7 @@ const TITLES: Record<string, [string, string]> = {
   ludo: ["LUDO", "CORRIDA DE PEÕES"],
   domino: ["DOMINÓ", "BATIDA"],
   "futebol-de-botao": ["FUTEBOL", "DE BOTÃO"],
+  tijolada: ["TIJOLADA", "SOLO E 1×1"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
 };
 
@@ -371,6 +373,13 @@ async function art(slug: string) {
         </div>
       );
     }
+    case "tijolada":
+      // campo com as linhas de baixo quase cheias e um I caindo no buraco
+      return (
+        <div style={{ display: "flex", transform: "rotate(3deg)", boxShadow: "0 12px 30px rgba(0,0,0,0.5)", borderRadius: 24 }}>
+          {TijoladaArt({ width: 300, height: 405 })}
+        </div>
+      );
     case "domino": {
       // pedaço de mesa: sena no meio, peças nas duas pontas e duas peças em pé
       const chain: [number, number, number, number, number][] = [

@@ -330,7 +330,16 @@ function leaveRoom(token: string) {
   if (seat !== null) {
     // na partida, uma IA assume o lugar; em jogo sem IA o nome fica no placar e o lugar some da próxima
     const slot = room.seats[seat];
+    // jogo que tira quem saiu da partida (a do outro segue e decide o resultado)
+    let ended = false;
+    if (room.state && room.adapter.abandon && !room.adapter.over(room.state)) {
+      const r = room.adapter.applyAction(room.state, room.adapter.abandon(room.state, seat));
+      if (r.ok) room.state = r.state;
+      ended = room.adapter.over(room.state);
+    }
     room.seats[seat] = !room.state ? emptySlot() : room.adapter.bots === false ? { kind: "empty", name: slot.name } : { kind: "bot", name: botName(room) };
+    // acabou com a saída: o resultado vai já (quem saiu leva derrota)
+    if (ended) endMatch(room);
   }
   if (room.members.size === 0) return deleteRoom(room);
   if (room.host === token) room.host = room.members.keys().next().value!;

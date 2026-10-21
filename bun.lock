@@ -22,6 +22,7 @@
         "@mesa/ludo": "workspace:*",
         "@mesa/otrio": "workspace:*",
         "@mesa/stop": "workspace:*",
+        "@mesa/tijolada": "workspace:*",
         "@mesa/truco": "workspace:*",
         "@mesa/xadrez": "workspace:*",
       },
@@ -44,6 +45,7 @@
         "@mesa/spider": "workspace:*",
         "@mesa/stop": "workspace:*",
         "@mesa/sudoku": "workspace:*",
+        "@mesa/tijolada": "workspace:*",
         "@mesa/truco": "workspace:*",
         "@mesa/verbete": "workspace:*",
         "@mesa/xadrez": "workspace:*",
@@ -101,6 +103,9 @@
     },
     "packages/sudoku": {
       "name": "@mesa/sudoku",
+    },
+    "packages/tijolada": {
+      "name": "@mesa/tijolada",
     },
     "packages/truco": {
       "name": "@mesa/truco",
@@ -290,6 +295,8 @@
     "@mesa/stop": ["@mesa/stop@workspace:packages/stop"],
 
     "@mesa/sudoku": ["@mesa/sudoku@workspace:packages/sudoku"],
+
+    "@mesa/tijolada": ["@mesa/tijolada@workspace:packages/tijolada"],
 
     "@mesa/truco": ["@mesa/truco@workspace:packages/truco"],
 

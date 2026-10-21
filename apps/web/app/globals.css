@@ -87,7 +87,28 @@ body {
   55% { transform: translate(230px, -70px); }
   100% { transform: translate(380px, 28px); }
 }
+/* Tijolada: o I cai no buraco, as 4 linhas piscam e somem, e o que sobrou desce (--tj-y = linhas) */
+@keyframes hc-tj-move {
+  to { transform: translateY(var(--tj-y)); }
+}
+@keyframes hc-tj-clear {
+  0% { opacity: 1; filter: brightness(1); }
+  35% { opacity: 1; filter: brightness(2.6); }
+  100% { opacity: 0; filter: brightness(2.6); }
+}
 @media (prefers-reduced-motion: no-preference) {
+  .hc:hover .hc-tj-fall {
+    animation: hc-tj-move 0.35s cubic-bezier(0.5, 0, 1, 1) both, hc-tj-clear 0.4s ease-out 0.5s both;
+  }
+  .hc:hover .hc-tj-ghost {
+    opacity: 0;
+  }
+  .hc:hover .hc-tj-clear {
+    animation: hc-tj-clear 0.4s ease-out 0.5s both;
+  }
+  .hc:hover .hc-tj-sink {
+    animation: hc-tj-move 0.3s cubic-bezier(0.3, 0.8, 0.4, 1.2) 0.95s both;
+  }
   .hc:hover .hc-fill {
     display: inline-block;
     animation: hc-fill 0.3s cubic-bezier(0.2, 1.4, 0.4, 1) both;

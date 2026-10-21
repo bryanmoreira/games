@@ -11,6 +11,7 @@ import * as ludo from "@mesa/ludo";
 import * as domino from "@mesa/domino";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
+import * as tijolada from "@mesa/tijolada";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -547,5 +548,40 @@ describe("codenames", () => {
     expect(adapter.canStart!([0, 1, 6, 7])).toBe(true);
     expect(adapter.canStart!([1, 2, 6, 7])).toBe(false);
     expect(adapter.bots).toBe(false);
+  });
+});
+
+describe("tijolada", () => {
+  const { outcome, withSeat, newGame, realtime, abandon, applyAction, over } = GAMES.tijolada;
+
+  test("quem acaba primeiro perde; tempo, linhas e pontos de cada um", () => {
+    const s = newGame(null, { seats: [0, 1], settings: null }) as tijolada.VersusState;
+    for (let i = 0; i < tijolada.COUNTDOWN_TICKS; i++) realtime!.step(s);
+    // o lugar 0 derruba tudo no meio e enche o campo rápido; o 1 deixa cair devagar
+    const g = s.games[0];
+    while (!over(s)) {
+      realtime!.step(s);
+      if (s.tick % 20 === 0) applyAction(s, withSeat({ tick: g.tick, key: "drop" }, 0));
+    }
+    const lost = outcome(s, 0);
+    const won = outcome(s, 1);
+    expect(lost.outcome).toBe("loss");
+    expect(won.outcome).toBe("win");
+    expect(lost.data.ms).toBeGreaterThan(0);
+    expect(won.data.ms).toBe(lost.data.ms);
+    expect(lost.data.score).toBeGreaterThan(0);
+    expect(typeof won.data.lines).toBe("number");
+  });
+
+  test("quem sai da sala perde na hora", () => {
+    const s = newGame(null, { seats: [0, 1], settings: null }) as tijolada.VersusState;
+    for (let i = 0; i < tijolada.COUNTDOWN_TICKS + 120; i++) realtime!.step(s);
+    applyAction(s, abandon!(s, 1));
+    expect(over(s)).toBe(true);
+    expect(outcome(s, 0).outcome).toBe("win");
+  });
+
+  test("comando do navegador ganha o lugar de quem mandou", () => {
+    expect(withSeat({ tick: 12, key: "cw", seat: 1 }, 0)).toEqual({ type: "input", seat: 0, tick: 12, key: "cw" });
   });
 });
