@@ -203,6 +203,35 @@ describe("gameStats: Dominó", () => {
   });
 });
 
+describe("gameStats: Buraco", () => {
+  test("melhor mão, maior lixo, canastras, reais e tabela por modo", () => {
+    const rs = [
+      win({ mode: "duplas", scores: [3100, 2000], limpa: 2, suja: 1, real: 0, bestHand: 820, maxPile: 7, batidas: 2, deficit: 0 }),
+      win({ mode: "1x1", scores: [3050, 900], limpa: 1, suja: 0, real: 1, bestHand: 1500, maxPile: 12, batidas: 1, deficit: 300 }),
+      loss({ mode: "duplas", scores: [1000, 3000], limpa: 0, suja: 2, real: 0, bestHand: 400, maxPile: 3, batidas: 0, deficit: 2000 }),
+      loss({ abandoned: true }),
+    ];
+    const s = gameStats("buraco", rs);
+    expect(s.chips).toEqual([
+      { label: "Melhor mão", value: "1500" },
+      { label: "Maior lixo", value: "12 cartas" },
+      { label: "Canastras", value: "7" },
+      { label: "Reais", value: "1" },
+    ]);
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Partidas"],
+      rows: [
+        { label: "Duplas", values: ["1", "2"] },
+        { label: "1×1", values: ["1", "1"] },
+      ],
+    });
+  });
+
+  test("só uma partida abandonada: sem chips", () => {
+    expect(chips("buraco", [loss({ abandoned: true })])).toEqual([]);
+  });
+});
+
 describe("gameStats: Futebol de Botão", () => {
   test("maior goleada, mais gols, vitória mais rápida, total de gols e tabela por tamanho", () => {
     const rs = [
@@ -540,6 +569,7 @@ describe("jogos", () => {
     ["/xadrez/sala/ABCD", "xadrez"],
     ["/ludo/sala/ABCD", "ludo"],
     ["/domino/sala/ABCD", "domino"],
+    ["/buraco/sala/ABCD", "buraco"],
     ["/futebol-de-botao/sala/ABCD", "futebol-de-botao"],
     ["/truco-paulista/sala/XY12", "truco-paulista"],
     ["/sudoku/jogo", "sudoku"],

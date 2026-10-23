@@ -13,6 +13,7 @@
       "name": "@mesa/server",
       "dependencies": {
         "@mesa/batalha-naval": "workspace:*",
+        "@mesa/buraco": "workspace:*",
         "@mesa/codenames": "workspace:*",
         "@mesa/connect4": "workspace:*",
         "@mesa/damas": "workspace:*",
@@ -34,6 +35,7 @@
       "name": "@mesa/web",
       "dependencies": {
         "@mesa/batalha-naval": "workspace:*",
+        "@mesa/buraco": "workspace:*",
         "@mesa/codenames": "workspace:*",
         "@mesa/connect4": "workspace:*",
         "@mesa/damas": "workspace:*",
@@ -70,6 +72,9 @@
     },
     "packages/batalha-naval": {
       "name": "@mesa/batalha-naval",
+    },
+    "packages/buraco": {
+      "name": "@mesa/buraco",
     },
     "packages/codenames": {
       "name": "@mesa/codenames",
@@ -271,6 +276,8 @@
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
     "@mesa/batalha-naval": ["@mesa/batalha-naval@workspace:packages/batalha-naval"],
+
+    "@mesa/buraco": ["@mesa/buraco@workspace:packages/buraco"],
 
     "@mesa/codenames": ["@mesa/codenames@workspace:packages/codenames"],
 

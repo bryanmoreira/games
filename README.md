@@ -47,11 +47,12 @@
 | Cartas e tabuleiro | Palavras e dedução | Outros |
 |---|---|---|
 | Truco Paulista | Stop (Adedonha) | Futebol de Botão |
-| Paciência Spider | Codenames | Sudoku |
-| Dominó | Verbete (Termo, Dueto, Quarteto) | Batalha Naval |
-| Xadrez | | Ludo |
-| Damas | | Otrio |
-| Connect 4 | | Jogo da Velha |
+| Buraco | Codenames | Sudoku |
+| Paciência Spider | Verbete (Termo, Dueto, Quarteto) | Batalha Naval |
+| Dominó | | Ludo |
+| Xadrez | | Otrio |
+| Damas | | Jogo da Velha |
+| Connect 4 | | |
 
 A maioria tem **multiplayer online em salas privadas** (com lugares completados pelo computador) e **modo solo contra a IA**. Spider, Sudoku e Verbete rodam só no navegador.
 

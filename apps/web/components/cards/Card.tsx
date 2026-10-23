@@ -8,12 +8,15 @@ import { DEFAULT_DECK, deckKey, type DeckKey } from "@/lib/shop/catalog";
 export interface CardLike {
   rank: string | number;
   suit: string;
+  /** Nome do arquivo quando não é rank_of_suit (ex.: "black_joker"). */
+  file?: string;
 }
 
 const FILE_RANK: Record<string, string> = { A: "ace", "1": "ace", J: "jack", "11": "jack", Q: "queen", "12": "queen", K: "king", "13": "king" };
 
 /** Nome do arquivo da carta ("king_of_hearts"), o mesmo em todos os baralhos. */
 export const cardFile = (card: CardLike) => {
+  if (card.file) return card.file;
   const r = String(card.rank);
   return `${FILE_RANK[r] ?? r}_of_${card.suit}`;
 };
@@ -52,7 +55,7 @@ export function CardImg({ card, className = "" }: { card: CardLike | null; class
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={cardSrc(card, deck)}
-      alt={`${card.rank} ${card.suit}`}
+      alt={card.file?.includes("joker") ? "Coringa" : `${card.rank} ${card.suit}`}
       draggable={false}
       className={`${deck === DEFAULT_DECK ? "card-face" : "card-deck aspect-[500/726] rounded-[7%/5%]"} block w-full select-none ${className}`}
     />

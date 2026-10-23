@@ -106,7 +106,7 @@ Ganchos opcionais do adaptador (criados para o Stop):
 
 ## Cartas (assets)
 
-`scripts/fetch-cards.ts` baixa PNGs de [Webisso/playing-cards](https://github.com/Webisso/playing-cards) (MIT) para `apps/web/public/cards/<rank>_of_<suit>.png` (500×726). As figuras usam as variantes ilustradas `*2.png`. O truco usa 40 cartas; para jogos com 8/9/10 ou coringas, amplie o script (os arquivos existem no repositório de origem). O verso é CSS (`.card-back` em `globals.css`), porque o repositório não tem verso.
+`scripts/fetch-cards.ts` baixa PNGs de [Webisso/playing-cards](https://github.com/Webisso/playing-cards) (MIT) para `apps/web/public/cards/<rank>_of_<suit>.png` (500×726). As figuras usam as variantes ilustradas `*2.png`. O truco usa 40 cartas; para jogos com 8/9/10 ou coringas, amplie o script (os arquivos existem no repositório de origem). Os dois coringas (`black_joker.png`, `red_joker.png`, usados no Buraco) também vêm do script; nos baralhos da loja saem de `jokerSvg` (`lib/shop/art.ts`) e a rota `/baralhos/<baralho>/<arquivo>.svg` os serve. O verso é CSS (`.card-back` em `globals.css`), porque o repositório não tem verso.
 
 ## Deploy
 

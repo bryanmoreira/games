@@ -32,6 +32,7 @@ async function card(name: string): Promise<string> {
 
 const TITLES: Record<string, [string, string]> = {
   "truco-paulista": ["TRUCO", "PAULISTA"],
+  buraco: ["BURACO", "CANASTRAS"],
   "paciencia-spider": ["PACIÊNCIA", "SPIDER"],
   sudoku: ["SUDOKU", "9 × 9"],
   "connect-4": ["CONNECT", "4 EM LINHA"],
@@ -62,6 +63,23 @@ async function art(slug: string) {
               width={190}
               height={276}
               style={{ position: "absolute", left: 115, top: 70, transformOrigin: "50% 100%", transform: `rotate(${(i - 1) * 18}deg)`, borderRadius: 12, boxShadow: "0 8px 20px rgba(0,0,0,0.45)" }}
+            />
+          ))}
+        </div>
+      );
+    }
+    case "buraco": {
+      // sequência de copas em leque com o coringa no lugar do 8
+      const cards = await Promise.all(["6_of_hearts", "7_of_hearts", "black_joker", "9_of_hearts"].map(card));
+      return (
+        <div style={{ display: "flex", position: "relative", width: 440, height: 420 }}>
+          {cards.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              width={180}
+              height={261}
+              style={{ position: "absolute", left: 130, top: 80, transformOrigin: "50% 100%", transform: `rotate(${(i - 1.5) * 15}deg)`, borderRadius: 12, boxShadow: "0 8px 20px rgba(0,0,0,0.45)" }}
             />
           ))}
         </div>

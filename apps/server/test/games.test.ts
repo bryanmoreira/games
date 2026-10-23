@@ -9,6 +9,7 @@ import * as velha from "@mesa/jogo-da-velha";
 import * as damas from "@mesa/damas";
 import * as ludo from "@mesa/ludo";
 import * as domino from "@mesa/domino";
+import * as buraco from "@mesa/buraco";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
 import * as tijolada from "@mesa/tijolada";
@@ -225,6 +226,63 @@ describe("domino", () => {
     const a = domino.decide(domino.viewFor(s, s.turn))!;
     const n = ok(domino.applyAction(s, a));
     expect(animMs(s, n)).toBeGreaterThan(0);
+    expect(outcome(n, 0).data.mode).toBe("1x1");
+  });
+});
+
+describe("buraco", () => {
+  const { outcome, animMs, canStart, withSeat, actors, pause, over } = GAMES.buraco;
+  const card = (rank: buraco.Rank, suit: buraco.Suit, deck = 0): buraco.Card => ({ id: `${rank}${suit[0]}${deck}`, rank, suit });
+
+  test("mesa de 4 ou 1×1 em lados opostos", () => {
+    expect(canStart!([0, 1, 2, 3])).toBe(true);
+    expect(canStart!([1, 2])).toBe(true);
+    expect(canStart!([0, 2])).toBe(false);
+  });
+
+  test("ação do cliente com o assento de quem mandou, sem confiar no resto", () => {
+    expect(withSeat({ type: "draw" }, 2)).toEqual({ type: "draw", seat: 2 });
+    expect(withSeat({ type: "discard", card: "7h0" }, 1)).toEqual({ type: "discard", seat: 1, card: "7h0" });
+    expect(withSeat({ type: "meld", cards: ["5h0", "6h0", 7, "7h0"], wildAt: 8 }, 3)).toEqual({ type: "meld", seat: 3, cards: ["5h0", "6h0", "7h0"], wildAt: 8 });
+    expect(withSeat({ type: "add", meld: "m1", cards: ["8h0"], seat: 0 }, 1)).toEqual({ type: "add", seat: 1, meld: "m1", cards: ["8h0"] });
+    expect(withSeat({ type: "take", cards: ["6s0", "7s0"], meld: null }, 0)).toEqual({ type: "take", seat: 0, cards: ["6s0", "7s0"], meld: null });
+    expect(withSeat({ type: "take", cards: [], meld: "m2" }, 0)).toEqual({ type: "take", seat: 0, cards: [], meld: "m2" });
+    // lixo vira descarte inválido (a engine recusa)
+    expect(withSeat({ type: "qualquer" }, 0)).toEqual({ type: "discard", seat: 0, card: "" });
+  });
+
+  test("vitória da dupla para os dois, com canastras, batidas de quem bateu e a maior desvantagem", () => {
+    const s = buraco.newGame(seeded(2), [0, 1, 2, 3]);
+    const run = buraco.arrangements([], null, ["3", "4", "5", "6", "7", "8", "9"].map((r) => card(r as buraco.Rank, "hearts")))[0];
+    s.melds = [{ id: "m1", team: 0, suit: run.suit, cards: run.cards }];
+    s.hands = [[card("9", "diamonds")], [card("K", "clubs")], [card("4", "clubs")], [card("5", "clubs")]];
+    s.mortoTaken = [true, true];
+    s.step = "play";
+    s.turn = 0;
+    s.scores = [2900, 3100];
+    s.maxDeficit = [200, 0];
+    expect(actors(s)).toEqual([0]);
+    const e = ok(buraco.applyAction(s, { type: "discard", seat: 0, card: "9d0" }));
+    expect(pause(e)).toBeGreaterThan(3000);
+    expect(over(e)).toBe(false);
+    const g = ok(buraco.applyAction(e, { type: "advance" }));
+    expect(over(g)).toBe(true);
+    // 45 de cartas + 200 da limpa + 100 da batida − 5 que sobraram com o parceiro = 340; adversários ficam com −15 nas mãos
+    expect(outcome(g, 0)).toEqual({
+      outcome: "win",
+      data: { mode: "duplas", scores: [3240, 3085], hands: 1, limpa: 1, suja: 0, real: 0, bestHand: 340, maxPile: 0, batidas: 1, deficit: 200 },
+    });
+    expect(outcome(g, 2)).toMatchObject({ outcome: "win", data: { batidas: 0, limpa: 1 } });
+    expect(outcome(g, 1)).toMatchObject({ outcome: "loss", data: { scores: [3085, 3240], mode: "duplas", limpa: 0 } });
+  });
+
+  test("1×1 vai no modo; distribuição e lances esperam a animação", () => {
+    const s = buraco.newGame(seeded(3), [0, 1]);
+    expect(animMs(null, s)).toBeGreaterThan(1000);
+    const a = buraco.decide(buraco.viewFor(s, s.turn))!;
+    const n = ok(buraco.applyAction(s, a));
+    expect(animMs(s, n)).toBeGreaterThan(0);
+    expect(animMs(n, n)).toBe(0);
     expect(outcome(n, 0).data.mode).toBe("1x1");
   });
 });

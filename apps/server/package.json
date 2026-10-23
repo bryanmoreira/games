@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mesa/batalha-naval": "workspace:*",
+    "@mesa/buraco": "workspace:*",
     "@mesa/codenames": "workspace:*",
     "@mesa/connect4": "workspace:*",
     "@mesa/damas": "workspace:*",

@@ -12,6 +12,7 @@ import { roomPath as dominoRoom } from "./domino/paths";
 import { roomPath as xadrezRoom } from "./xadrez/paths";
 import { roomPath as futebolRoom } from "./futebol-de-botao/paths";
 import { roomPath as tijoladaRoom } from "./tijolada/paths";
+import { roomPath as buracoRoom } from "./buraco/paths";
 
 /** Rota da sala de cada jogo online (para redirecionar quem abre o código pela rota errada). */
 export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
@@ -28,4 +29,5 @@ export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
   xadrez: xadrezRoom,
   "futebol-de-botao": futebolRoom,
   tijolada: tijoladaRoom,
+  buraco: buracoRoom,
 };

@@ -1,4 +1,4 @@
-// Baixa as 52 cartas (truco usa 40; spider usa todas) de https://github.com/Webisso/playing-cards (MIT)
+// Baixa as 52 cartas (truco usa 40; spider usa todas) e os 2 coringas (buraco) de https://github.com/Webisso/playing-cards (MIT)
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -18,5 +18,11 @@ const jobs = RANKS.flatMap((r) =>
     await Bun.write(join(OUT, `${name}.png`), res);
   }),
 );
-await Promise.all(jobs);
-console.log(`${jobs.length} cartas em ${OUT}`);
+const jokers = ["black_joker", "red_joker"].map(async (name) => {
+  const src = `${BASE}/${name}.png`;
+  const res = await fetch(src);
+  if (!res.ok) throw new Error(`${src}: ${res.status}`);
+  await Bun.write(join(OUT, `${name}.png`), res);
+});
+await Promise.all([...jobs, ...jokers]);
+console.log(`${jobs.length + jokers.length} cartas em ${OUT}`);

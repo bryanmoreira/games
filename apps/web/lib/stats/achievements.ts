@@ -440,6 +440,43 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   wins("domino", 50),
   wins("domino", 100),
 
+  first("buraco"),
+  {
+    code: "buraco:lixeiro",
+    game: "buraco",
+    title: "Lixeiro",
+    desc: "Pegar um lixo com 10 cartas ou mais",
+    icon: "bolt",
+    check: ({ results }) => results.some((r) => num(r, "maxPile") >= 10),
+  },
+  {
+    code: "buraco:limpinha",
+    game: "buraco",
+    title: "Limpinha",
+    desc: "Vencer só com canastras limpas, sem nenhuma suja",
+    icon: "shield",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "limpa") + num(r, "real") >= 1 && num(r, "suja") === 0),
+  },
+  streak5("buraco"),
+  {
+    code: "buraco:real",
+    game: "buraco",
+    title: "Ás a ás",
+    desc: "Fechar uma canastra real (as 13 cartas, sem curinga)",
+    icon: "crown",
+    tier: "hard",
+    check: ({ results }) => results.some((r) => num(r, "real") >= 1),
+  },
+  {
+    code: "buraco:comeback",
+    game: "buraco",
+    title: "Virada",
+    desc: "Vencer depois de estar 1000 pontos atrás",
+    icon: "star",
+    tier: "hard",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "deficit") >= 1000),
+  },
+
   first("futebol-de-botao"),
   {
     code: "futebol-de-botao:hat_trick",

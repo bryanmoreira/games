@@ -28,6 +28,13 @@ import { SUDOKU_DAILY_PATH } from "@/lib/sudoku/paths";
 import { VERBETE_DAILY_PATH } from "@/lib/verbete/paths";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
+/** Buraco: sequência de copas com o coringa no lugar do 8. */
+const BURACO_RUN = [
+  { rank: "6", suit: "hearts" },
+  { rank: "7", suit: "hearts" },
+  { rank: "JK", suit: "", file: "black_joker" },
+  { rank: "9", suit: "hearts" },
+];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
 
 /** Arte no hover do card: endireita e cresce um pouco (sem movimento para quem pediu menos animação). */
@@ -63,6 +70,20 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
             className="absolute bottom-0 left-1/2 w-[38%] origin-bottom transition-transform duration-300 ease-out [transform:translateX(-50%)_rotate(var(--r))] motion-safe:group-hover:[transform:translateX(-50%)_rotate(var(--rh))]"
             style={{ "--r": `${(i - 1) * 16}deg`, "--rh": `${(i - 1) * 28}deg` } as CSSProperties}
           >
+            <CardImg card={c} />
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    slug: "buraco",
+    title: "BURACO",
+    sub: "CANASTRAS",
+    art: (
+      <div className={`absolute left-1/2 top-[19%] flex w-[58%] -translate-x-1/2 -rotate-3 items-end drop-shadow-[0_4px_0_rgba(0,0,0,0.3)] ${HOVER}`}>
+        {BURACO_RUN.map((c, i) => (
+          <div key={i} className={`${i === 2 ? "hc-wild" : "hc-meld"} w-[34%] shrink-0 ${i ? "-ml-[16%]" : ""} [--d:${i}]`}>
             <CardImg card={c} />
           </div>
         ))}

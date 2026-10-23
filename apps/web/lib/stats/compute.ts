@@ -160,6 +160,20 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
       };
       break;
     }
+    case "buraco": {
+      chip("Melhor mão", ((n) => (n ? n : null))(maxOf(rs.map((r) => num(r, "bestHand")).filter(Number.isFinite))));
+      chip("Maior lixo", ((n) => (n ? `${n} cartas` : null))(maxOf(rs.map((r) => num(r, "maxPile")).filter(Number.isFinite))));
+      chip("Canastras", rs.reduce((n, r) => n + (num(r, "limpa") || 0) + (num(r, "suja") || 0) + (num(r, "real") || 0), 0) || null);
+      chip("Reais", rs.reduce((n, r) => n + (num(r, "real") || 0), 0) || null);
+      stats.table = {
+        cols: ["Vitórias", "Partidas"],
+        rows: (["duplas", "1x1"] as const).map((m) => {
+          const games = rs.filter((r) => r.data.mode === m);
+          return { label: m === "duplas" ? "Duplas" : "1×1", values: [String(games.filter(isWin).length), String(games.length)] };
+        }),
+      };
+      break;
+    }
     case "futebol-de-botao": {
       const margin = maxOf(wins.map((r) => num(r, "gf") - num(r, "ga")).filter(Number.isFinite));
       const best = wins.find((r) => num(r, "gf") - num(r, "ga") === margin);

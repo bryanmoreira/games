@@ -253,6 +253,24 @@ export function faceSvg(key: DeckKey, rank: string, suit: SuitName): string {
   );
 }
 
+/** Coringa (Buraco): estrela nos cantos e os quatro naipes no meio, nas cores do baralho. */
+export function jokerSvg(key: DeckKey, color: "black" | "red"): string {
+  const s = FACES[key];
+  const c = color === "red" ? s.col.hearts : s.col.spades;
+  const fx = s.glow ? ` filter="url(#fg)"` : "";
+  const defs = (s.bgDef ?? "") + (s.glow ? glow("fg", 1.6) : "");
+  const n = s.idx;
+  const cx = 8 + n * 0.3;
+  const star = `<g transform="translate(${cx - 50 * 0.26} ${22 - 72 * 0.26}) scale(.26)" fill="${c}"><path d="${STAR}"/></g>`;
+  const corner = `<g${fx}>${star}</g>`;
+  const mid = `${suitG("spades", 36, 54, 22, s.col.spades)}${suitG("hearts", 64, 54, 22, s.col.hearts)}${suitG("clubs", 36, 92, 22, s.col.spades)}${suitG("diamonds", 64, 92, 22, s.col.hearts)}`;
+  return svg(
+    CARD_VB,
+    `${defs}<rect x="1" y="1" width="98" height="143" rx="8" fill="${s.bgDef ? "url(#bg)" : s.bg}" stroke="${s.edge}" stroke-width="2"/>${s.extra ?? ""}
+    ${corner}<g transform="rotate(180 50 72.5)">${corner}</g><g${fx}>${mid}</g>${s.shine ? shine(1, 1, 98, 143, 8) : ""}`,
+  );
+}
+
 // ---------- nomes dos arquivos (os mesmos das PNG do clássico em public/cards) ----------
 
 export const SUITS: readonly SuitName[] = ["spades", "hearts", "diamonds", "clubs"];
@@ -265,6 +283,9 @@ export function parseCardFile(name: string): { rank: string; suit: SuitName } | 
   if (!m || !(FILE_RANKS as readonly string[]).includes(m[1]) || !(SUITS as readonly string[]).includes(m[2])) return null;
   return { rank: RANK_OF_FILE[m[1]] ?? m[1], suit: m[2] as SuitName };
 }
+
+/** Coringas do Buraco: preto e vermelho. */
+export const JOKER_FILES = ["black_joker", "red_joker"] as const;
 
 /** Os 52 nomes de arquivo de um baralho. */
 export const CARD_FILES = FILE_RANKS.flatMap((r) => SUITS.map((s) => `${r}_of_${s}`));

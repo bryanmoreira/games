@@ -8,6 +8,7 @@ import * as velha from "@mesa/jogo-da-velha";
 import * as damas from "@mesa/damas";
 import * as ludo from "@mesa/ludo";
 import * as domino from "@mesa/domino";
+import * as buraco from "@mesa/buraco";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
 import * as tijolada from "@mesa/tijolada";
@@ -95,6 +96,10 @@ const DOMINO_PASS_MS = 900;
 const DOMINO_DRAW_MS = 300;
 // Mãos abertas e pontos da mão na tela antes da próxima
 const DOMINO_HAND_END_MS = 4200;
+// Buraco: cartas distribuídas, cada lance na mesa e a contagem de pontos da mão na tela antes da próxima
+const BURACO_DEAL_MS = 2600;
+const BURACO_EVENT_MS: Record<buraco.Event["kind"], number> = { draw: 350, take: 900, meld: 600, add: 450, discard: 500, morto: 1100, batida: 800 };
+const BURACO_HAND_END_MS = 10000;
 // Dado parado na tela antes de a vez passar (sem lance ou 3º seis)
 const LUDO_PASS_MS = 1300;
 
@@ -447,6 +452,63 @@ const dominoAdapter: GameAdapter<domino.GameState, domino.Action, domino.PlayerV
   },
 };
 
+const buracoAdapter: GameAdapter<buraco.GameState, buraco.Action, buraco.PlayerView> = {
+  seats: buraco.SEATS,
+  minSeats: 2,
+  canStart: buraco.validPlayers,
+  newGame: (prev, { seats }) => buraco.newGame(Math.random, seats, prev),
+  applyAction: (s, a) => buraco.applyAction(s, a),
+  viewFor: (s, seat) => buraco.viewFor(s, seat),
+  decide: (v) => buraco.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    const list = (x: unknown) => (Array.isArray(x) ? x.filter((i): i is string => typeof i === "string").slice(0, 30) : []);
+    const wildAt = typeof m.wildAt === "number" && Number.isInteger(m.wildAt) ? { wildAt: m.wildAt } : {};
+    switch (m.type) {
+      case "draw":
+        return { type: "draw", seat };
+      case "take":
+        return { type: "take", seat, cards: list(m.cards), meld: typeof m.meld === "string" ? m.meld : null, ...wildAt };
+      case "meld":
+        return { type: "meld", seat, cards: list(m.cards), ...wildAt };
+      case "add":
+        return { type: "add", seat, meld: String(m.meld ?? ""), cards: list(m.cards), ...wildAt };
+      default:
+        return { type: "discard", seat, card: String(m.card ?? "") };
+    }
+  },
+  actors: (s) => (s.phase === "playing" ? [s.turn] : []),
+  pause: (s) => (s.phase === "handEnd" ? BURACO_HAND_END_MS : null),
+  // comprar é rápido; baixar e descartar levam um pouco mais
+  botDelay: (s) => (s.step === "draw" ? 650 + Math.random() * 450 : 600 + Math.random() * 400),
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => {
+    if (!prev || prev.handNo !== next.handNo || prev.gameNo !== next.gameNo) return BURACO_DEAL_MS;
+    const fresh = Math.min(Math.max(0, next.eventNo - prev.eventNo), next.events.length);
+    return next.events.slice(next.events.length - fresh).reduce((ms, e) => ms + BURACO_EVENT_MS[e.kind], 0);
+  },
+  outcome: (s, seat) => {
+    const team = buraco.teamOf(seat);
+    const st = s.stats[seat];
+    const ts = s.teamStats[team];
+    return {
+      outcome: s.winner === team ? "win" : "loss",
+      data: {
+        mode: s.mode,
+        scores: [s.scores[team], s.scores[1 - team]],
+        hands: s.handNo,
+        limpa: ts.limpa,
+        suja: ts.suja,
+        real: ts.real,
+        bestHand: ts.bestHand,
+        maxPile: st.maxPile,
+        batidas: st.batidas,
+        deficit: s.maxDeficit[team],
+      },
+    };
+  },
+};
+
 const xadrezAdapter: GameAdapter<xadrez.GameState, xadrez.Action, xadrez.PlayerView> = {
   seats: 2,
   settings: {
@@ -561,6 +623,7 @@ export const GAMES: Record<GameId, GameAdapter> = {
   damas: damasAdapter,
   ludo: ludoAdapter,
   domino: dominoAdapter,
+  buraco: buracoAdapter,
   xadrez: xadrezAdapter,
   "futebol-de-botao": futebolAdapter,
   tijolada: tijoladaAdapter,
