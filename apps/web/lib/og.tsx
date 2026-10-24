@@ -516,16 +516,89 @@ async function art(slug: string) {
   }
 }
 
-export async function gameOgImage(slug: string) {
-  const g = getGame(slug);
-  const [title, sub] = TITLES[slug];
+async function siteFonts() {
   const [bungee, inter, interBold] = await Promise.all([googleFont("Bungee"), googleFont("Inter:wght@500"), googleFont("Inter:wght@700")]);
-  const display = bungee ? "Bungee" : "sans-serif";
   const fonts = [
     inter && { name: "Inter", data: inter, weight: 500 as const, style: "normal" as const },
     interBold && { name: "Inter", data: interBold, weight: 700 as const, style: "normal" as const },
     bungee && { name: "Bungee", data: bungee, weight: 400 as const, style: "normal" as const },
   ].filter((f) => !!f);
+  return { display: bungee ? "Bungee" : "sans-serif", fonts };
+}
+
+/** Capa sem texto para os posts do blog: arte de um ou mais jogos no feltro. Gerada uma vez para `public/blog`. */
+export async function blogCoverImage(games: string[]) {
+  const scale = games.length === 1 ? 1.15 : games.length === 2 ? 0.85 : 0.68;
+  const arts = await Promise.all(games.map(art));
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "radial-gradient(circle at 50% 45%, #1d6b43 0%, #0f3a24 60%, #0b1f15 100%)",
+          border: "14px solid #5b3a1e",
+        }}
+      >
+        {arts.map((a, i) => (
+          <div
+            key={i}
+            style={{ display: "flex", width: 1100 / games.length, height: "100%", alignItems: "center", justifyContent: "center", transform: `scale(${scale})` }}
+          >
+            {a}
+          </div>
+        ))}
+      </div>
+    ),
+    OG_SIZE,
+  );
+}
+
+/** Prévia de link de um post do blog: arte do jogo (quando houver) e o título do post. */
+export async function blogOgImage(title: string, game: string) {
+  const { display, fonts } = await siteFonts();
+  const hasArt = game in TITLES;
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          background: "radial-gradient(circle at 35% 45%, #1d6b43 0%, #0f3a24 60%, #0b1f15 100%)",
+          border: "14px solid #5b3a1e",
+          padding: hasArt ? "0 60px 0 20px" : "0 80px",
+          fontFamily: "Inter",
+        }}
+      >
+        {hasArt && (
+          <div style={{ display: "flex", width: 440, height: "100%", alignItems: "center", justifyContent: "center", transform: "scale(0.85)" }}>
+            {await art(game)}
+          </div>
+        )}
+        <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: hasArt ? "flex-start" : "center", textAlign: hasArt ? "left" : "center" }}>
+          <div style={{ display: "flex", fontFamily: display, fontSize: 30, letterSpacing: 10, color: "rgba(255,255,255,0.7)" }}>BLOG</div>
+          <div style={{ display: "flex", marginTop: 18, fontFamily: display, fontSize: title.length > 48 ? 54 : 64, lineHeight: 1.1, color: GOLD, textShadow: "0 5px 0 #7a4e0c" }}>
+            {title}
+          </div>
+          <div style={{ display: "flex", marginTop: 36, padding: "10px 26px", borderRadius: 999, background: "rgba(0,0,0,0.35)", fontSize: 28, fontWeight: 700, color: GOLD }}>
+            mesadejogos.com
+          </div>
+        </div>
+      </div>
+    ),
+    { ...OG_SIZE, fonts },
+  );
+}
+
+export async function gameOgImage(slug: string) {
+  const g = getGame(slug);
+  const [title, sub] = TITLES[slug];
+  const { display, fonts } = await siteFonts();
   const titleSize = Math.min(124, Math.floor(600 / (title.length * 0.82)));
 
   return new ImageResponse(

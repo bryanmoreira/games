@@ -1,8 +1,11 @@
 import type { MetadataRoute } from "next";
+import { getPosts } from "@/lib/blog";
 import { PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_URL } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Rascunhos nunca entram, nem com BLOG_DRAFTS=1
+  const posts = getPosts().filter((p) => !p.draft);
   return [
     { url: SITE_URL, changeFrequency: "weekly", priority: 1 },
     ...GAMES.flatMap((g) => [
@@ -10,6 +13,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       { url: `${SITE_URL}${g.path}/como-jogar`, changeFrequency: "monthly" as const, priority: 0.7 },
       ...(g.slug in DAILY_SEO ? [{ url: `${SITE_URL}${g.path}/diario`, changeFrequency: "daily" as const, priority: 0.8 }] : []),
     ]),
+    ...(posts.length
+      ? [
+          { url: `${SITE_URL}/blog`, changeFrequency: "weekly" as const, priority: 0.6 },
+          ...posts.map((p) => ({ url: `${SITE_URL}/blog/${p.slug}`, lastModified: p.date, changeFrequency: "monthly" as const, priority: 0.6 })),
+        ]
+      : []),
     { url: `${SITE_URL}${PRIVACY_PATH}`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE_URL}${TERMS_PATH}`, changeFrequency: "yearly", priority: 0.2 },
   ];

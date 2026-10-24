@@ -6,7 +6,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Stop, Codenames, Batalha Naval, Connect 4, Otrio, Jogo da Velha, Sudoku e Paciência Spider online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Buraco, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider e Verbete online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
