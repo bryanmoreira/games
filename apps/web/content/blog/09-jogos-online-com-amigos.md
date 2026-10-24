@@ -5,7 +5,7 @@ slug: jogos-online-com-amigos-gratis
 game: home
 keyword: jogos online com amigos
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-jogos-com-amigos.png
 coverAlt: "Cartas de truco, um tabuleiro de xadrez e um tabuleiro de ludo com um dado sobre o feltro verde"
 ---

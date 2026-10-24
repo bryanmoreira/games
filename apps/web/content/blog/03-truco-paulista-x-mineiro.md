@@ -5,7 +5,7 @@ slug: truco-paulista-x-truco-mineiro
 game: truco-paulista
 keyword: truco paulista e mineiro diferença
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-truco-paulista.png
 coverAlt: "Três cartas de truco em leque: 4 de paus, 7 de copas e ás de espadas"
 ---
@@ -15,7 +15,7 @@ O truco é jogado no Brasil inteiro, mas cada região tem seu jeito. As duas ver
 ## A grande diferença: a manilha
 
 - **Paulista:** a manilha muda a cada mão. Vira-se uma carta (o "vira") e as manilhas são as cartas logo acima dela na ordem de força.
-- **Mineiro:** as manilhas são fixas, as mesmas em todas as mãos (zap, copas, espadilha e pica-fumo, nessa ordem de força).
+- **Mineiro:** na variante mineira tradicional, as manilhas são fixas (não dependem da vira): zap, copas, espadilha e pica-fumo, nessa ordem de força.
 
 Isso muda bastante a estratégia: no mineiro você sabe de antemão quais são as cartas mais fortes; no paulista a força muda o tempo todo.
 

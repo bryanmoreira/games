@@ -5,7 +5,7 @@ slug: damas-brasileiras-x-internacionais
 game: damas
 keyword: damas brasileiras e internacionais
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-damas.png
 coverAlt: "Tabuleiro de damas 8×8 com pedras brancas e pretas e uma dama coroada de cada cor"
 ---

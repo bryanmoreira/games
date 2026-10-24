@@ -5,7 +5,7 @@ slug: xadrez-erros-de-iniciantes
 game: xadrez
 keyword: xadrez para iniciantes
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-xadrez.png
 coverAlt: "Tabuleiro de xadrez no começo da partida, com cavalos e bispos já desenvolvidos para o centro"
 ---

@@ -5,7 +5,7 @@ slug: dicas-paciencia-spider
 game: paciencia-spider
 keyword: dicas paciência spider
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-paciencia-spider.png
 coverAlt: "Sequência de espadas do rei ao 10 na Paciência Spider"
 ---

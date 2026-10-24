@@ -5,7 +5,7 @@ slug: convidar-amigos-whatsapp
 game: home
 keyword: jogar online pelo whatsapp
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-convite-whatsapp.png
 coverAlt: "Peças de dominó, um tabuleiro de Codenames e um tabuleiro de Batalha Naval sobre o feltro verde"
 ---

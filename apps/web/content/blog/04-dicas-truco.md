@@ -5,7 +5,7 @@ slug: dicas-de-truco
 game: truco-paulista
 keyword: dicas de truco
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-truco-partida.png
 coverAlt: "Mão de truco paulista no Mesa de Jogos: vira ás de copas, manilha 2 e três cartas na mão com o botão de truco"
 ---

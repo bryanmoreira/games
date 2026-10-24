@@ -5,7 +5,7 @@ slug: dicas-para-ganhar-no-buraco
 game: buraco
 keyword: dicas de buraco
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-buraco-partida.png
 coverAlt: "Partida de buraco em duplas no Mesa de Jogos, com a mão de 11 cartas aberta, o monte e o lixo na mesa"
 ---

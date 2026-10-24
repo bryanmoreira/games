@@ -5,7 +5,7 @@ slug: buraco-ou-canastra-diferenca
 game: buraco
 keyword: buraco e canastra diferença
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-buraco.png
 coverAlt: "Cartas de buraco em leque: 6, 7 e 9 de copas com um coringa no meio"
 ---

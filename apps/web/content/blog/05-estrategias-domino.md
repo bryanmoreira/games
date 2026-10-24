@@ -5,7 +5,7 @@ slug: estrategias-de-domino
 game: domino
 keyword: estratégia de dominó
 date: 2026-10-24
-draft: true
+draft: false
 cover: /blog/capa-domino.png
 coverAlt: "Peças de dominó em cruz sobre o feltro verde, com uma carroça de seis no centro"
 ---
