@@ -15,6 +15,7 @@
     "@prisma/client": "^7.10.0",
     "@mesa/batalha-naval": "workspace:*",
     "@mesa/buraco": "workspace:*",
+    "@mesa/caca-palavras": "workspace:*",
     "@mesa/codenames": "workspace:*",
     "@mesa/connect4": "workspace:*",
     "@mesa/damas": "workspace:*",

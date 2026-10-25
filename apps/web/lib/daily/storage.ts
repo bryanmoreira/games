@@ -3,7 +3,7 @@
 import type { DailyGame } from "@/lib/daily/challenge";
 
 // Cada desafio fica salvo no aparelho pelo dia: recarregar continua e dá para alternar entre dias.
-const PREFIX: Record<DailyGame, string> = { sudoku: "sudoku.daily.", "paciencia-spider": "spider.daily.", verbete: "verbete.daily." };
+const PREFIX: Record<DailyGame, string> = { sudoku: "sudoku.daily.", "paciencia-spider": "spider.daily.", verbete: "verbete.daily.", "caca-palavras": "cacapalavras.daily." };
 
 /** O que o calendário precisa de cada dia salvo. */
 export interface LocalDaily {
@@ -26,7 +26,8 @@ export function loadDaily<T>(game: DailyGame, day: string, valid: (g: unknown) =
   }
 }
 
-export function saveDaily<T extends { history: unknown[] }>(game: DailyGame, day: string, state: T) {
+/** Sem `history` (Caça-Palavras), não tem desfazer para cortar quando falta espaço. */
+export function saveDaily<T extends object>(game: DailyGame, day: string, state: T) {
   const key = PREFIX[game] + day;
   try {
     localStorage.setItem(key, JSON.stringify(state));
@@ -34,7 +35,8 @@ export function saveDaily<T extends { history: unknown[] }>(game: DailyGame, day
     // sem espaço: tira o desfazer antigo dos outros dias e deste
     trimOthers(game, day);
     try {
-      localStorage.setItem(key, JSON.stringify({ ...state, history: state.history.slice(-50) }));
+      const history = (state as { history?: unknown[] }).history;
+      localStorage.setItem(key, JSON.stringify(history ? { ...state, history: history.slice(-50) } : state));
     } catch {}
   }
 }

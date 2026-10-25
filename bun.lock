@@ -36,6 +36,7 @@
       "dependencies": {
         "@mesa/batalha-naval": "workspace:*",
         "@mesa/buraco": "workspace:*",
+        "@mesa/caca-palavras": "workspace:*",
         "@mesa/codenames": "workspace:*",
         "@mesa/connect4": "workspace:*",
         "@mesa/damas": "workspace:*",
@@ -75,6 +76,9 @@
     },
     "packages/buraco": {
       "name": "@mesa/buraco",
+    },
+    "packages/caca-palavras": {
+      "name": "@mesa/caca-palavras",
     },
     "packages/codenames": {
       "name": "@mesa/codenames",
@@ -278,6 +282,8 @@
     "@mesa/batalha-naval": ["@mesa/batalha-naval@workspace:packages/batalha-naval"],
 
     "@mesa/buraco": ["@mesa/buraco@workspace:packages/buraco"],
+
+    "@mesa/caca-palavras": ["@mesa/caca-palavras@workspace:packages/caca-palavras"],
 
     "@mesa/codenames": ["@mesa/codenames@workspace:packages/codenames"],
 

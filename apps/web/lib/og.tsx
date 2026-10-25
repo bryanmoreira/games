@@ -7,6 +7,7 @@ import { PieceArt } from "@/components/xadrez/Piece";
 import { TileFace } from "@/components/domino/Tile";
 import { TijoladaArt } from "@/components/tijolada/Art";
 import { getGame } from "@/lib/seo";
+import { ART, ART_WORDS } from "@/components/caca-palavras/common";
 
 /** Prévia de link (Open Graph) de cada jogo: arte do jogo à esquerda, nome à direita. */
 
@@ -48,6 +49,7 @@ const TITLES: Record<string, [string, string]> = {
   "futebol-de-botao": ["FUTEBOL", "DE BOTÃO"],
   tijolada: ["TIJOLADA", "SOLO E 1×1"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
+  "caca-palavras": ["CAÇA", "PALAVRAS"],
 };
 
 async function art(slug: string) {
@@ -92,6 +94,52 @@ async function art(slug: string) {
           {cards.map((src, i) => (
             <img key={i} src={src} width={220} height={320} style={{ position: "absolute", left: 10, top: i * 46, borderRadius: 12, boxShadow: "0 6px 16px rgba(0,0,0,0.45)" }} />
           ))}
+        </div>
+      );
+    }
+    case "caca-palavras": {
+      // a mesma grade da arte do site, com as cápsulas das palavras achadas (girada pelo transform de cada uma)
+      const CELL = 66;
+      const capsule = (from: number, to: number, color: string, i: number) => {
+        const [r1, c1, r2, c2] = [Math.floor(from / 6), from % 6, Math.floor(to / 6), to % 6];
+        const len = Math.hypot(r2 - r1, c2 - c1) * CELL + CELL * 0.8;
+        const angle = (Math.atan2(r2 - r1, c2 - c1) * 180) / Math.PI;
+        const cx = ((c1 + c2) / 2 + 0.5) * CELL;
+        const cy = ((r1 + r2) / 2 + 0.5) * CELL;
+        return (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              position: "absolute",
+              left: cx - len / 2,
+              top: cy - CELL * 0.4,
+              width: len,
+              height: CELL * 0.8,
+              borderRadius: CELL * 0.4,
+              background: color,
+              opacity: 0.6,
+              transform: `rotate(${angle}deg)`,
+            }}
+          />
+        );
+      };
+      return (
+        <div style={{ display: "flex", padding: 14, background: "#5b3a1e", borderRadius: 26, transform: "rotate(-4deg)", boxShadow: "0 10px 24px rgba(0,0,0,0.5)" }}>
+          <div style={{ display: "flex", position: "relative", width: CELL * 6, height: CELL * 6, background: "#1d4a73", borderRadius: 18 }}>
+            {ART_WORDS.map((w, i) => capsule(w.from, w.to, w.color, i))}
+            <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 0, top: 0 }}>
+              {ART.map((row, r) => (
+                <div key={r} style={{ display: "flex" }}>
+                  {[...row].map((l, c) => (
+                    <div key={c} style={{ display: "flex", width: CELL, height: CELL, alignItems: "center", justifyContent: "center", color: "white", fontSize: 34, fontFamily: "Bungee" }}>
+                      {l}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       );
     }

@@ -252,6 +252,17 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
         }),
       };
       break;
+    case "caca-palavras":
+      chip("Temas vencidos", new Set(wins.map((r) => r.data.theme)).size || null);
+      stats.table = {
+        cols: ["Vitórias", "Melhor tempo", "Sem dica"],
+        rows: LEVELS.slice(0, 3).map(([k, label]) => {
+          const w = wins.filter((r) => r.data.level === k);
+          const best = minOf(w.map((r) => num(r, "timeMs")).filter(Number.isFinite));
+          return { label, values: [String(w.length), best === null ? null : formatMs(best), String(w.filter((r) => num(r, "hints") === 0).length)] };
+        }),
+      };
+      break;
     case "verbete":
       stats.table = {
         cols: ["Jogos", "Vitórias", "Média", "Sequência"],

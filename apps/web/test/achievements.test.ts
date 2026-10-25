@@ -275,6 +275,28 @@ const CASES: Record<string, Case> = {
     ],
   },
   "verbete:wins_50": winsCase(50),
+
+  "caca-palavras:first": { ok: [win({ level: "easy" }, "solo")], almost: [] },
+  "caca-palavras:eagle": {
+    ok: [win({ level: "hard", hints: 0 }, "solo")],
+    almost: [win({ level: "hard", hints: 1 }, "solo"), win({ level: "medium", hints: 0 }, "solo"), win({ level: "hard" }, "solo")],
+  },
+  "caca-palavras:quick": {
+    ok: [win({ level: "medium", timeMs: 2 * 60_000 - 1 }, "solo")],
+    almost: [win({ level: "medium", timeMs: 2 * 60_000 }, "solo"), win({ level: "easy", timeMs: 30_000 }, "solo"), win({ level: "medium" }, "solo")],
+  },
+  "caca-palavras:themes_10": {
+    ok: ["animais", "frutas", "paises", "brasil", "profissoes", "esportes", "cores", "corpo", "comidas", "cozinha"].map((theme) => win({ theme }, "solo")),
+    almost: [...["animais", "frutas", "paises", "brasil", "profissoes", "esportes", "cores", "corpo", "comidas"].map((theme) => win({ theme }, "solo")), win({ theme: "animais" }, "solo")],
+  },
+  "caca-palavras:all_levels": {
+    ok: ["easy", "medium", "hard"].map((level) => win({ level }, "solo")),
+    almost: [win({ level: "easy" }, "solo"), win({ level: "medium" }, "solo"), win({ level: "medium" }, "solo")],
+  },
+  "caca-palavras:wins_10": winsCase(10),
+  "caca-palavras:wins_50": winsCase(50),
+  "caca-palavras:wins_100": winsCase(100),
+  ...withGame("caca-palavras", dailyCases()),
 };
 
 const codes = ACHIEVEMENTS.map((a) => a.code);

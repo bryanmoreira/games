@@ -26,6 +26,7 @@ COPY packages/spider/package.json packages/spider/
 COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
 COPY packages/verbete/package.json packages/verbete/
+COPY packages/caca-palavras/package.json packages/caca-palavras/
 RUN bun install --frozen-lockfile --linker=hoisted
 
 COPY tsconfig.base.json ./
@@ -46,6 +47,7 @@ COPY packages/spider packages/spider
 COPY packages/stop packages/stop
 COPY packages/sudoku packages/sudoku
 COPY packages/verbete packages/verbete
+COPY packages/caca-palavras packages/caca-palavras
 COPY apps/web apps/web
 RUN bun run --cwd apps/web build
 

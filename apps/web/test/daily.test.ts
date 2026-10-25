@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { dealGame, newGame as newSpider } from "@mesa/spider";
 import { gameFrom, newGame as newSudoku } from "@mesa/sudoku";
 import { dailyWords, isAnswer } from "@mesa/verbete";
+import { occurrences, THEMES } from "@mesa/caca-palavras";
 import {
   DAILY_START,
   dailyKey,
@@ -13,6 +14,8 @@ import {
   matchesChallenge,
   missingDays,
   msToNextDay,
+  dailyTheme,
+  type CacaDaily,
   type DailyChallenge,
   type SpiderDaily,
   type SudokuDaily,
@@ -115,6 +118,39 @@ describe("dias sem desafio", () => {
 
   test("antes do primeiro dia: nada", () => {
     expect(missingDays([], "2026-10-11")).toEqual([]);
+  });
+});
+
+describe("Caça-Palavras: grade do dia", () => {
+  test("difícil, com o tema do dia, a mesma grade para o mesmo seed", () => {
+    const data = makeChallenge("caca-palavras", 9, "2026-10-20") as CacaDaily;
+    expect(data.level).toBe("hard");
+    expect(data.seed).toBe(9);
+    expect(data.theme).toBe(dailyTheme("2026-10-20"));
+    expect(data.words).toHaveLength(16);
+    for (const w of data.words) expect(occurrences(data.grid, data.size, w.word)).toHaveLength(1);
+    expect(makeChallenge("caca-palavras", 9, "2026-10-20")).toEqual(data);
+    expect(isDailyGame("caca-palavras")).toBe(true);
+  });
+
+  test("um tema por dia, na ordem da lista, e recomeça no fim", () => {
+    expect(dailyTheme(DAILY_START)).toBe(THEMES[0].id);
+    expect(dailyTheme("2026-10-13")).toBe(THEMES[1].id);
+    const seen = new Set<string>();
+    let d = DAILY_START;
+    for (let i = 0; i < THEMES.length; i++, d = new Date(Date.parse(`${d}T12:00:00Z`) + 86_400_000).toISOString().slice(0, 10)) seen.add(dailyTheme(d));
+    expect(seen.size).toBe(THEMES.length);
+    expect(dailyTheme(d)).toBe(THEMES[0].id);
+  });
+
+  test("resultado confere seed, nível e tema", () => {
+    const ch: DailyChallenge = { game: "caca-palavras", day: "2026-10-20", data: makeChallenge("caca-palavras", 9, "2026-10-20") as CacaDaily };
+    const ok = { level: "hard", theme: ch.data.theme };
+    expect(matchesChallenge(ch, ok, 9)).toBe(true);
+    expect(matchesChallenge(ch, ok, 10)).toBe(false);
+    expect(matchesChallenge(ch, { ...ok, level: "easy" }, 9)).toBe(false);
+    expect(matchesChallenge(ch, { ...ok, theme: "nada" }, 9)).toBe(false);
+    expect(dailyKey("caca-palavras", "2026-10-20", ok)).toBe("2026-10-20");
   });
 });
 
