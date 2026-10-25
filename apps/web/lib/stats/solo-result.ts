@@ -1,15 +1,16 @@
 import { DIFFICULTIES } from "@mesa/sudoku";
+import { isLevel, isTheme, wordsOf } from "@mesa/caca-palavras";
 import { isMode, MAX_GUESSES, replay, status } from "@mesa/verbete";
 import { COLS, LINES_PER_LEVEL, MAX_LEVEL } from "@mesa/tijolada";
 import type { Outcome } from "@/lib/stats/games";
 
 const int = (v: unknown, min: number, max: number) => (Number.isInteger(v) && (v as number) >= min && (v as number) <= max ? (v as number) : null);
 
-export type SoloGame = "sudoku" | "paciencia-spider" | "verbete" | "tijolada";
+export type SoloGame = "sudoku" | "paciencia-spider" | "verbete" | "caca-palavras" | "tijolada";
 
 /**
  * Dados de uma partida solo mandados pelo navegador, validados. null = inválido.
- * Sudoku e Spider só mandam vitória; o Verbete manda vitória e derrota, e o resultado sai dos chutes refeitos aqui.
+ * Sudoku, Spider e Caça-Palavras só mandam vitória; o Verbete manda vitória e derrota, e o resultado sai dos chutes refeitos aqui.
  */
 export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; data: Record<string, unknown>; outcome?: Outcome } | null {
   const d = (raw ?? {}) as Record<string, unknown>;
@@ -22,6 +23,13 @@ export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; 
     const hints = int(d.hints, 0, 81);
     if (!DIFFICULTIES.includes(d.difficulty as never) || mistakes === null || hints === null) return null;
     return { game, data: { difficulty: d.difficulty, timeMs, mistakes, hints } };
+  }
+  if (game === "caca-palavras") {
+    // a dica não acende palavra achada nem repete: no máximo uma por palavra
+    const words = int(d.words, 1, 50);
+    const hints = int(d.hints, 0, 50);
+    if (!isLevel(d.level) || !isTheme(d.theme) || words !== wordsOf(d.level) || hints === null || hints > words) return null;
+    return { game, data: { level: d.level, theme: d.theme, timeMs, hints, words } };
   }
   if (game === "paciencia-spider") {
     const suits = int(d.suits, 1, 4);

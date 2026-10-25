@@ -384,6 +384,31 @@ describe("gameStats: Sudoku", () => {
   });
 });
 
+describe("gameStats: Caça-Palavras", () => {
+  test("tabela por nível: vitórias, melhor tempo e sem dica; chip de temas vencidos", () => {
+    const rs = [
+      solo({ level: "easy", theme: "animais", timeMs: 95_000, hints: 0 }),
+      solo({ level: "easy", theme: "frutas", timeMs: 70_000, hints: 2 }),
+      solo({ level: "hard", theme: "animais", timeMs: 600_000, hints: 0 }),
+      row("loss", { level: "medium", theme: "cores", timeMs: 1_000 }, "solo"),
+    ];
+    const s = gameStats("caca-palavras", rs);
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Melhor tempo", "Sem dica"],
+      rows: [
+        { label: "Fácil", values: ["2", "1:10", "1"] },
+        { label: "Médio", values: ["0", null, "0"] },
+        { label: "Difícil", values: ["1", "10:00", "1"] },
+      ],
+    });
+    expect(s.chips).toContainEqual({ label: "Temas vencidos", value: "2" });
+  });
+
+  test("sem vitória, sem chip de temas", () => {
+    expect(gameStats("caca-palavras", [row("loss", { theme: "cores" }, "solo")]).chips).toEqual([]);
+  });
+});
+
 describe("gameStats: Paciência Spider", () => {
   test("tabela por naipes: vitórias, melhor tempo, mais pontos e menos jogadas (cada um da sua melhor partida)", () => {
     const rs = [

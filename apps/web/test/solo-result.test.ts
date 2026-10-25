@@ -5,6 +5,40 @@ const DAY = 24 * 60 * 60 * 1000;
 const sudoku = (over: Record<string, unknown> = {}) => ({ difficulty: "medium", timeMs: 300_000, mistakes: 1, hints: 2, ...over });
 const spider = (over: Record<string, unknown> = {}) => ({ suits: 2, moves: 150, score: 900, timeMs: 600_000, ...over });
 
+const caca = (over: Record<string, unknown> = {}) => ({ level: "medium", theme: "frutas", timeMs: 240_000, hints: 1, words: 12, ...over });
+
+describe("caca-palavras", () => {
+  test("vitória válida passa só com os campos esperados", () => {
+    expect(parseSoloResult("caca-palavras", caca({ extra: "x" }))).toEqual({
+      game: "caca-palavras",
+      data: { level: "medium", theme: "frutas", timeMs: 240_000, hints: 1, words: 12 },
+    });
+  });
+
+  test("palavras têm que ser as do nível", () => {
+    expect(parseSoloResult("caca-palavras", caca({ level: "easy", words: 8 }))).not.toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ level: "hard", words: 16 }))).not.toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ level: "easy", words: 12 }))).toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ words: 0 }))).toBeNull();
+  });
+
+  test("dicas de 0 até o número de palavras", () => {
+    expect(parseSoloResult("caca-palavras", caca({ hints: 0 }))).not.toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ hints: 12 }))).not.toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ hints: 13 }))).toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ hints: -1 }))).toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ hints: 1.5 }))).toBeNull();
+  });
+
+  test("nível, tema e tempo inválidos: recusa", () => {
+    expect(parseSoloResult("caca-palavras", caca({ level: "expert" }))).toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ theme: "nada" }))).toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ theme: undefined }))).toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ timeMs: 999 }))).toBeNull();
+    expect(parseSoloResult("caca-palavras", caca({ timeMs: DAY + 1 }))).toBeNull();
+  });
+});
+
 describe("sudoku", () => {
   test("vitória válida passa só com os campos esperados", () => {
     expect(parseSoloResult("sudoku", sudoku({ extra: "x", userId: "outro" }))).toEqual({

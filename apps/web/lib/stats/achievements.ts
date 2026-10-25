@@ -1,4 +1,5 @@
 import { DIFFICULTIES } from "@mesa/sudoku";
+import { LEVELS as WORD_LEVELS } from "@mesa/caca-palavras";
 import { isMode, MAX_GUESSES } from "@mesa/verbete";
 import type { Mode, Outcome, StatGame } from "@/lib/stats/games";
 
@@ -742,6 +743,45 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: ({ results }) => dailyStreaks(results).best >= 5,
   },
   { ...wins("verbete", 50), title: "Viciado" },
+
+  first("caca-palavras"),
+  {
+    code: "caca-palavras:eagle",
+    game: "caca-palavras",
+    title: "Olho de águia",
+    desc: "Vencer no difícil sem usar dica",
+    icon: "target",
+    tier: "hard",
+    check: ({ results }) => winsOf(results).some((r) => r.data.level === "hard" && num(r, "hints") === 0),
+  },
+  {
+    code: "caca-palavras:quick",
+    game: "caca-palavras",
+    title: "Relâmpago",
+    desc: "Vencer no médio em menos de 2 minutos",
+    icon: "bolt",
+    check: ({ results }) => winsOf(results).some((r) => r.data.level === "medium" && num(r, "timeMs") < 2 * 60_000),
+  },
+  {
+    code: "caca-palavras:themes_10",
+    game: "caca-palavras",
+    title: "Enciclopédia",
+    desc: "Vencer em 10 temas diferentes",
+    icon: "grid",
+    check: ({ results }) => new Set(winsOf(results).map((r) => r.data.theme)).size >= 10,
+  },
+  {
+    code: "caca-palavras:all_levels",
+    game: "caca-palavras",
+    title: "Todos os níveis",
+    desc: "Vencer no fácil, médio e difícil",
+    icon: "star",
+    check: ({ results }) => WORD_LEVELS.every((l) => winsOf(results).some((r) => r.data.level === l)),
+  },
+  wins("caca-palavras", 10),
+  wins("caca-palavras", 50),
+  wins("caca-palavras", 100),
+  ...daily("caca-palavras"),
 ];
 
 export const ACHIEVEMENT_BY_CODE = new Map(ACHIEVEMENTS.map((a) => [a.code, a]));

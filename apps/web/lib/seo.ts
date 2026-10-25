@@ -6,7 +6,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Buraco, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider e Verbete online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Buraco, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider, Verbete e Caça-Palavras online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
@@ -477,6 +477,39 @@ export const GAMES: GameSeo[] = [
       { q: "Quando muda a palavra do dia?", a: "À meia-noite de Brasília, com uma palavra nova para cada modo, a mesma para todos os jogadores. Os dias anteriores ficam no calendário, e o modo livre sorteia palavras sem limite." },
     ],
   },
+  {
+    slug: "caca-palavras",
+    path: "/caca-palavras",
+    name: "Caça-Palavras",
+    title: "Caça-Palavras Online Grátis",
+    description:
+      "Jogue Caça-Palavras online grátis: escolha o tema e o nível, ache as palavras escondidas na grade e bata o seu tempo. Tem desafio do dia, direto no navegador.",
+    tagline: "Ache as palavras escondidas na grade. Um desafio novo todo dia.",
+    keywords: [
+      "caça-palavras",
+      "caça palavras online",
+      "jogar caça-palavras grátis",
+      "caça palavras difícil",
+      "caça palavras por tema",
+      "caça palavras do dia",
+      "jogo de palavras",
+      "sopa de letras",
+    ],
+    genre: "Jogo de palavras",
+    players: { min: 1, max: 1 },
+    modes: "Jogo solo no navegador com 17 temas e 3 níveis (fácil 10×10, médio 12×12 e difícil 15×15), dica, melhor tempo por nível e desafio do dia igual para todos, com calendário dos dias anteriores.",
+    howTo: {
+      title: "Como jogar Caça-Palavras: regras, níveis e direções",
+      description: "Aprenda a jogar Caça-Palavras: como marcar as palavras, em que direções elas ficam em cada nível, como funcionam a dica, os temas e o desafio do dia.",
+    },
+    faq: [
+      { q: "Como se joga Caça-Palavras?", a: "Ache na grade todas as palavras da lista. Elas ficam em linha reta e cada uma aparece uma vez só. Arraste da primeira à última letra, ou toque na primeira e depois na última, para marcar." },
+      { q: "Em que direções ficam as palavras?", a: "No fácil (10×10, 8 palavras), só para a direita e para baixo. No médio (12×12, 12 palavras), também nas diagonais para baixo e para cima. No difícil (15×15, 16 palavras), nas 8 direções, inclusive de trás pra frente." },
+      { q: "As palavras têm acento?", a: "Não. Na grade e na lista tudo fica sem acento e o Ç vira C: LIMÃO aparece como LIMAO." },
+      { q: "Como funciona a dica?", a: "A dica acende a primeira letra de uma palavra que você ainda não achou. Dá para pedir uma por palavra, e o número de dicas aparece no fim da partida." },
+      { q: "O que é o desafio do dia?", a: "À meia-noite de Brasília sai uma grade nova no nível difícil, com o tema do dia e igual para todos. Os dias anteriores ficam no calendário para jogar depois." },
+    ],
+  },
 ];
 
 export function getGame(slug: string): GameSeo {
@@ -519,6 +552,10 @@ export const DAILY_SEO: Record<string, { title: string; description: string }> =
   "paciencia-spider": {
     title: "Paciência Spider Diária: o desafio do dia",
     description: "Uma Paciência Spider de 4 naipes nova todo dia, a mesma distribuição para todos. Jogue o desafio de hoje e rejogue os dias anteriores.",
+  },
+  "caca-palavras": {
+    title: "Caça-Palavras Diário: o desafio do dia",
+    description: "Um caça-palavras difícil novo todo dia, com tema do dia e a mesma grade para todos. Jogue o de hoje e rejogue os dias anteriores no calendário.",
   },
   verbete: {
     title: "Verbete: palavra do dia, Dueto e Quarteto",

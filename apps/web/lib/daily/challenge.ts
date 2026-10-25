@@ -1,4 +1,5 @@
 import { generate, type Difficulty } from "@mesa/sudoku";
+import { generate as generateWords, THEMES, type Level, type Puzzle } from "@mesa/caca-palavras";
 import { shuffledDeck, type SuitCount } from "@mesa/spider";
 import { dailyWords, isMode, plain, type Mode } from "@mesa/verbete";
 import { dayKey, nextDay } from "@/lib/stats/achievements";
@@ -6,7 +7,7 @@ import { dayKey, nextDay } from "@/lib/stats/achievements";
 // Desafio diário: a mesma partida para todo mundo das 00h às 23h59 (horário de Brasília).
 // Sem banco aqui, para testar; o banco fica em lib/daily/db.ts.
 
-export const DAILY_GAMES = ["sudoku", "paciencia-spider", "verbete"] as const;
+export const DAILY_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras"] as const;
 export type DailyGame = (typeof DAILY_GAMES)[number];
 export const isDailyGame = (g: unknown): g is DailyGame => (DAILY_GAMES as readonly unknown[]).includes(g);
 
@@ -16,6 +17,7 @@ export const DAILY_START = "2026-10-12";
 /** Sempre na maior dificuldade. */
 export const DAILY_DIFFICULTY: Difficulty = "expert";
 export const DAILY_SUITS: SuitCount = 4;
+export const DAILY_WORDS_LEVEL: Level = "hard";
 
 export interface SudokuDaily {
   difficulty: Difficulty;
@@ -37,10 +39,14 @@ export interface VerbeteDaily {
   words: Record<`${Mode}`, string[]>;
 }
 
+/** A grade inteira fica guardada: mudar o gerador depois não muda os dias que já saíram. */
+export type CacaDaily = Puzzle;
+
 export type DailyChallenge =
   | { game: "sudoku"; day: string; data: SudokuDaily }
   | { game: "paciencia-spider"; day: string; data: SpiderDaily }
-  | { game: "verbete"; day: string; data: VerbeteDaily };
+  | { game: "verbete"; day: string; data: VerbeteDaily }
+  | { game: "caca-palavras"; day: string; data: CacaDaily };
 
 /** O que o perfil sabe de um desafio vencido. */
 export interface DailyDone {
@@ -66,20 +72,29 @@ export const randomSeed = () => Math.floor(Math.random() * 2 ** 32);
 /** Número do desafio de um dia: o primeiro dia é o #1. */
 export const dayNumber = (day: string) => Math.round((Date.parse(`${day}T12:00:00Z`) - Date.parse(`${DAILY_START}T12:00:00Z`)) / 86_400_000) + 1;
 
+/** Tema do Caça-Palavras do dia: um por dia, na ordem da lista, e recomeça no fim. */
+export function dailyTheme(day: string): string {
+  const n = dayNumber(day) - 1;
+  return THEMES[((n % THEMES.length) + THEMES.length) % THEMES.length].id;
+}
+
 /**
  * Gera a partida do desafio do dia `day`. O Sudoku expert pode levar ~1 s.
  * O Verbete não sorteia: as palavras saem da sequência fixa pelo número do dia (sem repetir por ~206 dias).
+ * O Caça-Palavras troca de tema a cada dia, na ordem da lista, e sorteia a grade.
  */
 export function makeChallenge(game: DailyGame, seed = randomSeed(), day = dayKey(new Date())): DailyChallenge["data"] {
   if (game === "sudoku") return { difficulty: DAILY_DIFFICULTY, seed, ...generate(DAILY_DIFFICULTY, seed) };
   if (game === "verbete") return { seed, words: dailyWords(dayNumber(day) - 1) };
+  if (game === "caca-palavras") return generateWords(DAILY_WORDS_LEVEL, dailyTheme(day), seed);
   return { suits: DAILY_SUITS, seed, deck: shuffledDeck(seed) };
 }
 
-/** O resultado mandado pelo navegador é deste desafio? (mesmo seed e mesmo nível; no Verbete, as mesmas palavras) */
+/** O resultado mandado pelo navegador é deste desafio? (mesmo seed e mesmo nível; no Verbete, as mesmas palavras; no Caça-Palavras, o mesmo tema) */
 export function matchesChallenge(ch: DailyChallenge, data: Record<string, unknown>, seed: unknown): boolean {
   if (seed !== ch.data.seed) return false;
   if (ch.game === "sudoku") return data.difficulty === ch.data.difficulty;
+  if (ch.game === "caca-palavras") return data.level === ch.data.level && data.theme === ch.data.theme;
   if (ch.game === "verbete") {
     const answers = data.answers;
     if (!isMode(data.mode) || !Array.isArray(answers)) return false;
