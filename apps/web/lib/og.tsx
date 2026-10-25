@@ -34,6 +34,7 @@ async function card(name: string): Promise<string> {
 const TITLES: Record<string, [string, string]> = {
   "truco-paulista": ["TRUCO", "PAULISTA"],
   buraco: ["BURACO", "CANASTRAS"],
+  blackjack: ["BLACKJACK", "VINTE E UM"],
   "paciencia-spider": ["PACIÊNCIA", "SPIDER"],
   sudoku: ["SUDOKU", "9 × 9"],
   "connect-4": ["CONNECT", "4 EM LINHA"],
@@ -84,6 +85,43 @@ async function art(slug: string) {
               style={{ position: "absolute", left: 130, top: 80, transformOrigin: "50% 100%", transform: `rotate(${(i - 1.5) * 15}deg)`, borderRadius: 12, boxShadow: "0 8px 20px rgba(0,0,0,0.45)" }}
             />
           ))}
+        </div>
+      );
+    }
+    case "blackjack": {
+      // ás e valete (blackjack) com uma ficha de 100 encostada
+      const cards = await Promise.all(["ace_of_spades", "jack_of_hearts"].map(card));
+      return (
+        <div style={{ display: "flex", position: "relative", width: 440, height: 420 }}>
+          {cards.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              width={200}
+              height={290}
+              style={{ position: "absolute", left: 70 + i * 110, top: 50 + i * 20, transform: `rotate(${i ? 10 : -10}deg)`, borderRadius: 12, boxShadow: "0 8px 20px rgba(0,0,0,0.45)" }}
+            />
+          ))}
+          <div
+            style={{
+              position: "absolute",
+              left: 300,
+              top: 290,
+              width: 110,
+              height: 110,
+              borderRadius: 55,
+              background: "#1c1917",
+              border: "10px dashed #f2c14e",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 8px 20px rgba(0,0,0,0.5)",
+            }}
+          >
+            <div style={{ display: "flex", width: 64, height: 64, borderRadius: 32, border: "3px solid #f2c14e", alignItems: "center", justifyContent: "center", color: "#f2c14e", fontSize: 24, fontFamily: "Bungee" }}>
+              100
+            </div>
+          </div>
         </div>
       );
     }

@@ -97,6 +97,18 @@ body {
   55% { transform: translate(230px, -70px); }
   100% { transform: translate(380px, 28px); }
 }
+/* Blackjack: ás e valete saem do sapato (canto de cima à direita) um depois do outro e a ficha cai na aposta */
+@keyframes hc-bj-deal {
+  0% { translate: 140% -90%; rotate: 30deg; opacity: 0; }
+  70% { translate: -3% 2%; rotate: -2deg; opacity: 1; }
+  100% { translate: 0 0; rotate: 0deg; opacity: 1; }
+}
+@keyframes hc-bj-chip {
+  0% { translate: 0 -180%; opacity: 0; }
+  60% { translate: 0 6%; opacity: 1; }
+  80% { translate: 0 -8%; }
+  100% { translate: 0 0; opacity: 1; }
+}
 /* Tijolada: o I cai no buraco, as 4 linhas piscam e somem, e o que sobrou desce (--tj-y = linhas) */
 @keyframes hc-tj-move {
   to { transform: translateY(var(--tj-y)); }
@@ -107,6 +119,13 @@ body {
   100% { opacity: 0; filter: brightness(2.6); }
 }
 @media (prefers-reduced-motion: no-preference) {
+  .hc:hover .hc-bj-deal {
+    animation: hc-bj-deal 0.4s cubic-bezier(0.3, 0.8, 0.4, 1) both;
+    animation-delay: calc(var(--d) * 170ms);
+  }
+  .hc:hover .hc-bj-chip {
+    animation: hc-bj-chip 0.45s cubic-bezier(0.3, 0.8, 0.4, 1) 0.45s both;
+  }
   .hc:hover .hc-tj-fall {
     animation: hc-tj-move 0.35s cubic-bezier(0.5, 0, 1, 1) both, hc-tj-clear 0.4s ease-out 0.5s both;
   }
@@ -265,6 +284,21 @@ body {
 }
 .hand-end-bar {
   animation: hand-end-bar linear forwards;
+}
+
+/* Blackjack: carta saindo do sapato até a mão (--from = de onde vem, relativo ao lugar final) */
+@keyframes bj-in {
+  from { transform: translate(var(--from)) rotate(-25deg) scale(0.8); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.bj-in {
+  animation: bj-in 0.35s cubic-bezier(0.3, 0.7, 0.4, 1) backwards;
+}
+@keyframes bj-fade {
+  from { opacity: 0; transform: scale(0.6); }
+}
+.bj-fade {
+  animation: bj-fade 0.25s ease-out backwards;
 }
 
 @keyframes banner {

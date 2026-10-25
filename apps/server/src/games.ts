@@ -9,6 +9,7 @@ import * as damas from "@mesa/damas";
 import * as ludo from "@mesa/ludo";
 import * as domino from "@mesa/domino";
 import * as buraco from "@mesa/buraco";
+import * as bj from "@mesa/blackjack";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
 import * as tijolada from "@mesa/tijolada";
@@ -102,6 +103,36 @@ const BURACO_EVENT_MS: Record<buraco.Event["kind"], number> = { draw: 350, take:
 const BURACO_HAND_END_MS = 10000;
 // Dado parado na tela antes de a vez passar (sem lance ou 3º seis)
 const LUDO_PASS_MS = 1300;
+// Blackjack: embaralhar, cada carta saindo do sapato, divisão, carta da banca virando; pausa entre os
+// passos da banca e acerto da rodada na tela antes das próximas apostas
+const BJ_SHUFFLE_MS = 900;
+const BJ_CARD_MS = 180;
+const BJ_SPLIT_MS = 450;
+const BJ_REVEAL_MS = 500;
+const BJ_DEALER_STEP_MS = 750;
+const BJ_SETTLE_MS = 3200;
+const BJ_EVENT_MS: Record<bj.Event["kind"], number> = {
+  shuffle: BJ_SHUFFLE_MS,
+  bet: 250,
+  deal: 0,
+  hit: 400,
+  double: 450,
+  split: BJ_SPLIT_MS,
+  stand: 0,
+  bust: 300,
+  insurance: 250,
+  reveal: BJ_REVEAL_MS,
+  dealerHit: 400,
+  settle: 0,
+};
+/** Tempo na tela dos eventos novos (a distribuição pelo número de cartas). */
+const bjEventsMs = (events: bj.Event[]) =>
+  events.reduce((ms, e) => ms + (e.kind === "deal" ? 300 + e.cards * BJ_CARD_MS : BJ_EVENT_MS[e.kind]), 0);
+/** Eventos desde a última distribuição (a rodada que está na mesa). */
+const bjSinceDeal = (s: bj.GameState) => {
+  const i = s.events.map((e) => e.kind).lastIndexOf("deal");
+  return i < 0 ? [] : s.events.slice(i);
+};
 
 const trucoAdapter: GameAdapter<truco.GameState, truco.Action, truco.PlayerView> = {
   seats: 4,
@@ -612,6 +643,87 @@ const tijoladaAdapter: GameAdapter<tijolada.VersusState, tijolada.VersusAction, 
   outcome: tijolada.versusOutcome,
 };
 
+const blackjackAdapter: GameAdapter<bj.GameState, bj.Action, bj.PlayerView> = {
+  seats: bj.SEATS,
+  minSeats: 1,
+  simultaneous: true,
+  settings: {
+    initial: bj.DEFAULT_SETTINGS,
+    parse: (raw, prev) => bj.parseSettings(raw, prev as bj.Settings),
+  },
+  newGame: (prev, { seats, settings }) => bj.newGame(Math.random, { players: seats, settings: bj.parseSettings(settings) }, prev, Date.now()),
+  // o relógio das decisões é o do servidor: toda ação leva a hora em que chegou
+  applyAction: (s, a) => bj.applyAction(s, { ...a, at: Date.now() }),
+  viewFor: (s, seat) => bj.viewFor(s, seat, Date.now()),
+  spectate: (s) => bj.viewFor(s, null, Date.now()),
+  decide: (v) => bj.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    switch (m.type) {
+      case "bet":
+        return { type: "bet", seat, amount: Number(m.amount) };
+      case "insurance":
+        return { type: "insurance", seat, take: m.take === true };
+      case "hit":
+      case "double":
+      case "split":
+        return { type: m.type, seat };
+      default:
+        return { type: "stand", seat };
+    }
+  },
+  actors: bj.actors,
+  pause: (s) => {
+    if (s.phase === "dealer") {
+      // banca espera a última carta (ou a distribuição, se ninguém jogou) chegar na mesa
+      const last = s.events[s.events.length - 1];
+      return BJ_DEALER_STEP_MS + (last?.kind === "deal" ? bjEventsMs([last]) : 0);
+    }
+    if (s.phase === "settle") {
+      const round = bjSinceDeal(s);
+      // banca abriu blackjack logo na distribuição: a mesa ainda está recebendo as cartas
+      const quick = round.every((e) => e.kind === "deal" || e.kind === "reveal" || e.kind === "settle" || e.kind === "insurance");
+      return BJ_SETTLE_MS + (quick ? bjEventsMs(round) : 0);
+    }
+    return null;
+  },
+  clock: (s) => (s.deadline === null ? null : Math.max(0, s.deadline - Date.now())),
+  // apostar é rápido; cada decisão na vez leva um pouco mais
+  botDelay: (s) => (s.phase === "bet" ? 400 + Math.random() * 700 : s.phase === "insurance" ? 500 + Math.random() * 400 : 700 + Math.random() * 500),
+  over: (s) => s.phase === "gameOver",
+  animMs: (prev, next) => {
+    if (!prev || prev.gameNo !== next.gameNo) return bjEventsMs(next.events);
+    const fresh = Math.min(Math.max(0, next.eventNo - prev.eventNo), next.events.length);
+    return bjEventsMs(next.events.slice(next.events.length - fresh));
+  },
+  outcome: (s, seat) => {
+    const p = s.table[seat];
+    if (!p) return { outcome: "loss", data: {} };
+    const st = p.stats;
+    return {
+      outcome: p.chips > bj.START_CHIPS ? "win" : p.chips < bj.START_CHIPS ? "loss" : "draw",
+      placement: bj.placementOf(s, seat),
+      data: {
+        rounds: s.settings.rounds,
+        played: st.rounds,
+        final: p.chips,
+        profit: p.chips - bj.START_CHIPS,
+        peak: st.peak,
+        low: st.low,
+        bestRound: st.bestRound,
+        handsPlayed: st.handsPlayed,
+        handsWon: st.handsWon,
+        blackjacks: st.blackjacks,
+        doublesWon: st.doublesWon,
+        splits: st.splits,
+        splitSweeps: st.splitSweeps,
+        busts: st.busts,
+        players: s.players.length,
+      },
+    };
+  },
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
@@ -627,4 +739,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   xadrez: xadrezAdapter,
   "futebol-de-botao": futebolAdapter,
   tijolada: tijoladaAdapter,
+  blackjack: blackjackAdapter,
 };

@@ -6,7 +6,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Buraco, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider, Verbete e Caça-Palavras online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Buraco, Blackjack, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider, Verbete e Caça-Palavras online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
@@ -86,6 +86,56 @@ export const GAMES: GameSeo[] = [
       { q: "Como funciona o lixo?", a: "No lugar de comprar do monte, você pode pegar o lixo inteiro se a carta de cima entrar na hora num jogo da sua dupla ou formar um jogo novo com cartas da sua mão. Um curinga no topo trava o lixo." },
       { q: "O que é o morto e como se bate?", a: "São dois montes de 11 cartas, um para cada dupla. Quem fica sem cartas na mão pega o morto da dupla e continua. Para bater, a dupla precisa já ter pego o morto e ter pelo menos uma canastra; a batida vale 100 pontos. Quem nunca pegou o morto perde 100 no fim da mão." },
       { q: "Dá para jogar Buraco online com amigos?", a: "Sim. Crie uma sala, envie o código ou o link e jogue em duplas com 4 pessoas ou no mano a mano com 2, sem cadastro. Lugares vazios podem ser completados pelo computador, e há modo solo contra a IA." },
+    ],
+  },
+  {
+    slug: "blackjack",
+    path: "/blackjack",
+    name: "Blackjack",
+    title: "Blackjack Online Grátis (21)",
+    description:
+      "Jogue Blackjack (21) online grátis com fichas de mentira: aposte, peça, dobre e divida contra a banca. Mesa com até 5 jogadores ou sozinho com IAs, sem cadastro.",
+    tagline: "Vinte e um contra a banca, sozinho ou com até 4 amigos.",
+    keywords: [
+      "blackjack online",
+      "jogar blackjack grátis",
+      "21 online",
+      "vinte e um cartas",
+      "blackjack com amigos",
+      "blackjack multiplayer",
+      "estratégia básica blackjack",
+      "jogo de cartas",
+    ],
+    genre: "Jogo de cartas",
+    players: { min: 1, max: 5 },
+    modes:
+      "Multiplayer online em salas privadas com até 5 jogadores contra a banca, com lugares completados pelo computador, e modo solo sozinho ou com IAs na mesa. Fichas só da partida, sem dinheiro.",
+    howTo: {
+      title: "Como jogar Blackjack: valor das cartas, apostas e estratégia básica",
+      description:
+        "Aprenda as regras do Blackjack (21): valor das cartas, pedir, parar, dobrar, dividir, seguro, quando a banca compra, pagamentos 3:2 e a tabela da estratégia básica.",
+    },
+    faq: [
+      {
+        q: "Como se joga Blackjack?",
+        a: "Cada jogador joga contra a banca. Todos recebem 2 cartas abertas e a banca recebe uma aberta e uma fechada. Na sua vez, peça cartas para chegar mais perto de 21 que a banca, sem passar. Quem passa de 21 estoura e perde a aposta.",
+      },
+      {
+        q: "Quanto vale cada carta no Blackjack?",
+        a: "Do 2 ao 10 vale o número, valete, dama e rei valem 10, e o ás vale 1 ou 11, o que for melhor para a mão. Ás com uma carta de 10 nas duas primeiras cartas é blackjack, que paga 3 para 2.",
+      },
+      {
+        q: "Quando a banca compra carta?",
+        a: "Depois que todos jogam, a banca vira a carta fechada e compra até ter 17 ou mais. No 17 mole (com um ás valendo 11) ela também compra. Se a banca estourar, quem não estourou ganha.",
+      },
+      {
+        q: "O que é dobrar, dividir e seguro?",
+        a: "Dobrar: com 2 cartas, você dobra a aposta e recebe só mais uma carta. Dividir: com um par do mesmo valor, as cartas viram duas mãos, cada uma com a mesma aposta (uma vez por mão). Seguro: quando a banca mostra um ás, você pode apostar meia aposta que ela tem blackjack, e o seguro paga 2 para 1.",
+      },
+      {
+        q: "O Blackjack do Mesa de Jogos usa dinheiro?",
+        a: "Não. Cada partida começa com 1000 fichas que só existem nela, e quem termina com mais de 1000 vence. Dá para jogar sozinho, com IAs na mesa ou numa sala com até 5 amigos, sem cadastro.",
+      },
     ],
   },
   {

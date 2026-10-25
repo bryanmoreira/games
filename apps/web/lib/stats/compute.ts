@@ -174,6 +174,23 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
       };
       break;
     }
+    case "blackjack": {
+      const fmt = (n: number | null) => (n ? n.toLocaleString("pt-BR") : null);
+      chip("Maior saldo final", fmt(maxOf(rs.map((r) => num(r, "final")).filter(Number.isFinite))));
+      chip("Maior ganho numa mão", ((n) => (n && n > 0 ? `+${n.toLocaleString("pt-BR")}` : null))(maxOf(rs.map((r) => num(r, "bestRound")).filter(Number.isFinite))));
+      chip("Mais blackjacks numa partida", ((n) => (n ? n : null))(maxOf(rs.map((r) => num(r, "blackjacks")).filter(Number.isFinite))));
+      const played = rs.reduce((n, r) => n + (num(r, "handsPlayed") || 0), 0);
+      const won = rs.reduce((n, r) => n + (num(r, "handsWon") || 0), 0);
+      chip("Mãos ganhas", played ? `${Math.round((won / played) * 100)}%` : null);
+      stats.table = {
+        cols: ["Vitórias", "Partidas"],
+        rows: [5, 10, 20].map((n) => {
+          const games = rs.filter((r) => num(r, "rounds") === n);
+          return { label: `${n} mãos`, values: [String(games.filter(isWin).length), String(games.length)] };
+        }),
+      };
+      break;
+    }
     case "futebol-de-botao": {
       const margin = maxOf(wins.map((r) => num(r, "gf") - num(r, "ga")).filter(Number.isFinite));
       const best = wins.find((r) => num(r, "gf") - num(r, "ga") === margin);

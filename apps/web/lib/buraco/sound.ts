@@ -2,14 +2,6 @@
 
 import { audio, knock, tone } from "@/lib/sound";
 
-/** Cartas embaralhadas no começo da mão: tapinhas de papel em sequência. */
-export function playShuffleSound() {
-  const ac = audio();
-  if (!ac) return;
-  const t = ac.currentTime;
-  for (let i = 0; i < 10; i++) knock(ac, t + i * 0.07 + Math.random() * 0.03, 1.6 + Math.random() * 0.6, 0.1 + Math.random() * 0.08);
-}
-
 /** Canastra fechada: acorde que sobe; a limpa e a real ganham mais notas. */
 export function playCanastraSound(kind: "limpa" | "suja" | "real") {
   const ac = audio();

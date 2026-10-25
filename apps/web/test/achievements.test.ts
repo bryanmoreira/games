@@ -111,6 +111,13 @@ const CASES: Record<string, Case> = {
   "domino:wins_10": winsCase(10),
   "domino:wins_50": winsCase(50),
   "domino:wins_100": winsCase(100),
+  "blackjack:first": firstCase,
+  "blackjack:natural": { ok: [loss({ blackjacks: 1 })], almost: [win({ blackjacks: 0 }), loss({ abandoned: true }), win({})] },
+  "blackjack:doubles": { ok: [loss({ doublesWon: 5 })], almost: [win({ doublesWon: 4 }), loss({ abandoned: true }), win({})] },
+  "blackjack:split_sweep": { ok: [loss({ splitSweeps: 1 })], almost: [win({ splitSweeps: 0, splits: 3 }), loss({ abandoned: true })] },
+  "blackjack:streak_5": streakCase,
+  "blackjack:break_bank": { ok: [win({ final: 2000 })], almost: [win({ final: 1995 }), loss({ abandoned: true }), win({})] },
+  "blackjack:comeback": { ok: [win({ low: 200, final: 1010 })], almost: [win({ low: 205 }), loss({ low: 0 }), draw({ low: 100 }), win({})] },
   "buraco:first": firstCase,
   "buraco:lixeiro": { ok: [loss({ maxPile: 10 })], almost: [win({ maxPile: 9 }), loss({ abandoned: true }), win({})] },
   "buraco:limpinha": {

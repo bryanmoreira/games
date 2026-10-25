@@ -25,6 +25,7 @@ const INVITE: Record<GameId, string> = {
   "futebol-de-botao": "Bora um futebol de botão? Duvido fazer 3 gols antes de mim! ⚽",
   tijolada: "Bora uma Tijolada? Duvido aguentar mais tempo que eu! 🧱",
   buraco: "Bora um Buraco? Duvido fechar uma canastra antes de mim! 🃏",
+  blackjack: "Bora um Blackjack? Duvido você quebrar a banca antes de mim! 🃏",
 };
 
 /** Uma coluna do lobby: os lugares de um time (ou de um jogador). */

@@ -232,6 +232,36 @@ describe("gameStats: Buraco", () => {
   });
 });
 
+describe("gameStats: Blackjack", () => {
+  test("maior saldo, maior ganho numa mão, mais blackjacks, mãos ganhas e tabela por tamanho", () => {
+    const rs = [
+      win({ rounds: 10, final: 1850, bestRound: 300, blackjacks: 2, handsPlayed: 11, handsWon: 6 }),
+      loss({ rounds: 10, final: 400, bestRound: 50, blackjacks: 0, handsPlayed: 10, handsWon: 3 }),
+      win({ rounds: 5, final: 1100, bestRound: 150, blackjacks: 3, handsPlayed: 5, handsWon: 3 }),
+      loss({ abandoned: true }),
+    ];
+    const s = gameStats("blackjack", rs);
+    expect(s.chips).toEqual([
+      { label: "Maior saldo final", value: "1.850" },
+      { label: "Maior ganho numa mão", value: "+300" },
+      { label: "Mais blackjacks numa partida", value: "3" },
+      { label: "Mãos ganhas", value: "46%" },
+    ]);
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Partidas"],
+      rows: [
+        { label: "5 mãos", values: ["1", "1"] },
+        { label: "10 mãos", values: ["1", "2"] },
+        { label: "20 mãos", values: ["0", "0"] },
+      ],
+    });
+  });
+
+  test("só uma partida abandonada: sem chips", () => {
+    expect(chips("blackjack", [loss({ abandoned: true })])).toEqual([]);
+  });
+});
+
 describe("gameStats: Futebol de Botão", () => {
   test("maior goleada, mais gols, vitória mais rápida, total de gols e tabela por tamanho", () => {
     const rs = [

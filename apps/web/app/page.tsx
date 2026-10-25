@@ -14,6 +14,7 @@ import { MiniGrid } from "@/components/codenames/Board";
 import { FieldArt } from "@/components/futebol-de-botao/Field";
 import { TijoladaArt } from "@/components/tijolada/Art";
 import { Domino } from "@/components/domino/Tile";
+import { Chip } from "@/components/blackjack/Chips";
 import { UserButton } from "@/components/UserButton";
 import { ChipBalance } from "@/components/chips/ChipBalance";
 import { ShopButton } from "@/components/shop/ShopButton";
@@ -36,6 +37,11 @@ const BURACO_RUN = [
   { rank: "7", suit: "hearts" },
   { rank: "JK", suit: "", file: "black_joker" },
   { rank: "9", suit: "hearts" },
+];
+/** Blackjack: ás e valete (21 de cara) com uma ficha. */
+const BLACKJACK_HAND = [
+  { rank: "A", suit: "spades" },
+  { rank: "J", suit: "hearts" },
 ];
 const SPIDER_CASCADE = [13, 12, 11, 10].map((rank) => ({ rank, suit: "spades" }));
 
@@ -90,6 +96,27 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
             <CardImg card={c} />
           </div>
         ))}
+      </div>
+    ),
+  },
+  {
+    slug: "blackjack",
+    title: "BLACKJACK",
+    sub: "VINTE E UM",
+    art: (
+      <div className={`absolute left-1/2 top-[14%] flex w-[46%] -translate-x-1/2 rotate-3 items-end ${HOVER}`}>
+        {BLACKJACK_HAND.map((c, i) => (
+          <div key={i} className={`w-[56%] shrink-0 ${i ? "-ml-[22%] rotate-[9deg]" : "-rotate-[7deg]"}`}>
+            <div className="hc-bj-deal drop-shadow-[0_4px_0_rgba(0,0,0,0.3)]" style={{ "--d": i } as CSSProperties}>
+              <CardImg card={c} />
+            </div>
+          </div>
+        ))}
+        <div className="absolute -bottom-[6%] -right-[10%] w-[30%]">
+          <div className="hc-bj-chip">
+            <Chip value={100} className="w-full drop-shadow-[0_3px_2px_rgba(0,0,0,0.5)]" />
+          </div>
+        </div>
       </div>
     ),
   },

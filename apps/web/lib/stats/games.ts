@@ -16,6 +16,7 @@ import { XADREZ_PATH } from "@/lib/xadrez/paths";
 import { FUTEBOL_PATH } from "@/lib/futebol-de-botao/paths";
 import { TIJOLADA_PATH } from "@/lib/tijolada/paths";
 import { BURACO_PATH } from "@/lib/buraco/paths";
+import { BLACKJACK_PATH } from "@/lib/blackjack/paths";
 import { CACA_PATH } from "@/lib/caca-palavras/paths";
 
 /**
@@ -23,7 +24,7 @@ import { CACA_PATH } from "@/lib/caca-palavras/paths";
  * A Tijolada está nos online (1×1) e também manda as partidas solo pelo navegador.
  */
 export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras"] as const;
-export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames", "buraco"] as const satisfies readonly GameId[];
+export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames", "buraco", "blackjack"] as const satisfies readonly GameId[];
 
 export type SoloGame = (typeof SOLO_GAMES)[number];
 export type StatGame = SoloGame | GameId;
@@ -45,6 +46,7 @@ export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
   stop: { name: "Stop", path: STOP_PATH },
   codenames: { name: "Codenames", path: CODENAMES_PATH },
   buraco: { name: "Buraco", path: BURACO_PATH },
+  blackjack: { name: "Blackjack", path: BLACKJACK_PATH },
   verbete: { name: "Verbete", path: VERBETE_PATH },
   "caca-palavras": { name: "Caça-Palavras", path: CACA_PATH },
   sudoku: { name: "Sudoku", path: SUDOKU_PATH },

@@ -128,6 +128,14 @@ export function playCardSound() {
   thud.stop(t + 0.12);
 }
 
+/** Cartas embaralhadas (buraco, blackjack): tapinhas de papel em sequência. */
+export function playShuffleSound() {
+  const ac = audio();
+  if (!ac) return;
+  const t = ac.currentTime;
+  for (let i = 0; i < 10; i++) knock(ac, t + i * 0.07 + Math.random() * 0.03, 1.6 + Math.random() * 0.6, 0.1 + Math.random() * 0.08);
+}
+
 /** Vitória: acorde maior em duas batidas. */
 export function playWinSound() {
   const ac = audio();

@@ -10,6 +10,7 @@ import * as damas from "@mesa/damas";
 import * as ludo from "@mesa/ludo";
 import * as domino from "@mesa/domino";
 import * as buraco from "@mesa/buraco";
+import * as bj from "@mesa/blackjack";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
 import * as tijolada from "@mesa/tijolada";
@@ -284,6 +285,66 @@ describe("buraco", () => {
     expect(animMs(s, n)).toBeGreaterThan(0);
     expect(animMs(n, n)).toBe(0);
     expect(outcome(n, 0).data.mode).toBe("1x1");
+  });
+});
+
+describe("blackjack", () => {
+  const { outcome, withSeat, actors, pause, over, applyAction, animMs, clock } = GAMES.blackjack;
+
+  /** Partida inteira entre IAs, sem relógio. */
+  function finished(seed: number, players: number[]): bj.GameState {
+    const rng = seeded(seed);
+    let s = bj.newGame(rng, { players, settings: { rounds: 5, clock: false } });
+    for (let guard = 0; !over(s) && guard < 1000; guard++) {
+      const who = actors(s);
+      const a = who.length ? bj.decide(bj.viewFor(s, who[0]), rng)! : ({ type: "advance" } as bj.Action);
+      s = ok(bj.applyAction(s, a, rng));
+    }
+    return s;
+  }
+
+  test("ação do cliente com o assento de quem mandou, sem confiar no resto", () => {
+    expect(withSeat({ type: "bet", amount: "50", seat: 3 }, 1)).toEqual({ type: "bet", seat: 1, amount: 50 });
+    expect(withSeat({ type: "insurance", take: 1 }, 0)).toEqual({ type: "insurance", seat: 0, take: false });
+    expect(withSeat({ type: "split" }, 2)).toEqual({ type: "split", seat: 2 });
+    expect(withSeat({ type: "qualquer" }, 2)).toEqual({ type: "stand", seat: 2 });
+  });
+
+  test("acima de 1000 vence, abaixo perde, igual empata; colocação pelo saldo", () => {
+    const s = finished(11, [0, 1, 2]);
+    s.table[0]!.chips = 1500;
+    s.table[1]!.chips = 900;
+    s.table[2]!.chips = 1000;
+    expect(outcome(s, 0)).toMatchObject({ outcome: "win", placement: 1, data: { final: 1500, profit: 500, rounds: 5, players: 3 } });
+    expect(outcome(s, 1)).toMatchObject({ outcome: "loss", placement: 3, data: { final: 900, profit: -100 } });
+    expect(outcome(s, 2)).toMatchObject({ outcome: "draw", placement: 2 });
+    const d = outcome(s, 0).data;
+    for (const k of ["peak", "low", "bestRound", "handsPlayed", "handsWon", "blackjacks", "doublesWon", "splits", "splitSweeps", "busts", "played"])
+      expect(typeof d[k]).toBe("number");
+  });
+
+  test("hora do servidor nas ações e relógio da aposta", () => {
+    const s = bj.newGame(seeded(5), { players: [0, 1], settings: { rounds: 5, clock: true } }, null, Date.now());
+    expect(clock!(s)).toBeGreaterThan(bj.BET_MS - 1000);
+    expect(pause(s)).toBeNull();
+    const n = ok(applyAction(s, { type: "bet", seat: 0, amount: 50 }));
+    expect(animMs(s, n)).toBeGreaterThan(0);
+    expect(actors(n)).toEqual([1]);
+    // advance antes da hora é recusado (o servidor confere de novo)
+    expect(applyAction(n, { type: "advance" }).ok).toBe(false);
+  });
+
+  test("banca e acerto têm pausa", () => {
+    const s = finished(3, [0]);
+    expect(over(s)).toBe(true);
+    let g = bj.newGame(seeded(9), { players: [0], settings: { rounds: 5, clock: false } });
+    for (let guard = 0; guard < 200 && g.phase !== "settle"; guard++) {
+      if (g.phase === "dealer") expect(pause(g)).toBeGreaterThan(0);
+      const who = actors(g);
+      const a = who.length ? bj.decide(bj.viewFor(g, who[0]))! : ({ type: "advance" } as bj.Action);
+      g = ok(bj.applyAction(g, a));
+    }
+    expect(pause(g)).toBeGreaterThanOrEqual(3000);
   });
 });
 

@@ -14,6 +14,7 @@
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@mesa/batalha-naval": "workspace:*",
+    "@mesa/blackjack": "workspace:*",
     "@mesa/buraco": "workspace:*",
     "@mesa/caca-palavras": "workspace:*",
     "@mesa/codenames": "workspace:*",
