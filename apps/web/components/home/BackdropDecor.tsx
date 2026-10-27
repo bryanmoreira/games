@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { makeCard } from "@mesa/truco";
+import { makeCard, type Rank, type Suit } from "@mesa/truco";
 import { BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK } from "@mesa/xadrez";
 import { CardImg } from "@/components/cards/Card";
 import { PieceShape } from "@/components/xadrez/Piece";
@@ -58,7 +58,7 @@ type Item = {
 };
 
 const piece = (p: number) => <PieceShape p={p} className="block w-full" />;
-const card = (rank: string, suit: string) => <CardImg card={makeCard(rank, suit)} />;
+const card = (rank: Rank, suit: Suit) => <CardImg card={makeCard(rank, suit)} />;
 
 const ITEMS: Item[] = [
   { art: piece(KNIGHT), top: "3%", left: "-3%", w: 255, blur: 10, rot: -14, opacity: 0.4, delay: 0, phone: true },
