@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo";
-import { SITE_TAGLINE, getGame, homeLd } from "@/lib/seo";
+import { getGame, homeLd } from "@/lib/seo";
 import { makeCard } from "@mesa/truco";
 import { CardImg } from "@/components/cards/Card";
 import { MiniBoard } from "@/components/sudoku/common";
@@ -21,6 +21,7 @@ import { ShopButton } from "@/components/shop/ShopButton";
 import { GameGrid, PlayersBadge, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TableDecor } from "@/components/home/TableDecor";
+import { WoodRail, WoodSign } from "@/components/home/WoodTop";
 import { DailyRibbon } from "@/components/home/DailyRibbon";
 import { HoverCard } from "@/components/home/HoverCard";
 import { ChessArt, Connect4Art, DamasArt, LudoArt, OtrioArt, VelhaArt } from "@/components/home/BoardArts";
@@ -324,15 +325,16 @@ export default function Home() {
   return (
     <div className="table-texture relative isolate min-h-dvh bg-[#0f1813]">
       <TableDecor />
-      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-end gap-3 px-4 pt-4">
+      <WoodRail>
         <ShopButton />
         <ChipBalance />
         <UserButton />
-      </header>
-      <main className="relative mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 pb-12 pt-2">
+      </WoodRail>
+      <main className="relative mx-auto flex max-w-6xl flex-col items-center gap-10 px-4 pb-12">
         <JsonLd data={homeLd()} />
-        <h1 className="text-center font-display text-4xl tracking-wide text-gold drop-shadow-[0_3px_0_#7a4e0c] sm:text-5xl">MESA DE JOGOS</h1>
-        <p className="-mt-6 max-w-md text-center text-sm text-white/60">{SITE_TAGLINE}</p>
+        <WoodSign>
+          <h1 className="text-center font-display text-3xl tracking-wide text-gold drop-shadow-[0_3px_0_#2a1608] sm:text-5xl">MESA DE JOGOS</h1>
+        </WoodSign>
 
         <GameGrid games={tiles} />
       </main>
