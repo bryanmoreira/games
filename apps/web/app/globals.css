@@ -217,6 +217,18 @@ body {
   --color-felt: #1d4a73;
 }
 
+/* home: objetos desfocados do fundo (components/home/BackdropDecor) sobem e descem devagar; --d defasa cada um */
+@keyframes backdrop-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(4deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .backdrop-float {
+    animation: backdrop-float 9s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+}
+
 /* home: topo de madeira (components/home/WoodTop). Veio da tábua com costura dourada e rebites de latão. */
 .wood {
   background:

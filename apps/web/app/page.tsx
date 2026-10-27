@@ -21,6 +21,7 @@ import { ShopButton } from "@/components/shop/ShopButton";
 import { GameGrid, PlayersBadge, type GameTile } from "@/components/home/GameGrid";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TableDecor } from "@/components/home/TableDecor";
+import { BackdropDecor } from "@/components/home/BackdropDecor";
 import { WoodRail, WoodSign } from "@/components/home/WoodTop";
 import { DailyRibbon } from "@/components/home/DailyRibbon";
 import { HoverCard } from "@/components/home/HoverCard";
@@ -324,6 +325,7 @@ export const metadata: Metadata = { alternates: { canonical: "/", languages: { "
 export default function Home() {
   return (
     <div className="table-texture relative isolate min-h-dvh bg-[#0f1813]">
+      <BackdropDecor />
       <TableDecor />
       <WoodRail>
         <ShopButton />
