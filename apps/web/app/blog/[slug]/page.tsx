@@ -3,21 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { Figure, Markdown } from "@/components/blog/Markdown";
+import { PostArticle } from "@/components/blog/PostArticle";
 import { JsonLd } from "@/components/seo";
-import { formatDate, getPost, getPosts, postCta } from "@/lib/blog";
+import { blogImage } from "@/lib/blog-images";
+import { canSeeDrafts, getPost, postCta } from "@/lib/blog";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return getPosts().map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const p = getPost((await params).slug);
+  const p = await getPost((await params).slug, await canSeeDrafts());
   if (!p) return {};
   const path = `/blog/${p.slug}`;
   return {
@@ -32,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Post({ params }: Props) {
-  const p = getPost((await params).slug);
+  const p = await getPost((await params).slug, await canSeeDrafts());
   if (!p) notFound();
   const cta = postCta(p);
   const url = `${SITE_URL}/blog/${p.slug}`;
@@ -49,6 +44,7 @@ export default async function Post({ params }: Props) {
                 headline: p.title,
                 description: p.description,
                 datePublished: p.date,
+                dateModified: p.updatedAt.toISOString(),
                 inLanguage: "pt-BR",
                 url,
                 mainEntityOfPage: url,
@@ -71,17 +67,7 @@ export default async function Post({ params }: Props) {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">BLOG</span>
         </header>
 
-        <article className="flex flex-col gap-5 rounded-3xl bg-white/5 p-5 leading-relaxed text-white/85 ring-1 ring-white/10 sm:p-8 sm:text-lg">
-          {p.cover && <Figure image={p.cover} eager />}
-          <div className="flex flex-col gap-2">
-            <span className="flex flex-wrap items-center gap-2 text-xs text-white/50 sm:text-sm">
-              {formatDate(p.date)}
-              {p.draft && <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-[10px] font-semibold text-red-300">RASCUNHO</span>}
-            </span>
-            <h1 className="font-display text-2xl leading-tight text-gold sm:text-4xl">{p.title}</h1>
-          </div>
-          <Markdown source={p.body} />
-        </article>
+        <PostArticle p={p} image={blogImage} />
 
         <div className="flex flex-col items-center gap-3">
           <Link

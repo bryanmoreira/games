@@ -1,11 +1,17 @@
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import { blogImage, IMAGE_RE, type BlogImage } from "@/lib/blog-images";
+import { headers } from "next/headers";
+import { cache } from "react";
+import { isAdmin } from "@/lib/admin";
+import { auth } from "@/lib/auth";
+import { blogImage, type BlogImage } from "@/lib/blog-images";
+import { prisma } from "@/lib/db";
 import { getGame } from "@/lib/seo";
 
-/** Posts do blog: arquivos Markdown em `content/blog`, com front matter simples (`chave: valor`). */
+export { formatDate } from "@/lib/blog-text";
+
+/** Posts do blog: tabela `blog_post`, editada em /admin/blog ou pela API (/api/v1/blog). */
 
 export type BlogPost = {
+  id: string;
   slug: string;
   title: string;
   description: string;
@@ -14,69 +20,45 @@ export type BlogPost = {
   keyword: string;
   date: string;
   draft: boolean;
-  /** Capa (`cover` e `coverAlt` no front matter): topo do post e lista */
+  /** Capa: topo do post e lista */
   cover?: BlogImage;
   body: string;
+  updatedAt: Date;
 };
 
-const DIR = join(/* turbopackIgnore: true */ process.cwd(), "content/blog");
-
-/** Rascunhos aparecem no `next dev` ou com `BLOG_DRAFTS=1`; no build de produção ficam de fora (sem página e sem sitemap). */
+/** Rascunhos aparecem no `next dev` ou com `BLOG_DRAFTS=1`; em produção só para admin (sem sitemap). */
 export const SHOW_DRAFTS = process.env.NODE_ENV !== "production" || process.env.BLOG_DRAFTS === "1";
 
-function parse(file: string): BlogPost {
-  const raw = readFileSync(join(DIR, file), "utf8").replace(/\r\n/g, "\n");
-  const m = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!m) throw new Error(`Post sem front matter: ${file}`);
-  const meta: Record<string, string> = {};
-  for (const line of m[1].split("\n")) {
-    const i = line.indexOf(":");
-    if (i > 0) meta[line.slice(0, i).trim()] = line.slice(i + 1).trim().replace(/^"(.*)"$/, "$1");
-  }
-  const body = m[2].trim();
-  for (const block of body.split(/\n{2,}/)) {
-    const img = block.trim().match(IMAGE_RE);
-    if (img && !img[1].trim()) console.warn(`[blog] imagem sem alt em ${file}: ${img[2]}`);
-  }
-  if (meta.cover && !meta.coverAlt?.trim()) console.warn(`[blog] capa sem coverAlt em ${file}`);
-  return {
-    cover: meta.cover ? blogImage(meta.cover, meta.coverAlt ?? "") : undefined,
-    slug: meta.slug ?? file.replace(/^\d+-|\.md$/g, ""),
-    title: meta.title,
-    description: meta.description,
-    game: meta.game ?? "home",
-    keyword: meta.keyword ?? "",
-    date: meta.date,
-    draft: meta.draft === "true",
-    body,
-  };
+/** Admin vê os rascunhos no site, para conferir antes de publicar. */
+export const canSeeDrafts = cache(async (): Promise<boolean> => {
+  if (SHOW_DRAFTS) return true;
+  const session = await auth.api.getSession({ headers: await headers() });
+  return isAdmin(session?.user);
+});
+
+type Row = Awaited<ReturnType<typeof prisma.blogPost.findMany>>[number];
+
+function toPost({ cover, coverAlt, createdAt: _, ...p }: Row): BlogPost {
+  return { ...p, cover: cover ? blogImage(cover, coverAlt ?? "") : undefined };
 }
 
-let cache: BlogPost[] | null = null;
+// mesma data: o criado por último primeiro
+const ORDER = [{ date: "desc" as const }, { createdAt: "desc" as const }];
 
-/** Posts visíveis, do mais novo para o mais antigo (mesma data: ordem do arquivo). */
-export function getPosts(): BlogPost[] {
-  // No dev relê a cada pedido, para editar o .md e só recarregar a página
-  const posts =
-    (process.env.NODE_ENV === "production" && cache) ||
-    (cache = readdirSync(DIR)
-      .filter((f) => f.endsWith(".md"))
-      .sort()
-      .map(parse));
-  return posts.filter((p) => SHOW_DRAFTS || !p.draft).sort((a, b) => b.date.localeCompare(a.date));
-}
+/** Posts visíveis, do mais novo para o mais antigo. `drafts`: incluir rascunhos (admin). */
+export const getPosts = cache(async (drafts = SHOW_DRAFTS): Promise<BlogPost[]> => {
+  const rows = await prisma.blogPost.findMany({ where: drafts ? {} : { draft: false }, orderBy: ORDER });
+  return rows.map(toPost);
+});
 
-export function getPost(slug: string): BlogPost | undefined {
-  return getPosts().find((p) => p.slug === slug);
-}
+export const getPost = cache(async (slug: string, drafts = SHOW_DRAFTS): Promise<BlogPost | undefined> => {
+  const row = await prisma.blogPost.findUnique({ where: { slug } });
+  return row && (drafts || !row.draft) ? toPost(row) : undefined;
+});
 
 /** Destino do botão "Jogar agora": a página do jogo, ou a home. */
 export function postCta(p: BlogPost): { href: string; label: string; howTo?: string } {
   if (p.game === "home") return { href: "/", label: "Escolher um jogo" };
   const g = getGame(p.game);
   return { href: g.path, label: "Jogar agora", howTo: `${g.path}/como-jogar` };
-}
-
-export function formatDate(date: string): string {
-  return new Date(`${date}T12:00:00Z`).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Figure } from "@/components/blog/Markdown";
-import { formatDate, getPosts } from "@/lib/blog";
+import { canSeeDrafts, formatDate, getPosts } from "@/lib/blog";
 import { getGame, SITE_NAME } from "@/lib/seo";
 
 const TITLE = "Blog: dicas e regras de jogos de cartas e de mesa";
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   openGraph: { title: `${TITLE} · ${SITE_NAME}`, description: DESCRIPTION, url: "/blog", siteName: SITE_NAME, locale: "pt_BR", type: "website" },
 };
 
-export default function Blog() {
-  const posts = getPosts();
+export default async function Blog() {
+  const posts = await getPosts(await canSeeDrafts());
   return (
     <div className="min-h-dvh bg-[#0f1813]">
       <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 sm:py-12">

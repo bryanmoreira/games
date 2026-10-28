@@ -1,13 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import { blogImage, IMAGE_RE, type BlogImage } from "@/lib/blog-images";
+import { IMAGE_RE, type BlogImage } from "@/lib/blog-image-src";
 
 /**
  * Markdown mínimo dos posts: títulos (##, ###), parágrafos, listas (- e 1.), citações (>),
  * imagens sozinhas num bloco (![alt](/blog/x.png "legenda")), **negrito**, *itálico* e [links](/caminho). Sem HTML cru.
+ * `image` monta a imagem com o tamanho: `blogImage` no servidor; a prévia do admin passa um que não lê o disco.
  */
-export function Markdown({ source }: { source: string }) {
+export function Markdown({ source, image }: { source: string; image: (src: string, alt: string, caption?: string) => BlogImage }) {
   const blocks = source.split(/\n{2,}/);
   const out: React.ReactNode[] = [];
   blocks.forEach((block, i) => {
@@ -30,7 +31,7 @@ export function Markdown({ source }: { source: string }) {
     if (!lines.length) return;
     const img = lines.length === 1 && lines[0].match(IMAGE_RE);
     if (img) {
-      out.push(<Figure key={i} image={blogImage(img[2], img[1], img[3])} />);
+      out.push(<Figure key={i} image={image(img[2], img[1], img[3])} />);
     } else if (lines.every((l) => /^- /.test(l))) {
       out.push(
         <ul key={i} className="flex list-disc flex-col gap-2 pl-5 marker:text-gold">

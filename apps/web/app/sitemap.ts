@@ -3,9 +3,9 @@ import { getPosts } from "@/lib/blog";
 import { PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_URL } from "@/lib/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Rascunhos nunca entram, nem com BLOG_DRAFTS=1
-  const posts = getPosts().filter((p) => !p.draft);
+  const posts = await getPosts(false);
   return [
     { url: SITE_URL, changeFrequency: "weekly", priority: 1 },
     ...GAMES.flatMap((g) => [
@@ -16,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...(posts.length
       ? [
           { url: `${SITE_URL}/blog`, changeFrequency: "weekly" as const, priority: 0.6 },
-          ...posts.map((p) => ({ url: `${SITE_URL}/blog/${p.slug}`, lastModified: p.date, changeFrequency: "monthly" as const, priority: 0.6 })),
+          ...posts.map((p) => ({ url: `${SITE_URL}/blog/${p.slug}`, lastModified: p.updatedAt, changeFrequency: "monthly" as const, priority: 0.6 })),
         ]
       : []),
     { url: `${SITE_URL}${PRIVACY_PATH}`, changeFrequency: "yearly", priority: 0.2 },

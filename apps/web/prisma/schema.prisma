@@ -215,3 +215,53 @@ model UserItem {
   @@index([userId, acquiredAt])
   @@map("user_item")
 }
+
+// Post do blog (ver lib/blog.ts). Editado em /admin/blog ou pela API /api/v1/blog com chave.
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  // slug do jogo em lib/seo.ts (GAMES) ou "home" para posts sobre o site todo
+  game        String   @default("home")
+  keyword     String   @default("")
+  date        String // AAAA-MM-DD
+  // rascunho: fora da lista, do sitemap e da página (só admin vê)
+  draft       Boolean  @default(true)
+  // capa: /blog/x.png (public) ou /blog/imagens/<id>-<l>x<a>.<ext> (blog_image)
+  cover       String?
+  coverAlt    String?
+  // Markdown mínimo (components/blog/Markdown.tsx)
+  body        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([draft, date])
+  @@map("blog_post")
+}
+
+// Imagem enviada pelo admin ou pela API. Servida em /blog/imagens/<id>-<largura>x<altura>.<ext>.
+model BlogImage {
+  id        String   @id @default(cuid())
+  mime      String // image/png | image/jpeg | image/webp
+  width     Int
+  height    Int
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@map("blog_image")
+}
+
+// Chave da API do blog. Só o hash fica guardado; a chave aparece uma vez, ao criar.
+model ApiKey {
+  id         String    @id @default(cuid())
+  name       String
+  // começo da chave, para reconhecer na lista
+  prefix     String
+  hash       String    @unique
+  createdById String
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+
+  @@map("api_key")
+}
