@@ -1,9 +1,12 @@
 import type { MetadataRoute } from "next";
+import { connection } from "next/server";
 import { getPosts } from "@/lib/blog";
 import { PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_URL } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Posts vêm do banco: gera no pedido, não no build (no Docker não há banco)
+  await connection();
   // Rascunhos nunca entram, nem com BLOG_DRAFTS=1
   const posts = await getPosts(false);
   return [
