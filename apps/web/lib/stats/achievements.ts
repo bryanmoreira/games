@@ -1,5 +1,6 @@
 import { DIFFICULTIES } from "@mesa/sudoku";
 import { LEVELS as WORD_LEVELS } from "@mesa/caca-palavras";
+import { LAYOUT_IDS } from "@mesa/mahjong";
 import { isMode, MAX_GUESSES } from "@mesa/verbete";
 import type { Mode, Outcome, StatGame } from "@/lib/stats/games";
 
@@ -911,6 +912,53 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: ({ results }) => dailyStreaks(results).best >= 7,
   },
   { ...wins("quente-ou-frio", 50), title: "Viciado" },
+
+  first("mahjong"),
+  {
+    code: "mahjong:clean",
+    game: "mahjong",
+    title: "Sem ajuda",
+    desc: "Vencer sem dica, sem embaralhar e sem desfazer",
+    icon: "shield",
+    tier: "hard",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "hints") === 0 && num(r, "shuffles") === 0 && num(r, "undos") === 0),
+  },
+  {
+    code: "mahjong:quick",
+    game: "mahjong",
+    title: "Relâmpago",
+    desc: "Vencer a Tartaruga em menos de 5 minutos",
+    icon: "bolt",
+    tier: "hard",
+    check: ({ results }) => winsOf(results).some((r) => r.data.layout === "tartaruga" && num(r, "timeMs") < 5 * 60_000),
+  },
+  {
+    code: "mahjong:all_layouts",
+    game: "mahjong",
+    title: "Volta ao mundo",
+    desc: `Vencer nos ${LAYOUT_IDS.length} formatos`,
+    icon: "crown",
+    tier: "hard",
+    check: ({ results }) => {
+      const won = new Set(winsOf(results).map((r) => r.data.layout));
+      return LAYOUT_IDS.every((id) => won.has(id));
+    },
+  },
+  {
+    // só vitórias chegam ao perfil, então "seguidas" vira "no mesmo dia"
+    code: "mahjong:day_5",
+    game: "mahjong",
+    title: "Embalado",
+    desc: "5 vitórias no mesmo dia",
+    icon: "flame",
+    check: ({ results }) => {
+      const perDay = new Map<string, number>();
+      for (const r of winsOf(results)) perDay.set(dayKey(r.createdAt), (perDay.get(dayKey(r.createdAt)) ?? 0) + 1);
+      return [...perDay.values()].some((n) => n >= 5);
+    },
+  },
+  { ...wins("mahjong", 50), title: "Mestre das pedras" },
+  ...daily("mahjong"),
 ];
 
 export const ACHIEVEMENT_BY_CODE = new Map(ACHIEVEMENTS.map((a) => [a.code, a]));

@@ -10,6 +10,7 @@ import { MiniBoard } from "@/components/sudoku/common";
 import { MiniTiles } from "@/components/verbete/Tile";
 import { MiniBars } from "@/components/quente-ou-frio/WordBar";
 import { WordArt } from "@/components/caca-palavras/common";
+import { MahjongArt } from "@/components/mahjong/common";
 import { StopLogo } from "@/components/stop/Tile";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { MiniGrid } from "@/components/codenames/Board";
@@ -34,6 +35,7 @@ import { SPIDER_DAILY_PATH } from "@/lib/spider/paths";
 import { SUDOKU_DAILY_PATH } from "@/lib/sudoku/paths";
 import { VERBETE_DAILY_PATH } from "@/lib/verbete/paths";
 import { CACA_DAILY_PATH } from "@/lib/caca-palavras/paths";
+import { MAHJONG_DAILY_PATH } from "@/lib/mahjong/paths";
 import { QUENTE_DAILY_PATH } from "@/lib/quente-ou-frio/paths";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
@@ -187,6 +189,16 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     ),
   },
   {
+    slug: "mahjong",
+    title: "MAHJONG",
+    sub: "PACIÊNCIA",
+    art: (
+      <div className={`absolute left-1/2 top-[10%] -translate-x-1/2 -rotate-3 text-[clamp(12px,4.2vw,21px)] ${HOVER}`}>
+        <MahjongArt pair />
+      </div>
+    ),
+  },
+  {
     slug: "connect-4",
     title: "CONNECT",
     sub: "4 EM LINHA",
@@ -322,7 +334,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
 ];
 
 /** Jogos com desafio do dia: a fita do card leva direto a ele. */
-const DAILY_PATH = { sudoku: SUDOKU_DAILY_PATH, "paciencia-spider": SPIDER_DAILY_PATH, verbete: VERBETE_DAILY_PATH, "caca-palavras": CACA_DAILY_PATH, "quente-ou-frio": QUENTE_DAILY_PATH };
+const DAILY_PATH = { sudoku: SUDOKU_DAILY_PATH, "paciencia-spider": SPIDER_DAILY_PATH, verbete: VERBETE_DAILY_PATH, "caca-palavras": CACA_DAILY_PATH, "quente-ou-frio": QUENTE_DAILY_PATH, mahjong: MAHJONG_DAILY_PATH };
 
 const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
   const g = getGame(slug);
@@ -371,7 +383,7 @@ function HomeAbout() {
       </p>
       <p>
         Nas cartas tem {gameLink("truco-paulista")} em duplas, {gameLink("buraco")} fechado, {gameLink("blackjack")} e {gameLink("paciencia-spider")}. No tabuleiro, {gameLink("xadrez")},{" "}
-        {gameLink("damas")} brasileiras, {gameLink("ludo")}, {gameLink("domino")} de batida, {gameLink("batalha-naval")} e {gameLink("sinuca")}. Para quem gosta de palavras, {gameLink("stop")},{" "}
+        {gameLink("damas")} brasileiras, {gameLink("ludo")}, {gameLink("domino")} de batida, {gameLink("mahjong")}, {gameLink("batalha-naval")} e {gameLink("sinuca")}. Para quem gosta de palavras, {gameLink("stop")},{" "}
         {gameLink("codenames")}, {gameLink("verbete")}, {gameLink("quente-ou-frio")} e {gameLink("caca-palavras")}.
         E para uma partida rápida, {gameLink("sudoku")}, {gameLink("connect-4")}, {gameLink("otrio")}, {gameLink("jogo-da-velha")},{" "}
         {gameLink("tijolada")} e {gameLink("futebol-de-botao")}.

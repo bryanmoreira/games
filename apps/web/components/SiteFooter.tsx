@@ -25,7 +25,7 @@ const DAILY = GAMES.filter((g) => g.slug in DAILY_SEO);
 // Jogos agrupados por tipo; jogo novo que não estiver aqui cai em "Casuais". O "Como jogar" fica na página de cada jogo.
 const GROUPS: { title: string; slugs: string[] }[] = [
   { title: "CARTAS", slugs: ["truco-paulista", "buraco", "blackjack", "paciencia-spider"] },
-  { title: "TABULEIRO", slugs: ["xadrez", "damas", "ludo", "domino", "batalha-naval", "connect-4"] },
+  { title: "TABULEIRO", slugs: ["xadrez", "damas", "ludo", "domino", "mahjong", "batalha-naval", "connect-4"] },
   { title: "PALAVRAS", slugs: ["stop", "codenames", "verbete", "quente-ou-frio", "caca-palavras"] },
 ];
 const GROUPED = new Set(GROUPS.flatMap((g) => g.slugs));

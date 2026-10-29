@@ -39,6 +39,34 @@ describe("caca-palavras", () => {
   });
 });
 
+const mahjong = (over: Record<string, unknown> = {}) => ({ layout: "tartaruga", timeMs: 400_000, hints: 2, shuffles: 1, undos: 5, ...over });
+
+describe("mahjong", () => {
+  test("vitória válida passa só com os campos esperados", () => {
+    expect(parseSoloResult("mahjong", mahjong({ extra: "x" }))).toEqual({
+      game: "mahjong",
+      data: { layout: "tartaruga", timeMs: 400_000, hints: 2, shuffles: 1, undos: 5 },
+    });
+  });
+
+  test("formato tem que existir", () => {
+    expect(parseSoloResult("mahjong", mahjong({ layout: "turtle" }))).toBeNull();
+    expect(parseSoloResult("mahjong", mahjong({ layout: undefined }))).toBeNull();
+  });
+
+  test("o tempo já tem os 30 s de cada dica e embaralhada", () => {
+    expect(parseSoloResult("mahjong", mahjong({ hints: 10, shuffles: 3, timeMs: 13 * 30_000 }))).not.toBeNull();
+    expect(parseSoloResult("mahjong", mahjong({ hints: 10, shuffles: 3, timeMs: 13 * 30_000 - 1 }))).toBeNull();
+  });
+
+  test("contagens inválidas: recusa", () => {
+    expect(parseSoloResult("mahjong", mahjong({ hints: -1 }))).toBeNull();
+    expect(parseSoloResult("mahjong", mahjong({ shuffles: 1.5 }))).toBeNull();
+    expect(parseSoloResult("mahjong", mahjong({ undos: "3" }))).toBeNull();
+    expect(parseSoloResult("mahjong", mahjong({ timeMs: 999 }))).toBeNull();
+  });
+});
+
 describe("sudoku", () => {
   test("vitória válida passa só com os campos esperados", () => {
     expect(parseSoloResult("sudoku", sudoku({ extra: "x", userId: "outro" }))).toEqual({

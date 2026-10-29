@@ -18,7 +18,7 @@ export function fillDays(rows: { day: string; n: number }[], days: string[]): nu
 }
 
 /** Jogos que só mandam vitória (ver lib/stats/solo-result.ts): % de vitórias não diz nada neles. */
-export const WINS_ONLY: readonly string[] = ["sudoku", "paciencia-spider", "caca-palavras"];
+export const WINS_ONLY: readonly string[] = ["sudoku", "paciencia-spider", "caca-palavras", "mahjong"];
 
 /** 0–100, arredondado; null sem base. */
 export const pct = (part: number, total: number): number | null => (total > 0 ? Math.round((part / total) * 100) : null);

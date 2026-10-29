@@ -27,6 +27,7 @@ COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
 COPY packages/verbete/package.json packages/verbete/
 COPY packages/caca-palavras/package.json packages/caca-palavras/
+COPY packages/mahjong/package.json packages/mahjong/
 COPY packages/quente-ou-frio/package.json packages/quente-ou-frio/
 RUN bun install --frozen-lockfile --linker=hoisted
 

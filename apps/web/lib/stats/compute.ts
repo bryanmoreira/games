@@ -1,5 +1,6 @@
 import { bestStreak, currentStreak, dailyStreaks, dailyWins, dominoScore, dominoWins, type ResultRow } from "@/lib/stats/achievements";
 import { STAT_GAMES, type StatGame } from "@/lib/stats/games";
+import { LAYOUT_IDS as MAHJONG_LAYOUTS, layoutName } from "@mesa/mahjong";
 
 // Cálculos do perfil sobre linhas já lidas do banco (sem banco aqui, para testar).
 
@@ -295,6 +296,23 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
         }),
       };
       break;
+    case "mahjong": {
+      const best = minOf(wins.map((r) => num(r, "timeMs")).filter(Number.isFinite));
+      chip("Melhor tempo", best === null ? null : formatMs(best));
+      const won = MAHJONG_LAYOUTS.filter((id) => wins.some((r) => r.data.layout === id));
+      chip("Formatos vencidos", won.length ? `${won.length}/${MAHJONG_LAYOUTS.length}` : null);
+      // só os formatos já vencidos, na ordem da lista
+      if (won.length)
+        stats.table = {
+          cols: ["Vitórias", "Melhor tempo"],
+          rows: won.map((id) => {
+            const w = wins.filter((r) => r.data.layout === id);
+            const best = minOf(w.map((r) => num(r, "timeMs")).filter(Number.isFinite));
+            return { label: layoutName(id), values: [String(w.length), best === null ? null : formatMs(best)] };
+          }),
+        };
+      break;
+    }
     case "quente-ou-frio": {
       const tries = wins.map((r) => num(r, "attempts")).filter(Number.isFinite);
       chip("Menos tentativas", minOf(tries));

@@ -19,13 +19,14 @@ import { TIJOLADA_PATH } from "@/lib/tijolada/paths";
 import { BURACO_PATH } from "@/lib/buraco/paths";
 import { BLACKJACK_PATH } from "@/lib/blackjack/paths";
 import { CACA_PATH } from "@/lib/caca-palavras/paths";
+import { MAHJONG_PATH } from "@/lib/mahjong/paths";
 import { QUENTE_PATH } from "@/lib/quente-ou-frio/paths";
 
 /**
  * Jogos que guardam resultado no perfil. Online: o servidor de salas manda; solo: o navegador manda.
  * A Tijolada está nos online (1×1) e também manda as partidas solo pelo navegador.
  */
-export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras", "quente-ou-frio"] as const;
+export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras", "quente-ou-frio", "mahjong"] as const;
 export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "sinuca", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames", "buraco", "blackjack"] as const satisfies readonly GameId[];
 
 export type SoloGame = (typeof SOLO_GAMES)[number];
@@ -52,6 +53,7 @@ export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
   blackjack: { name: "Blackjack", path: BLACKJACK_PATH },
   verbete: { name: "Verbete", path: VERBETE_PATH },
   "caca-palavras": { name: "Caça-Palavras", path: CACA_PATH },
+  mahjong: { name: "Mahjong", path: MAHJONG_PATH },
   "quente-ou-frio": { name: "Quente ou Frio", path: QUENTE_PATH },
   sudoku: { name: "Sudoku", path: SUDOKU_PATH },
   "paciencia-spider": { name: "Paciência Spider", path: SPIDER_PATH },

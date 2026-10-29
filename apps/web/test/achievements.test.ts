@@ -13,6 +13,7 @@ import {
   type ResultRow,
 } from "@/lib/stats/achievements";
 import { isSoloGame, STAT_GAMES } from "@/lib/stats/games";
+import { LAYOUT_IDS } from "@mesa/mahjong";
 
 type Data = Record<string, unknown>;
 
@@ -334,6 +335,32 @@ const CASES: Record<string, Case> = {
   "caca-palavras:wins_50": winsCase(50),
   "caca-palavras:wins_100": winsCase(100),
   ...withGame("caca-palavras", dailyCases()),
+
+  "mahjong:first": { ok: [win({ layout: "tartaruga" }, "solo")], almost: [] },
+  "mahjong:clean": {
+    ok: [win({ layout: "ponte", hints: 0, shuffles: 0, undos: 0 }, "solo")],
+    almost: [
+      win({ layout: "ponte", hints: 1, shuffles: 0, undos: 0 }, "solo"),
+      win({ layout: "ponte", hints: 0, shuffles: 1, undos: 0 }, "solo"),
+      win({ layout: "ponte", hints: 0, shuffles: 0, undos: 1 }, "solo"),
+      win({ layout: "ponte" }, "solo"),
+    ],
+  },
+  "mahjong:quick": {
+    ok: [win({ layout: "tartaruga", timeMs: 5 * 60_000 - 1 }, "solo")],
+    almost: [win({ layout: "tartaruga", timeMs: 5 * 60_000 }, "solo"), win({ layout: "bloco", timeMs: 60_000 }, "solo"), win({ layout: "tartaruga" }, "solo")],
+  },
+  "mahjong:all_layouts": {
+    ok: LAYOUT_IDS.map((layout) => win({ layout }, "solo")),
+    almost: [...LAYOUT_IDS.slice(1).map((layout) => win({ layout }, "solo")), win({ layout: LAYOUT_IDS[1] }, "solo")],
+  },
+  "mahjong:day_5": {
+    ok: times(5, () => ({ ...win({}, "solo"), createdAt: new Date("2026-10-20T12:00:00-03:00") })),
+    // 4 num dia e 1 depois da meia-noite de Brasília
+    almost: [...times(4, () => ({ ...win({}, "solo"), createdAt: new Date("2026-10-20T12:00:00-03:00") })), { ...win({}, "solo"), createdAt: new Date("2026-10-21T00:30:00-03:00") }],
+  },
+  "mahjong:wins_50": winsCase(50),
+  ...withGame("mahjong", dailyCases()),
 };
 
 const codes = ACHIEVEMENTS.map((a) => a.code);

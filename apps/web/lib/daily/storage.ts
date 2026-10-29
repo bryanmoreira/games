@@ -3,7 +3,7 @@
 import type { DailyGame } from "@/lib/daily/challenge";
 
 // Cada desafio fica salvo no aparelho pelo dia: recarregar continua e dá para alternar entre dias.
-const PREFIX: Record<DailyGame, string> = { sudoku: "sudoku.daily.", "paciencia-spider": "spider.daily.", verbete: "verbete.daily.", "caca-palavras": "cacapalavras.daily.", "quente-ou-frio": "quenteoufrio.daily." };
+const PREFIX: Record<DailyGame, string> = { sudoku: "sudoku.daily.", "paciencia-spider": "spider.daily.", verbete: "verbete.daily.", "caca-palavras": "cacapalavras.daily.", "quente-ou-frio": "quenteoufrio.daily.", mahjong: "mahjong.daily." };
 
 /** O que o calendário precisa de cada dia salvo. */
 export interface LocalDaily {

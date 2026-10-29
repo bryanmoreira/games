@@ -105,4 +105,9 @@ export const GAME_ABOUT: Record<string, string[]> = {
     "A dificuldade vem das direções. No fácil as palavras ficam só para a direita e para baixo, no médio entram as diagonais e no difícil vale tudo, inclusive de trás para frente. Procurar primeiro as letras menos comuns, como Z, X e J, costuma achar as palavras mais rápido.",
     "São 17 temas e três tamanhos de grade, com dica e melhor tempo por nível. Todo dia sai também um caça-palavras difícil com o tema do dia, igual para todos, e o calendário guarda os dias anteriores.",
   ],
+  mahjong: [
+    "O mahjong nasceu na China no século XIX como jogo de quatro pessoas, parecido com o buraco, e usa peças em vez de cartas: caracteres, círculos e bambus de 1 a 9, ventos, dragões, flores e estações. A paciência com essas mesmas peças surgiu nos computadores dos anos 1980 e virou um dos passatempos mais jogados do mundo, muitas vezes chamada só de mahjong.",
+    "A regra cabe numa frase: tire pares de peças iguais que estejam livres, sem nada por cima e com um dos lados vazio. O desafio está na ordem. Tirar o par errado pode prender a última peça de um tipo debaixo de outra, então vale começar pelas pilhas mais altas e pelas pontas compridas, e guardar peças repetidas que já estão livres para depois.",
+    "São 32 formatos de 144 peças, da clássica Tartaruga de cinco andares a desenhos de bichos, templos e espirais, e toda mesa sorteada tem solução. Dá para desfazer de graça, pedir dica ou embaralhar, e o melhor tempo de cada formato fica guardado. Todo dia sai também uma mesa nova igual para todos, com calendário dos dias anteriores.",
+  ],
 };

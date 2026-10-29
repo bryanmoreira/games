@@ -462,6 +462,32 @@ describe("gameStats: Caça-Palavras", () => {
   });
 });
 
+describe("gameStats: Mahjong", () => {
+  test("melhor tempo, formatos vencidos e tabela só dos formatos vencidos, na ordem da lista", () => {
+    const rs = [
+      solo({ layout: "dragao", timeMs: 400_000 }),
+      solo({ layout: "tartaruga", timeMs: 600_000 }),
+      solo({ layout: "tartaruga", timeMs: 330_000 }),
+    ];
+    const s = gameStats("mahjong", rs);
+    expect(s.chips).toContainEqual({ label: "Melhor tempo", value: "5:30" });
+    expect(s.chips).toContainEqual({ label: "Formatos vencidos", value: "2/32" });
+    expect(s.table).toEqual({
+      cols: ["Vitórias", "Melhor tempo"],
+      rows: [
+        { label: "Tartaruga", values: ["2", "5:30"] },
+        { label: "Dragão", values: ["1", "6:40"] },
+      ],
+    });
+  });
+
+  test("sem vitória, sem chips nem tabela", () => {
+    const s = gameStats("mahjong", []);
+    expect(s.chips).toEqual([]);
+    expect(s.table).toBeUndefined();
+  });
+});
+
 describe("gameStats: Paciência Spider", () => {
   test("tabela por naipes: vitórias, melhor tempo, mais pontos e menos jogadas (cada um da sua melhor partida)", () => {
     const rs = [

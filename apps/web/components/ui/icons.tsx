@@ -26,6 +26,42 @@ export function HintIcon({ className }: P) {
   );
 }
 
+/** Lupa com mais: ampliar. */
+export function ZoomInIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+      <path d="M8 11h6" />
+      <path d="M11 8v6" />
+    </Icon>
+  );
+}
+
+/** Lupa com menos: voltar a ver tudo. */
+export function ZoomOutIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+      <path d="M8 11h6" />
+    </Icon>
+  );
+}
+
+/** Embaralhar: duas setas que se cruzam. */
+export function ShuffleIcon({ className }: P) {
+  return (
+    <Icon className={className}>
+      <path d="M3 7h3.5c2 0 3.2 1 4.3 2.7l2.4 4.6C14.3 16 15.5 17 17.5 17H21" />
+      <path d="M3 17h3.5c1.4 0 2.4-.5 3.2-1.4" />
+      <path d="M13.3 8.4c.8-.9 1.8-1.4 3.2-1.4H21" />
+      <path d="m18 4 3 3-3 3" />
+      <path d="m18 14 3 3-3 3" />
+    </Icon>
+  );
+}
+
 export function PencilIcon({ className }: P) {
   return (
     <Icon className={className}>

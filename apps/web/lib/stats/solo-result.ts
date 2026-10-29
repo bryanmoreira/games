@@ -1,16 +1,17 @@
 import { DIFFICULTIES } from "@mesa/sudoku";
 import { isLevel, isTheme, wordsOf } from "@mesa/caca-palavras";
+import { isLayout, PENALTY_MS } from "@mesa/mahjong";
 import { isMode, MAX_GUESSES, replay, status } from "@mesa/verbete";
 import { COLS, LINES_PER_LEVEL, MAX_LEVEL } from "@mesa/tijolada";
 import type { Outcome } from "@/lib/stats/games";
 
 const int = (v: unknown, min: number, max: number) => (Number.isInteger(v) && (v as number) >= min && (v as number) <= max ? (v as number) : null);
 
-export type SoloGame = "sudoku" | "paciencia-spider" | "verbete" | "caca-palavras" | "tijolada";
+export type SoloGame = "sudoku" | "paciencia-spider" | "verbete" | "caca-palavras" | "mahjong" | "tijolada";
 
 /**
  * Dados de uma partida solo mandados pelo navegador, validados. null = inválido.
- * Sudoku, Spider e Caça-Palavras só mandam vitória; o Verbete manda vitória e derrota, e o resultado sai dos chutes refeitos aqui.
+ * Sudoku, Spider, Caça-Palavras e Mahjong só mandam vitória; o Verbete manda vitória e derrota, e o resultado sai dos chutes refeitos aqui.
  */
 export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; data: Record<string, unknown>; outcome?: Outcome } | null {
   const d = (raw ?? {}) as Record<string, unknown>;
@@ -30,6 +31,14 @@ export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; 
     const hints = int(d.hints, 0, 50);
     if (!isLevel(d.level) || !isTheme(d.theme) || words !== wordsOf(d.level) || hints === null || hints > words) return null;
     return { game, data: { level: d.level, theme: d.theme, timeMs, hints, words } };
+  }
+  if (game === "mahjong") {
+    // cada dica e cada embaralhada somam 30 s no tempo; 72 pares, então desfazer passa disso só voltando e refazendo muito
+    const hints = int(d.hints, 0, 10_000);
+    const shuffles = int(d.shuffles, 0, 10_000);
+    const undos = int(d.undos, 0, 100_000);
+    if (!isLayout(d.layout) || hints === null || shuffles === null || undos === null || timeMs < (hints + shuffles) * PENALTY_MS) return null;
+    return { game, data: { layout: d.layout, timeMs, hints, shuffles, undos } };
   }
   if (game === "paciencia-spider") {
     const suits = int(d.suits, 1, 4);

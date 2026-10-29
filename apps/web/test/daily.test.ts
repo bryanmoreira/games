@@ -3,6 +3,7 @@ import { dealGame, newGame as newSpider } from "@mesa/spider";
 import { gameFrom, newGame as newSudoku } from "@mesa/sudoku";
 import { dailyWords, isAnswer } from "@mesa/verbete";
 import { occurrences, THEMES } from "@mesa/caca-palavras";
+import { applyAction, gameFrom as mahjongGame, isLayout, LAYOUT_IDS } from "@mesa/mahjong";
 import {
   DAILY_START,
   dailyKey,
@@ -16,6 +17,7 @@ import {
   msToNextDay,
   dailyTheme,
   type CacaDaily,
+  type MahjongDaily,
   type DailyChallenge,
   type SpiderDaily,
   type SudokuDaily,
@@ -151,6 +153,32 @@ describe("Caça-Palavras: grade do dia", () => {
     expect(matchesChallenge(ch, { ...ok, level: "easy" }, 9)).toBe(false);
     expect(matchesChallenge(ch, { ...ok, theme: "nada" }, 9)).toBe(false);
     expect(dailyKey("caca-palavras", "2026-10-20", ok)).toBe("2026-10-20");
+  });
+});
+
+describe("Mahjong: mesa do dia", () => {
+  test("formato sorteado pelo seed, a mesma mesa para o mesmo seed, com solução", () => {
+    const data = makeChallenge("mahjong", 9, "2026-10-20") as MahjongDaily;
+    expect(isLayout(data.layout)).toBe(true);
+    expect(data.layout).toBe(LAYOUT_IDS[9 % LAYOUT_IDS.length]);
+    expect(data.kinds).toHaveLength(144);
+    expect(makeChallenge("mahjong", 9, "2026-10-20")).toEqual(data);
+    expect(makeChallenge("mahjong", 10, "2026-10-20")).not.toEqual(data);
+    let s = mahjongGame(data);
+    for (const [a, b] of data.solution) {
+      const r = applyAction(s, { type: "pair", a, b });
+      if (!r.ok) throw new Error(r.error);
+      s = r.state;
+    }
+    expect(s.won).toBe(true);
+    expect(isDailyGame("mahjong")).toBe(true);
+  });
+
+  test("resultado confere seed e formato", () => {
+    const ch: DailyChallenge = { game: "mahjong", day: "2026-10-20", data: makeChallenge("mahjong", 9, "2026-10-20") as MahjongDaily };
+    expect(matchesChallenge(ch, { layout: ch.data.layout }, 9)).toBe(true);
+    expect(matchesChallenge(ch, { layout: ch.data.layout }, 10)).toBe(false);
+    expect(matchesChallenge(ch, { layout: "outro" }, 9)).toBe(false);
   });
 });
 

@@ -6,7 +6,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Buraco, Blackjack, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider, Verbete e Caça-Palavras online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Buraco, Blackjack, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider, Verbete, Caça-Palavras e Mahjong online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
@@ -618,6 +618,40 @@ export const GAMES: GameSeo[] = [
       { q: "O que é o desafio do dia?", a: "À meia-noite de Brasília sai uma grade nova no nível difícil, com o tema do dia e igual para todos. Os dias anteriores ficam no calendário para jogar depois." },
     ],
   },
+  {
+    slug: "mahjong",
+    path: "/mahjong",
+    name: "Mahjong",
+    title: "Mahjong Online Grátis: Paciência com 32 Formatos",
+    description:
+      "Jogue Mahjong online grátis: forme pares de peças iguais e livres até limpar a mesa. São 32 formatos, da clássica Tartaruga à Pirâmide, com dica, desfazer e desafio do dia.",
+    tagline: "Forme pares de peças livres até limpar a mesa. Um desafio novo todo dia.",
+    keywords: [
+      "mahjong",
+      "mahjong online",
+      "mahjong grátis",
+      "jogar mahjong",
+      "mahjong paciência",
+      "mahjong solitário",
+      "mahjong tartaruga",
+      "mahjong do dia",
+      "jogo de peças",
+    ],
+    genre: "Quebra-cabeça",
+    players: { min: 1, max: 1 },
+    modes: "Jogo solo no navegador com 32 formatos de 144 peças, sorteio que sempre tem solução, desfazer, dica e embaralhar, melhor tempo por formato e desafio do dia igual para todos, com calendário dos dias anteriores.",
+    howTo: {
+      title: "Como jogar Mahjong: regras, peça livre e as peças",
+      description: "Aprenda a jogar Mahjong paciência: quando uma peça está livre, quais peças formam par (inclusive flores e estações), como usar dica, desfazer e embaralhar, e o desafio do dia.",
+    },
+    faq: [
+      { q: "Como se joga Mahjong paciência?", a: "As 144 peças ficam empilhadas num formato. Toque em duas peças iguais e livres para tirá-las da mesa. Você vence quando tirar todas." },
+      { q: "Quando uma peça está livre?", a: "Quando não tem nenhuma peça por cima, nem um pedaço, e pelo menos um dos lados, o esquerdo ou o direito, está vazio. Peça com vizinha dos dois lados está presa." },
+      { q: "Quais peças formam par?", a: "Caracteres, círculos, bambus, ventos e dragões só formam par com a peça igual, e cada uma tem 4 cópias. As 4 flores formam par entre si, qualquer uma com qualquer uma, e o mesmo vale para as 4 estações." },
+      { q: "Toda partida tem solução?", a: "Sim. Toda mesa é sorteada já com uma solução. Se você travar, pode desfazer de graça ou embaralhar as peças que sobraram, que também ficam com saída garantida. Dica e embaralhar custam 30 segundos no relógio." },
+      { q: "O que é o desafio do dia?", a: "À meia-noite de Brasília sai uma mesa nova, num formato sorteado e igual para todos. Os dias anteriores ficam no calendário para jogar depois." },
+    ],
+  },
 ];
 
 export function getGame(slug: string): GameSeo {
@@ -664,6 +698,10 @@ export const DAILY_SEO: Record<string, { title: string; description: string }> =
   "caca-palavras": {
     title: "Caça-Palavras Diário: o desafio do dia",
     description: "Um caça-palavras difícil novo todo dia, com tema do dia e a mesma grade para todos. Jogue o de hoje e rejogue os dias anteriores no calendário.",
+  },
+  mahjong: {
+    title: "Mahjong Diário: o desafio do dia",
+    description: "Uma mesa de Mahjong nova todo dia, num formato sorteado e com as mesmas peças para todos. Jogue a de hoje e rejogue os dias anteriores no calendário.",
   },
   "quente-ou-frio": {
     title: "Quente ou Frio: palavra secreta do dia",

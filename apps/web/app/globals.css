@@ -238,6 +238,11 @@ body {
     animation: hc-grow 0.45s cubic-bezier(0.2, 1.2, 0.4, 1) both;
     animation-delay: calc(100ms + var(--d) * 280ms);
   }
+  /* Mahjong: o par de dragões de cima sobe e some, um depois do outro */
+  .hc:hover .hc-mj {
+    animation: mj-out 0.4s ease-in both;
+    animation-delay: calc(200ms + var(--d) * 220ms);
+  }
   .hc:hover .hc-sweep {
     stroke-dasharray: 1;
     animation: cp-draw 0.35s ease-out both;
@@ -1093,5 +1098,55 @@ body {
   }
   .qf-flash {
     animation: qf-flash 0.6s ease-out 2;
+  }
+}
+
+/* Mahjong: a peça livre clareia no hover; o par sai subindo e some; a peça presa treme; embaralhar balança */
+.mj-tile {
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  transition: filter 0.15s;
+}
+.mj-tile.mj-free {
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .mj-tile.mj-free:hover {
+    filter: brightness(1.07);
+  }
+}
+@keyframes mj-out {
+  0% { transform: none; opacity: 1; }
+  35% { transform: translateY(-12%) scale(1.06); opacity: 1; }
+  100% { transform: translateY(-30%) scale(0.85); opacity: 0; }
+}
+@keyframes mj-back {
+  from { transform: translateY(-25%) scale(0.9); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes mj-shuffle {
+  0% { transform: none; }
+  30% { transform: rotate(-8deg) scale(0.92); }
+  60% { transform: rotate(6deg) scale(0.96); }
+  100% { transform: none; }
+}
+.mj-out {
+  pointer-events: none;
+  animation: mj-out 0.32s ease-in both;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mj-back {
+    animation: mj-back 0.25s ease-out both;
+  }
+  .mj-shake {
+    animation: shake 0.35s ease-out;
+  }
+  .mj-shuffle {
+    animation: mj-shuffle 0.45s ease-in-out both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mj-out {
+    animation-duration: 0.01s;
   }
 }

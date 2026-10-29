@@ -26,6 +26,7 @@
     "@mesa/jogo-da-velha": "workspace:*",
     "@mesa/domino": "workspace:*",
     "@mesa/ludo": "workspace:*",
+    "@mesa/mahjong": "workspace:*",
     "@mesa/otrio": "workspace:*",
     "@mesa/quente-ou-frio": "workspace:*",
     "@mesa/spider": "workspace:*",

@@ -10,6 +10,8 @@ import { SinucaArt } from "@/components/sinuca/Art";
 import { getGame } from "@/lib/seo";
 import { ART, ART_WORDS } from "@/components/caca-palavras/common";
 import { ART_BARS, HEAT_COLOR } from "@/components/quente-ou-frio/WordBar";
+import { ART_TILES, FACE, SIDE, TILE_RATIO } from "@/components/mahjong/common";
+import { KIND_FILES } from "@mesa/mahjong";
 
 /** Prévia de link (Open Graph) de cada jogo: arte do jogo à esquerda, nome à direita. */
 
@@ -26,6 +28,11 @@ async function googleFont(family: string): Promise<ArrayBuffer | null> {
   } catch {
     return null;
   }
+}
+
+async function mahjongTile(kind: number): Promise<string> {
+  const svg = await readFile(join(process.cwd(), "public/mahjong", `${KIND_FILES[kind]}.svg`));
+  return `data:image/svg+xml;base64,${svg.toString("base64")}`;
 }
 
 async function card(name: string): Promise<string> {
@@ -55,6 +62,7 @@ const TITLES: Record<string, [string, string]> = {
   verbete: ["VERBETE", "PALAVRA DO DIA"],
   "caca-palavras": ["CAÇA", "PALAVRAS"],
   "quente-ou-frio": ["QUENTE", "OU FRIO"],
+  mahjong: ["MAHJONG", "PACIÊNCIA"],
 };
 
 async function art(slug: string) {
@@ -135,6 +143,35 @@ async function art(slug: string) {
         <div style={{ display: "flex", position: "relative", width: 240, height: 460 }}>
           {cards.map((src, i) => (
             <img key={i} src={src} width={220} height={320} style={{ position: "absolute", left: 10, top: i * 46, borderRadius: 12, boxShadow: "0 6px 16px rgba(0,0,0,0.45)" }} />
+          ))}
+        </div>
+      );
+    }
+    case "mahjong": {
+      // as mesmas peças da arte do site: três embaixo e o par de dragões por cima
+      const W = 120;
+      const H = W * TILE_RATIO;
+      const lift = 11;
+      const srcs = await Promise.all(ART_TILES.map((t) => mahjongTile(t.kind)));
+      return (
+        <div style={{ display: "flex", position: "relative", width: W * 3 + 30, height: H + 0.35 * W + 30, transform: "rotate(-3deg)" }}>
+          {ART_TILES.map((t, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                position: "absolute",
+                left: t.x * W + (t.top ? 0 : lift),
+                top: t.y * W * TILE_RATIO + (t.top ? 0 : lift),
+                width: W,
+                height: H,
+                borderRadius: 16,
+                background: FACE,
+                boxShadow: `4px 4px 0 ${SIDE[0]}, 8px 8px 0 ${SIDE[1]}, 12px 12px 0 ${SIDE[2]}, 14px 18px 18px rgba(0,0,0,0.45)`,
+              }}
+            >
+              <img src={srcs[i]} width={W * 0.9} height={H * 0.9} style={{ position: "absolute", left: W * 0.05, top: H * 0.05 }} />
+            </div>
           ))}
         </div>
       );
