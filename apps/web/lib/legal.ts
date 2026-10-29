@@ -7,3 +7,4 @@ export const PRIVACY_PATH = "/privacidade";
 export const TERMS_PATH = "/termos";
 export const ABOUT_PATH = "/sobre";
 export const CONTACT_PATH = "/contato";
+export const INSTALL_PATH = "/instalar";

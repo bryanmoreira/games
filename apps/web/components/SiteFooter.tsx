@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
+import { ABOUT_PATH, CONTACT_PATH, INSTALL_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_NAME } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
 
@@ -69,6 +69,9 @@ export function SiteFooter() {
             </Link>
             <Link href="/blog" className="transition hover:text-gold">
               Blog
+            </Link>
+            <Link href={INSTALL_PATH} className="transition hover:text-gold">
+              Instalar o app
             </Link>
             <Link href={CONTACT_PATH} className="transition hover:text-gold">
               Contato

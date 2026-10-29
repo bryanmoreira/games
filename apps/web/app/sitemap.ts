@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { connection } from "next/server";
 import { getPosts } from "@/lib/blog";
-import { ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
+import { ABOUT_PATH, CONTACT_PATH, INSTALL_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_URL } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -23,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ]
       : []),
     { url: `${SITE_URL}${ABOUT_PATH}`, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${SITE_URL}${INSTALL_PATH}`, changeFrequency: "yearly", priority: 0.5 },
     { url: `${SITE_URL}${CONTACT_PATH}`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}${PRIVACY_PATH}`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE_URL}${TERMS_PATH}`, changeFrequency: "yearly", priority: 0.2 },
