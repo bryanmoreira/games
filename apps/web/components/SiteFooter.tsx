@@ -1,57 +1,22 @@
-import { Fragment } from "react";
 import Link from "next/link";
-import { PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
+import { ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_NAME } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
 
-// app/icon.svg em ASCII (26 linhas, para fontes com caractere de largura 0,6 da altura, como a Courier New): # borda, . feltro, @ carta, espaço = espada.
-// Gerado rasterizando o SVG; ao mudar o ícone, gere de novo.
-const ICON = [
-  "       #############################",
-  "    ###################################",
-  "  ####...............................####",
-  " ###....................@@@@...........###",
-  " ##..............@@@@@@@@@@@@...........##",
-  "###.......@@@@@@@@@@@@@@@@@@@@..........###",
-  "###......@@@@@@@@@@@@@@@@@@@@@..........###",
-  "###.....@@@@@@@@@@@@@@@@@@@@@@..........###",
-  "###......@@@@@@@@@@@@@@@@@@@@@@.........###",
-  "###......@@@@@@@@@@   @@@@@@@@@.........###",
-  "###......@@@@@@@@@      @@@@@@@.........###",
-  "###.......@@@@@@@         @@@@@@........###",
-  "###.......@@@@@@           @@@@@........###",
-  "###........@@@@@            @@@@........###",
-  "###........@@@@             @@@@@.......###",
-  "###........@@@@@            @@@@@.......###",
-  "###.........@@@@           @@@@@@@......###",
-  "###.........@@@@@@@ @@  @@@@@@@@@@......###",
-  "###.........@@@@@@@@@@   @@@@@@@@@......###",
-  "###..........@@@@@@@@@   @@@@@@@@@@.....###",
-  "###..........@@@@@@@@@@@@@@@@@@@@@@.....###",
-  " ##..........@@@@@@@@@@@@@@@@@@@@.......##",
-  " ###..........@@@@@@@@@@@@@@...........###",
-  "  ####.........@@@@@.................####",
-  "    ###################################",
-  "       #############################",
-];
-
-const CHAR_COLOR: Record<string, string> = { "#": "text-gold", ".": "text-emerald-700/80", "@": "text-[#fffdf6]" };
-
-/** Cada linha vira trechos do mesmo caractere, cada um com a sua cor. */
-function AsciiIcon({ className = "" }: { className?: string }) {
+/** O ícone do site (app/icon.svg) sem o fundo escuro: feltro, borda dourada e a carta de espadas. */
+function SiteIcon({ className = "" }: { className?: string }) {
   return (
-    <pre aria-hidden="true" className={`select-none font-['Courier_New',Courier,monospace] leading-none ${className}`}>
-      {ICON.map((row, i) => (
-        <Fragment key={i}>
-          {row.match(/(.)\1*/g)?.map((run, j) => (
-            <span key={j} className={CHAR_COLOR[run[0]]}>
-              {run}
-            </span>
-          ))}
-          {"\n"}
-        </Fragment>
-      ))}
-    </pre>
+    <svg viewBox="6 6 52 52" aria-hidden="true" className={className}>
+      <rect x="8" y="8" width="48" height="48" rx="10" fill="#14452b" />
+      <g transform="translate(32 33) rotate(-12)">
+        <rect x="-13" y="-19" width="26" height="38" rx="4" fill="#fffdf6" />
+        <path
+          d="M0 -10 C 9 -2 10 4 5 7 C 3.500 8 1.500 7.500 0.800 6 L 2 13 H -2 L -0.800 6 C -1.500 7.500 -3.500 8 -5 7 C -10 4 -9 -2 0 -10 Z"
+          fill="#14181a"
+        />
+      </g>
+      <rect x="8" y="8" width="48" height="48" rx="10" fill="none" stroke="#f5b942" strokeWidth="3" />
+    </svg>
   );
 }
 
@@ -86,7 +51,7 @@ function Column({ title, links }: { title: string; links: { href: string; label:
   );
 }
 
-/** Rodapé das páginas de conteúdo (home, Como jogar, Privacidade, Termos): anúncio, links e o nome do site enorme, cortado embaixo. */
+/** Rodapé das páginas de conteúdo (home, Como jogar, Sobre, Contato, Privacidade, Termos): anúncio, links e o nome do site enorme, cortado embaixo. */
 export function SiteFooter() {
   return (
     <>
@@ -94,13 +59,19 @@ export function SiteFooter() {
     <footer className="mt-16 overflow-hidden border-t border-white/10">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-12 sm:px-6 xl:grid-cols-[auto_1fr] xl:gap-16">
         <div className="flex flex-col items-start gap-6">
-          <AsciiIcon className="text-[5px] sm:text-[6px]" />
+          <SiteIcon className="h-28 w-28 sm:h-32 sm:w-32" />
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/40">
             <span>
               © {new Date().getFullYear()} {SITE_NAME}
             </span>
+            <Link href={ABOUT_PATH} className="transition hover:text-gold">
+              Sobre
+            </Link>
             <Link href="/blog" className="transition hover:text-gold">
               Blog
+            </Link>
+            <Link href={CONTACT_PATH} className="transition hover:text-gold">
+              Contato
             </Link>
             <Link href={PRIVACY_PATH} className="transition hover:text-gold">
               Privacidade

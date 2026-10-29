@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo";
 import { getGame, homeLd } from "@/lib/seo";
+import { ABOUT_PATH } from "@/lib/legal";
 import { makeCard } from "@mesa/truco";
 import { CardImg } from "@/components/cards/Card";
 import { MiniBoard } from "@/components/sudoku/common";
@@ -347,6 +348,50 @@ const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
 
 export const metadata: Metadata = { alternates: { canonical: "/", languages: { "pt-BR": "/" } }, openGraph: { url: "/" } };
 
+const gameLink = (slug: string) => {
+  const x = getGame(slug);
+  return (
+    <Link href={x.path} className="text-white/85 underline-offset-4 hover:text-gold hover:underline">
+      {x.name}
+    </Link>
+  );
+};
+
+/** Apresentação do site abaixo dos jogos: o que é, como jogar com amigos e por onde começar. */
+function HomeAbout() {
+  return (
+    <section aria-labelledby="sobre-o-site" className="mt-6 flex w-full flex-col gap-4 text-sm leading-relaxed text-white/60 sm:text-base">
+      <h2 id="sobre-o-site" className="text-center font-display text-xl text-gold">
+        Jogos de mesa online, grátis e sem cadastro
+      </h2>
+      <p>
+        O Mesa de Jogos reúne os jogos de cartas, de tabuleiro e de palavras que a gente joga com a família e os amigos, prontos para abrir no
+        navegador do celular ou do computador. Não precisa instalar aplicativo nem criar conta: escolha um jogo, jogue sozinho contra o computador
+        ou crie uma sala e mande o link no WhatsApp para a turma entrar.
+      </p>
+      <p>
+        Nas cartas tem {gameLink("truco-paulista")} em duplas, {gameLink("buraco")} fechado, {gameLink("blackjack")} e {gameLink("paciencia-spider")}. No tabuleiro, {gameLink("xadrez")},{" "}
+        {gameLink("damas")} brasileiras, {gameLink("ludo")}, {gameLink("domino")} de batida, {gameLink("batalha-naval")} e {gameLink("sinuca")}. Para quem gosta de palavras, {gameLink("stop")},{" "}
+        {gameLink("codenames")}, {gameLink("verbete")}, {gameLink("quente-ou-frio")} e {gameLink("caca-palavras")}.
+        E para uma partida rápida, {gameLink("sudoku")}, {gameLink("connect-4")}, {gameLink("otrio")}, {gameLink("jogo-da-velha")},{" "}
+        {gameLink("tijolada")} e {gameLink("futebol-de-botao")}.
+      </p>
+      <p>
+        Cada jogo tem uma página de Como jogar com as regras explicadas passo a passo, e vários têm um desafio diário que muda à meia-noite, igual
+        para todos. No{" "}
+        <Link href="/blog" className="text-white/85 underline-offset-4 hover:text-gold hover:underline">
+          blog
+        </Link>{" "}
+        tem dicas e estratégias para ganhar mais partidas, e em{" "}
+        <Link href={ABOUT_PATH} className="text-white/85 underline-offset-4 hover:text-gold hover:underline">
+          Sobre
+        </Link>{" "}
+        você conhece quem faz o site.
+      </p>
+    </section>
+  );
+}
+
 export default function Home() {
   return (
     <div className="table-texture relative isolate min-h-dvh bg-[#0f1813]">
@@ -364,6 +409,8 @@ export default function Home() {
         </WoodSign>
 
         <GameGrid games={tiles} />
+
+        <HomeAbout />
       </main>
       <SiteFooter />
     </div>

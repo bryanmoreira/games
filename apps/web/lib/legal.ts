@@ -5,3 +5,5 @@ export const LEGAL_UPDATED = "20 de outubro de 2026";
 
 export const PRIVACY_PATH = "/privacidade";
 export const TERMS_PATH = "/termos";
+export const ABOUT_PATH = "/sobre";
+export const CONTACT_PATH = "/contato";

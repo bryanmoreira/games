@@ -74,11 +74,6 @@ export function GameGrid({ games }: { games: GameTile[] }) {
         {shown.map((g) => (
           <div key={g.slug}>{g.card}</div>
         ))}
-        {mode === "all" && (
-          <div className="flex aspect-[4/3] items-center justify-center rounded-3xl border-2 border-dashed border-white/15 font-display text-white/30">
-            Em breve
-          </div>
-        )}
       </div>
     </div>
   );
