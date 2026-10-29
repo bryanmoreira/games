@@ -13,6 +13,7 @@ import * as bj from "@mesa/blackjack";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
 import * as tijolada from "@mesa/tijolada";
+import * as sinuca from "@mesa/sinuca";
 import type { GameId, PlayerReport } from "@mesa/truco";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -643,6 +644,67 @@ const tijoladaAdapter: GameAdapter<tijolada.VersusState, tijolada.VersusAction, 
   outcome: tijolada.versusOutcome,
 };
 
+const sinucaAdapter: GameAdapter<sinuca.GameState, sinuca.Action, sinuca.PlayerView> = {
+  seats: sinuca.MAX_PLAYERS,
+  // 1×1 ou 2×2
+  minSeats: 2,
+  canStart: sinuca.validPlayers,
+  settings: {
+    initial: sinuca.DEFAULT_SETTINGS,
+    parse: (raw, prev) => sinuca.parseSettings(raw, prev as sinuca.Settings),
+  },
+  newGame: (prev, { seats, settings }) => sinuca.newGame(Math.random, seats, sinuca.parseSettings(settings), prev, Date.now()),
+  // o relógio da tacada é o do servidor: toda ação leva a hora em que chegou; "advance" é o tempo estourado
+  applyAction: (s, a) => sinuca.applyAction(s, (a as { type: string }).type === "advance" ? { type: "timeout", at: Date.now() } : { ...a, at: Date.now() }),
+  viewFor: (s, seat) => sinuca.viewFor(s, seat, Date.now()),
+  spectate: (s) => sinuca.viewFor(s, null, Date.now()),
+  decide: (v) => sinuca.decide(v),
+  withSeat: (a, seat) => {
+    const m = (a ?? {}) as Record<string, unknown>;
+    const shot = (m.shot ?? {}) as Record<string, unknown>;
+    const place = m.place as Record<string, unknown> | undefined;
+    return {
+      type: "shot",
+      seat,
+      shot: { dx: Number(shot.dx), dy: Number(shot.dy), power: Number(shot.power), spinX: Number(shot.spinX), spinY: Number(shot.spinY) },
+      ...(place ? { place: { x: Number(place.x), y: Number(place.y) } } : {}),
+      ...(m.call !== undefined ? { call: Number(m.call) } : {}),
+      at: 0,
+    };
+  },
+  actors: (s) => (s.phase === "over" ? [] : [s.turn]),
+  pause: () => null,
+  clock: (s) => (s.deadline === null || s.phase === "over" ? null : Math.max(0, s.deadline - Date.now())),
+  // o bot "mira" um pouco antes de bater
+  botDelay: () => 1100 + Math.random() * 900,
+  over: (s) => s.phase === "over",
+  animMs: (prev, next) => (next.last && (!prev || prev.shotNo !== next.shotNo) ? next.last.ms : 0),
+  outcome: (s, seat) => {
+    const team = sinuca.teamOf(seat);
+    const other = (1 - team) as sinuca.Team;
+    const st = s.stats[seat];
+    const theirs = s.groups[other];
+    return {
+      outcome: s.winner === team ? "win" : "loss",
+      data: {
+        shots: st.shots,
+        potted: st.potted,
+        run: st.bestRun,
+        double: st.bestShot,
+        fouls: st.fouls,
+        breakPot: st.breakPot,
+        // quebrou e ganhou sem o adversário dar uma tacada
+        clean: s.winner === team && sinuca.teamOf(s.breaker) === team && s.teamShots[other] === 0,
+        // bolas do adversário na mesa no fim
+        left: theirs === null ? 7 : s.balls.filter((b) => sinuca.groupOf(b.n) === theirs).length,
+        level: s.settings.level,
+        players: s.players.length,
+        end: s.end,
+      },
+    };
+  },
+};
+
 const blackjackAdapter: GameAdapter<bj.GameState, bj.Action, bj.PlayerView> = {
   seats: bj.SEATS,
   minSeats: 1,
@@ -740,4 +802,5 @@ export const GAMES: Record<GameId, GameAdapter> = {
   "futebol-de-botao": futebolAdapter,
   tijolada: tijoladaAdapter,
   blackjack: blackjackAdapter,
+  sinuca: sinucaAdapter,
 };

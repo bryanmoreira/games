@@ -14,6 +14,7 @@ import * as bj from "@mesa/blackjack";
 import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
 import * as tijolada from "@mesa/tijolada";
+import * as sinuca from "@mesa/sinuca";
 import { GAMES } from "../src/games";
 
 /** rng determinístico (mulberry32) */
@@ -713,5 +714,65 @@ describe("tijolada", () => {
 
   test("comando do navegador ganha o lugar de quem mandou", () => {
     expect(withSeat({ tick: 12, key: "cw", seat: 1 }, 0)).toEqual({ type: "input", seat: 0, tick: 12, key: "cw" });
+  });
+});
+
+describe("sinuca", () => {
+  const { outcome, withSeat, canStart, applyAction, actors, animMs, clock } = GAMES.sinuca;
+
+  /** 8 na caçapa do meio de cima, com o lugar 0 já na 8 e o adversário sem tacar depois da quebra. */
+  function won(): { prev: sinuca.GameState; s: sinuca.GameState } {
+    const base = sinuca.newGame(seeded(1), [0, 1], { level: "hard", clock: true }, null, Date.now());
+    const prev: sinuca.GameState = {
+      ...base,
+      phase: "play",
+      breaker: 0,
+      turn: 0,
+      run: 7,
+      inHand: null,
+      groups: ["solids", "stripes"],
+      balls: [
+        { n: 0, x: 0, y: -0.2 },
+        { n: 8, x: 0, y: 0.3 },
+        { n: 12, x: 0.5, y: -0.3 },
+        { n: 13, x: -0.5, y: -0.3 },
+      ],
+      stats: base.stats.map((st, i) => (i === 0 ? { ...st, shots: 6, potted: 7, bestRun: 7, bestShot: 2 } : st)),
+    };
+    const a = withSeat({ type: "shot", shot: { dx: 0, dy: 1, power: 0.35, spinX: 0, spinY: 0 }, call: 4 }, 0);
+    return { prev, s: ok(applyAction(prev, a)) };
+  }
+
+  test("1×1 em times diferentes ou 2×2", () => {
+    expect(canStart!([0, 1])).toBe(true);
+    expect(canStart!([0, 2])).toBe(false);
+    expect(canStart!([0, 1, 2, 3])).toBe(true);
+  });
+
+  test("vitória com a 8 cantada; números da partida", () => {
+    const { prev, s } = won();
+    expect(s.phase).toBe("over");
+    expect(actors(s)).toEqual([]);
+    expect(clock!(s)).toBeNull();
+    expect(animMs(prev, s)).toBe(s.last!.ms);
+    const w = outcome(s, 0);
+    expect(w.outcome).toBe("win");
+    expect(w.data).toMatchObject({ shots: 7, potted: 8, run: 8, double: 2, fouls: 0, clean: true, left: 2, level: "hard", players: 2, end: "eight" });
+    const l = outcome(s, 1);
+    expect(l.outcome).toBe("loss");
+    expect(l.data).toMatchObject({ clean: false, left: 0 });
+  });
+
+  test("ação do cliente vira tacada com lugar e hora", () => {
+    const a = withSeat({ type: "shot", shot: { dx: 1, dy: 0, power: 0.5, spinX: 0.2, spinY: -0.1 }, place: { x: -0.7, y: 0 } }, 1);
+    expect(a).toMatchObject({ type: "shot", seat: 1, shot: { dx: 1, power: 0.5 }, place: { x: -0.7, y: 0 } });
+    expect(a.call).toBeUndefined();
+  });
+
+  test("tempo estourado vira falta", () => {
+    const s = sinuca.newGame(seeded(2), [0, 1], { level: "medium", clock: true }, null, Date.now() - 60_000);
+    expect(clock!(s)).toBe(0);
+    const t = ok(applyAction(s, { type: "advance" }));
+    expect(t.turn).not.toBe(s.turn);
   });
 });

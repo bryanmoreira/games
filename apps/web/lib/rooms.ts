@@ -10,6 +10,7 @@ import { roomPath as damasRoom } from "./damas/paths";
 import { roomPath as ludoRoom } from "./ludo/paths";
 import { roomPath as dominoRoom } from "./domino/paths";
 import { roomPath as xadrezRoom } from "./xadrez/paths";
+import { roomPath as sinucaRoom } from "./sinuca/paths";
 import { roomPath as futebolRoom } from "./futebol-de-botao/paths";
 import { roomPath as tijoladaRoom } from "./tijolada/paths";
 import { roomPath as buracoRoom } from "./buraco/paths";
@@ -28,6 +29,7 @@ export const GAME_ROOM_PATH: Record<GameId, (code: string) => string> = {
   ludo: ludoRoom,
   domino: dominoRoom,
   xadrez: xadrezRoom,
+  sinuca: sinucaRoom,
   "futebol-de-botao": futebolRoom,
   tijolada: tijoladaRoom,
   buraco: buracoRoom,

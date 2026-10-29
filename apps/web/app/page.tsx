@@ -14,6 +14,7 @@ import { SeaLogo } from "@/components/batalha-naval/Sea";
 import { MiniGrid } from "@/components/codenames/Board";
 import { FieldArt } from "@/components/futebol-de-botao/Field";
 import { TijoladaArt } from "@/components/tijolada/Art";
+import { SinucaArt } from "@/components/sinuca/Art";
 import { Domino } from "@/components/domino/Tile";
 import { Chip } from "@/components/blackjack/Chips";
 import { UserButton } from "@/components/UserButton";
@@ -67,6 +68,7 @@ const FELT: Record<string, string> = {
   ludo: "felt-wine",
   "batalha-naval": "felt-wine",
   "futebol-de-botao": "felt-wine",
+  sinuca: "felt-wine",
   tijolada: "felt-blue",
 };
 
@@ -253,6 +255,16 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
         <Domino a={6} b={6} className="hc-drop w-[15%] [--d:1]" />
         <Domino a={6} b={3} flat className="hc-drop w-[30%] [--d:2]" />
         <Domino a={3} b={3} className="hc-drop w-[15%] [--d:3]" />
+      </div>
+    ),
+  },
+  {
+    slug: "sinuca",
+    title: "SINUCA",
+    sub: "BOLA 8",
+    art: (
+      <div className={`absolute left-1/2 top-[12%] w-[64%] -translate-x-1/2 rotate-2 drop-shadow-[0_4px_0_rgba(0,0,0,0.35)] ${HOVER}`}>
+        <SinucaArt className="w-full" play />
       </div>
     ),
   },

@@ -129,6 +129,21 @@ body {
   55% { transform: translate(230px, -70px); }
   100% { transform: translate(380px, 28px); }
 }
+/* Sinuca: o taco recua e bate, a branca corre até a bola fantasma e a 8 cai na caçapa do canto */
+@keyframes hc-sn-cue {
+  0% { transform: translate(-6px, 3px); opacity: 1; }
+  35% { transform: translate(7px, -3.5px); opacity: 1; }
+  100% { transform: translate(4px, -2px); opacity: 0; }
+}
+@keyframes hc-sn-white {
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--tx), var(--ty)); }
+}
+@keyframes hc-sn-eight {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  80% { transform: translate(37px, -26px) scale(0.85); opacity: 1; }
+  100% { transform: translate(42px, -29px) scale(0.45); opacity: 0; }
+}
 /* Blackjack: ás e valete saem do sapato (canto de cima à direita) um depois do outro e a ficha cai na aposta */
 @keyframes hc-bj-deal {
   0% { translate: 140% -90%; rotate: 30deg; opacity: 0; }
@@ -205,6 +220,17 @@ body {
   }
   .hc:hover .hc-shot {
     animation: hc-shot 0.7s cubic-bezier(0.3, 0.6, 0.4, 1) 0.15s both;
+  }
+  .hc:hover .hc-sn-cue {
+    animation: hc-sn-cue 0.5s ease-in both;
+  }
+  .hc:hover .hc-sn-white {
+    animation: hc-sn-white 0.4s cubic-bezier(0.2, 0.7, 0.4, 1) 0.17s both;
+  }
+  .hc:hover .hc-sn-eight {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: hc-sn-eight 0.45s ease-in 0.55s both;
   }
   /* Quente ou Frio: as barras enchem da mais fria à mais quente */
   .hc:hover .hc-grow {

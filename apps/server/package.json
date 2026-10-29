@@ -21,6 +21,7 @@
     "@mesa/domino": "workspace:*",
     "@mesa/ludo": "workspace:*",
     "@mesa/otrio": "workspace:*",
+    "@mesa/sinuca": "workspace:*",
     "@mesa/stop": "workspace:*",
     "@mesa/xadrez": "workspace:*"
   },

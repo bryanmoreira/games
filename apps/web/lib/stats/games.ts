@@ -13,6 +13,7 @@ import { SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { TRUCO_PATH } from "@/lib/truco/paths";
 import { VERBETE_PATH } from "@/lib/verbete/paths";
 import { XADREZ_PATH } from "@/lib/xadrez/paths";
+import { SINUCA_PATH } from "@/lib/sinuca/paths";
 import { FUTEBOL_PATH } from "@/lib/futebol-de-botao/paths";
 import { TIJOLADA_PATH } from "@/lib/tijolada/paths";
 import { BURACO_PATH } from "@/lib/buraco/paths";
@@ -25,7 +26,7 @@ import { QUENTE_PATH } from "@/lib/quente-ou-frio/paths";
  * A Tijolada está nos online (1×1) e também manda as partidas solo pelo navegador.
  */
 export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras", "quente-ou-frio"] as const;
-export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames", "buraco", "blackjack"] as const satisfies readonly GameId[];
+export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "sinuca", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames", "buraco", "blackjack"] as const satisfies readonly GameId[];
 
 export type SoloGame = (typeof SOLO_GAMES)[number];
 export type StatGame = SoloGame | GameId;
@@ -38,6 +39,7 @@ export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
   otrio: { name: "Otrio", path: OTRIO_PATH },
   "jogo-da-velha": { name: "Jogo da Velha", path: VELHA_PATH },
   xadrez: { name: "Xadrez", path: XADREZ_PATH },
+  sinuca: { name: "Sinuca", path: SINUCA_PATH },
   damas: { name: "Damas", path: DAMAS_PATH },
   ludo: { name: "Ludo", path: LUDO_PATH },
   domino: { name: "Dominó", path: DOMINO_PATH },

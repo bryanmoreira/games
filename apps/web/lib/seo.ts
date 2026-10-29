@@ -370,6 +370,30 @@ export const GAMES: GameSeo[] = [
     ],
   },
   {
+    slug: "sinuca",
+    path: "/sinuca",
+    name: "Sinuca",
+    title: "Sinuca Online Grátis (Bola 8)",
+    description:
+      "Jogue Sinuca online grátis na bola 8: lisas contra listradas, linha de mira com bola fantasma, efeito na branca e física de mesa de verdade. Contra o computador ou com amigos, no 1×1 ou em duplas.",
+    tagline: "Bola 8 com mira, efeito e física de mesa de verdade, no 1×1 ou em duplas.",
+    keywords: ["sinuca online", "jogar sinuca", "sinuca grátis", "bola 8 online", "sinuca com amigos", "sinuca contra o computador", "jogo de sinuca", "bilhar online"],
+    genre: "Jogo de mesa (bilhar)",
+    players: { min: 1, max: 4 },
+    modes: "Multiplayer online no 1×1 ou 2×2 em salas privadas, com lugares completados pelo computador, e modo solo contra a IA nos níveis fácil, médio e difícil. Tempo por tacada opcional (45 segundos).",
+    howTo: {
+      title: "Como jogar Sinuca (bola 8): regras, faltas e a bola 8",
+      description: "Aprenda as regras da sinuca bola 8: a quebra, mesa aberta, lisas e listradas, as faltas e a bola na mão, como cantar a 8 e como usar a mira, o efeito e a força.",
+    },
+    faq: [
+      { q: "Como funciona a sinuca bola 8?", a: "São 15 bolas: lisas de 1 a 7, listradas de 9 a 15 e a 8 preta. Depois da quebra, o primeiro a encaçapar uma bola numa tacada válida fica com o grupo dela. Ganha quem encaçapar todas as suas e depois a 8, na caçapa que cantou." },
+      { q: "Quais são as faltas na bola 8?", a: "Branca na caçapa, não tocar em nenhuma bola, tocar primeiro numa bola que não é sua e, depois do toque, nenhuma bola cair nem bater na tabela. Depois de uma falta, o adversário joga com bola na mão: põe a branca onde quiser na mesa." },
+      { q: "Quando se perde com a bola 8?", a: "Quem encaçapa a 8 antes de acabar as suas bolas, numa caçapa diferente da cantada ou junto com uma falta (como a branca caindo na mesma tacada) perde a partida na hora." },
+      { q: "Como funciona o efeito na branca?", a: "Escolha onde o taco bate na branca. Batendo em cima, a branca segue a bola atingida; embaixo, ela volta; no meio, ela para. O efeito de lado muda o ângulo em que a branca sai da tabela. A física simula o atrito do pano e o giro de cada bola." },
+      { q: "Dá para jogar sinuca online com amigos?", a: "Sim. Crie uma sala, mande o código ou o link e jogue sem cadastro, no 1×1 ou em duplas (2×2). Lugares vazios podem ser completados pelo computador, e o host escolhe se cada tacada tem limite de 45 segundos." },
+    ],
+  },
+  {
     slug: "ludo",
     path: "/ludo",
     name: "Ludo",

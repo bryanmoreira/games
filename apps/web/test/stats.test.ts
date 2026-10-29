@@ -133,6 +133,29 @@ describe("gameStats: Xadrez", () => {
   });
 });
 
+describe("gameStats: Sinuca", () => {
+  test("maior sequência, vitória com menos tacadas, bolas no total e tabela por nível", () => {
+    const rs = [
+      win({ run: 4, shots: 14, potted: 8, level: "easy" }, "ai"),
+      win({ run: 6, shots: 11, potted: 8 }),
+      loss({ run: 7, shots: 5, potted: 3, level: "hard" }, "ai"),
+      loss({ abandoned: true }),
+    ];
+    const s = gameStats("sinuca", rs);
+    expect(s.chips).toEqual([
+      { label: "Maior sequência", value: "7 bolas" },
+      { label: "Vitória mais rápida", value: "11 tacadas" },
+      { label: "Bolas encaçapadas", value: "19" },
+    ]);
+    expect(s.table!.rows).toEqual([
+      { label: "IA Fácil", values: ["1", "1"] },
+      { label: "IA Médio", values: ["0", "0"] },
+      { label: "IA Difícil", values: ["0", "1"] },
+    ]);
+    expect(gameStats("sinuca", [loss({ abandoned: true })]).chips).toEqual([]);
+  });
+});
+
 describe("gameStats: Damas", () => {
   test("vitória mais rápida entre vitórias e maior captura em qualquer partida", () => {
     expect(chips("damas", [win({ moves: 30, bestChain: 2 }), win({ moves: 24, bestChain: 1 }), loss({ moves: 10, bestChain: 4 }), draw({ moves: 5 })])).toEqual([
@@ -634,6 +657,7 @@ describe("jogos", () => {
     ["/jogo-da-velha/sala/ABCD", "jogo-da-velha"],
     ["/damas/sala/ABCD", "damas"],
     ["/xadrez/sala/ABCD", "xadrez"],
+    ["/sinuca/sala/ABCD", "sinuca"],
     ["/ludo/sala/ABCD", "ludo"],
     ["/domino/sala/ABCD", "domino"],
     ["/buraco/sala/ABCD", "buraco"],

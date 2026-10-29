@@ -23,6 +23,7 @@ COPY packages/buraco/package.json packages/buraco/
 COPY packages/ludo/package.json packages/ludo/
 COPY packages/futebol-de-botao/package.json packages/futebol-de-botao/
 COPY packages/tijolada/package.json packages/tijolada/
+COPY packages/sinuca/package.json packages/sinuca/
 COPY packages/spider/package.json packages/spider/
 COPY packages/stop/package.json packages/stop/
 COPY packages/sudoku/package.json packages/sudoku/
@@ -46,6 +47,7 @@ COPY packages/buraco packages/buraco
 COPY packages/ludo packages/ludo
 COPY packages/futebol-de-botao packages/futebol-de-botao
 COPY packages/tijolada packages/tijolada
+COPY packages/sinuca packages/sinuca
 COPY packages/spider packages/spider
 COPY packages/stop packages/stop
 COPY packages/sudoku packages/sudoku

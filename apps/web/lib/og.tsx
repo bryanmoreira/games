@@ -6,6 +6,7 @@ import { fromFen } from "@mesa/xadrez";
 import { PieceArt } from "@/components/xadrez/Piece";
 import { TileFace } from "@/components/domino/Tile";
 import { TijoladaArt } from "@/components/tijolada/Art";
+import { SinucaArt } from "@/components/sinuca/Art";
 import { getGame } from "@/lib/seo";
 import { ART, ART_WORDS } from "@/components/caca-palavras/common";
 import { ART_BARS, HEAT_COLOR } from "@/components/quente-ou-frio/WordBar";
@@ -49,6 +50,7 @@ const TITLES: Record<string, [string, string]> = {
   ludo: ["LUDO", "CORRIDA DE PEÕES"],
   domino: ["DOMINÓ", "BATIDA"],
   "futebol-de-botao": ["FUTEBOL", "DE BOTÃO"],
+  sinuca: ["SINUCA", "BOLA 8"],
   tijolada: ["TIJOLADA", "SOLO E 1×1"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
   "caca-palavras": ["CAÇA", "PALAVRAS"],
@@ -479,6 +481,13 @@ async function art(slug: string) {
         </div>
       );
     }
+    case "sinuca":
+      // mesa vista de cima com a linha de mira até a 8, a caminho da caçapa do canto
+      return (
+        <div style={{ display: "flex", transform: "rotate(-3deg)", boxShadow: "0 14px 34px rgba(0,0,0,0.5)", borderRadius: 30 }}>
+          {SinucaArt({ width: 520, height: 300 })}
+        </div>
+      );
     case "tijolada":
       // campo com as linhas de baixo quase cheias e um I caindo no buraco
       return (

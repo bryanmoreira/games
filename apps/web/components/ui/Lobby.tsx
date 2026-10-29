@@ -22,6 +22,7 @@ const INVITE: Record<GameId, string> = {
   ludo: "Bora jogar Ludo? Duvido levar os 4 peões pra casa antes de mim! 🎲",
   domino: "Bora um dominó? Duvido bater antes de mim! 💥",
   xadrez: "Bora uma partida de xadrez? Duvido me dar xeque-mate! ♟️",
+  sinuca: "Bora uma sinuca? Duvido você matar a 8 antes de mim! 🎱",
   "futebol-de-botao": "Bora um futebol de botão? Duvido fazer 3 gols antes de mim! ⚽",
   tijolada: "Bora uma Tijolada? Duvido aguentar mais tempo que eu! 🧱",
   buraco: "Bora um Buraco? Duvido fechar uma canastra antes de mim! 🃏",

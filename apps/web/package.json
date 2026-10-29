@@ -29,6 +29,7 @@
     "@mesa/otrio": "workspace:*",
     "@mesa/quente-ou-frio": "workspace:*",
     "@mesa/spider": "workspace:*",
+    "@mesa/sinuca": "workspace:*",
     "@mesa/stop": "workspace:*",
     "@mesa/sudoku": "workspace:*",
     "@mesa/verbete": "workspace:*",

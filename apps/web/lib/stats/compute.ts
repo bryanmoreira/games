@@ -129,6 +129,21 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
           }),
         };
       break;
+    case "sinuca": {
+      chip("Maior sequência", ((n) => (n ? `${n} ${n === 1 ? "bola" : "bolas"}` : null))(maxOf(rs.map((r) => num(r, "run")).filter(Number.isFinite))));
+      chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} tacadas`))(minOf(wins.map((r) => num(r, "shots")).filter((n) => n > 0))));
+      const potted = rs.reduce((sum, r) => sum + (Number.isFinite(num(r, "potted")) ? num(r, "potted") : 0), 0);
+      chip("Bolas encaçapadas", potted ? String(potted) : null);
+      if (rs.some((r) => r.mode === "ai"))
+        stats.table = {
+          cols: ["Vitórias", "Partidas"],
+          rows: LEVELS.slice(0, 3).map(([k, label]) => {
+            const games = rs.filter((r) => r.mode === "ai" && r.data.level === k);
+            return { label: `IA ${label}`, values: [String(games.filter(isWin).length), String(games.length)] };
+          }),
+        };
+      break;
+    }
     case "damas":
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} lances`))(minOf(wins.map((r) => num(r, "moves")).filter((n) => n > 0))));
       chip("Maior captura", ((n) => (n ? `${n} ${n === 1 ? "peça" : "peças"}` : null))(maxOf(rs.map((r) => num(r, "bestChain")).filter(Number.isFinite))));

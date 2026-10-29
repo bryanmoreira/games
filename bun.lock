@@ -23,6 +23,7 @@
         "@mesa/jogo-da-velha": "workspace:*",
         "@mesa/ludo": "workspace:*",
         "@mesa/otrio": "workspace:*",
+        "@mesa/sinuca": "workspace:*",
         "@mesa/stop": "workspace:*",
         "@mesa/tijolada": "workspace:*",
         "@mesa/truco": "workspace:*",
@@ -48,6 +49,7 @@
         "@mesa/ludo": "workspace:*",
         "@mesa/otrio": "workspace:*",
         "@mesa/quente-ou-frio": "workspace:*",
+        "@mesa/sinuca": "workspace:*",
         "@mesa/spider": "workspace:*",
         "@mesa/stop": "workspace:*",
         "@mesa/sudoku": "workspace:*",
@@ -112,6 +114,9 @@
     },
     "packages/quente-ou-frio": {
       "name": "@mesa/quente-ou-frio",
+    },
+    "packages/sinuca": {
+      "name": "@mesa/sinuca",
     },
     "packages/spider": {
       "name": "@mesa/spider",
@@ -315,6 +320,8 @@
     "@mesa/quente-ou-frio": ["@mesa/quente-ou-frio@workspace:packages/quente-ou-frio"],
 
     "@mesa/server": ["@mesa/server@workspace:apps/server"],
+
+    "@mesa/sinuca": ["@mesa/sinuca@workspace:packages/sinuca"],
 
     "@mesa/spider": ["@mesa/spider@workspace:packages/spider"],
 

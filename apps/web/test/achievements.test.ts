@@ -196,6 +196,17 @@ const CASES: Record<string, Case> = {
   "xadrez:wins_50": winsCase(50),
   "xadrez:wins_100": winsCase(100),
 
+  "sinuca:first": firstCase,
+  "sinuca:clean": { ok: [win({ clean: true })], almost: [win({ clean: false }), loss({ clean: true }), win({ abandoned: true })] },
+  "sinuca:double": { ok: [loss({ double: 2 })], almost: [win({ double: 1 }), loss({ abandoned: true })] },
+  "sinuca:nofoul": { ok: [win({ fouls: 0 })], almost: [win({ fouls: 1 }), loss({ fouls: 0 }), win({ abandoned: true })] },
+  "sinuca:shutout": { ok: [win({ left: 7 })], almost: [win({ left: 6 }), loss({ left: 7 }), win({})] },
+  "sinuca:master": {
+    ok: [win({ level: "hard" }, "ai")],
+    almost: [win({ level: "medium" }, "ai"), win({ level: "hard" }, "online"), loss({ level: "hard" }, "ai")],
+  },
+  "sinuca:streak_5": streakCase,
+
   "damas:first": firstCase,
   "damas:chain": { ok: [loss({ bestChain: 3 })], almost: [win({ bestChain: 2 }), loss({ abandoned: true })] },
   "damas:untouched": { ok: [win({ lost: 0 })], almost: [win({ lost: 1 }), loss({ lost: 0 }), draw({ lost: 0 }), win({})] },
