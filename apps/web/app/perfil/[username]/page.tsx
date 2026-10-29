@@ -3,7 +3,7 @@ import { cache } from "react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { BackButton } from "@/components/BackButton";
+import { WoodHeader } from "@/components/home/WoodTop";
 import { FriendButton } from "@/components/profile/FriendButton";
 import { ShareProfileButton } from "@/components/profile/ShareProfileButton";
 import { ProfileStatsView, RivalryCard } from "@/components/stats/ProfileStats";
@@ -58,9 +58,9 @@ export default async function PublicProfile({ params }: Props) {
   const since = player.createdAt.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
 
   return (
-    <div className="min-h-dvh bg-[#0f1813]">
-      <BackButton href="/" className="fixed left-4 top-4 z-10" />
-      <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-20 sm:gap-10">
+    <div className="table-texture min-h-dvh bg-[#0f1813]">
+      <WoodHeader title="PERFIL" heading={false} />
+      <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-8 sm:gap-10">
         <header className={profileTable(player.equippedTable)}>
           <ChipAvatar user={player} frame={player.equippedFrame} className="h-24 w-24 text-3xl sm:h-32 sm:w-32 sm:text-5xl" />
           <div className="flex min-w-0 flex-1 flex-col gap-1">

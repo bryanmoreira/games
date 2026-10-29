@@ -1,15 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
 
 export const SHOP_PATH = "/loja";
 
-/** Atalho para a loja (ao lado do saldo de fichas). Só para quem está logado. */
+/** Atalho para a loja (ao lado do saldo de fichas). Sem conta também: lá é vitrine. */
 export function ShopButton({ className = "" }: { className?: string }) {
-  const { data } = authClient.useSession();
-  if (!data?.user) return null;
-
   return (
     <Link
       href={SHOP_PATH}

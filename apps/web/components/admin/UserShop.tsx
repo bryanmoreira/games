@@ -18,6 +18,7 @@ const ERRORS: Record<ShopError, string> = {
   not_owned: "Não tem esse item.",
   no_user: "Usuário não existe.",
   negative: "Saldo ficaria negativo.",
+  price: "O preço mudou.",
 };
 
 const icon = (d: React.ReactNode, className = "h-4 w-4") => (

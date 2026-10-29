@@ -34,5 +34,5 @@ async function post(body: unknown): Promise<ShopReply> {
   return j;
 }
 
-export const buy = (itemId: string) => post({ action: "buy", itemId });
+export const buy = (itemId: string, price: number) => post({ action: "buy", itemId, price });
 export const equip = (type: ItemType, key: string | null) => post({ action: "equip", type, key });

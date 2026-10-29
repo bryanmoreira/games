@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { makeCard } from "@mesa/truco";
+import { BackButton } from "@/components/BackButton";
 import { CardImg } from "@/components/cards/Card";
+import { ChipBalance } from "@/components/chips/ChipBalance";
+import { ShopButton } from "@/components/shop/ShopButton";
+import { UserButton } from "@/components/UserButton";
 
 // Topo da home: trilho de madeira com a barra (loja, fichas, perfil) e, pendurada nele, a placa com o título.
 
@@ -19,20 +23,20 @@ const SUITS: ReactNode[] = [
   <path key="d" d="M12 2l7.5 10L12 22 4.5 12z" />,
 ];
 
-/** Trilho de madeira de ponta a ponta. Os naipes ficam no centro e `children` (a barra) à direita. */
-export function WoodRail({ children }: { children: ReactNode }) {
+/** Trilho de madeira de ponta a ponta. Os naipes ficam no centro, `children` (a barra) à direita e `left` (voltar) à esquerda. */
+export function WoodRail({ children, left }: { children: ReactNode; left?: ReactNode }) {
   return (
     <header className="wood wood-rail relative z-10">
-      <div className="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto_1fr] items-center px-4">
-        <span />
-        <span aria-hidden="true" className="flex items-center gap-4 text-[#2a1608] drop-shadow-[0_1px_0_rgba(255,255,255,0.18)] max-sm:invisible">
+      <div className="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto] sm:grid-cols-[1fr_auto_1fr] items-center px-4">
+        {left ? <div className="wood-hud flex items-center gap-2.5">{left}</div> : <span />}
+        <span aria-hidden="true" className="flex items-center gap-4 text-[#2a1608] drop-shadow-[0_1px_0_rgba(255,255,255,0.18)] max-sm:hidden">
           {SUITS.map((suit, i) => (
             <svg key={i} viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor">
               {suit}
             </svg>
           ))}
         </span>
-        <div className="wood-hud flex items-center gap-2.5 justify-self-end">{children}</div>
+        <div className="wood-hud flex items-center gap-1.5 justify-self-end sm:gap-2.5">{children}</div>
       </div>
     </header>
   );
@@ -44,12 +48,11 @@ export function WoodRail({ children }: { children: ReactNode }) {
  */
 export function WoodSign({ children }: { children: ReactNode }) {
   return (
-    <div className="relative flex flex-col items-center">
-      <div aria-hidden="true" className="flex h-8 gap-40 sm:gap-72">
-        <i className="wood-chain" />
-        <i className="wood-chain" />
-      </div>
+    <div className="relative flex flex-col items-center pt-8">
       <div className="wood wood-plank relative rounded-[20px] px-8 py-5 sm:px-13">
+        {/* correntes presas na placa (a ~22% de cada ponta), de qualquer largura, subindo até o trilho */}
+        <i aria-hidden="true" className="wood-chain absolute bottom-full left-[22%] h-8" />
+        <i aria-hidden="true" className="wood-chain absolute bottom-full right-[22%] h-8" />
         <div aria-hidden="true" className="pointer-events-none absolute -left-11 -top-1 -z-10 hidden w-[70px] -rotate-[16deg] drop-shadow-[0_8px_18px_rgba(0,0,0,0.5)] md:block">
           <CardImg card={SIDE_CARDS[0]} />
         </div>
@@ -62,5 +65,27 @@ export function WoodSign({ children }: { children: ReactNode }) {
         {children}
       </div>
     </div>
+  );
+}
+
+/**
+ * Topo das páginas internas (loja, perfil): o trilho com voltar, loja, fichas e perfil, e a placa com o nome da página.
+ * `heading`: a placa vira o h1 (sem isso, a página tem o próprio h1, como o perfil público com o nome do jogador).
+ */
+export function WoodHeader({ title, shop = true, heading = true }: { title: string; shop?: boolean; heading?: boolean }) {
+  const Tag = heading ? "h1" : "p";
+  return (
+    <>
+      <WoodRail left={<BackButton href="/" />}>
+        {shop && <ShopButton />}
+        <ChipBalance />
+        <UserButton />
+      </WoodRail>
+      <div className="flex justify-center px-4">
+        <WoodSign>
+          <Tag className="text-center font-display text-3xl tracking-wide text-gold drop-shadow-[0_3px_0_#2a1608] sm:text-5xl">{title}</Tag>
+        </WoodSign>
+      </div>
+    </>
   );
 }

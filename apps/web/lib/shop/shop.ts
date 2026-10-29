@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
+import { dayKey } from "@/lib/stats/achievements";
 import { deckKey, frameKey, ITEM_BY_ID, tableKey, type DeckKey, type FrameKey, type ItemType, type TableKey } from "@/lib/shop/catalog";
+import { dailySale, priceOn, saleEndsAt, type SaleItem } from "@/lib/shop/sale";
 
 // Loja no banco: inventário (user_item), o que está em uso (user.equippedFrame/Deck/Table) e as fichas da compra.
 
@@ -24,7 +26,7 @@ export interface OwnedItem {
   removedAt: Date | null;
 }
 
-export type ShopError = "unknown" | "owned" | "poor" | "not_owned" | "no_user" | "negative";
+export type ShopError = "unknown" | "owned" | "poor" | "not_owned" | "no_user" | "negative" | "price";
 export type ShopResult = { ok: true } | { ok: false; error: ShopError };
 const fail = (error: ShopError): ShopResult => ({ ok: false, error });
 
@@ -36,6 +38,18 @@ export async function inventory(userId: string, all = false): Promise<OwnedItem[
     select: { itemId: true, source: true, price: true, acquiredAt: true, removedAt: true },
   });
   return rows.filter((r) => ITEM_BY_ID.has(r.itemId)) as OwnedItem[];
+}
+
+export interface Sale {
+  day: string;
+  endsAt: number;
+  items: SaleItem[];
+}
+
+/** Promoção que vale agora (a mesma para todo mundo, com ou sem conta). */
+export function currentSale(now = new Date()): Sale {
+  const day = dayKey(now);
+  return { day, endsAt: saleEndsAt(day), items: dailySale(day) };
 }
 
 /** Saldo, o que tem e o que usa (a página da loja). */
@@ -51,10 +65,15 @@ export async function shopState(userId: string) {
 const FIELD = { frame: "equippedFrame", deck: "equippedDeck", table: "equippedTable" } as const;
 const field = (type: ItemType) => FIELD[type];
 
-/** Compra com as fichas do jogador e já passa a usar. Saldo conferido no próprio UPDATE (duas compras juntas não passam do saldo). */
-export async function buyItem(userId: string, itemId: string): Promise<ShopResult> {
-  const it = ITEM_BY_ID.get(itemId);
-  if (!it) return fail("unknown");
+/**
+ * Compra com as fichas do jogador e já passa a usar. Saldo conferido no próprio UPDATE (duas compras juntas não passam do saldo).
+ * `expected`: o preço que a pessoa viu; se a promoção virou no meio do caminho, não cobra e devolve "price".
+ */
+export async function buyItem(userId: string, itemId: string, expected?: number): Promise<ShopResult> {
+  const found = ITEM_BY_ID.get(itemId);
+  if (!found) return fail("unknown");
+  const it = { ...found, price: priceOn(found, dayKey(new Date())) };
+  if (expected !== undefined && expected !== it.price) return fail("price");
   return prisma.$transaction(async (tx) => {
     const has = await tx.userItem.findUnique({ where: { userId_itemId: { userId, itemId } }, select: { removedAt: true } });
     if (has && !has.removedAt) return fail("owned");

@@ -1,5 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { CARD_FILES, DECK_KEYS, FRAME_KEYS, backSvg, faceSvg, frameSvg, parseCardFile } from "@/lib/shop/art";
+import { dailySale, priceOn, SALE_PCTS, SALE_TIERS, saleEndsAt, salePrice } from "@/lib/shop/sale";
+import { nextDay } from "@/lib/stats/achievements";
 import { DEFAULT_DECK, ITEMS, ITEM_BY_ID, TABLE_KEYS, deckKey, frameKey, shopAction, tableClass, tableKey } from "@/lib/shop/catalog";
 
 describe("catálogo", () => {
@@ -66,5 +68,50 @@ describe("desenho", () => {
       expect(s).not.toContain("NaN");
       expect(s).not.toMatch(/Bungee|Playfair|Inter[,"]/);
     }
+  });
+});
+
+describe("promoção do dia", () => {
+  const days = (from: string, n: number) => {
+    const out = [from];
+    while (out.length < n) out.push(nextDay(out.at(-1)!));
+    return out;
+  };
+
+  test("um item de cada raridade, com os quatro descontos", () => {
+    for (const day of days("2026-01-01", 60)) {
+      const sale = dailySale(day);
+      expect(sale.map((s) => ITEM_BY_ID.get(s.id)!.tier)).toEqual([...SALE_TIERS]);
+      expect([...sale.map((s) => s.pct)].sort()).toEqual([...SALE_PCTS]);
+      for (const s of sale) expect(s.price).toBe(salePrice(ITEM_BY_ID.get(s.id)!.price, s.pct));
+    }
+  });
+
+  test("é a mesma o dia inteiro e não repete item em dias seguidos", () => {
+    expect(dailySale("2026-10-28")).toEqual(dailySale("2026-10-28"));
+    const list = days("2026-01-01", 400);
+    for (let i = 1; i < list.length; i++) {
+      const before = new Set(dailySale(list[i - 1]).map((s) => s.id));
+      for (const s of dailySale(list[i])) expect(before.has(s.id)).toBe(false);
+    }
+  });
+
+  test("todo item entra em promoção de tempos em tempos", () => {
+    const seen = new Set(days("2026-01-01", 30).flatMap((d) => dailySale(d).map((s) => s.id)));
+    expect(seen.size).toBe(ITEMS.length);
+  });
+
+  test("preço de 5 em 5 e fora da promoção é o de sempre", () => {
+    expect(salePrice(150, 30)).toBe(105);
+    expect(salePrice(2500, 50)).toBe(1250);
+    expect(salePrice(450, 20)).toBe(360);
+    const day = "2026-10-28";
+    const on = new Set(dailySale(day).map((s) => s.id));
+    const off = ITEMS.find((i) => !on.has(i.id))!;
+    expect(priceOn(off, day)).toBe(off.price);
+  });
+
+  test("acaba à meia-noite de Brasília", () => {
+    expect(new Date(saleEndsAt("2026-10-28")).toISOString()).toBe("2026-10-29T03:00:00.000Z");
   });
 });
