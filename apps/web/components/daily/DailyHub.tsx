@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/BackButton";
 import { AchievementIcon } from "@/components/stats/AchievementIcon";
 import { formatTime } from "@/components/sudoku/common";
+import { XIcon } from "@/components/ui/buttons";
 import { CalendarIcon, CheckIcon } from "@/components/ui/icons";
 import { msToNextDay, type DailyDone, type DailyGame } from "@/lib/daily/challenge";
 import { localDailies, type LocalDaily } from "@/lib/daily/storage";
@@ -16,6 +17,8 @@ import { MonthCalendar, monthOf } from "./MonthCalendar";
 
 interface Day {
   won: boolean;
+  /** terminou sem vencer (só o Quente ou Frio, que tem desistir) */
+  lost: boolean;
   timeMs: number | null;
   started: boolean;
 }
@@ -23,8 +26,8 @@ interface Day {
 /** Junta o que o perfil tem (logado) com o que está salvo no aparelho. */
 function merge(server: Record<string, DailyDone>, local: Record<string, LocalDaily>): Record<string, Day> {
   const out: Record<string, Day> = {};
-  for (const [d, l] of Object.entries(local)) out[d] = { won: l.won, timeMs: l.won ? l.elapsed : null, started: l.started };
-  for (const [d, s] of Object.entries(server)) out[d] = { won: true, timeMs: s.timeMs, started: true };
+  for (const [d, l] of Object.entries(local)) out[d] = { won: l.won, lost: l.lost, timeMs: l.won ? l.elapsed : null, started: l.started };
+  for (const [d, s] of Object.entries(server)) out[d] = { won: true, lost: false, timeMs: s.timeMs, started: true };
   return out;
 }
 
@@ -38,6 +41,7 @@ export function DailyHub({
   loggedIn,
   path,
   back,
+  unit = "time",
 }: {
   game: DailyGame;
   name: string;
@@ -50,7 +54,10 @@ export function DailyHub({
   /** rota do calendário; a partida fica em `${path}/AAAA-MM-DD` */
   path: string;
   back: string;
+  /** o número de cada dia vencido: tempo (padrão) ou tentativas */
+  unit?: "time" | "attempts";
 }) {
+  const show = (n: number) => (unit === "attempts" ? `${n} ${n === 1 ? "tentativa" : "tentativas"}` : formatTime(n));
   const router = useRouter();
   // null até ler o aparelho: o botão de hoje só aparece já com o estado certo
   const [local, setLocal] = useState<Record<string, LocalDaily> | null>(null);
@@ -101,14 +108,20 @@ export function DailyHub({
             </span>
           )}
         </div>
-        {t?.won ? (
+        {t?.won || t?.lost ? (
           <div className="flex items-center justify-between gap-3">
-            <span className="flex items-center gap-2 font-display text-lg text-gold">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold text-stone-900">
-                <CheckIcon className="h-5 w-5" />
+            {t.won ? (
+              <span className="flex items-center gap-2 font-display text-lg text-gold">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold text-stone-900">
+                  <CheckIcon className="h-5 w-5" />
+                </span>
+                {t.timeMs !== null && <span className="tabular-nums">{show(t.timeMs)}</span>}
               </span>
-              {t.timeMs !== null && <span className="tabular-nums">{formatTime(t.timeMs)}</span>}
-            </span>
+            ) : (
+              <button onClick={() => play(today)} className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/80 text-white transition hover:bg-red-500" title="Ver o resultado">
+                <XIcon />
+              </button>
+            )}
             {left !== null && (
               <span className="flex flex-col items-end font-display leading-none" title="Próximo desafio">
                 <span className="text-[10px] text-white/50">PRÓXIMO</span>
@@ -138,16 +151,20 @@ export function DailyHub({
           return (
             <button
               onClick={() => play(d)}
-              title={`${longDay(d)}${s?.won && s.timeMs !== null ? ` · ${formatTime(s.timeMs)}` : ""}`}
+              title={`${longDay(d)}${s?.won && s.timeMs !== null ? ` · ${show(s.timeMs)}` : ""}`}
               className={`relative flex aspect-square flex-col items-center justify-center rounded-lg font-display text-xs transition ${
-                s?.won ? "bg-gold text-stone-900 hover:brightness-110" : "bg-white/5 text-white/80 hover:bg-white/15 hover:text-white"
+                s?.won
+                  ? "bg-gold text-stone-900 hover:brightness-110"
+                  : s?.lost
+                    ? "bg-red-500/25 text-red-100 hover:bg-red-500/35"
+                    : "bg-white/5 text-white/80 hover:bg-white/15 hover:text-white"
               } ${d === today ? "ring-2 ring-gold ring-offset-2 ring-offset-[#0f1813]" : ""}`}
             >
               {n}
               {s?.won ? (
                 <CheckIcon className="absolute bottom-0.5 h-2.5 w-2.5" />
               ) : (
-                s?.started && <span className="absolute bottom-1 h-1 w-1 rounded-full bg-emerald-400" />
+                s?.started && !s.lost && <span className="absolute bottom-1 h-1 w-1 rounded-full bg-emerald-400" />
               )}
             </button>
           );

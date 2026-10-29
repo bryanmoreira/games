@@ -3,17 +3,19 @@
 import type { DailyGame } from "@/lib/daily/challenge";
 
 // Cada desafio fica salvo no aparelho pelo dia: recarregar continua e dá para alternar entre dias.
-const PREFIX: Record<DailyGame, string> = { sudoku: "sudoku.daily.", "paciencia-spider": "spider.daily.", verbete: "verbete.daily.", "caca-palavras": "cacapalavras.daily." };
+const PREFIX: Record<DailyGame, string> = { sudoku: "sudoku.daily.", "paciencia-spider": "spider.daily.", verbete: "verbete.daily.", "caca-palavras": "cacapalavras.daily.", "quente-ou-frio": "quenteoufrio.daily." };
 
 /** O que o calendário precisa de cada dia salvo. */
 export interface LocalDaily {
   won: boolean;
+  /** terminou sem vencer (desistiu, no Quente ou Frio) */
+  lost: boolean;
   elapsed: number;
   /** já fez alguma jogada */
   started: boolean;
 }
 
-type Saved = { won?: unknown; elapsed?: unknown; history?: unknown[] };
+type Saved = { won?: unknown; lost?: unknown; elapsed?: unknown; history?: unknown[] };
 
 export function loadDaily<T>(game: DailyGame, day: string, valid: (g: unknown) => g is T): T | null {
   try {
@@ -73,7 +75,7 @@ export function localDailies(game: DailyGame): Record<string, LocalDaily> {
       const g = JSON.parse(localStorage.getItem(k) ?? "null") as (Saved & { moves?: unknown }) | null;
       if (!g) continue;
       const started = (Array.isArray(g.history) && g.history.length > 0) || (typeof g.moves === "number" && g.moves > 0) || Number(g.elapsed) > 0;
-      out[k.slice(PREFIX[game].length)] = { won: g.won === true, elapsed: Number(g.elapsed) || 0, started };
+      out[k.slice(PREFIX[game].length)] = { won: g.won === true, lost: g.lost === true, elapsed: Number(g.elapsed) || 0, started };
     } catch {}
   }
   return out;

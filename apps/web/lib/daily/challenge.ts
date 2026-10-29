@@ -2,12 +2,13 @@ import { generate, type Difficulty } from "@mesa/sudoku";
 import { generate as generateWords, THEMES, type Level, type Puzzle } from "@mesa/caca-palavras";
 import { shuffledDeck, type SuitCount } from "@mesa/spider";
 import { dailyWords, isMode, plain, type Mode } from "@mesa/verbete";
+import { dailySecret } from "@mesa/quente-ou-frio";
 import { dayKey, nextDay } from "@/lib/stats/achievements";
 
 // Desafio diário: a mesma partida para todo mundo das 00h às 23h59 (horário de Brasília).
 // Sem banco aqui, para testar; o banco fica em lib/daily/db.ts.
 
-export const DAILY_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras"] as const;
+export const DAILY_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras", "quente-ou-frio"] as const;
 export type DailyGame = (typeof DAILY_GAMES)[number];
 export const isDailyGame = (g: unknown): g is DailyGame => (DAILY_GAMES as readonly unknown[]).includes(g);
 
@@ -39,6 +40,12 @@ export interface VerbeteDaily {
   words: Record<`${Mode}`, string[]>;
 }
 
+/** Palavra secreta do dia. Não vai para o navegador: os chutes passam pela API do jogo. */
+export interface QuenteDaily {
+  seed: number;
+  word: string;
+}
+
 /** A grade inteira fica guardada: mudar o gerador depois não muda os dias que já saíram. */
 export type CacaDaily = Puzzle;
 
@@ -46,7 +53,8 @@ export type DailyChallenge =
   | { game: "sudoku"; day: string; data: SudokuDaily }
   | { game: "paciencia-spider"; day: string; data: SpiderDaily }
   | { game: "verbete"; day: string; data: VerbeteDaily }
-  | { game: "caca-palavras"; day: string; data: CacaDaily };
+  | { game: "caca-palavras"; day: string; data: CacaDaily }
+  | { game: "quente-ou-frio"; day: string; data: QuenteDaily };
 
 /** O que o perfil sabe de um desafio vencido. */
 export interface DailyDone {
@@ -82,11 +90,13 @@ export function dailyTheme(day: string): string {
  * Gera a partida do desafio do dia `day`. O Sudoku expert pode levar ~1 s.
  * O Verbete não sorteia: as palavras saem da sequência fixa pelo número do dia (sem repetir por ~206 dias).
  * O Caça-Palavras troca de tema a cada dia, na ordem da lista, e sorteia a grade.
+ * O Quente ou Frio também não sorteia: a palavra sai da sequência fixa das secretas.
  */
 export function makeChallenge(game: DailyGame, seed = randomSeed(), day = dayKey(new Date())): DailyChallenge["data"] {
   if (game === "sudoku") return { difficulty: DAILY_DIFFICULTY, seed, ...generate(DAILY_DIFFICULTY, seed) };
   if (game === "verbete") return { seed, words: dailyWords(dayNumber(day) - 1) };
   if (game === "caca-palavras") return generateWords(DAILY_WORDS_LEVEL, dailyTheme(day), seed);
+  if (game === "quente-ou-frio") return { seed, word: dailySecret(dayNumber(day) - 1) };
   return { suits: DAILY_SUITS, seed, deck: shuffledDeck(seed) };
 }
 
@@ -95,6 +105,8 @@ export function matchesChallenge(ch: DailyChallenge, data: Record<string, unknow
   if (seed !== ch.data.seed) return false;
   if (ch.game === "sudoku") return data.difficulty === ch.data.difficulty;
   if (ch.game === "caca-palavras") return data.level === ch.data.level && data.theme === ch.data.theme;
+  // o resultado do Quente ou Frio é gravado pela própria API do jogo, não vem do navegador
+  if (ch.game === "quente-ou-frio") return false;
   if (ch.game === "verbete") {
     const answers = data.answers;
     if (!isMode(data.mode) || !Array.isArray(answers)) return false;

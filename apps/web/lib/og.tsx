@@ -8,6 +8,7 @@ import { TileFace } from "@/components/domino/Tile";
 import { TijoladaArt } from "@/components/tijolada/Art";
 import { getGame } from "@/lib/seo";
 import { ART, ART_WORDS } from "@/components/caca-palavras/common";
+import { ART_BARS, HEAT_COLOR } from "@/components/quente-ou-frio/WordBar";
 
 /** Prévia de link (Open Graph) de cada jogo: arte do jogo à esquerda, nome à direita. */
 
@@ -51,6 +52,7 @@ const TITLES: Record<string, [string, string]> = {
   tijolada: ["TIJOLADA", "SOLO E 1×1"],
   verbete: ["VERBETE", "PALAVRA DO DIA"],
   "caca-palavras": ["CAÇA", "PALAVRAS"],
+  "quente-ou-frio": ["QUENTE", "OU FRIO"],
 };
 
 async function art(slug: string) {
@@ -556,6 +558,35 @@ async function art(slug: string) {
               ))}
             </svg>
           </div>
+        </div>
+      );
+    }
+    case "quente-ou-frio": {
+      // os mesmos chutes do desenho da página (ART_BARS em components/quente-ou-frio/WordBar.tsx)
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 18, width: 460, transform: "rotate(-3deg)" }}>
+          {ART_BARS.map((b) => (
+            <div
+              key={b.word}
+              style={{
+                display: "flex",
+                position: "relative",
+                height: 84,
+                alignItems: "center",
+                borderRadius: 18,
+                overflow: "hidden",
+                background: "rgba(0,0,0,0.4)",
+                boxShadow: "0 6px 14px rgba(0,0,0,0.4)",
+                fontFamily: "Bungee",
+                fontSize: 38,
+                color: "white",
+              }}
+            >
+              <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${b.pct}%`, background: HEAT_COLOR[b.heat], borderRadius: 18 }} />
+              <div style={{ display: "flex", flex: 1, paddingLeft: 24 }}>{b.word}</div>
+              <div style={{ display: "flex", paddingRight: 24 }}>{b.rank.toLocaleString("pt-BR")}</div>
+            </div>
+          ))}
         </div>
       );
     }

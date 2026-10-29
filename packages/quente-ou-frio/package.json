@@ -1,0 +1,8 @@
+{
+  "name": "@mesa/quente-ou-frio",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "sideEffects": false
+}

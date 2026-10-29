@@ -528,6 +528,40 @@ export const GAMES: GameSeo[] = [
     ],
   },
   {
+    slug: "quente-ou-frio",
+    path: "/quente-ou-frio",
+    name: "Quente ou Frio",
+    title: "Quente ou Frio: Descubra a Palavra Secreta",
+    description:
+      "Jogue Quente ou Frio grátis: chute palavras e veja a que distância de sentido cada uma está da palavra secreta. Tentativas ilimitadas, dica, palavra do dia e modo livre.",
+    tagline: "Chute palavras e siga o calor até a palavra secreta.",
+    keywords: [
+      "quente ou frio",
+      "palavra secreta",
+      "jogo da palavra secreta",
+      "adivinhar a palavra",
+      "palavra do dia",
+      "jogo de palavras",
+      "jogo de associação de palavras",
+      "palavras parecidas",
+    ],
+    genre: "Jogo de palavras",
+    players: { min: 1, max: 1 },
+    modes: "Jogo solo no navegador: palavra do dia igual para todos, com calendário dos dias anteriores, e modo livre com palavra sorteada. Tentativas ilimitadas, dica e opção de desistir.",
+    howTo: {
+      title: "Como jogar Quente ou Frio: posições, cores e dicas",
+      description: "Aprenda a jogar Quente ou Frio: o que significa a posição de cada palavra, as cores verde, amarela e vermelha, como funcionam a dica, o desistir e a palavra do dia.",
+    },
+    faq: [
+      { q: "Como se joga Quente ou Frio?", a: "Chute uma palavra por vez. Cada palavra ganha uma posição: o lugar dela na lista das palavras mais parecidas com a secreta, que é a nº 1. Quanto menor o número, mais perto você está. As tentativas são ilimitadas." },
+      { q: "Como a posição é calculada?", a: "Por proximidade de sentido e de assunto, não pelas letras. O jogo aprendeu quais palavras aparecem em contextos parecidos lendo mais de um bilhão de palavras de textos em português. Por exemplo, para a palavra praia, areia fica entre as primeiras e livro fica longe." },
+      { q: "O que significam as cores?", a: "Verde: entre as 300 mais próximas. Amarelo: até a posição 1.500. Vermelho: mais longe. O tamanho da barra também mostra a distância." },
+      { q: "Preciso digitar acento, plural ou o verbo no infinitivo?", a: "Não. Acento e maiúscula não contam, o plural vale como singular (casas = casa) e o verbo conjugado vale como infinitivo (corri = correr). Palavra que o jogo não conhece ou que você já chutou não gasta tentativa." },
+      { q: "Como funciona a dica?", a: "A dica revela uma palavra que fica na metade da sua melhor posição: se a melhor está na 400, a dica mostra a da 200. Sem nenhum chute, a dica mostra a palavra da posição 300. As dicas usadas aparecem no fim." },
+      { q: "Quando muda a palavra do dia?", a: "À meia-noite de Brasília, a mesma para todos os jogadores. Os dias anteriores ficam no calendário, e o modo livre sorteia uma palavra nova a cada partida." },
+    ],
+  },
+  {
     slug: "caca-palavras",
     path: "/caca-palavras",
     name: "Caça-Palavras",
@@ -606,6 +640,10 @@ export const DAILY_SEO: Record<string, { title: string; description: string }> =
   "caca-palavras": {
     title: "Caça-Palavras Diário: o desafio do dia",
     description: "Um caça-palavras difícil novo todo dia, com tema do dia e a mesma grade para todos. Jogue o de hoje e rejogue os dias anteriores no calendário.",
+  },
+  "quente-ou-frio": {
+    title: "Quente ou Frio: palavra secreta do dia",
+    description: "Uma palavra secreta nova todo dia à meia-noite, a mesma para todos. Siga o calor das palavras até ela e rejogue os dias anteriores no calendário.",
   },
   verbete: {
     title: "Verbete: palavra do dia, Dueto e Quarteto",

@@ -8,7 +8,9 @@ const config: NextConfig = {
   outputFileTracingRoot: root,
   turbopack: { root },
   experimental: { agentUpgrade: "security" },
-  transpilePackages: ["@mesa/batalha-naval", "@mesa/blackjack", "@mesa/buraco", "@mesa/caca-palavras", "@mesa/codenames", "@mesa/connect4", "@mesa/damas", "@mesa/domino", "@mesa/futebol-de-botao", "@mesa/truco", "@mesa/jogo-da-velha", "@mesa/ludo", "@mesa/otrio", "@mesa/spider", "@mesa/stop", "@mesa/sudoku", "@mesa/tijolada", "@mesa/verbete", "@mesa/xadrez"],
+  // vocabulário e vetores do Quente ou Frio: lidos do disco pela API (lib/quente-ou-frio/model.ts)
+  outputFileTracingIncludes: { "/api/quente-ou-frio": ["../../packages/quente-ou-frio/data/**"] },
+  transpilePackages: ["@mesa/batalha-naval", "@mesa/blackjack", "@mesa/buraco", "@mesa/caca-palavras", "@mesa/codenames", "@mesa/connect4", "@mesa/damas", "@mesa/domino", "@mesa/futebol-de-botao", "@mesa/truco", "@mesa/jogo-da-velha", "@mesa/ludo", "@mesa/otrio", "@mesa/quente-ou-frio", "@mesa/spider", "@mesa/stop", "@mesa/sudoku", "@mesa/tijolada", "@mesa/verbete", "@mesa/xadrez"],
 };
 
 export default config;

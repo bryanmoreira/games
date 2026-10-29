@@ -120,6 +120,10 @@ body {
   0% { opacity: 1; transform: perspective(300px) rotateX(-90deg); filter: brightness(1.6); }
   100% { opacity: 1; transform: perspective(300px) rotateX(0deg); filter: brightness(1); }
 }
+@keyframes hc-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
 @keyframes hc-shot {
   0% { transform: translate(0, 0); }
   55% { transform: translate(230px, -70px); }
@@ -201,6 +205,12 @@ body {
   }
   .hc:hover .hc-shot {
     animation: hc-shot 0.7s cubic-bezier(0.3, 0.6, 0.4, 1) 0.15s both;
+  }
+  /* Quente ou Frio: as barras enchem da mais fria à mais quente */
+  .hc:hover .hc-grow {
+    transform-origin: left;
+    animation: hc-grow 0.45s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+    animation-delay: calc(100ms + var(--d) * 280ms);
   }
   .hc:hover .hc-sweep {
     stroke-dasharray: 1;
@@ -1031,5 +1041,31 @@ body {
   .mesa::before,
   .mesa::after {
     animation: none !important;
+  }
+}
+
+/* Quente ou Frio: o último chute entra por cima; a palavra repetida pisca; a barra cresce ao aparecer */
+@keyframes qf-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes qf-flash {
+  0%, 100% { background-color: rgba(0, 0, 0, 0.35); }
+  30% { background-color: rgba(255, 255, 255, 0.25); }
+}
+@keyframes qf-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .qf-in {
+    animation: qf-in 0.25s ease-out both;
+  }
+  .qf-in .qf-fill {
+    transform-origin: left;
+    animation: qf-fill 0.5s cubic-bezier(0.2, 1, 0.4, 1) 0.1s both;
+  }
+  .qf-flash {
+    animation: qf-flash 0.6s ease-out 2;
   }
 }

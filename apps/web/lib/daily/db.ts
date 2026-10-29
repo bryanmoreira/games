@@ -44,13 +44,13 @@ export async function verbeteDone(userId: string): Promise<Record<string, { won:
   return Object.fromEntries(rows.map((r) => [r.daily!, { won: r.outcome === "win", attempts: Number((r.data as Record<string, unknown>)?.attempts ?? 0) }]));
 }
 
-/** Desafios que o jogador venceu, por dia. */
-export async function dailyDone(userId: string, game: DailyGame): Promise<Record<string, DailyDone>> {
+/** Desafios que o jogador venceu, por dia. `field`: o número que o calendário mostra (o tempo; no Quente ou Frio, as tentativas). */
+export async function dailyDone(userId: string, game: DailyGame, field = "timeMs"): Promise<Record<string, DailyDone>> {
   const rows = await prisma.gameResult.findMany({
     where: { userId, game, outcome: "win", daily: { not: null } },
     select: { daily: true, data: true, createdAt: true },
   });
   return Object.fromEntries(
-    rows.map((r) => [r.daily!, { timeMs: Number((r.data as Record<string, unknown>)?.timeMs ?? 0), onTime: dayKey(r.createdAt) === r.daily }]),
+    rows.map((r) => [r.daily!, { timeMs: Number((r.data as Record<string, unknown>)?.[field] ?? 0), onTime: dayKey(r.createdAt) === r.daily }]),
   );
 }

@@ -283,6 +283,25 @@ const CASES: Record<string, Case> = {
   },
   "verbete:wins_50": winsCase(50),
 
+  "quente-ou-frio:first": { ok: [loss({ attempts: 9 }, "solo"), win({ attempts: 80 }, "solo")], almost: [loss({ attempts: 9 }, "solo")] },
+  "quente-ou-frio:bullseye": {
+    ok: [win({ attempts: 10, hints: 3 }, "solo")],
+    almost: [win({ attempts: 11, hints: 0 }, "solo"), loss({ attempts: 2, hints: 0 }, "solo"), loss({ abandoned: true }, "solo")],
+  },
+  "quente-ou-frio:nose": {
+    ok: [win({ attempts: 30, hints: 0 }, "solo")],
+    almost: [win({ attempts: 31, hints: 0 }, "solo"), win({ attempts: 12, hints: 1 }, "solo"), loss({ attempts: 5, hints: 0 }, "solo")],
+  },
+  "quente-ou-frio:no_hints_10": {
+    ok: times(10, () => win({ attempts: 90, hints: 0 }, "solo")),
+    almost: [...times(9, () => win({ attempts: 90, hints: 0 }, "solo")), win({ attempts: 90, hints: 1 }, "solo"), loss({ attempts: 9, hints: 0 }, "solo")],
+  },
+  "quente-ou-frio:streak_5": streakCase,
+  "quente-ou-frio:daily_week": {
+    ok: run(7).map((d) => dailyRow(d)),
+    almost: [...run(6).map((d) => dailyRow(d)), dailyRow("2026-08-07", "2026-08-08")],
+  },
+  "quente-ou-frio:wins_50": winsCase(50),
   "caca-palavras:first": { ok: [win({ level: "easy" }, "solo")], almost: [] },
   "caca-palavras:eagle": {
     ok: [win({ level: "hard", hints: 0 }, "solo")],

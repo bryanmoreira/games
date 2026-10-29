@@ -27,6 +27,7 @@
     "@mesa/domino": "workspace:*",
     "@mesa/ludo": "workspace:*",
     "@mesa/otrio": "workspace:*",
+    "@mesa/quente-ou-frio": "workspace:*",
     "@mesa/spider": "workspace:*",
     "@mesa/stop": "workspace:*",
     "@mesa/sudoku": "workspace:*",

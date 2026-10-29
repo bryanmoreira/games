@@ -828,6 +828,43 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   wins("caca-palavras", 50),
   wins("caca-palavras", 100),
   ...daily("caca-palavras"),
+
+  { ...first("quente-ou-frio"), desc: "Achar a primeira palavra secreta" },
+  {
+    code: "quente-ou-frio:bullseye",
+    game: "quente-ou-frio",
+    title: "Na mosca",
+    desc: "Acertar em até 10 tentativas",
+    icon: "target",
+    tier: "hard",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "attempts") <= 10),
+  },
+  {
+    code: "quente-ou-frio:nose",
+    game: "quente-ou-frio",
+    title: "Faro fino",
+    desc: "Acertar em até 30 tentativas sem dica",
+    icon: "bolt",
+    check: ({ results }) => winsOf(results).some((r) => num(r, "attempts") <= 30 && num(r, "hints") === 0),
+  },
+  {
+    code: "quente-ou-frio:no_hints_10",
+    game: "quente-ou-frio",
+    title: "Por conta própria",
+    desc: "10 vitórias sem usar dica",
+    icon: "shield",
+    check: ({ results }) => winsOf(results).filter((r) => num(r, "hints") === 0).length >= 10,
+  },
+  streak5("quente-ou-frio"),
+  {
+    code: "quente-ou-frio:daily_week",
+    game: "quente-ou-frio",
+    title: "Assíduo",
+    desc: "7 palavras do dia seguidas, cada uma no seu dia",
+    icon: "calendar",
+    check: ({ results }) => dailyStreaks(results).best >= 7,
+  },
+  { ...wins("quente-ou-frio", 50), title: "Viciado" },
 ];
 
 export const ACHIEVEMENT_BY_CODE = new Map(ACHIEVEMENTS.map((a) => [a.code, a]));

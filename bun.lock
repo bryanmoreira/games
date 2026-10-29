@@ -47,6 +47,7 @@
         "@mesa/jogo-da-velha": "workspace:*",
         "@mesa/ludo": "workspace:*",
         "@mesa/otrio": "workspace:*",
+        "@mesa/quente-ou-frio": "workspace:*",
         "@mesa/spider": "workspace:*",
         "@mesa/stop": "workspace:*",
         "@mesa/sudoku": "workspace:*",
@@ -108,6 +109,9 @@
     },
     "packages/otrio": {
       "name": "@mesa/otrio",
+    },
+    "packages/quente-ou-frio": {
+      "name": "@mesa/quente-ou-frio",
     },
     "packages/spider": {
       "name": "@mesa/spider",
@@ -307,6 +311,8 @@
     "@mesa/ludo": ["@mesa/ludo@workspace:packages/ludo"],
 
     "@mesa/otrio": ["@mesa/otrio@workspace:packages/otrio"],
+
+    "@mesa/quente-ou-frio": ["@mesa/quente-ou-frio@workspace:packages/quente-ou-frio"],
 
     "@mesa/server": ["@mesa/server@workspace:apps/server"],
 

@@ -486,6 +486,18 @@ describe("gameStats: desafio diário", () => {
   });
 });
 
+describe("gameStats: Quente ou Frio", () => {
+  test("menos tentativas e média nas vitórias, vitórias sem dica", () => {
+    const rs = [solo({ attempts: 40, hints: 0 }), solo({ attempts: 12, hints: 2 }), row("loss", { attempts: 5, hints: 0 }, "solo"), solo({ attempts: 20, hints: 0 })];
+    expect(chips("quente-ou-frio", rs)).toEqual([
+      { label: "Menos tentativas", value: "12" },
+      { label: "Média de tentativas", value: "24,0" },
+      { label: "Sem dica", value: "2" },
+    ]);
+    expect(chips("quente-ou-frio", [row("loss", { attempts: 5, hints: 0 }, "solo")])).toEqual([]);
+  });
+});
+
 describe("gameStats: Verbete", () => {
   const vb = (mode: number, attempts: number, outcome = "win", day?: string, at = day): ResultRow => ({
     ...row(outcome, { mode, attempts }, "solo"),

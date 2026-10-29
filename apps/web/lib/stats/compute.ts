@@ -280,6 +280,13 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
         }),
       };
       break;
+    case "quente-ou-frio": {
+      const tries = wins.map((r) => num(r, "attempts")).filter(Number.isFinite);
+      chip("Menos tentativas", minOf(tries));
+      chip("Média de tentativas", tries.length ? (tries.reduce((a, b) => a + b, 0) / tries.length).toFixed(1).replace(".", ",") : null);
+      chip("Sem dica", wins.filter((r) => num(r, "hints") === 0).length || null);
+      break;
+    }
     case "verbete":
       stats.table = {
         cols: ["Jogos", "Vitórias", "Média", "Sequência"],

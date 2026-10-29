@@ -7,6 +7,7 @@ import { makeCard } from "@mesa/truco";
 import { CardImg } from "@/components/cards/Card";
 import { MiniBoard } from "@/components/sudoku/common";
 import { MiniTiles } from "@/components/verbete/Tile";
+import { MiniBars } from "@/components/quente-ou-frio/WordBar";
 import { WordArt } from "@/components/caca-palavras/common";
 import { StopLogo } from "@/components/stop/Tile";
 import { SeaLogo } from "@/components/batalha-naval/Sea";
@@ -31,6 +32,7 @@ import { SPIDER_DAILY_PATH } from "@/lib/spider/paths";
 import { SUDOKU_DAILY_PATH } from "@/lib/sudoku/paths";
 import { VERBETE_DAILY_PATH } from "@/lib/verbete/paths";
 import { CACA_DAILY_PATH } from "@/lib/caca-palavras/paths";
+import { QUENTE_DAILY_PATH } from "@/lib/quente-ou-frio/paths";
 
 const TRUCO_FAN = [makeCard("4", "clubs"), makeCard("7", "hearts"), makeCard("A", "spades")];
 /** Buraco: sequência de copas com o coringa no lugar do 8. */
@@ -54,6 +56,7 @@ const HOVER = "transition-[rotate,scale] duration-300 ease-out motion-safe:group
 const FELT: Record<string, string> = {
   sudoku: "felt-blue",
   verbete: "felt-blue",
+  "quente-ou-frio": "felt-blue",
   "caca-palavras": "felt-blue",
   stop: "felt-blue",
   "connect-4": "felt-wine",
@@ -157,6 +160,16 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
     art: (
       <div className={`absolute left-1/2 top-[9%] -translate-x-1/2 -rotate-3 text-[clamp(10px,3vw,15px)] ${HOVER}`}>
         <MiniTiles flip />
+      </div>
+    ),
+  },
+  {
+    slug: "quente-ou-frio",
+    title: "QUENTE",
+    sub: "OU FRIO",
+    art: (
+      <div className={`absolute left-1/2 top-[11%] -translate-x-1/2 -rotate-3 text-[clamp(9px,2.4vw,13px)] ${HOVER}`}>
+        <MiniBars grow />
       </div>
     ),
   },
@@ -296,7 +309,7 @@ const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
 ];
 
 /** Jogos com desafio do dia: a fita do card leva direto a ele. */
-const DAILY_PATH = { sudoku: SUDOKU_DAILY_PATH, "paciencia-spider": SPIDER_DAILY_PATH, verbete: VERBETE_DAILY_PATH, "caca-palavras": CACA_DAILY_PATH };
+const DAILY_PATH = { sudoku: SUDOKU_DAILY_PATH, "paciencia-spider": SPIDER_DAILY_PATH, verbete: VERBETE_DAILY_PATH, "caca-palavras": CACA_DAILY_PATH, "quente-ou-frio": QUENTE_DAILY_PATH };
 
 const tiles: GameTile[] = CARDS.map(({ slug, title, sub, art }) => {
   const g = getGame(slug);
