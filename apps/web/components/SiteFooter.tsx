@@ -57,11 +57,23 @@ function AsciiIcon({ className = "" }: { className?: string }) {
 
 const DAILY = GAMES.filter((g) => g.slug in DAILY_SEO);
 
+// Jogos agrupados por tipo; jogo novo que não estiver aqui cai em "Casuais". O "Como jogar" fica na página de cada jogo.
+const GROUPS: { title: string; slugs: string[] }[] = [
+  { title: "CARTAS", slugs: ["truco-paulista", "buraco", "blackjack", "paciencia-spider"] },
+  { title: "TABULEIRO", slugs: ["xadrez", "damas", "ludo", "domino", "batalha-naval", "connect-4"] },
+  { title: "PALAVRAS", slugs: ["stop", "codenames", "verbete", "quente-ou-frio", "caca-palavras"] },
+];
+const GROUPED = new Set(GROUPS.flatMap((g) => g.slugs));
+const COLUMNS = [
+  ...GROUPS.map((g) => ({ title: g.title, games: g.slugs.flatMap((s) => GAMES.filter((x) => x.slug === s)) })),
+  { title: "CASUAIS", games: GAMES.filter((g) => !GROUPED.has(g.slug)) },
+];
+
 function Column({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <div className="flex flex-col gap-3">
       <h2 className="font-display text-xs tracking-[0.2em] text-white/35">{title}</h2>
-      <ul className="flex flex-col gap-2.5 text-sm text-white/60">
+      <ul className="flex flex-col gap-2 whitespace-nowrap text-sm text-white/60">
         {links.map((l) => (
           <li key={l.href}>
             <Link href={l.href} className="transition hover:text-gold">
@@ -80,13 +92,16 @@ export function SiteFooter() {
     <>
     <AdSlot className="mt-16 px-4" />
     <footer className="mt-16 overflow-hidden border-t border-white/10">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-12 sm:px-6 md:grid-cols-[auto_1fr] md:gap-16">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-12 sm:px-6 xl:grid-cols-[auto_1fr] xl:gap-16">
         <div className="flex flex-col items-start gap-6">
-          <AsciiIcon className="text-[6px] sm:text-[8px]" />
+          <AsciiIcon className="text-[5px] sm:text-[6px]" />
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/40">
             <span>
               © {new Date().getFullYear()} {SITE_NAME}
             </span>
+            <Link href="/blog" className="transition hover:text-gold">
+              Blog
+            </Link>
             <Link href={PRIVACY_PATH} className="transition hover:text-gold">
               Privacidade
             </Link>
@@ -96,9 +111,10 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <nav aria-label="Rodapé" className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:justify-self-end md:gap-16">
-          <Column title="JOGOS" links={GAMES.map((g) => ({ href: g.path, label: g.name }))} />
-          <Column title="COMO JOGAR" links={GAMES.map((g) => ({ href: `${g.path}/como-jogar`, label: g.name }))} />
+        <nav aria-label="Rodapé" className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-5 xl:justify-self-end xl:gap-10">
+          {COLUMNS.map((c) => (
+            <Column key={c.title} title={c.title} links={c.games.map((g) => ({ href: g.path, label: g.name }))} />
+          ))}
           <Column title="DIÁRIO" links={DAILY.map((g) => ({ href: `${g.path}/diario`, label: g.name }))} />
         </nav>
       </div>
