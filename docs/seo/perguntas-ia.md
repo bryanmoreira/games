@@ -45,7 +45,19 @@ Anote na tabela do mês: **C** = cita o Mesa de Jogos com link, **M** = menciona
 
 | Mês | ChatGPT | Perplexity | Gemini | Google IA | Citados no lugar |
 | --- | --- | --- | --- | --- | --- |
+| 2026-10 (marco zero) | 0/30 | 0/6 | 0/30 | 0/30 | megajogos, jogosdorei, platoapp, jogatina, blog.copag, poki, paciencia.co, stopots |
 | 2026-11 | /30 | /30 | /30 | /30 | |
+
+### Marco zero (30/10/2026)
+
+- Rodado no navegador do Claude: ChatGPT sem login (modo busca), Google e Gemini com a conta logada (respostas podem ser personalizadas). O Perplexity sem login bloqueou depois de 6 perguntas: na próxima rodada, entre na conta antes.
+- **O site não aparece em nenhuma resposta e em nenhuma primeira página do Google** nas 30 buscas (fora do top 10 orgânico em todas).
+- Nas perguntas de regras (19 a 30), ChatGPT e Gemini respondem quase sempre de memória, sem citar fonte. Ali o ganho vem do Google (snippet e Visão geral), não do chat.
+- Quem mais aparece:
+  - **Jogar online:** megajogos.com.br (quase todas no Google), jogosdorei.com.br, platoapp.com, jogatina.com, poki.com, crazygames.com, pt.boardgamearena.com, paciencia.co, beatmegames.com, jogali.com.br.
+  - **Por jogo:** stopots.com e stopgame.com.br (Stop), bloob.io e papergames.io (Batalha Naval), chess.com e lichess.org (Xadrez), sudoku.com, cacapalavras.com e rachacuca.com.br (Caça-palavras), term.ooo e letreco.org (5 letras).
+  - **Regras:** blog.copag.com.br e jogosdorei.com.br (truco e buraco), tablegames.com.br (dominó, ludo, damas, batalha naval), Wikipédia.
+  - **Listas e matérias:** techtudo.com.br, canaltech.com.br e reddit.com (perguntas 3, 4 e 15). São o caminho para ser citado: pedir inclusão nessas listas e aparecer em threads do Reddit.
 
 ## Configuração (uma vez)
 
