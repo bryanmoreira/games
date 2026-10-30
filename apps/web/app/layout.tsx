@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     ],
     apple: "/pwa-icon/apple",
   },
-  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "black" },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
   other: { "geo.region": "BR", "content-language": "pt-BR" },
 };
