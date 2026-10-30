@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Bungee, Inter } from "next/font/google";
+import { Atkinson_Hyperlegible, Bungee, Inter } from "next/font/google";
 import { connection } from "next/server";
+import { FONT_SCRIPT } from "@/lib/fontPref";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { AccountSync } from "@/components/AccountSync";
 import { Presence } from "@/components/Presence";
@@ -11,6 +12,8 @@ import "./globals.css";
 
 const bungee = Bungee({ weight: "400", subsets: ["latin"], variable: "--font-bungee" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+// só baixa se o jogador escolher a fonte "Legível"
+const atkinson = Atkinson_Hyperlegible({ weight: ["400", "700"], subsets: ["latin"], variable: "--font-atkinson", preload: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -49,8 +52,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const script = `window.__ENV__=${JSON.stringify(env).replace(/</g, "\\u003c")}`;
 
   return (
-    <html lang="pt-BR" className={`${bungee.variable} ${inter.variable}`}>
+    <html lang="pt-BR" className={`${bungee.variable} ${inter.variable} ${atkinson.variable}`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: FONT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: script }} />
         {/* verificação do site no AdSense; o script de anúncios só carrega nas páginas com AdSlot */}
         {adsense && <meta name="google-adsense-account" content={adsense} />}

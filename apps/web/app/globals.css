@@ -16,6 +16,23 @@
   color-scheme: dark;
 }
 
+/* Fonte escolhida no perfil (lib/fontPref.ts): troca a dos títulos e a do texto; títulos ficam em negrito sem a Bungee */
+html[data-font="simples"] {
+  --font-display: var(--font-inter), system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+html[data-font="legivel"] {
+  --font-display: var(--font-atkinson), system-ui, sans-serif;
+  --font-sans: var(--font-atkinson), system-ui, sans-serif;
+}
+html[data-font="sistema"] {
+  --font-display: system-ui, sans-serif;
+  --font-sans: system-ui, sans-serif;
+}
+html[data-font] .font-display {
+  font-weight: 800;
+}
+
 /* Cor única em todo o site: sem degradê, para não aparecer faixa quando a página passa da altura da tela */
 html,
 body {

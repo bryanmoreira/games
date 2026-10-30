@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { LegalLinks } from "@/components/legal/LegalPage";
+import { FontPicker } from "@/components/profile/FontPicker";
 import { DeleteAccount } from "@/components/profile/DeleteAccount";
 import { LinkedAccounts } from "@/components/profile/LinkedAccounts";
 import { PrivacyToggle } from "@/components/profile/PrivacyToggle";
@@ -41,6 +42,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 sm:p-5">
           <h2 className="mb-3 text-sm text-white/50">Nome de usuário</h2>
           <UsernameField current={session.user.username ?? null} />
+        </div>
+
+        <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 sm:p-5">
+          <h2 className="mb-3 text-sm text-white/50">Fonte do site</h2>
+          <FontPicker />
         </div>
 
         <div className="rounded-2xl bg-white/5 ring-1 ring-white/10">
