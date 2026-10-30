@@ -2,6 +2,7 @@ import { dbImageSrc, imageSize, parseDbImageSrc } from "@/lib/blog-images";
 import { IMAGE_MAX_BYTES, apiKeyFrom, bodyImages, hashApiKey, imageInfo, mergePost, newApiKey, type PostError, type PostInput } from "@/lib/blog-rules";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/lib/generated/prisma/client";
+import { pingIndexNow } from "@/lib/indexnow";
 import { GAMES } from "@/lib/seo";
 
 // Escrita do blog: usada pelo admin (/api/admin/blog) e pela API com chave (/api/v1/blog). Regras em lib/blog-rules.ts.
@@ -53,7 +54,10 @@ export async function savePost(id: string | null, raw: unknown): Promise<SaveRes
     const post = id
       ? await prisma.blogPost.update({ where: { id }, data: merged.post, select: SELECT })
       : await prisma.blogPost.create({ data: merged.post, select: SELECT });
-    return { ok: true, post: withUrl(post) };
+    const saved = withUrl(post);
+    // post publicado (ou editado depois de publicado): avisa os buscadores na hora
+    if (!saved.draft) void pingIndexNow([saved.url, "/blog"]);
+    return { ok: true, post: saved };
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002")
       return { ok: false, status: 409, errors: [{ field: "slug", message: "já existe um post com esse slug" }] };

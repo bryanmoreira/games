@@ -92,6 +92,8 @@ export function End({
           </button>
           <button
             onClick={share}
+            data-umami-event="compartilhar"
+            data-umami-event-jogo="quente-ou-frio"
             aria-label="Compartilhar"
             title={copied ? "Copiado" : "Compartilhar"}
             className="flex items-center rounded-xl bg-emerald-600 px-4 py-3 shadow-[0_4px_0_#065f46] transition hover:brightness-110 active:translate-y-1 active:shadow-none sm:px-5"

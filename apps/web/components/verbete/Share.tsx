@@ -124,16 +124,16 @@ export function Share({ game, title, streak, onClose }: { game: GameState; title
 
         <div className="flex gap-2">
           {canSend && (
-            <button onClick={send} className={`${btn} bg-gold text-stone-900 shadow-[0_4px_0_#9a6b12] active:shadow-none`}>
+            <button onClick={send} data-umami-event="compartilhar" data-umami-event-jogo="verbete" className={`${btn} bg-gold text-stone-900 shadow-[0_4px_0_#9a6b12] active:shadow-none`}>
               <ShareIcon className="h-5 w-5" />
               ENVIAR
             </button>
           )}
-          <button onClick={copyText} className={`${btn} ${done === "text" ? "bg-emerald-600" : "bg-white/10 hover:bg-white/20"}`}>
+          <button onClick={copyText} data-umami-event="compartilhar" data-umami-event-jogo="verbete" className={`${btn} ${done === "text" ? "bg-emerald-600" : "bg-white/10 hover:bg-white/20"}`}>
             {done === "text" ? <CheckIcon className="h-5 w-5" /> : <TextIcon className="h-5 w-5" />}
             {done === "text" ? "COPIADO" : "TEXTO"}
           </button>
-          <button onClick={copyImage} disabled={!img} className={`${btn} disabled:opacity-40 ${done === "image" ? "bg-emerald-600" : "bg-white/10 hover:bg-white/20"}`}>
+          <button onClick={copyImage} disabled={!img} data-umami-event="compartilhar" data-umami-event-jogo="verbete" className={`${btn} disabled:opacity-40 ${done === "image" ? "bg-emerald-600" : "bg-white/10 hover:bg-white/20"}`}>
             {done === "image" ? <CheckIcon className="h-5 w-5" /> : <ImageIcon className="h-5 w-5" />}
             {done === "image" ? "PRONTO" : "IMAGEM"}
           </button>

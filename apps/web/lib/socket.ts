@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { ClientMsg, RoomInfo, ServerMsg } from "@mesa/truco";
+import { track } from "@/lib/analytics";
 
 // Conexão única com o servidor de salas, compartilhada por todos os jogos online.
 // Uma identidade por aba (token em sessionStorage); o nome fica salvo no aparelho.
@@ -97,7 +98,12 @@ export function connect() {
     if (msg.t === "frame") {
       frameListeners.forEach((l) => l(msg.view));
       set({ view: msg.view });
-    } else if (msg.t === "room") set({ room: msg.room, view: msg.view, error: null });
+    } else if (msg.t === "room") {
+      // a partida começou agora (conta uma vez por jogador na mesa)
+      if (msg.room.started && !(state.room?.code === msg.room.code && state.room.started))
+        track("partida-iniciada", { jogo: msg.room.game, modo: msg.room.solo ? "solo" : "online", humanos: msg.room.seats.filter((s) => s.kind === "human").length });
+      set({ room: msg.room, view: msg.view, error: null });
+    }
     else if (msg.t === "created") set({ created: msg.code });
     else if (msg.t === "left") set({ room: null, view: null });
     else if (msg.t === "error") set({ error: msg.message });
@@ -124,6 +130,7 @@ export function onFrame<V>(listener: (view: V) => void) {
 }
 
 export function send<A>(msg: ClientMsg<A>) {
+  if (msg.t === "create") track("sala-criada", { jogo: msg.game ?? "truco-paulista", modo: msg.solo ? "solo" : "online" });
   const data = JSON.stringify(msg);
   if (ready && ws?.readyState === WebSocket.OPEN) ws.send(data);
   else {

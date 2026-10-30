@@ -25,6 +25,7 @@ export function ShareProfileButton({ name }: { name: string }) {
   return (
     <button
       onClick={share}
+      data-umami-event="compartilhar-perfil"
       className="flex h-9 items-center gap-2 rounded-full bg-gold/15 px-4 text-xs text-gold ring-1 ring-gold/40 transition hover:bg-gold/25"
     >
       {copied ? (

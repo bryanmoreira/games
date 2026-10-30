@@ -44,6 +44,8 @@ function runtimeEnv(name: string): string | undefined {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   await connection();
   const adsense = runtimeEnv("ADSENSE_CLIENT");
+  const googleVerification = runtimeEnv("GOOGLE_SITE_VERIFICATION");
+  const bingVerification = runtimeEnv("BING_SITE_VERIFICATION");
   const env = {
     WS_URL: runtimeEnv("WS_URL") ?? runtimeEnv(["NEXT_PUBLIC", "WS_URL"].join("_")) ?? "",
     ADSENSE_CLIENT: adsense,
@@ -58,6 +60,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: script }} />
         {/* verificação do site no AdSense; o script de anúncios só carrega nas páginas com AdSlot */}
         {adsense && <meta name="google-adsense-account" content={adsense} />}
+        {/* verificação no Search Console e no Bing Webmaster (o índice do Bing alimenta a busca do ChatGPT e do Copilot) */}
+        {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+        {bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
         <script defer src="https://umami.sunfire.com.br/script.js" data-website-id="fc7700da-1558-4ba9-9882-ab404f12129e" />
       </head>
       <body className="antialiased">
