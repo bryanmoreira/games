@@ -292,17 +292,18 @@ export function Table({ daily }: { daily?: SudokuChallenge }) {
     const v = game.values[i];
     const bg =
       i === selected
-        ? "bg-[#8a7424]"
+        ? "bg-[#f2c14e]"
         : isWrong(game, i)
-          ? "bg-[#5a2a24]"
+          ? "bg-[#fbd3cc]"
           : focusDigit && v === focusDigit
-            ? "bg-[#55581f]"
+            ? "bg-[#faefc6]"
             : hintUnit.has(i)
-              ? "bg-[#1d7a4c] shadow-[inset_0_0_0_1px_rgba(242,193,78,0.55)]"
+              ? "bg-[#dcefe2] shadow-[inset_0_0_0_1px_rgba(201,150,30,0.7)]"
               : peers.has(i)
-                ? "bg-[#17683f]"
-                : "bg-felt";
-    const text = isGiven(game, i) ? "text-white" : isWrong(game, i) ? "text-red-400" : "text-gold";
+                ? "bg-[#ebeee9]"
+                : "bg-white";
+    // cartela de papel: dadas em preto, as do jogador em azul
+    const text = isGiven(game, i) ? "text-stone-900" : isWrong(game, i) ? "text-red-600" : "text-[#1f5fa8]";
     return `${bg} ${text}`;
   };
 
@@ -350,7 +351,7 @@ export function Table({ daily }: { daily?: SudokuChallenge }) {
               aria-label="Tabuleiro"
             >
               {Array.from({ length: 9 }, (_, b) => (
-                <div key={b} className="grid grid-cols-3 grid-rows-3 gap-px overflow-hidden rounded-[3px] bg-[#0a3a24]">
+                <div key={b} className="grid grid-cols-3 grid-rows-3 gap-px overflow-hidden rounded-[3px] bg-[#cfc8ba]">
                   {Array.from({ length: 9 }, (_, k) => {
                     const i = (Math.floor(b / 3) * 3 + Math.floor(k / 3)) * 9 + (b % 3) * 3 + (k % 3);
                     const v = game.values[i];
@@ -384,7 +385,7 @@ export function Table({ daily }: { daily?: SudokuChallenge }) {
                             {DIGITS.map((d) => (
                               <span
                                 key={d}
-                                className={`flex items-center justify-center ${focusDigit === d && game.notes[i] & bit(d) ? "rounded-sm bg-gold text-stone-900" : "text-white/75"}`}
+                                className={`flex items-center justify-center ${focusDigit === d && game.notes[i] & bit(d) ? "rounded-sm bg-gold text-stone-900" : "text-stone-500"}`}
                               >
                                 {game.notes[i] & bit(d) ? d : ""}
                               </span>
