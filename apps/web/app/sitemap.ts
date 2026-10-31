@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { getPosts } from "@/lib/blog";
 import { ABOUT_PATH, CONTACT_PATH, INSTALL_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_URL } from "@/lib/seo";
+import { respostasPaths } from "@/lib/stop/respostas";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Posts vêm do banco: gera no pedido, não no build (no Docker não há banco)
@@ -16,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { url: `${SITE_URL}${g.path}/como-jogar`, changeFrequency: "monthly" as const, priority: 0.7 },
       ...(g.slug in DAILY_SEO ? [{ url: `${SITE_URL}${g.path}/diario`, changeFrequency: "daily" as const, priority: 0.8 }] : []),
     ]),
+    ...respostasPaths().map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: 0.5 })),
     ...(posts.length
       ? [
           { url: `${SITE_URL}/blog`, changeFrequency: "weekly" as const, priority: 0.6 },

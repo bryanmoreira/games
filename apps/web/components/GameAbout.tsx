@@ -2,6 +2,7 @@ import Link from "next/link";
 import { GameFaq } from "@/components/seo";
 import { GAME_ABOUT } from "@/lib/game-about";
 import { DAILY_SEO, getGame } from "@/lib/seo";
+import { RESPOSTAS_PATH } from "@/lib/stop/respostas";
 
 /** Texto sobre o jogo abaixo da mesa (fora da primeira tela): história, modos, links e perguntas frequentes. */
 export function GameAbout({ slug }: { slug: string }) {
@@ -23,6 +24,11 @@ export function GameAbout({ slug }: { slug: string }) {
           <Link href={`${g.path}/como-jogar`} className={link}>
             Regras completas
           </Link>
+          {slug === "stop" && (
+            <Link href={RESPOSTAS_PATH} className={link}>
+              Respostas de A a Z
+            </Link>
+          )}
           {slug in DAILY_SEO && (
             <Link href={`${g.path}/diario`} className={link}>
               Desafio do dia

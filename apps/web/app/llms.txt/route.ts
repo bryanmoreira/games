@@ -1,4 +1,5 @@
 import { GAMES, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { RESPOSTAS_PATH } from "@/lib/stop/respostas";
 
 // Resumo do site para assistentes de IA e buscadores generativos (https://llmstxt.org)
 export function GET() {
@@ -16,6 +17,10 @@ export function GET() {
     "## Instalar",
     "",
     `- [Como instalar o ${SITE_NAME}](${SITE_URL}/instalar): passo a passo para instalar o site como app no iPhone, no Android e no computador. Grátis e sem loja de aplicativos.`,
+    "",
+    "## Respostas para Stop (Adedonha)",
+    "",
+    `- [Respostas de A a Z](${SITE_URL}${RESPOSTAS_PATH}): listas de respostas por letra para as 15 categorias do Stop (nome, CEP, animal, fruta, cor, objeto, comida, profissão, marca, filme ou série, parte do corpo, famoso, bebida, adjetivo e "Minha sogra é..."), como ${SITE_URL}${RESPOSTAS_PATH}/fruta-com-a.`,
     "",
     "## Regras e perguntas frequentes",
     "",
