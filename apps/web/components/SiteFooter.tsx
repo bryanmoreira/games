@@ -42,7 +42,7 @@ function Column({ title, links }: { title: string; links: { href: string; label:
   return (
     <div className="flex flex-col gap-3">
       <h2 className="font-display text-xs tracking-[0.2em] text-white/35">{title}</h2>
-      <ul className="flex flex-col gap-2 whitespace-nowrap text-sm text-white/60">
+      <ul className="flex flex-col gap-2 text-sm text-white/60 lg:whitespace-nowrap">
         {links.map((l) => (
           <li key={l.href}>
             <Link href={l.href} className="transition hover:text-gold">
@@ -61,55 +61,59 @@ export function SiteFooter() {
     <>
     <AdSlot className="mt-16 px-4" />
     <footer className="mt-16 overflow-hidden border-t border-white/10">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-12 sm:px-6 xl:grid-cols-[auto_1fr] xl:gap-16">
-        <div className="flex flex-col items-start gap-6">
+      <div className="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
+        <div className="grid gap-10 xl:grid-cols-[auto_1fr] xl:gap-16">
           <SiteIcon className="h-28 w-28 sm:h-32 sm:w-32" />
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/40">
-            <span>
-              © {new Date().getFullYear()} {SITE_NAME}
-            </span>
-            <Link href={ABOUT_PATH} className="transition hover:text-gold">
-              Sobre
-            </Link>
-            <Link href="/blog" className="transition hover:text-gold">
-              Blog
-            </Link>
-            <Link href={INSTALL_PATH} className="transition hover:text-gold">
-              Instalar o app
-            </Link>
-            <Link href={CONTACT_PATH} className="transition hover:text-gold">
-              Contato
-            </Link>
-            <Link href={PRIVACY_PATH} className="transition hover:text-gold">
-              Privacidade
-            </Link>
-            <Link href={TERMS_PATH} className="transition hover:text-gold">
-              Termos de uso
-            </Link>
-            {SOCIAL.map((s) => (
-              <a key={s.url} href={s.url} target="_blank" rel="noopener me" className="transition hover:text-gold">
-                {s.name}
-              </a>
+
+          <nav
+            aria-label="Rodapé"
+            className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-[repeat(6,auto)] lg:justify-between xl:justify-self-end"
+          >
+            {COLUMNS.map((c) => (
+              <Column key={c.title} title={c.title} links={c.games.map((g) => ({ href: g.path, label: g.name }))} />
             ))}
-          </div>
+            <Column title="DIÁRIO" links={DAILY.map((g) => ({ href: `${g.path}/diario`, label: g.name }))} />
+            <Column
+              title="AJUDA"
+              links={[
+                { href: PALAVRAS_PATH, label: "Palavras de 5 letras" },
+                { href: RESPOSTAS_PATH, label: "Respostas do Stop" },
+                { href: SUDOKU_PRINT_PATH, label: "Sudoku para imprimir" },
+                { href: CACA_PRINT_PATH, label: "Caça-palavras para imprimir" },
+                { href: GLOSSARIO_PATH, label: "Glossário" },
+              ]}
+            />
+          </nav>
         </div>
 
-        <nav aria-label="Rodapé" className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 xl:justify-self-end xl:gap-10">
-          {COLUMNS.map((c) => (
-            <Column key={c.title} title={c.title} links={c.games.map((g) => ({ href: g.path, label: g.name }))} />
+        <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/40">
+          <span>
+            © {new Date().getFullYear()} {SITE_NAME}
+          </span>
+          <Link href={ABOUT_PATH} className="transition hover:text-gold">
+            Sobre
+          </Link>
+          <Link href="/blog" className="transition hover:text-gold">
+            Blog
+          </Link>
+          <Link href={INSTALL_PATH} className="transition hover:text-gold">
+            Instalar o app
+          </Link>
+          <Link href={CONTACT_PATH} className="transition hover:text-gold">
+            Contato
+          </Link>
+          <Link href={PRIVACY_PATH} className="transition hover:text-gold">
+            Privacidade
+          </Link>
+          <Link href={TERMS_PATH} className="transition hover:text-gold">
+            Termos de uso
+          </Link>
+          {SOCIAL.map((s) => (
+            <a key={s.url} href={s.url} target="_blank" rel="noopener me" className="transition hover:text-gold">
+              {s.name}
+            </a>
           ))}
-          <Column title="DIÁRIO" links={DAILY.map((g) => ({ href: `${g.path}/diario`, label: g.name }))} />
-          <Column
-            title="AJUDA"
-            links={[
-              { href: PALAVRAS_PATH, label: "Palavras de 5 letras" },
-              { href: RESPOSTAS_PATH, label: "Respostas do Stop" },
-              { href: SUDOKU_PRINT_PATH, label: "Sudoku para imprimir" },
-              { href: CACA_PRINT_PATH, label: "Caça-palavras para imprimir" },
-              { href: GLOSSARIO_PATH, label: "Glossário" },
-            ]}
-          />
-        </nav>
+        </div>
       </div>
 
       {/* nome do site na largura toda; a parte de baixo das letras fica para fora */}
