@@ -1,6 +1,9 @@
 import { ABOUT_PATH, CONTACT_PATH, INSTALL_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_URL } from "@/lib/seo";
 import { respostasPaths } from "@/lib/stop/respostas";
+import { palavrasPaths } from "@/lib/palavras";
+import { imprimirPaths } from "@/lib/imprimir";
+import { variationPaths } from "@/lib/variacoes";
 
 // IndexNow (https://www.indexnow.org): avisa Bing, Yandex, Seznam e Naver na hora em que uma página muda.
 // A chave fica em INDEXNOW_KEY e é servida em /indexnow.txt (app/indexnow.txt/route.ts).
@@ -12,12 +15,15 @@ export function indexNowKey(): string | undefined {
   return process.env[["INDEXNOW", "KEY"].join("_")] || undefined;
 }
 
-/** Páginas fixas do site (as mesmas do sitemap, sem os posts), com as respostas do Stop. */
+/** Páginas fixas do site (as mesmas do sitemap, sem os posts), com as variações dos jogos, as folhas para imprimir, as respostas do Stop e as palavras de 5 letras. */
 export function publicPaths(): string[] {
   return [
     "/",
     ...GAMES.flatMap((g) => [g.path, `${g.path}/como-jogar`, ...(g.slug in DAILY_SEO ? [`${g.path}/diario`] : [])]),
     ...respostasPaths(),
+    ...palavrasPaths(),
+    ...variationPaths(),
+    ...imprimirPaths(),
     ABOUT_PATH,
     INSTALL_PATH,
     CONTACT_PATH,

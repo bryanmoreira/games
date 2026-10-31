@@ -1167,3 +1167,18 @@ body {
     animation-duration: 0.01s;
   }
 }
+
+/* Folhas para imprimir (/sudoku/imprimir, /caca-palavras/imprimir): na impressão, só a página da folha,
+   sem os avisos, convites e botões que o layout raiz põe no body. */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  body:has(.print-root) {
+    background: #fff !important;
+  }
+  body:has(.print-root) > :not(.print-root) {
+    display: none !important;
+  }
+}

@@ -3,6 +3,9 @@ import { GameFaq } from "@/components/seo";
 import { GAME_ABOUT } from "@/lib/game-about";
 import { DAILY_SEO, getGame } from "@/lib/seo";
 import { RESPOSTAS_PATH } from "@/lib/stop/respostas";
+import { PALAVRAS_PATH } from "@/lib/palavras";
+import { CACA_PRINT_PATH, SUDOKU_PRINT_PATH } from "@/lib/imprimir";
+import { variationsOf } from "@/lib/variacoes";
 
 /** Texto sobre o jogo abaixo da mesa (fora da primeira tela): história, modos, links e perguntas frequentes. */
 export function GameAbout({ slug }: { slug: string }) {
@@ -24,9 +27,29 @@ export function GameAbout({ slug }: { slug: string }) {
           <Link href={`${g.path}/como-jogar`} className={link}>
             Regras completas
           </Link>
+          {variationsOf(slug).map((v) => (
+            <Link key={v.path} href={v.path} className={link}>
+              {v.h1}
+            </Link>
+          ))}
+          {slug === "sudoku" && (
+            <Link href={SUDOKU_PRINT_PATH} className={link}>
+              Para imprimir
+            </Link>
+          )}
+          {slug === "caca-palavras" && (
+            <Link href={CACA_PRINT_PATH} className={link}>
+              Para imprimir
+            </Link>
+          )}
           {slug === "stop" && (
             <Link href={RESPOSTAS_PATH} className={link}>
               Respostas de A a Z
+            </Link>
+          )}
+          {slug === "verbete" && (
+            <Link href={PALAVRAS_PATH} className={link}>
+              Palavras de 5 letras
             </Link>
           )}
           {slug in DAILY_SEO && (

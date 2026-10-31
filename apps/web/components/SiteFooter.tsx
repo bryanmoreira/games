@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { ABOUT_PATH, CONTACT_PATH, INSTALL_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
 import { DAILY_SEO, GAMES, SITE_NAME } from "@/lib/seo";
+import { PALAVRAS_PATH } from "@/lib/palavras";
+import { RESPOSTAS_PATH } from "@/lib/stop/respostas";
+import { CACA_PRINT_PATH, SUDOKU_PRINT_PATH } from "@/lib/imprimir";
 import { AdSlot } from "@/components/AdSlot";
 
 /** O ícone do site (app/icon.svg) sem o fundo escuro: feltro, borda dourada e a carta de espadas. */
@@ -85,11 +88,20 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <nav aria-label="Rodapé" className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-5 xl:justify-self-end xl:gap-10">
+        <nav aria-label="Rodapé" className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 xl:justify-self-end xl:gap-10">
           {COLUMNS.map((c) => (
             <Column key={c.title} title={c.title} links={c.games.map((g) => ({ href: g.path, label: g.name }))} />
           ))}
           <Column title="DIÁRIO" links={DAILY.map((g) => ({ href: `${g.path}/diario`, label: g.name }))} />
+          <Column
+            title="AJUDA"
+            links={[
+              { href: PALAVRAS_PATH, label: "Palavras de 5 letras" },
+              { href: RESPOSTAS_PATH, label: "Respostas do Stop" },
+              { href: SUDOKU_PRINT_PATH, label: "Sudoku para imprimir" },
+              { href: CACA_PRINT_PATH, label: "Caça-palavras para imprimir" },
+            ]}
+          />
         </nav>
       </div>
 

@@ -10,15 +10,15 @@ export function GameIntro({ slug }: { slug: string }) {
 }
 
 /** Perguntas frequentes da página "Como jogar": texto que buscadores e IAs conseguem citar */
-export function GameFaq({ slug }: { slug: string }) {
-  const g = getGame(slug);
+export function GameFaq({ slug, items }: { slug?: string; items?: { q: string; a: string }[] }) {
+  const faq = items ?? getGame(slug!).faq;
   return (
     <section aria-labelledby="faq" className="flex flex-col gap-3">
       <h2 id="faq" className="text-center font-display text-xl text-gold">
         Perguntas frequentes
       </h2>
       <div className="flex flex-col gap-2">
-        {g.faq.map((f) => (
+        {faq.map((f) => (
           <details key={f.q} className="group rounded-xl bg-black/30 px-4 py-3">
             <summary className="cursor-pointer list-none font-semibold text-white/90 marker:hidden">{f.q}</summary>
             <p className="mt-2 text-sm leading-relaxed text-white/70">{f.a}</p>
