@@ -2,7 +2,7 @@
 import { nextDay } from "@/lib/stats/achievements";
 import type { AchievementDef, AchievementTier } from "@/lib/stats/achievements";
 
-export type ChipReason = "welcome" | "achievement" | "login" | "purchase" | "admin";
+export type ChipReason = "welcome" | "achievement" | "login" | "purchase" | "admin" | "referral" | "referred";
 
 /** Presente da conta nova (quem já jogava antes das fichas também ganha). */
 export const WELCOME_CHIPS = 100;
@@ -31,4 +31,31 @@ export function loginDay(lastDay: string | null, streak: number, today: string):
 export function currentLoginStreak(lastDay: string | null, streak: number, today: string): number {
   if (!lastDay) return 0;
   return lastDay === today || nextDay(lastDay) === today ? streak : 0;
+}
+
+// Indicação: quem chega por um link compartilhado (?ref=<usuario>) e cria conta paga as duas pontas, uma vez só.
+/** Para quem indicou, por amigo que criou conta */
+export const REFERRAL_CHIPS = 150;
+/** Bônus de quem chegou indicado */
+export const REFERRED_CHIPS = 50;
+/** Indicações pagas por mês para a mesma pessoa */
+export const REFERRAL_MAX_PER_MONTH = 20;
+/** Só conta nova: criada há no máximo isto */
+export const REFERRAL_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Por que a indicação não vale (null = vale). Sem banco: testado em test/chips.test.ts. */
+export function referralProblem(r: {
+  referrerId: string | null;
+  referredId: string;
+  referredCreatedAt: Date;
+  now: Date;
+  alreadyReferred: boolean;
+  referrerThisMonth: number;
+}): string | null {
+  if (!r.referrerId) return "quem indicou não existe";
+  if (r.referrerId === r.referredId) return "não dá para indicar a si mesmo";
+  if (r.alreadyReferred) return "esta conta já foi indicada";
+  if (r.now.getTime() - r.referredCreatedAt.getTime() > REFERRAL_WINDOW_MS) return "só vale para conta nova";
+  if (r.referrerThisMonth >= REFERRAL_MAX_PER_MONTH) return "limite de indicações do mês";
+  return null;
 }

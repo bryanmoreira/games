@@ -359,6 +359,20 @@ function joinRoom(room: Room, token: string, name: string) {
   clearTimeout(room.cleanup);
 }
 
+/** Resumo público de uma sala online (a prévia do link do convite). Sala solo ou inexistente: null. */
+export function roomPreview(code: string): { game: GameId; host: string; humans: number; seats: number; started: boolean } | null {
+  const room = rooms.get(code.toUpperCase());
+  if (!room || room.solo) return null;
+  const hostSeat = room.seats.find((s) => s.kind === "human" && s.token === room.host);
+  return {
+    game: room.game,
+    host: (hostSeat?.kind === "human" ? hostSeat.name : room.members.get(room.host)) ?? "",
+    humans: room.seats.filter((s) => s.kind === "human").length,
+    seats: room.seats.length,
+    started: !!room.state,
+  };
+}
+
 export function handleMessage(ws: Socket, msg: ClientMsg<unknown>) {
   if (msg.t === "hello") {
     // logado: vale o nome da conta (só muda no perfil); o que o navegador mandar é ignorado

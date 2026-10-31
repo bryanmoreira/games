@@ -5,6 +5,7 @@ import { PALAVRAS_PATH } from "@/lib/palavras";
 import { RESPOSTAS_PATH } from "@/lib/stop/respostas";
 import { CACA_PRINT_PATH, SUDOKU_PRINT_PATH } from "@/lib/imprimir";
 import { GLOSSARIO_PATH } from "@/lib/glossario";
+import { WIDGET_PATH } from "@/lib/widget";
 import { AdSlot } from "@/components/AdSlot";
 
 /** O ícone do site (app/icon.svg) sem o fundo escuro: feltro, borda dourada e a carta de espadas. */
@@ -81,6 +82,7 @@ export function SiteFooter() {
                 { href: SUDOKU_PRINT_PATH, label: "Sudoku para imprimir" },
                 { href: CACA_PRINT_PATH, label: "Caça-palavras para imprimir" },
                 { href: GLOSSARIO_PATH, label: "Glossário" },
+              { href: WIDGET_PATH, label: "Widget para seu site" },
               ]}
             />
           </nav>

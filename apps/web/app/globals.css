@@ -1224,3 +1224,11 @@ body {
   @keyframes hc-memory-match { 0% { opacity: 0; } 35% { opacity: 1; } 100% { opacity: .55; } }
 }
 @media (prefers-reduced-motion: reduce) { .mm-card-inner { transition: none; } }
+
+/* Widget (/embed/...): dentro do iframe de outro site, só o cartão, sem os avisos e convites que o layout raiz põe no body */
+body:has(.embed-root) {
+  background: transparent !important;
+}
+body:has(.embed-root) > :not(.embed-root) {
+  display: none !important;
+}

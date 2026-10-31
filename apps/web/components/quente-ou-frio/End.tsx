@@ -1,5 +1,6 @@
 "use client";
 
+import { withRef } from "@/lib/referral";
 import { useEffect, useMemo, useState } from "react";
 import { attempts, hintsUsed, shareText, status, type GameState } from "@mesa/quente-ou-frio";
 import { DailyBadge } from "@/components/daily/common";
@@ -53,7 +54,7 @@ export function End({
 
   const [copied, setCopied] = useState(false);
   const share = async () => {
-    const text = `${shareText(game, day ? `Quente ou Frio #${dayNumber(day)}` : "Quente ou Frio")}\n\n${SITE}`;
+    const text = `${shareText(game, day ? `Quente ou Frio #${dayNumber(day)}` : "Quente ou Frio")}\n\n${withRef(`https://${SITE}`)}`;
     try {
       if (navigator.share && matchMedia("(hover: none)").matches) await navigator.share({ text });
       else {

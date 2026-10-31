@@ -1,5 +1,6 @@
 "use client";
 
+import { withRef } from "@/lib/referral";
 import { useEffect, useState } from "react";
 import { shareText, type GameState } from "@mesa/verbete";
 import { Icon, XIcon } from "@/components/ui/buttons";
@@ -31,7 +32,7 @@ function TextIcon({ className }: { className?: string }) {
  * No celular, um botão manda os dois juntos (WhatsApp, X, Instagram…); no computador, copia o texto e copia (ou baixa) a imagem.
  */
 export function Share({ game, title, streak, onClose }: { game: GameState; title: string; streak: number; onClose: () => void }) {
-  const text = `${shareText(game, title, streak)}\n\n${SITE}`;
+  const text = `${shareText(game, title, streak)}\n\n${withRef(`https://${SITE}`)}`;
   const [img, setImg] = useState<{ blob: Blob; url: string } | null>(null);
   const [touch, setTouch] = useState(false);
   const [done, setDone] = useState<"text" | "image" | null>(null);

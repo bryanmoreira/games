@@ -265,3 +265,18 @@ model ApiKey {
 
   @@map("api_key")
 }
+
+// Lembrete do desafio do dia (Web Push). Uma linha por aparelho (endpoint do navegador); funciona sem login.
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  // jogos com desafio diário que o aparelho quer lembrar (slugs de lib/seo.ts)
+  games     String[]
+  userId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("push_subscription")
+}

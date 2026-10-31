@@ -11,5 +11,5 @@ export default async function ChipsPage() {
   if (!session) return null;
   const [state, history] = await Promise.all([chipsState(session.user.id), chipHistory(session.user.id)]);
   if (!state) return null;
-  return <ChipsView state={state} history={history} />;
+  return <ChipsView state={state} history={history} username={(session.user as { username?: string | null }).username} />;
 }

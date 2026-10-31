@@ -1,4 +1,4 @@
-import { msToMidnight } from "./midnight";
+import { msToHour, msToMidnight } from "./midnight";
 import { callSite } from "./results";
 
 // Agendador do desafio diário: à meia-noite de Brasília pede ao site para gerar o desafio do dia
@@ -27,4 +27,21 @@ export function startDailyScheduler() {
   };
   // espera o site subir junto (deploy dos dois serviços ao mesmo tempo)
   setTimeout(loop, 10_000);
+}
+
+/** Hora do lembrete do desafio do dia (Brasília) */
+const PUSH_HOUR = 10;
+
+/** De manhã, pede ao site para mandar o lembrete do desafio do dia (Web Push) a quem ligou o sino. */
+export function startPushScheduler() {
+  if (!process.env.GAME_SECRET) return;
+  const loop = async () => {
+    const r = await callSite("/api/internal/push");
+    if (r?.ok) {
+      const { sent, removed } = (await r.json()) as { sent: number; removed: number };
+      console.log(`lembrete do dia: ${sent} enviados, ${removed} inscrições apagadas`);
+    } else if (r && r.status !== 503) console.error(`lembrete do dia: ${r.status}`);
+    setTimeout(loop, msToHour(PUSH_HOUR) + 1000);
+  };
+  setTimeout(loop, msToHour(PUSH_HOUR) + 1000);
 }

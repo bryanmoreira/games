@@ -1,5 +1,6 @@
 "use client";
 
+import { withRef } from "@/lib/referral";
 import { useState } from "react";
 import { CheckIcon } from "@/components/ui/icons";
 
@@ -8,7 +9,7 @@ export function ShareProfileButton({ name }: { name: string }) {
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
-    const url = window.location.href;
+    const url = withRef(window.location.href);
     if (navigator.share && matchMedia("(pointer: coarse)").matches) {
       try {
         await navigator.share({ title: `${name} · Mesa de Jogos`, url });

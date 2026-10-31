@@ -1,5 +1,6 @@
 "use client";
 
+import { withRef } from "@/lib/referral";
 import { useState } from "react";
 import { CheckIcon, ShareIcon } from "@/components/ui/icons";
 
@@ -11,7 +12,7 @@ export function ShareResult({ game, text, path }: { game: string; text: string; 
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
-    const url = `${location.origin}${path}?utm_source=compartilhar&utm_medium=resultado&utm_campaign=${game}`;
+    const url = withRef(`${location.origin}${path}?utm_source=compartilhar&utm_medium=resultado&utm_campaign=${game}`);
     const full = `${text}\n\n${url}`;
     try {
       if (navigator.share && matchMedia("(hover: none)").matches) await navigator.share({ text: full });

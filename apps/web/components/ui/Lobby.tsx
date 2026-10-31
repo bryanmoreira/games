@@ -1,5 +1,6 @@
 "use client";
 
+import { withRef } from "@/lib/referral";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { GameId, RoomInfo } from "@mesa/truco";
@@ -67,7 +68,7 @@ export function Lobby({
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
-    await navigator.clipboard.writeText(location.href).catch(() => {});
+    await navigator.clipboard.writeText(withRef(location.href)).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };

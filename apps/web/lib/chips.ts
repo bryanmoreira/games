@@ -1,5 +1,15 @@
 import { prisma } from "@/lib/db";
-import { achievementChips, currentLoginStreak, LOGIN_CHIPS, loginDay, WELCOME_CHIPS, type ChipReason } from "@/lib/chips-rules";
+import {
+  achievementChips,
+  currentLoginStreak,
+  LOGIN_CHIPS,
+  loginDay,
+  REFERRAL_CHIPS,
+  REFERRED_CHIPS,
+  referralProblem,
+  WELCOME_CHIPS,
+  type ChipReason,
+} from "@/lib/chips-rules";
 import { ACHIEVEMENT_BY_CODE, dayKey, type AchievementDef } from "@/lib/stats/achievements";
 
 export interface ChipGrant {
@@ -95,4 +105,27 @@ export async function chipsState(userId: string): Promise<ChipsState | null> {
 export async function chipHistory(userId: string, take = 200): Promise<ChipEntry[]> {
   const rows = await prisma.chipTransaction.findMany({ where: { userId }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take });
   return rows.map((r) => ({ id: r.id, reason: r.reason as ChipReason, ref: r.ref, delta: r.delta, at: r.createdAt, note: r.note }));
+}
+
+/**
+ * Conta nova que chegou por um link com ?ref=<usuario>: paga quem indicou e o bônus de quem chegou.
+ * As duas linhas têm referência fixa (o id de quem chegou), então nunca pagam duas vezes.
+ */
+export async function claimReferral(userId: string, refUsername: string): Promise<{ ok: true; chips: number } | { ok: false; error: string }> {
+  const [me, referrer, already] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { createdAt: true } }),
+    prisma.user.findUnique({ where: { username: refUsername.toLowerCase() }, select: { id: true } }),
+    prisma.chipTransaction.findFirst({ where: { userId, reason: "referred" }, select: { id: true } }),
+  ]);
+  if (!me) return { ok: false, error: "conta não existe" };
+  const now = new Date();
+  const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  const referrerThisMonth = referrer
+    ? await prisma.chipTransaction.count({ where: { userId: referrer.id, reason: "referral", createdAt: { gte: monthStart } } })
+    : 0;
+  const problem = referralProblem({ referrerId: referrer?.id ?? null, referredId: userId, referredCreatedAt: me.createdAt, now, alreadyReferred: !!already, referrerThisMonth });
+  if (problem || !referrer) return { ok: false, error: problem ?? "quem indicou não existe" };
+  await grant(referrer.id, [{ reason: "referral", ref: userId, delta: REFERRAL_CHIPS }]);
+  const mine = await grant(userId, [{ reason: "referred", ref: "referred", delta: REFERRED_CHIPS }]);
+  return { ok: true, chips: mine.reduce((s, g) => s + g.delta, 0) };
 }

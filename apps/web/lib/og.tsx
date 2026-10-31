@@ -795,3 +795,40 @@ export async function gameOgImage(slug: string) {
     { ...OG_SIZE, fonts },
   );
 }
+
+/** Prévia do link de uma sala: arte do jogo, quem chamou, código e lugares */
+export async function roomOgImage(slug: string, code: string, host: string, seatsText: string) {
+  const [title] = TITLES[slug] ?? [getGame(slug).name.toUpperCase()];
+  const { display, fonts } = await siteFonts();
+  const who = host ? `${host.slice(0, 18).toUpperCase()} TE CHAMOU` : "VOCÊ FOI CONVIDADO";
+  const titleSize = Math.min(110, Math.floor(560 / (title.length * 0.82)));
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          background: "radial-gradient(circle at 35% 45%, #1d6b43 0%, #0f3a24 60%, #0b1f15 100%)",
+          border: "14px solid #5b3a1e",
+          padding: "0 60px 0 40px",
+          fontFamily: "Inter",
+        }}
+      >
+        <div style={{ display: "flex", width: 460, height: "100%", alignItems: "center", justifyContent: "center", transform: "scale(0.9)" }}>{await art(slug)}</div>
+        <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+          <div style={{ display: "flex", fontFamily: display, fontSize: 34, letterSpacing: 4, color: "rgba(255,255,255,0.9)" }}>{who}</div>
+          <div style={{ display: "flex", marginTop: 14, fontFamily: display, fontSize: 30, letterSpacing: 6, color: "rgba(255,255,255,0.6)" }}>PARA JOGAR</div>
+          <div style={{ display: "flex", marginTop: 10, fontFamily: display, fontSize: titleSize, lineHeight: 1, color: GOLD, textShadow: "0 6px 0 #7a4e0c" }}>{title}</div>
+          <div style={{ display: "flex", marginTop: 30, padding: "12px 30px", borderRadius: 18, background: "rgba(0,0,0,0.4)", fontFamily: display, fontSize: 56, letterSpacing: 14, color: GOLD }}>
+            {code.toUpperCase()}
+          </div>
+          {seatsText && <div style={{ display: "flex", marginTop: 18, fontSize: 30, fontWeight: 600, color: "rgba(255,255,255,0.8)" }}>{seatsText}</div>}
+          <div style={{ display: "flex", marginTop: 26, fontSize: 26, fontWeight: 700, color: "rgba(255,255,255,0.7)" }}>mesadejogos.com · grátis, sem cadastro</div>
+        </div>
+      </div>
+    ),
+    { ...OG_SIZE, fonts },
+  );
+}

@@ -5,6 +5,7 @@ import { palavrasPaths } from "@/lib/palavras";
 import { imprimirPaths } from "@/lib/imprimir";
 import { variationPaths } from "@/lib/variacoes";
 import { glossarioPaths } from "@/lib/glossario";
+import { WIDGET_PATH } from "@/lib/widget";
 
 // IndexNow (https://www.indexnow.org): avisa Bing, Yandex, Seznam e Naver na hora em que uma página muda.
 // A chave fica em INDEXNOW_KEY e é servida em /indexnow.txt (app/indexnow.txt/route.ts).
@@ -26,6 +27,7 @@ export function publicPaths(): string[] {
     ...variationPaths(),
     ...imprimirPaths(),
     ...glossarioPaths(),
+    WIDGET_PATH,
     ABOUT_PATH,
     INSTALL_PATH,
     CONTACT_PATH,

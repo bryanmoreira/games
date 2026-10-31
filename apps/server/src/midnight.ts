@@ -9,3 +9,10 @@ const AFTER_MIDNIGHT = 5_000;
 export function msToMidnight(now = Date.now()): number {
   return DAY - ((((now - BRT) % DAY) + DAY) % DAY) + AFTER_MIDNIGHT;
 }
+
+/** ms até a próxima vez que der `hour` horas em Brasília (0 a 23). */
+export function msToHour(hour: number, now = Date.now()): number {
+  const sinceMidnight = (((now - BRT) % DAY) + DAY) % DAY;
+  const target = hour * 60 * MINUTE;
+  return target > sinceMidnight ? target - sinceMidnight : DAY - sinceMidnight + target;
+}

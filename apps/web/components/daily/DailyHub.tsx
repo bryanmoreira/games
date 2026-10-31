@@ -13,6 +13,7 @@ import { localDailies, type LocalDaily } from "@/lib/daily/storage";
 import { loginHref } from "@/lib/login";
 import { dayStreaks } from "@/lib/stats/achievements";
 import { longDay } from "./common";
+import { ReminderButton } from "./ReminderButton";
 import { MonthCalendar, monthOf } from "./MonthCalendar";
 
 interface Day {
@@ -101,12 +102,15 @@ export function DailyHub({
       <div className="flex w-full flex-col gap-3 rounded-2xl bg-black/30 p-4 ring-1 ring-white/10">
         <div className="flex items-center justify-between gap-3">
           <span className="font-display text-sm capitalize text-white/90">{longDay(today)}</span>
-          {loggedIn && streak > 0 && (
-            <span className="flex items-center gap-1 rounded-full bg-orange-400/10 px-2.5 py-1 font-display text-xs text-orange-200 ring-1 ring-orange-400/30" title="Desafios seguidos">
-              <AchievementIcon icon="flame" className="h-3.5 w-3.5" />
-              {streak}
-            </span>
-          )}
+          <span className="flex items-center gap-2">
+            {loggedIn && streak > 0 && (
+              <span className="flex items-center gap-1 rounded-full bg-orange-400/10 px-2.5 py-1 font-display text-xs text-orange-200 ring-1 ring-orange-400/30" title="Desafios seguidos">
+                <AchievementIcon icon="flame" className="h-3.5 w-3.5" />
+                {streak}
+              </span>
+            )}
+            <ReminderButton game={game} />
+          </span>
         </div>
         {t?.won || t?.lost ? (
           <div className="flex items-center justify-between gap-3">

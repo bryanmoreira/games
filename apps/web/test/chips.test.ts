@@ -1,5 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { achievementChips, currentLoginStreak, LOGIN_CHIPS, loginDay, TIER_CHIPS } from "@/lib/chips-rules";
+import {
+  achievementChips,
+  currentLoginStreak,
+  LOGIN_CHIPS,
+  loginDay,
+  REFERRAL_MAX_PER_MONTH,
+  REFERRAL_WINDOW_MS,
+  referralProblem,
+  TIER_CHIPS,
+} from "@/lib/chips-rules";
 import { ACHIEVEMENT_BY_CODE, ACHIEVEMENTS } from "@/lib/stats/achievements";
 
 const chipsOf = (code: string) => achievementChips(ACHIEVEMENT_BY_CODE.get(code)!);
@@ -49,5 +58,23 @@ describe("login diário", () => {
     expect(currentLoginStreak("2026-10-19", 4, "2026-10-19")).toBe(4);
     expect(currentLoginStreak("2026-10-18", 4, "2026-10-19")).toBe(4);
     expect(currentLoginStreak("2026-10-16", 4, "2026-10-19")).toBe(0);
+  });
+});
+
+describe("indicação", () => {
+  const now = new Date("2026-10-31T12:00:00Z");
+  const base = { referrerId: "a", referredId: "b", referredCreatedAt: new Date("2026-10-30T12:00:00Z"), now, alreadyReferred: false, referrerThisMonth: 0 };
+
+  test("conta nova indicada por outra pessoa vale", () => {
+    expect(referralProblem(base)).toBeNull();
+  });
+
+  test("não vale: si mesmo, já indicada, conta antiga, quem indicou não existe, limite do mês", () => {
+    expect(referralProblem({ ...base, referrerId: "b" })).not.toBeNull();
+    expect(referralProblem({ ...base, alreadyReferred: true })).not.toBeNull();
+    expect(referralProblem({ ...base, referredCreatedAt: new Date(now.getTime() - REFERRAL_WINDOW_MS - 1) })).not.toBeNull();
+    expect(referralProblem({ ...base, referrerId: null })).not.toBeNull();
+    expect(referralProblem({ ...base, referrerThisMonth: REFERRAL_MAX_PER_MONTH })).not.toBeNull();
+    expect(referralProblem({ ...base, referrerThisMonth: REFERRAL_MAX_PER_MONTH - 1 })).toBeNull();
   });
 });

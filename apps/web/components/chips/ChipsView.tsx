@@ -1,4 +1,5 @@
 import { ChipIcon, GiftIcon } from "@/components/chips/ChipIcon";
+import { InviteCard } from "@/components/chips/InviteCard";
 import { LoginStrip } from "@/components/chips/LoginStrip";
 import { AchievementIcon } from "@/components/stats/AchievementIcon";
 import { loginDayOf, type ChipEntry, type ChipsState } from "@/lib/chips";
@@ -35,6 +36,8 @@ function describe(e: ChipEntry): { icon: React.ReactNode; title: string; sub: st
     const it = ITEM_BY_ID.get(e.ref.split(":").slice(0, 2).join(":"));
     return { icon: <StoreIcon className={cls} />, title: it?.name ?? "Item", sub: it?.type === "deck" ? "Baralho" : "Moldura" };
   }
+  if (e.reason === "referral") return { icon: <GiftIcon className={cls} />, title: "Amigo indicado", sub: "Criou conta pelo seu link" };
+  if (e.reason === "referred") return { icon: <GiftIcon className={cls} />, title: "Bônus de indicação", sub: "Você chegou por um convite" };
   if (e.reason === "admin") return { icon: <ShieldIcon className={cls} />, title: e.note || (e.delta > 0 ? "Presente" : "Ajuste"), sub: "Admin" };
   return { icon: <GiftIcon className={cls} />, title: "Boas-vindas", sub: "Conta nova" };
 }
@@ -46,7 +49,7 @@ function dayLabel(key: string, today: string) {
 }
 
 /** Página Fichas do perfil: saldo, sequência de login e cada ficha ganha ou gasta, por dia. */
-export function ChipsView({ state, history }: { state: ChipsState; history: ChipEntry[] }) {
+export function ChipsView({ state, history, username }: { state: ChipsState; history: ChipEntry[]; username?: string | null }) {
   const today = dayKey(new Date());
   const days = new Map<string, ChipEntry[]>();
   for (const e of history) {
@@ -65,6 +68,8 @@ export function ChipsView({ state, history }: { state: ChipsState; history: Chip
           <LoginStrip rewards={state.rewards} streak={state.streak} />
         </div>
       </div>
+
+      {username && <InviteCard username={username} />}
 
       {[...days].map(([k, list]) => {
         const sum = list.reduce((s, e) => s + e.delta, 0);

@@ -1,5 +1,6 @@
 "use client";
 
+import { withRef } from "@/lib/referral";
 import { Icon } from "@/components/ui/buttons";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
@@ -27,7 +28,7 @@ export function WhatsAppInvite({
   className?: string;
 }) {
   const open = () => {
-    const url = `${location.origin}${location.pathname}?utm_source=whatsapp&utm_medium=convite&utm_campaign=${campaign}`;
+    const url = withRef(`${location.origin}${location.pathname}?utm_source=whatsapp&utm_medium=convite&utm_campaign=${campaign}`);
     window.open(`https://wa.me/?text=${encodeURIComponent(message(url))}`, "_blank", "noopener,noreferrer");
   };
 

@@ -50,6 +50,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     WS_URL: runtimeEnv("WS_URL") ?? runtimeEnv(["NEXT_PUBLIC", "WS_URL"].join("_")) ?? "",
     ADSENSE_CLIENT: adsense,
     ADSENSE_SLOT: runtimeEnv("ADSENSE_SLOT"),
+    // chave pública do lembrete do desafio do dia (Web Push); a privada fica só no servidor
+    VAPID_PUBLIC_KEY: runtimeEnv("VAPID_PUBLIC_KEY"),
   };
   const script = `window.__ENV__=${JSON.stringify(env).replace(/</g, "\\u003c")}`;
 
