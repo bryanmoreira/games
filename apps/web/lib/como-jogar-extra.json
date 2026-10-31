@@ -1,0 +1,1307 @@
+{
+ "truco-paulista": {
+  "answer": "O Truco Paulista é jogado em duplas, ou 1 contra 1, com baralho de 40 cartas. Cada um recebe 3 cartas e ganha a mão quem vencer 2 das 3 vazas. A carta acima da vira é a manilha, a mais forte. O truco faz a mão valer 3, podendo subir a 6, 9 e 12. Vence quem fizer 12 pontos.",
+  "faq": [
+   {
+    "q": "Qual é a ordem das cartas no Truco Paulista?",
+    "a": "Da mais fraca para a mais forte: 4, 5, 6, 7, dama, valete, rei, ás, 2 e 3. Acima de todas ficam as quatro manilhas, que mudam a cada mão conforme a vira."
+   },
+   {
+    "q": "Qual é a ordem das manilhas no truco?",
+    "a": "Entre as manilhas, quem decide é o naipe: ouros é a mais fraca, depois espadas, copas e paus. A manilha de paus, o zap, é a carta mais forte da mão."
+   },
+   {
+    "q": "Se a vira for 3, qual é a manilha?",
+    "a": "A manilha é o 4. A ordem das cartas dá a volta: como o 3 é a carta comum mais forte, a seguinte volta a ser o 4."
+   },
+   {
+    "q": "Quantos pontos tem uma partida de truco?",
+    "a": "Vence a dupla que chegar primeiro a 12 pontos. Cada mão vale 1 ponto, ou 3, 6, 9 ou 12 quando alguém pede truco e a outra dupla aceita."
+   },
+   {
+    "q": "O que acontece quando a vaza empata no truco?",
+    "a": "Se a primeira vaza empatar, leva a mão quem ganhar a segunda. Se alguém ganhou a primeira e a segunda empatou, quem ganhou a primeira leva. Se a terceira empatar, vence quem ganhou a primeira; com as três empatadas, ninguém pontua."
+   },
+   {
+    "q": "Quantos pontos perde quem corre do truco?",
+    "a": "Quem corre entrega à outra dupla o valor que a mão tinha antes do pedido: 1 ponto se correr do truco, 3 se correr do seis, 6 se correr do nove e 9 se correr do doze."
+   },
+   {
+    "q": "Pode pedir truco na mão de onze?",
+    "a": "Não. Na mão de onze a mão já vale 3 e não tem truco. Na mão de ferro, quando as duas duplas estão com 11, a mão vale 1 e também não tem truco."
+   },
+   {
+    "q": "Quantas cartas cada jogador recebe no truco?",
+    "a": "Cada jogador recebe 3 cartas e joga uma por vaza. A mão é uma melhor de três: quem fizer 2 vazas ganha os pontos que a mão vale."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Manilha",
+    "slug": "manilha",
+    "definition": "Manilha é a carta imediatamente acima da vira na ordem do truco e ganha de todas as cartas comuns. Como a vira muda a cada mão, a manilha também muda. São quatro manilhas, uma de cada naipe, e entre elas a força segue o naipe: ouros, espadas, copas e, a mais forte, paus."
+   },
+   {
+    "term": "Vira",
+    "slug": "vira",
+    "definition": "Vira é a carta virada para cima na mesa depois que cada jogador recebe suas 3 cartas. Ela não é jogada, só indica as manilhas: a carta logo acima da vira na ordem 4, 5, 6, 7, dama, valete, rei, ás, 2 e 3 vira manilha. Com vira 3, a manilha é o 4."
+   },
+   {
+    "term": "Zap",
+    "slug": "zap",
+    "definition": "Zap é a manilha de paus, a carta mais forte de toda a mão no Truco Paulista. Ela não é uma carta fixa: depende da vira. Com vira 7, por exemplo, a manilha é a dama e o zap é a dama de paus. Quem tem o zap ganha qualquer vaza em que jogá-lo."
+   },
+   {
+    "term": "Mão de onze",
+    "slug": "mao-de-onze",
+    "definition": "Mão de onze é a mão jogada quando só uma dupla está com 11 pontos. Essa dupla vê as cartas do parceiro, ou só as suas no 1 contra 1, e decide se joga ou corre. Se jogar, a mão vale 3 pontos e não tem truco; se correr, a dupla adversária ganha 1 ponto."
+   },
+   {
+    "term": "Mão de ferro",
+    "slug": "mao-de-ferro",
+    "definition": "Mão de ferro acontece quando as duas duplas estão com 11 pontos. Ninguém vê as próprias cartas: todos jogam às cegas, escolhendo cartas viradas para baixo. A mão vale 1 ponto, não tem truco e quem ganhá-la chega a 12 e vence a partida."
+   },
+   {
+    "term": "Carta coberta",
+    "slug": "carta-coberta",
+    "definition": "Carta coberta é a carta jogada virada para baixo para esconder o jogo dos adversários. No Truco Paulista do site, ela só pode ser jogada a partir da segunda vaza e não vale nada: perde para qualquer carta aberta. Serve para guardar as cartas boas sem mostrar o que você tem."
+   }
+  ]
+ },
+ "buraco": {
+  "answer": "No Buraco, duas duplas ou dois jogadores usam 108 cartas e cada um recebe 11. Na vez, compre do monte ou pegue o lixo, baixe sequências do mesmo naipe e descarte uma carta. Jogo com 7 cartas é canastra. Para bater, a dupla precisa ter pego o morto e ter uma canastra. Vence quem chegar a 3000 pontos.",
+  "faq": [
+   {
+    "q": "Quanto vale cada carta no Buraco?",
+    "a": "Do 3 ao 7, cada carta vale 5 pontos; do 8 ao rei, 10; o ás vale 15; o 2 vale 20; e o coringa vale 50. Cartas baixadas somam pontos e cartas que sobram na mão descontam."
+   },
+   {
+    "q": "Pode baixar trinca no Buraco?",
+    "a": "Não. No Buraco do Mesa de Jogos, um jogo é sempre uma sequência de 3 ou mais cartas do mesmo naipe. Três cartas do mesmo valor e naipes diferentes não formam jogo."
+   },
+   {
+    "q": "No Buraco, o ás vem antes do 2 ou depois do rei?",
+    "a": "Pode ficar nos dois lugares: antes do 2, como em ás, 2 e 3, ou depois do rei, como em dama, rei e ás. Uma sequência tem no máximo 13 cartas, com um ás só."
+   },
+   {
+    "q": "Quantos curingas pode ter num jogo de Buraco?",
+    "a": "Só um curinga por jogo, seja o coringa ou um 2 fora do seu lugar. Um 2 do mesmo naipe, entre o ás e o 3, conta como carta comum e não como curinga."
+   },
+   {
+    "q": "Como se contam os pontos no fim da mão do Buraco?",
+    "a": "Cada dupla soma os pontos das cartas nos seus jogos, o bônus das canastras e 100 se bateu. Depois desconta as cartas que sobraram na mão e mais 100 se não pegou o morto."
+   },
+   {
+    "q": "O que acontece quando o monte acaba no Buraco?",
+    "a": "Se o monte acabou e quem está na vez não pode pegar o lixo, a mão termina sem batida. Os pontos são contados normalmente, sem os 100 de quem bate."
+   },
+   {
+    "q": "Quem pega o morto continua jogando?",
+    "a": "Depende de como ficou sem cartas. Se foi baixando jogos, pega o morto e continua na mesma vez. Se foi ao descartar a última carta, pega o morto e a vez passa para o próximo."
+   },
+   {
+    "q": "Posso colocar cartas nos jogos da outra dupla?",
+    "a": "Não. Cada dupla só baixa jogos novos ou acrescenta cartas nos jogos que ela mesma já tem na mesa."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Canastra limpa",
+    "slug": "canastra-limpa",
+    "definition": "Canastra limpa é uma sequência de 7 ou mais cartas do mesmo naipe sem nenhum curinga. Vale 200 pontos de bônus, além dos pontos das cartas. Um 2 do mesmo naipe no seu lugar, entre o ás e o 3, conta como carta comum, então não suja a canastra. Ela pode continuar recebendo cartas depois das 7."
+   },
+   {
+    "term": "Canastra suja",
+    "slug": "canastra-suja",
+    "definition": "Canastra suja é uma sequência de 7 ou mais cartas do mesmo naipe que tem um curinga, seja o coringa ou um 2 fora do seu lugar. Vale 100 pontos de bônus, metade da limpa. Como cada jogo aceita só um curinga, uma canastra suja nunca tem mais de um. Ela já basta para a dupla poder bater."
+   },
+   {
+    "term": "Canastra real",
+    "slug": "canastra-real",
+    "definition": "Canastra real é a canastra limpa completa: as 13 cartas de um naipe, do ás ao rei, sem nenhum curinga. É o jogo mais valioso do Buraco e dá 500 pontos de bônus, além dos pontos das cartas. Como uma sequência tem no máximo 13 cartas, a canastra real não recebe mais nada."
+   },
+   {
+    "term": "Morto",
+    "slug": "morto",
+    "definition": "Morto é cada um dos dois montes de 11 cartas separados no começo da mão, um para cada dupla. Quem fica sem cartas na mão pega o morto da dupla e segue jogando com ele. A dupla só pode bater depois de pegar o morto, e quem não o pegou perde 100 pontos no fim da mão."
+   },
+   {
+    "term": "Lixo",
+    "slug": "lixo",
+    "definition": "Lixo é a pilha de descarte do Buraco. No lugar de comprar do monte, você pode pegar o lixo inteiro, mas só se a carta de cima entrar na hora num jogo da sua dupla ou formar um jogo novo com 2 ou mais cartas da sua mão. Um coringa ou um 2 no topo trava o lixo."
+   },
+   {
+    "term": "Curinga",
+    "slug": "curinga",
+    "definition": "Curinga é a carta que substitui qualquer outra numa sequência. No Buraco do site, são curingas o coringa e o 2, e cada jogo aceita só um. O 2 do mesmo naipe no seu lugar, entre o ás e o 3, vale como carta comum. Curinga no jogo deixa a canastra suja, e no topo do lixo, trava a pilha."
+   }
+  ]
+ },
+ "blackjack": {
+  "answer": "No Blackjack, cada jogador enfrenta a banca e tenta chegar mais perto de 21 que ela, sem passar. Cartas de 2 a 10 valem o número, figuras valem 10 e o ás vale 1 ou 11. Peça, pare, dobre ou divida pares. A banca compra até 17, inclusive no 17 mole. Blackjack paga 3 para 2.",
+  "faq": [
+   {
+    "q": "Quanto paga o blackjack?",
+    "a": "O blackjack, ás com uma carta de 10 nas duas primeiras cartas, paga 3 para 2, arredondado para baixo. Uma vitória comum paga 1 para 1 e o empate devolve a aposta."
+   },
+   {
+    "q": "O que acontece se eu empatar com a banca no Blackjack?",
+    "a": "No empate você recebe a aposta de volta, sem ganhar nem perder. Blackjack do jogador contra blackjack da banca também é empate."
+   },
+   {
+    "q": "Qual é a aposta mínima e máxima no Blackjack do Mesa de Jogos?",
+    "a": "Cada aposta vai de 10 a 500 fichas, em múltiplos de 5, e é feita antes de as cartas saírem. Quem fica sem fichas para a aposta mínima assiste até o fim da partida."
+   },
+   {
+    "q": "Quantos baralhos são usados no Blackjack?",
+    "a": "Seis baralhos de 52 cartas, embaralhados juntos num sapato. No começo de cada rodada, se sobrarem menos de 25% das cartas, o sapato é embaralhado de novo."
+   },
+   {
+    "q": "Pode dividir um 10 e um rei no Blackjack?",
+    "a": "Sim. Dá para dividir duas cartas de mesmo valor, e 10, valete, dama e rei valem 10. A divisão pode ser feita uma vez por mão e custa uma aposta igual à primeira."
+   },
+   {
+    "q": "Dá para dobrar depois de dividir?",
+    "a": "Sim, com qualquer par menos ases. Ases divididos recebem uma carta cada e param ali, sem poder pedir nem dobrar."
+   },
+   {
+    "q": "A banca confere se tem blackjack antes de eu jogar?",
+    "a": "Sim, quando mostra um ás ou uma carta de valor 10. Se tiver blackjack, a rodada acaba ali: quem também tem blackjack empata e os demais perdem a aposta."
+   },
+   {
+    "q": "21 com três cartas é blackjack?",
+    "a": "Não. Blackjack é só o 21 feito com as duas primeiras cartas, um ás e uma carta de 10. Um 21 com três ou mais cartas, ou depois de dividir, é um 21 comum e paga 1 para 1."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Mão mole",
+    "slug": "mao-mole",
+    "definition": "Mão mole é a mão de Blackjack que tem um ás valendo 11 sem passar de 21, como ás e 6, que soma 17 mole. Ela não estoura com mais uma carta, porque o ás pode voltar a valer 1. No site, a banca compra também no 17 mole, e só para no 17 duro ou acima."
+   },
+   {
+    "term": "Estourar",
+    "slug": "estourar",
+    "definition": "Estourar é passar de 21 pontos no Blackjack. Quem estoura perde a aposta na hora, mesmo que depois a banca também estoure. Por isso pedir carta com mãos altas é arriscado. Quando a banca estoura, todos os jogadores que ainda não tinham estourado ganham a aposta."
+   },
+   {
+    "term": "Sapato",
+    "slug": "sapato",
+    "definition": "Sapato é o conjunto de baralhos de onde saem as cartas do Blackjack. No Mesa de Jogos, ele tem seis baralhos de 52 cartas embaralhados juntos. No começo de cada rodada, se sobrarem menos de 25% das cartas, o sapato é embaralhado de novo, como um cartão de corte numa mesa real."
+   },
+   {
+    "term": "Seguro",
+    "slug": "seguro",
+    "definition": "Seguro é uma aposta extra oferecida quando a carta aberta da banca é um ás. Ele custa metade da sua aposta e aposta que a banca tem blackjack. Se tiver, o seguro paga 2 para 1 e cobre a perda da mão; se não tiver, você perde o valor do seguro e a mão segue normalmente."
+   },
+   {
+    "term": "Dobrar",
+    "slug": "dobrar",
+    "definition": "Dobrar é dobrar a aposta da mão em troca de receber exatamente mais uma carta e parar. Só dá para dobrar com as duas primeiras cartas e tendo fichas para cobrir o valor. No site, também vale dobrar depois de dividir, menos com ases divididos, que recebem uma carta cada e param."
+   },
+   {
+    "term": "Dividir",
+    "slug": "dividir",
+    "definition": "Dividir é separar duas cartas de mesmo valor em duas mãos, cada uma com uma aposta igual à original. No Mesa de Jogos dá para dividir uma vez por mão, e 10, valete, dama e rei contam como o mesmo valor. Ases divididos recebem uma carta cada, e 21 depois de dividir não é blackjack."
+   }
+  ]
+ },
+ "paciencia-spider": {
+  "answer": "Na Paciência Spider, você joga sozinho com 104 cartas em 10 colunas. Mova uma carta para cima de outra um ponto maior e monte sequências do rei ao ás no mesmo naipe; cada sequência completa sai da mesa. Quando faltarem jogadas, distribua uma carta do monte em cada coluna. Vence quem completar as 8 sequências.",
+  "faq": [
+   {
+    "q": "Quantas cartas tem a Paciência Spider?",
+    "a": "São 104 cartas, o equivalente a dois baralhos. Começam 54 na mesa, em 10 colunas, e as outras 50 ficam no monte para 5 distribuições de 10 cartas."
+   },
+   {
+    "q": "Como funciona a pontuação da Paciência Spider?",
+    "a": "A partida começa com 500 pontos. Cada jogada tira 1 ponto, contando mover, distribuir e desfazer, e cada sequência completa do rei ao ás soma 100."
+   },
+   {
+    "q": "Posso colocar qualquer carta numa coluna vazia?",
+    "a": "Sim. Uma coluna vazia aceita qualquer carta ou qualquer grupo que possa ser movido junto, não só o rei."
+   },
+   {
+    "q": "Dá para distribuir cartas do monte com uma coluna vazia?",
+    "a": "Não. Antes de distribuir, todas as 10 colunas precisam ter pelo menos uma carta."
+   },
+   {
+    "q": "Dá para desfazer jogadas na Paciência Spider?",
+    "a": "Sim, quantas vezes quiser. Cada desfazer conta como uma jogada e tira 1 ponto do placar."
+   },
+   {
+    "q": "Posso colocar uma carta sobre outra de naipe diferente?",
+    "a": "Sim. Qualquer carta vai sobre outra um ponto maior, de qualquer naipe. Mas um grupo só se move junto se estiver em ordem e for todo do mesmo naipe, e só sai da mesa a sequência de um naipe só."
+   },
+   {
+    "q": "Quantas cartas ficam viradas para cima no começo?",
+    "a": "Só a carta de cima de cada coluna. As 4 primeiras colunas têm 6 cartas e as outras 6 têm 5; as de baixo viram para cima quando ficam descobertas."
+   },
+   {
+    "q": "O que acontece quando completo uma sequência do rei ao ás?",
+    "a": "Se as 13 cartas, do rei ao ás, estiverem no mesmo naipe e em ordem, a sequência sai da mesa sozinha e soma 100 pontos."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Monte",
+    "slug": "monte-spider",
+    "definition": "Monte é o estoque de 50 cartas que fica fora da mesa no começo da Paciência Spider. Cada vez que você usa o monte, ele distribui uma carta nova sobre cada uma das 10 colunas, num total de 5 distribuições. Só dá para usar o monte quando nenhuma coluna está vazia."
+   },
+   {
+    "term": "Sequência completa",
+    "slug": "sequencia-completa",
+    "definition": "Sequência completa é a fileira de 13 cartas do mesmo naipe, em ordem do rei ao ás, numa coluna da Paciência Spider. Quando ela se forma, sai da mesa sozinha e soma 100 pontos. São 8 sequências completas no total, e vence a partida quem tirar todas da mesa."
+   },
+   {
+    "term": "Coluna vazia",
+    "slug": "coluna-vazia",
+    "definition": "Coluna vazia é uma das 10 colunas da Paciência Spider que ficou sem cartas. Ela aceita qualquer carta ou grupo móvel, não só o rei, e por isso é muito útil para reorganizar a mesa. Por outro lado, enquanto houver uma coluna vazia, não dá para distribuir cartas do monte."
+   },
+   {
+    "term": "Grupo móvel",
+    "slug": "grupo-movel",
+    "definition": "Grupo móvel é um conjunto de cartas viradas para cima, em ordem decrescente e todas do mesmo naipe, que pode ser movido de uma vez na Paciência Spider. Cartas em ordem mas de naipes misturados não se movem juntas: só a parte de cima do mesmo naipe. Por isso, com 2 ou 4 naipes, o jogo fica mais difícil."
+   }
+  ]
+ },
+ "domino": {
+  "answer": "No dominó de batida, duplas ou dois jogadores usam 28 peças, de 0-0 a 6-6, e cada um recebe 7. Na vez, encaixe uma peça numa das duas pontas; sem peça, passe, ou compre do monte no mano a mano. Quem bate marca de 1 a 4 pontos, conforme a batida. Vence quem chegar a 6 pontos.",
+  "faq": [
+   {
+    "q": "Quantas peças tem um jogo de dominó?",
+    "a": "São 28 peças, do 0-0 ao 6-6, com todas as combinações de dois números de 0 a 6. Sete delas são carroças, as peças com os dois números iguais."
+   },
+   {
+    "q": "Quantas peças cada jogador recebe no dominó?",
+    "a": "Cada jogador recebe 7 peças. Nas duplas, as 28 peças são distribuídas e não sobra monte; no mano a mano, as 14 que sobram ficam no monte para compra."
+   },
+   {
+    "q": "Como a carroça entra na mesa?",
+    "a": "A carroça é colocada atravessada, mas não abre pontas novas: a mesa continua com só duas pontas. Ela entra numa ponta com o mesmo número, e essa ponta segue mostrando esse número."
+   },
+   {
+    "q": "Quantos pontos tem uma partida de dominó?",
+    "a": "Vence a dupla que chegar primeiro a 6 pontos. Cada mão vale de 1 a 4 pontos, conforme a batida, ou 1 ponto quando o jogo fecha."
+   },
+   {
+    "q": "Posso passar a vez no dominó mesmo tendo peça?",
+    "a": "Não. Só passa a vez quem não tem nenhuma peça que encaixe. No mano a mano, também só compra do monte quem não tem peça para jogar."
+   },
+   {
+    "q": "Quando uma mão de dominó vale o dobro?",
+    "a": "Quando o jogo fecha e as duas duplas empatam na soma dos pontos das peças, ninguém marca. A mão seguinte vale o dobro, seja batida ou jogo fechado."
+   },
+   {
+    "q": "Dá para jogar dominó contra o computador?",
+    "a": "Sim. Há modo solo contra a IA, nas duplas ou no mano a mano, e nas salas online os lugares vazios podem ser completados pelo computador."
+   },
+   {
+    "q": "Posso escolher em qual ponta jogar a peça?",
+    "a": "Sim. Se a peça encaixa nas duas pontas, você escolhe o lado. Se encaixa em uma só, ela entra nessa ponta."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Carroça",
+    "slug": "carroca",
+    "definition": "Carroça é a peça de dominó com os dois números iguais, como 3-3 ou 6-6. São sete carroças, do 0-0 ao 6-6. Ela entra atravessada na mesa, sem abrir pontas novas. Bater com uma carroça vale 2 pontos, e a carroça de sena, 6-6, é a peça de saída da primeira mão."
+   },
+   {
+    "term": "Lá-e-lô",
+    "slug": "la-e-lo",
+    "definition": "Lá-e-lô é a batida feita com uma peça comum, não carroça, cujos dois números são os das duas pontas da mesa, de modo que ela encaixaria dos dois lados. Por exemplo, bater com 2-5 com as pontas em 2 e 5. No dominó de batida do site, o lá-e-lô vale 3 pontos."
+   },
+   {
+    "term": "Cruzada",
+    "slug": "cruzada",
+    "definition": "Cruzada é a batida mais valiosa do dominó: a última peça é uma carroça e as duas pontas da mesa têm o número dela, como bater com 4-4 com as duas pontas em 4. A peça encaixaria dos dois lados. No dominó de batida do Mesa de Jogos, a cruzada vale 4 pontos."
+   },
+   {
+    "term": "Jogo fechado",
+    "slug": "jogo-fechado",
+    "definition": "Jogo fechado é quando ninguém consegue jogar e não há monte para comprar, então a mão acaba sem batida. Cada dupla soma os números das peças que sobraram na mão, e a que tiver menos marca 1 ponto. Se empatar, ninguém marca e a mão seguinte vale o dobro."
+   },
+   {
+    "term": "Batida",
+    "slug": "batida-domino",
+    "definition": "Batida é jogar a última peça da mão e encerrar a rodada no dominó. A dupla de quem bateu marca pontos conforme o tipo: simples vale 1, carroça vale 2, lá-e-lô vale 3 e cruzada vale 4. Quem bateu começa a mão seguinte com a peça que quiser."
+   }
+  ]
+ },
+ "codenames": {
+  "answer": "No Codenames, dois times, vermelho e azul, disputam uma mesa de 25 palavras. Em cada time, o mestre vê o mapa secreto e dá uma dica de uma palavra com um número; os agentes tocam nas palavras que acham ser do time. Errar passa a vez e tocar no assassino perde o jogo. Vence quem revelar todas as suas palavras.",
+  "faq": [
+   {
+    "q": "Quantas palavras cada time precisa encontrar no Codenames?",
+    "a": "O time que começa tem 9 palavras e o outro tem 8. Das 25 palavras da mesa, 7 são civis e 1 é o assassino."
+   },
+   {
+    "q": "Quem começa a partida de Codenames?",
+    "a": "Na primeira partida, o time que começa é sorteado e fica com 9 palavras. A cada nova partida na mesma sala, o time que começa se alterna."
+   },
+   {
+    "q": "A dica do Codenames pode ter mais de uma palavra?",
+    "a": "Não. A dica é uma palavra só, sem espaço e sem números, com até 20 caracteres; palavras com hífen valem. Ela também não pode ser igual a uma palavra ainda coberta na mesa."
+   },
+   {
+    "q": "Os agentes podem parar antes de usar todos os toques?",
+    "a": "Sim. Depois de tocar em pelo menos uma palavra, os agentes podem passar a vez a qualquer momento."
+   },
+   {
+    "q": "O que acontece se o time revelar uma palavra do adversário?",
+    "a": "A vez passa para o outro time. Se essa era a última palavra que faltava ao adversário, ele vence a partida na hora."
+   },
+   {
+    "q": "Dá para jogar Codenames contra o computador?",
+    "a": "Não. O Codenames do Mesa de Jogos é só online, entre pessoas, sem jogadores controlados pelo computador."
+   },
+   {
+    "q": "Como os agentes combinam qual palavra tocar?",
+    "a": "Cada agente pode marcar várias palavras na mesa, e todo o time vê as marcas. Qualquer agente do time revela uma palavra por vez."
+   },
+   {
+    "q": "O que muda quando a sala joga de novo?",
+    "a": "A nova partida sorteia outra mesa, evitando repetir as palavras da anterior, e o time que começa se alterna."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Mestre",
+    "slug": "mestre",
+    "definition": "Mestre é o jogador de cada time que vê o mapa com a cor de todas as palavras. Na vez do time, ele digita uma dica de uma palavra só e um número, que diz quantas palavras da mesa a dica liga. Cada time tem um mestre, e ele não pode tocar nas palavras."
+   },
+   {
+    "term": "Agente",
+    "slug": "agente",
+    "definition": "Agente é quem tenta adivinhar as palavras do próprio time a partir da dica do mestre. Os agentes não veem o mapa: marcam palavras, combinam entre si e qualquer um deles revela uma por vez. Cada time tem de 1 a 5 agentes, e com dica de número N podem tocar até N mais uma palavras."
+   },
+   {
+    "term": "Assassino",
+    "slug": "assassino",
+    "definition": "Assassino é a única palavra da mesa que faz um time perder na hora. Se um agente revelar o assassino, a partida acaba e o outro time vence, não importa quantas palavras cada um já tinha achado. Só os mestres sabem qual é, então eles evitam dicas que lembrem essa palavra."
+   },
+   {
+    "term": "Civil",
+    "slug": "civil",
+    "definition": "Civil é uma palavra neutra, que não pertence a nenhum dos dois times. São 7 civis em cada mesa de 25 palavras. Quando um agente revela um civil, o time não perde pontos nem a partida, mas a vez passa na hora para o outro time."
+   },
+   {
+    "term": "Mapa",
+    "slug": "mapa",
+    "definition": "Mapa é a grade secreta que mostra a cor de cada uma das 25 palavras: as do time vermelho, as do azul, os 7 civis e o assassino. Só os mestres veem o mapa. Os agentes veem apenas as palavras, e cada cor só aparece para eles quando a palavra é revelada."
+   }
+  ]
+ },
+ "xadrez": {
+  "answer": "No xadrez, dois jogadores movem 16 peças cada num tabuleiro 8×8, e as brancas começam. Cada peça tem seu movimento: rei, dama, torre, bispo, cavalo e peão. Vence quem der xeque-mate, deixando o rei adversário atacado e sem lance de fuga. Afogamento, repetição tripla, falta de material e 50 lances sem captura nem lance de peão empatam.",
+  "faq": [
+   {
+    "q": "Quem começa no xadrez, as brancas ou as pretas?",
+    "a": "As brancas sempre fazem o primeiro lance. Na primeira partida da sala as cores são sorteadas, e a cada nova partida elas trocam."
+   },
+   {
+    "q": "Como montar o tabuleiro de xadrez?",
+    "a": "O tabuleiro fica com a casa clara no canto direito de cada jogador. Na primeira fileira vão torre, cavalo, bispo, dama, rei, bispo, cavalo e torre, e os oito peões ficam na fileira da frente."
+   },
+   {
+    "q": "Quanto vale cada peça no xadrez?",
+    "a": "Na contagem de material usada no jogo, o peão vale 1 ponto, o cavalo e o bispo valem 3, a torre vale 5 e a dama vale 9. O rei não tem valor em pontos, porque não pode ser capturado."
+   },
+   {
+    "q": "O peão pode andar para trás?",
+    "a": "Não. O peão só anda para a frente: uma casa, ou duas no primeiro lance dele, e captura uma casa na diagonal para a frente."
+   },
+   {
+    "q": "O rei pode ficar em xeque?",
+    "a": "Não. Nenhum lance que deixe o próprio rei em xeque é aceito. Quem está em xeque precisa sair dele no mesmo lance, fugindo com o rei, capturando a peça que ataca ou bloqueando o ataque."
+   },
+   {
+    "q": "O que acontece quando o tempo acaba no xadrez?",
+    "a": "Com relógio, quem fica sem tempo perde a partida. A exceção é quando o adversário tem só o rei: aí a partida termina empatada."
+   },
+   {
+    "q": "O que é material insuficiente no xadrez?",
+    "a": "É quando não sobram peças para dar xeque-mate, como rei contra rei, ou rei e um cavalo ou um bispo contra rei. Nesse caso a partida termina empatada na hora."
+   },
+   {
+    "q": "Dá para desistir ou propor empate no xadrez online?",
+    "a": "Sim. Durante a partida você pode desistir, o que dá a vitória ao adversário, ou oferecer empate. Se o adversário aceitar, a partida empata; se ele fizer um lance, a oferta é recusada."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Xeque-mate",
+    "slug": "xeque-mate",
+    "definition": "Xeque-mate é a jogada que encerra a partida de xadrez: o rei está atacado por uma peça adversária e não existe nenhum lance que o tire do ataque, seja fugindo, capturando a peça atacante ou bloqueando a linha. Quem dá o xeque-mate vence. Se o rei não está atacado, mas não há lance possível, é afogamento e a partida empata."
+   },
+   {
+    "term": "Roque",
+    "slug": "roque",
+    "definition": "Roque é o único lance do xadrez em que duas peças se movem juntas: o rei anda duas casas em direção a uma torre, e essa torre passa para a casa ao lado dele, do outro lado. Só vale se rei e torre ainda não se moveram, se as casas entre eles estão vazias e se o rei não está em xeque nem passa ou para em casa atacada."
+   },
+   {
+    "term": "En passant",
+    "slug": "en-passant",
+    "definition": "En passant, ou \"de passagem\", é uma captura especial do peão no xadrez. Quando um peão adversário avança duas casas no primeiro lance e para ao lado do seu peão, você pode capturá-lo como se ele tivesse andado só uma casa, movendo o seu peão na diagonal para a casa que ele pulou. A captura só vale no lance imediatamente seguinte."
+   },
+   {
+    "term": "Afogamento",
+    "slug": "afogamento",
+    "definition": "Afogamento, ou rei afogado, acontece quando o jogador da vez não está em xeque, mas não tem nenhum lance permitido: todas as peças estão travadas e o rei só poderia ir para casas atacadas. No xadrez, o afogamento termina a partida empatada, mesmo que um dos lados tenha muito mais material. Por isso, quem está ganhando precisa tomar cuidado para não afogar o adversário."
+   },
+   {
+    "term": "Promoção do peão",
+    "slug": "promocao-do-peao",
+    "definition": "Promoção é a troca do peão que chega à última fileira do tabuleiro por outra peça da mesma cor. Quem joga escolhe entre dama, torre, bispo ou cavalo, sem depender das peças já capturadas. Na maioria das vezes a escolha é a dama, a peça mais forte, mas às vezes o cavalo dá um xeque decisivo ou evita um afogamento."
+   },
+   {
+    "term": "Regra dos 50 lances",
+    "slug": "regra-dos-50-lances",
+    "definition": "A regra dos 50 lances declara empate no xadrez quando cada lado faz 50 lances seguidos sem nenhuma captura e sem nenhum lance de peão. A contagem recomeça sempre que uma peça é capturada ou um peão se move. A regra evita partidas sem fim em finais em que nenhum dos jogadores consegue ou sabe dar xeque-mate."
+   }
+  ]
+ },
+ "damas": {
+  "answer": "Nas damas brasileiras, cada jogador tem 12 pedras nas casas escuras de um tabuleiro 8×8, e as brancas começam. A pedra anda uma casa na diagonal para a frente e captura pulando a peça adversária, também para trás. Capturar é obrigatório, pelo caminho que leva mais peças. Na última fileira, a pedra vira dama.",
+  "faq": [
+   {
+    "q": "Quantas peças tem o jogo de damas?",
+    "a": "São 24 peças no total, 12 para cada jogador. Elas começam nas três primeiras fileiras de cada lado, só nas casas escuras."
+   },
+   {
+    "q": "Quem começa no jogo de damas?",
+    "a": "As brancas fazem o primeiro lance. Na primeira partida da sala as cores são sorteadas e, a cada nova partida, elas trocam."
+   },
+   {
+    "q": "Como montar o tabuleiro de damas?",
+    "a": "O tabuleiro 8×8 fica com uma casa escura no canto esquerdo de cada jogador. As 12 pedras de cada lado ocupam as casas escuras das três fileiras mais próximas dele."
+   },
+   {
+    "q": "A pedra pode andar para trás nas damas?",
+    "a": "Para andar, não: a pedra só se move uma casa na diagonal para a frente. Para capturar, sim: a pedra pode pular uma peça adversária para a frente ou para trás."
+   },
+   {
+    "q": "Nas damas, dá para pular a mesma peça duas vezes?",
+    "a": "Não. As peças capturadas só saem do tabuleiro no fim do lance, então não dá para pular a mesma peça de novo, e ela continua bloqueando a passagem durante a sequência."
+   },
+   {
+    "q": "Existe a regra do sopro nas damas online?",
+    "a": "Não. Aqui a captura obrigatória é garantida pelo próprio jogo: quando há captura possível, só os lances de captura são aceitos, então ninguém deixa de capturar e não há o que soprar."
+   },
+   {
+    "q": "Dama vale mais que pedra na lei da maioria?",
+    "a": "Não. Na lei da maioria, pedra e dama contam igual: vale o caminho que captura mais peças, não o que captura as peças mais fortes. Se dois caminhos levam o mesmo número, o jogador escolhe."
+   },
+   {
+    "q": "Dá para jogar damas contra o computador?",
+    "a": "Sim. Há modo solo contra a IA em três níveis: fácil, médio e difícil."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Lei da maioria",
+    "slug": "lei-da-maioria",
+    "definition": "Lei da maioria é a regra das damas brasileiras que obriga o jogador a escolher, entre todas as capturas possíveis, a que leva o maior número de peças adversárias. Pedra e dama contam igual nessa conta, então vale a quantidade, não a qualidade. Se dois ou mais caminhos capturam o mesmo número de peças, o jogador escolhe livremente qual fazer."
+   },
+   {
+    "term": "Dama",
+    "slug": "dama",
+    "definition": "Dama é a peça promovida no jogo de damas: a pedra que termina o lance na última fileira do outro lado vira dama. Ela anda quantas casas quiser na diagonal, para a frente ou para trás, e captura à distância, pulando uma peça adversária e pousando em qualquer casa vazia depois dela. Por esse movimento longo, é chamada de dama voadora."
+   },
+   {
+    "term": "Captura obrigatória",
+    "slug": "captura-obrigatoria",
+    "definition": "Captura obrigatória é a regra das damas que proíbe deixar de capturar: se alguma peça sua pode pular uma peça adversária, você precisa fazer a captura em vez de um lance comum. Depois de capturar, se a mesma peça puder continuar pulando, a sequência também é obrigatória. Junto com a lei da maioria, ela define qual lance é permitido."
+   },
+   {
+    "term": "Pedra",
+    "slug": "pedra",
+    "definition": "Pedra é a peça comum do jogo de damas, com que cada jogador começa: são 12 de cada lado, nas casas escuras. Ela anda uma casa na diagonal, só para a frente, e captura pulando uma peça adversária vizinha para a casa vazia logo atrás, para a frente ou para trás. Ao terminar o lance na última fileira, a pedra vira dama."
+   },
+   {
+    "term": "Captura em sequência",
+    "slug": "captura-em-sequencia",
+    "definition": "Captura em sequência, também chamada de captura múltipla, é quando uma peça das damas pula uma peça adversária e, da casa onde pousou, continua pulando outras no mesmo lance. É obrigatória enquanto houver peça para capturar. As peças puladas só saem do tabuleiro no fim do lance, então não dá para pular a mesma peça duas vezes."
+   }
+  ]
+ },
+ "ludo": {
+  "answer": "No Ludo, de 2 a 4 jogadores levam suas 4 peças da base até o centro. Na vez, rola-se o dado e move-se uma peça no sentido horário; ela sai da base com 1 ou 6. Parar sobre peça de outra cor a manda de volta à base, exceto nas casas seguras. Vence quem chegar primeiro com as 4.",
+  "faq": [
+   {
+    "q": "Quantas pessoas podem jogar Ludo?",
+    "a": "De 2 a 4 jogadores, cada um com 4 peças. Na sala online, lugares vazios podem ser completados pelo computador, e no modo solo você joga contra 1 a 3 IAs."
+   },
+   {
+    "q": "Quais são as cores do Ludo?",
+    "a": "Vermelho, verde, amarelo e azul, nessa ordem no sentido horário. Com 2 jogadores, o segundo fica com a cor oposta à do primeiro no tabuleiro."
+   },
+   {
+    "q": "Quantas casas tem o tabuleiro de Ludo?",
+    "a": "O circuito tem 52 casas. Cada peça anda 50 casas depois da saída, entra na reta final da sua cor, com 5 casas, e então chega ao centro."
+   },
+   {
+    "q": "Quais são as casas seguras do Ludo?",
+    "a": "São as casas de saída de cada cor e as estrelas, que ficam 8 casas depois de cada saída. Nelas nenhuma peça pode ser capturada."
+   },
+   {
+    "q": "Duas peças da mesma cor juntas formam barreira no Ludo?",
+    "a": "Não. Peças juntas não bloqueiam a passagem: qualquer peça pode passar por elas ou parar na mesma casa."
+   },
+   {
+    "q": "O que acontece se eu tirar 6 três vezes seguidas?",
+    "a": "Você perde a vez sem mover. O 6 dá direito a jogar de novo, mas o terceiro 6 seguido na mesma vez encerra a sua jogada."
+   },
+   {
+    "q": "Quantas vezes jogo o dado quando tiro 6 no Ludo?",
+    "a": "Depois de mover com um 6, você rola de novo; se nenhuma peça puder andar com o 6, também rola de novo. O limite é o terceiro 6 seguido na mesma vez, que perde a vez sem mover."
+   },
+   {
+    "q": "Quem começa a próxima partida de Ludo?",
+    "a": "A cada nova partida na mesma sala, quem começa passa para o próximo jogador, e o placar de vitórias continua somando."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Casa segura",
+    "slug": "casa-segura",
+    "definition": "Casa segura é uma casa do tabuleiro de Ludo onde nenhuma peça pode ser capturada. São oito no total: a casa de saída de cada uma das quatro cores e as quatro estrelas, que ficam 8 casas depois de cada saída. Peças de cores diferentes podem dividir uma casa segura sem que nenhuma volte para a base."
+   },
+   {
+    "term": "Base",
+    "slug": "base",
+    "definition": "Base é o canto do tabuleiro de Ludo onde ficam as peças de cada cor antes de entrar no jogo. Todas as 4 peças começam ali. Para sair da base, o jogador precisa tirar 1 ou 6 no dado; a peça vai para a casa de saída da sua cor. Uma peça capturada no caminho volta para a base."
+   },
+   {
+    "term": "Reta final",
+    "slug": "reta-final",
+    "definition": "Reta final é o corredor colorido de 5 casas que leva cada cor do circuito até o centro do tabuleiro de Ludo. A peça entra nela depois de andar 50 casas desde a saída. Só o dono da cor entra na sua reta final, então ali ninguém captura. Para chegar ao centro, o número do dado tem de ser exato."
+   },
+   {
+    "term": "Casa de saída",
+    "slug": "casa-de-saida",
+    "definition": "Casa de saída é a casa do circuito, na cor de cada jogador, onde a peça entra quando deixa a base com 1 ou 6 no dado. A peça para ali sem andar mais naquela jogada. A casa de saída é segura: nenhuma peça pode ser capturada nela. A partir dela, a peça dá a volta no tabuleiro no sentido horário."
+   }
+  ]
+ },
+ "batalha-naval": {
+  "answer": "Na Batalha Naval, cada jogador posiciona em segredo 5 navios num mar de 10 × 10 casas, na horizontal ou na vertical. Depois, os dois atiram um de cada vez numa casa do mar inimigo. Acertar um navio dá direito a atirar de novo; cair na água passa a vez. Vence quem afundar toda a frota adversária primeiro.",
+  "faq": [
+   {
+    "q": "Quais são os navios da Batalha Naval?",
+    "a": "São 5 navios: porta-aviões (5 casas), encouraçado (4), cruzador (3), submarino (3) e destróier (2). Ao todo, a frota ocupa 17 casas do mar."
+   },
+   {
+    "q": "Os navios podem ficar encostados na Batalha Naval?",
+    "a": "Sim. Os navios podem encostar uns nos outros, inclusive na diagonal; só não podem se sobrepor nem sair do mar."
+   },
+   {
+    "q": "Os navios podem ficar na diagonal?",
+    "a": "Não. Cada navio fica reto, na horizontal ou na vertical, ocupando casas seguidas."
+   },
+   {
+    "q": "Quem acerta um navio joga de novo?",
+    "a": "Sim. Acertou um navio, atira de novo; o tiro na água passa a vez para o adversário."
+   },
+   {
+    "q": "Como saber se afundei um navio?",
+    "a": "Quando todas as casas de um navio são atingidas, ele afunda e aparece inteiro no mar do adversário para quem atirou."
+   },
+   {
+    "q": "Dá para atirar duas vezes na mesma casa?",
+    "a": "Não. Cada tiro vai numa casa do mar inimigo que ainda não foi atingida."
+   },
+   {
+    "q": "Os dois jogadores montam a frota ao mesmo tempo?",
+    "a": "Sim. Os dois posicionam os navios ao mesmo tempo e confirmam quando estão prontos; a batalha começa depois que os dois confirmam."
+   },
+   {
+    "q": "Quem dá o primeiro tiro na Batalha Naval?",
+    "a": "Quem começa alterna a cada nova partida na mesma sala, e o placar de vitórias continua somando."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Frota",
+    "slug": "frota",
+    "definition": "Frota é o conjunto de navios que cada jogador posiciona no seu mar na Batalha Naval. A frota clássica tem 5 navios retos: porta-aviões (5 casas), encouraçado (4), cruzador (3), submarino (3) e destróier (2), somando 17 casas. Os navios ficam na horizontal ou na vertical e podem encostar, mas não se sobrepor. Vence quem afundar a frota inteira do adversário."
+   },
+   {
+    "term": "Porta-aviões",
+    "slug": "porta-avioes",
+    "definition": "Porta-aviões é o maior navio da Batalha Naval, com 5 casas em linha reta, na horizontal ou na vertical. Por ser o mais comprido, costuma ser o mais fácil de encontrar, e acertar uma das suas casas indica que há mais casas seguidas para atingir ao lado. Ele afunda quando as 5 casas são atingidas."
+   },
+   {
+    "term": "Encouraçado",
+    "slug": "encouracado",
+    "definition": "Encouraçado é o segundo maior navio da frota na Batalha Naval, com 4 casas em linha reta, na horizontal ou na vertical. Assim como os outros navios, ele pode ficar encostado nos demais, mas não pode se sobrepor a eles. O encouraçado afunda quando as suas 4 casas são atingidas e então aparece inteiro para quem atirou."
+   },
+   {
+    "term": "Destróier",
+    "slug": "destroier",
+    "definition": "Destróier é o menor navio da Batalha Naval, com apenas 2 casas em linha reta, na horizontal ou na vertical. Por ocupar pouco espaço, costuma ser o último a ser encontrado e muitas vezes decide a partida. Ele afunda quando as duas casas são atingidas, e o navio afundado aparece inteiro para quem atirou."
+   }
+  ]
+ },
+ "connect-4": {
+  "answer": "No Connect 4, também chamado de 4 em Linha, dois jogadores se alternam soltando uma peça por vez numa das 7 colunas de um tabuleiro em pé de 6 linhas. A peça cai até a casa livre mais baixa. Vence quem alinhar 4 peças da sua cor na horizontal, vertical ou diagonal. Tabuleiro cheio sem 4 em linha é empate.",
+  "faq": [
+   {
+    "q": "Quantas colunas e linhas tem o Connect 4?",
+    "a": "O tabuleiro tem 7 colunas e 6 linhas, num total de 42 casas, e fica em pé para que as peças caiam."
+   },
+   {
+    "q": "O Connect 4 pode terminar empatado?",
+    "a": "Sim. Se todas as 42 casas forem preenchidas sem ninguém fazer 4 em linha, a partida termina empatada."
+   },
+   {
+    "q": "Posso jogar numa coluna cheia?",
+    "a": "Não. Uma coluna com as 6 casas ocupadas não aceita mais peças, e é preciso escolher outra coluna."
+   },
+   {
+    "q": "Quantas peças cada jogador usa no Connect 4?",
+    "a": "Como o tabuleiro tem 42 casas e cada jogador põe uma peça por vez, cada um coloca no máximo 21 peças numa partida."
+   },
+   {
+    "q": "Quem começa no Connect 4?",
+    "a": "Quem começa alterna a cada nova partida na mesma sala, e o placar de vitórias e empates continua somando."
+   },
+   {
+    "q": "Qual a melhor coluna para começar no Connect 4?",
+    "a": "A coluna do meio costuma ser a melhor abertura, porque participa de mais linhas possíveis de 4 do que qualquer outra, nas três direções."
+   },
+   {
+    "q": "Ligue 4 e 4 em Linha são o mesmo jogo?",
+    "a": "Sim. Ligue 4, 4 em Linha e Connect 4 são nomes do mesmo jogo: soltar peças nas colunas e alinhar 4 da sua cor."
+   },
+   {
+    "q": "Dá para jogar Connect 4 pelo teclado?",
+    "a": "Sim. No teclado, as teclas de 1 a 7 soltam a peça na coluna correspondente."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "4 em linha",
+    "slug": "4-em-linha",
+    "definition": "4 em linha é a sequência vencedora do Connect 4: quatro peças da mesma cor seguidas, sem espaço entre elas, na horizontal, na vertical ou na diagonal. Quem forma o 4 em linha primeiro vence a partida na hora. O nome também é usado para o próprio jogo, conhecido ainda como Ligue 4."
+   },
+   {
+    "term": "Ameaça dupla",
+    "slug": "ameaca-dupla",
+    "definition": "Ameaça dupla, no Connect 4, é a jogada que cria duas casas ao mesmo tempo onde a próxima peça completaria 4 em linha. Como o adversário só joga uma peça por vez, ele consegue bloquear apenas uma delas, e a outra garante a vitória. Montar ameaças duplas, muitas vezes uma em cima da outra na mesma coluna, é a principal estratégia do jogo."
+   },
+   {
+    "term": "Bloqueio",
+    "slug": "bloqueio",
+    "definition": "Bloqueio, no Connect 4, é soltar uma peça na casa que o adversário usaria para completar 4 em linha. Como a peça cai até a casa livre mais baixa, nem toda ameaça pode ser bloqueada na hora: às vezes a casa só fica alcançável depois que a coluna enche. Por isso é importante enxergar as ameaças antes que fiquem prontas."
+   }
+  ]
+ },
+ "jogo-da-velha": {
+  "answer": "No Jogo da Velha, dois jogadores se alternam marcando uma casa vazia por vez num tabuleiro 3×3; quem começa joga de X e o outro, de O. Vence quem fizer 3 marcas iguais em linha, na horizontal, vertical ou diagonal. Se o tabuleiro encher sem ninguém fechar uma linha, dá velha, que é o empate.",
+  "faq": [
+   {
+    "q": "Quem começa no Jogo da Velha, o X ou o O?",
+    "a": "Quem começa a partida joga de X. A cada nova partida na mesma sala, quem começa alterna, e o placar continua somando."
+   },
+   {
+    "q": "Quantas formas de vencer existem no Jogo da Velha?",
+    "a": "Oito: três linhas horizontais, três colunas verticais e as duas diagonais do tabuleiro 3×3."
+   },
+   {
+    "q": "Qual a melhor jogada para começar o Jogo da Velha?",
+    "a": "O centro e os cantos são as aberturas mais fortes, porque participam de mais linhas do que as casas do meio das bordas. O centro faz parte de quatro linhas, e cada canto, de três."
+   },
+   {
+    "q": "Por que o Jogo da Velha sempre empata?",
+    "a": "Porque, com as duas pessoas jogando sem errar, sempre dá para bloquear a linha do outro e nenhum lado consegue montar duas ameaças ao mesmo tempo. Por isso a IA no nível impossível nunca perde no modo clássico."
+   },
+   {
+    "q": "O que é garfo no Jogo da Velha?",
+    "a": "Garfo é a jogada que cria duas ameaças de fechar a linha ao mesmo tempo. Como o adversário só bloqueia uma por vez, a outra costuma dar a vitória."
+   },
+   {
+    "q": "O modo some pode dar velha?",
+    "a": "Sim. No modo some o tabuleiro nunca enche, porque cada jogador fica com no máximo 3 peças, mas se ninguém fizer 3 em linha em 30 lances, a partida termina em velha."
+   },
+   {
+    "q": "Quais são os níveis do Jogo da Velha contra o computador?",
+    "a": "São três: fácil, médio e impossível. Nos níveis fácil e médio a IA erra às vezes; no impossível ela joga perfeito."
+   },
+   {
+    "q": "Dá para jogar Jogo da Velha pelo teclado?",
+    "a": "Sim. As teclas de 1 a 9 marcam as casas do tabuleiro, linha a linha, a partir de cima."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Velha",
+    "slug": "velha",
+    "definition": "Velha é o nome do empate no Jogo da Velha. No modo clássico, dá velha quando as 9 casas do tabuleiro se enchem sem que nenhum jogador faça 3 em linha. No modo some, em que o tabuleiro nunca enche, dá velha quando ninguém vence em 30 lances. Com os dois jogando sem errar, toda partida clássica termina em velha."
+   },
+   {
+    "term": "Garfo",
+    "slug": "garfo",
+    "definition": "Garfo, no Jogo da Velha, é a jogada que deixa duas casas diferentes onde a próxima marca fecharia 3 em linha. Como o adversário só pode bloquear uma por vez, a outra fica livre e a vitória vem no lance seguinte. Contra a IA nos níveis fácil e médio, o garfo é a forma mais comum de vencer."
+   },
+   {
+    "term": "Modo some",
+    "slug": "modo-some",
+    "definition": "Modo some é uma variação do Jogo da Velha em que cada jogador fica com no máximo 3 peças no tabuleiro. Ao colocar a 4ª, a peça mais antiga dele desaparece antes de o jogo conferir se houve 3 em linha. Assim o tabuleiro nunca trava, e a partida só dá velha se ninguém vencer em 30 lances."
+   },
+   {
+    "term": "3 em linha",
+    "slug": "3-em-linha",
+    "definition": "3 em linha é a sequência vencedora do Jogo da Velha: três marcas iguais, X ou O, ocupando uma linha inteira do tabuleiro 3×3, seja na horizontal, na vertical ou numa das duas diagonais. Há oito linhas possíveis no total. Quem completa o 3 em linha primeiro vence a partida na hora."
+   }
+  ]
+ },
+ "stop": {
+  "answer": "Para jogar Stop (Adedonha), de 2 a 8 pessoas recebem uma letra sorteada e preenchem, ao mesmo tempo, uma palavra por categoria começando com ela. Quem completa todas aperta STOP e todos param. Na correção, os jogadores podem votar para anular respostas. Resposta única vale 10 pontos, repetida vale 5, e vence quem somar mais no fim.",
+  "faq": [
+   {
+    "q": "Quantas pessoas podem jogar Stop online?",
+    "a": "De 2 a 8 jogadores, numa sala privada criada por um deles. O Stop é só online, entre pessoas: não há modo contra o computador."
+   },
+   {
+    "q": "Quantos pontos vale cada resposta no Stop?",
+    "a": "Resposta que só você deu vale 10 pontos, resposta repetida por outro jogador vale 5 e resposta vazia, anulada ou com outra letra vale 0. No fim da última rodada, vence quem tiver a maior soma; empate no topo termina empatado."
+   },
+   {
+    "q": "Quais letras não saem no Stop?",
+    "a": "K, W, X e Y nunca são sorteadas. Cada rodada tem uma letra diferente: a mesma letra não se repete na partida."
+   },
+   {
+    "q": "Quando posso apertar STOP?",
+    "a": "Só depois de preencher todas as categorias com palavras que começam com a letra da rodada. Quando alguém aperta, todos param de escrever na hora; se a sala tiver tempo, a rodada também acaba quando o relógio zera."
+   },
+   {
+    "q": "Como funciona a votação para anular uma resposta?",
+    "a": "Na correção, cada categoria aparece de uma vez e você pode votar contra a resposta de outro jogador. Ela é anulada se mais da metade dos outros jogadores presentes votar contra; empate mantém a resposta. A correção avança quando todos apertam PRONTO ou depois de 30 segundos."
+   },
+   {
+    "q": "Resposta com uma letra só vale no Stop?",
+    "a": "Ela permite apertar STOP, mas entra na correção já anulada, com o voto contra de todos os outros jogadores. Quem achar que a resposta vale pode retirar o próprio voto."
+   },
+   {
+    "q": "Quantas categorias preciso escolher no Stop?",
+    "a": "No mínimo 3. Há 15 categorias prontas, como Nome, Animal, Fruta, Cor, Profissão e Minha sogra é..., e quem cria a sala pode inventar até 10 temas próprios."
+   },
+   {
+    "q": "O que acontece se alguém cair durante o Stop?",
+    "a": "A pessoa continua na partida e o que ela já escreveu fica guardado. Enquanto estiver fora, ela não conta na maioria da votação nem para o PRONTO, então o jogo não trava esperando por ela."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Adedonha",
+    "slug": "adedonha",
+    "definition": "Adedonha é outro nome do Stop, o jogo de palavras em que todos recebem a mesma letra e preenchem, ao mesmo tempo, uma palavra por categoria começando com ela. O nome vem do jeito tradicional de sortear a letra: cada um mostra alguns dedos, a soma é contada pelo alfabeto e a letra em que a contagem para é a da rodada."
+   },
+   {
+    "term": "Categoria (Stop)",
+    "slug": "categoria-stop",
+    "definition": "No Stop, categoria é cada tema que precisa receber uma palavra começando com a letra da rodada, como Nome, Animal, Fruta, Cor ou Profissão. Quem cria a sala escolhe pelo menos três categorias, entre as prontas ou criando temas próprios, e a correção confere uma categoria por vez, comparando as respostas de todos os jogadores."
+   }
+  ]
+ },
+ "verbete": {
+  "answer": "No Verbete, você descobre uma palavra de 5 letras em até 6 chutes. Cada chute precisa ser uma palavra aceita e pinta as letras: verde se está no lugar certo, amarelo se existe em outro lugar e cinza se não está na palavra. Acentos não contam. O Dueto tem 2 palavras em 7 chutes; o Quarteto, 4 em 9.",
+  "faq": [
+   {
+    "q": "Palavra que não existe gasta tentativa no Verbete?",
+    "a": "Não. Só entram palavras da lista do jogo; se você digitar uma palavra desconhecida, ela é recusada e a tentativa não é gasta."
+   },
+   {
+    "q": "A palavra do Verbete pode ter letras repetidas?",
+    "a": "Sim. Cada letra do chute só recebe cor tantas vezes quanto aparece na resposta: se você repetir uma letra que a palavra tem uma vez só, a sobra fica cinza."
+   },
+   {
+    "q": "Que tipo de palavra pode ser a resposta do Verbete?",
+    "a": "As respostas saem de uma lista de cerca de 1.400 palavras comuns do português. Mais de 9 mil palavras menos usadas também são aceitas como chute, mas nunca são a resposta."
+   },
+   {
+    "q": "As palavras do Verbete, do Dueto e do Quarteto se repetem no mesmo dia?",
+    "a": "Não. Cada dia tem 7 palavras diferentes: 1 para o Verbete, 2 para o Dueto e 4 para o Quarteto, sem nenhuma repetida entre os modos."
+   },
+   {
+    "q": "Como o teclado ajuda no Verbete?",
+    "a": "Cada tecla mostra a melhor cor que a letra já recebeu. No Dueto e no Quarteto, a tecla se divide e mostra a cor da letra em cada palavra, na mesma posição dos quadros."
+   },
+   {
+    "q": "Posso escrever numa casa específica da linha?",
+    "a": "Sim. Toque numa casa da linha para escrever nela, sem precisar apagar as letras anteriores."
+   },
+   {
+    "q": "Como compartilhar o resultado do Verbete?",
+    "a": "No fim da partida, o botão de compartilhar gera os quadrados verdes, amarelos e pretos de cada chute, sem mostrar as letras. No Verbete aparece o placar, como 3/6; no Dueto e no Quarteto, em que tentativa você acertou cada palavra."
+   },
+   {
+    "q": "O que é a sequência no Verbete?",
+    "a": "É a contagem de dias seguidos em que você venceu a palavra do dia jogando no próprio dia. Ela aparece nas estatísticas do fim da partida e no resultado compartilhado."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Letra no lugar certo",
+    "slug": "letra-no-lugar-certo",
+    "definition": "Nos jogos de adivinhar palavra, letra no lugar certo é a que existe na resposta e foi chutada exatamente na mesma posição. No Verbete ela fica verde. Uma casa verde já está resolvida: nos próximos chutes, vale manter a letra ali e usar as outras posições para testar letras novas."
+   },
+   {
+    "term": "Letra fora do lugar",
+    "slug": "letra-fora-do-lugar",
+    "definition": "Letra fora do lugar é a que existe na palavra secreta, mas foi chutada numa posição diferente. No Verbete ela fica amarela. A cor diz duas coisas ao mesmo tempo: a letra precisa aparecer na resposta e não pode estar naquela casa, o que ajuda a descartar posições nos chutes seguintes."
+   },
+   {
+    "term": "Dueto",
+    "slug": "dueto",
+    "definition": "Dueto é o modo do Verbete em que você descobre duas palavras de 5 letras ao mesmo tempo, com 7 chutes no total. Cada chute vale para as duas palavras e mostra as cores em cada quadro. Quando você acerta uma delas, aquele quadro para de receber chutes e o restante das tentativas vai para a outra."
+   },
+   {
+    "term": "Quarteto",
+    "slug": "quarteto",
+    "definition": "Quarteto é o modo do Verbete com quatro palavras de 5 letras para descobrir ao mesmo tempo, em 9 chutes. Cada chute aparece nos quatro quadros, com as cores de cada um. O desafio é escolher chutes que ajudem várias palavras de uma vez, já que cada quadro resolvido para de receber tentativas."
+   }
+  ]
+ },
+ "quente-ou-frio": {
+  "answer": "Em Quente ou Frio, você tenta descobrir uma palavra secreta chutando palavras. Cada chute recebe uma posição pela proximidade de sentido com a secreta, que é a nº 1: quanto menor o número, mais perto. Verde vai até a posição 300, amarelo até a 1.500 e vermelho é longe. As tentativas são ilimitadas e há dica.",
+  "faq": [
+   {
+    "q": "Que tipo de palavra é a secreta no Quente ou Frio?",
+    "a": "A palavra secreta é sempre um substantivo comum, que qualquer pessoa conhece, como praia, cachorro ou chuva."
+   },
+   {
+    "q": "Palavras com letras parecidas ficam perto da secreta?",
+    "a": "Não necessariamente. A posição depende do sentido e do assunto, não da grafia: uma palavra escrita de forma parecida pode ficar muito longe, e outra sem nenhuma letra em comum pode estar entre as primeiras."
+   },
+   {
+    "q": "Dá para desistir no Quente ou Frio?",
+    "a": "Sim. Desistir revela a palavra secreta e conta como derrota."
+   },
+   {
+    "q": "A dica conta como tentativa?",
+    "a": "Não. A dica revela uma palavra e a posição dela, mas não entra na contagem de tentativas: ela é contada à parte e aparece no fim e no resultado compartilhado. Dá para pedir mais de uma dica na mesma partida."
+   },
+   {
+    "q": "O que aparece quando a partida termina?",
+    "a": "A lista das 100 palavras mais próximas da secreta, em ordem de posição, para você ver o que estava perto."
+   },
+   {
+    "q": "Chutar o plural de uma palavra que já chutei gasta tentativa?",
+    "a": "Não. Plural e verbo conjugado contam como a mesma palavra: chutar casas depois de casa é visto como repetido e não gasta tentativa."
+   },
+   {
+    "q": "Qual é uma boa estratégia para o Quente ou Frio?",
+    "a": "Comece com palavras de assuntos bem diferentes para descobrir qual esquenta mais. Depois, chute palavras do mesmo campo da sua melhor posição até chegar na secreta."
+   },
+   {
+    "q": "Como compartilhar o resultado do Quente ou Frio?",
+    "a": "O resultado compartilhado mostra o número de tentativas, as dicas usadas e quantos chutes ficaram verdes, amarelos e vermelhos, sem revelar nenhuma palavra. Se você desistiu, aparece Desisti."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Proximidade de sentido",
+    "slug": "proximidade-de-sentido",
+    "definition": "Proximidade de sentido é o quanto duas palavras se relacionam pelo significado e pelo assunto, e não pelas letras. Palavras que costumam aparecer em contextos parecidos ficam próximas: areia está perto de praia, enquanto livro fica longe. No Quente ou Frio, é essa medida que define a posição de cada chute em relação à palavra secreta."
+   },
+   {
+    "term": "Campo semântico",
+    "slug": "campo-semantico",
+    "definition": "Campo semântico é o conjunto de palavras ligadas a um mesmo assunto ou ideia, como mar, onda, areia e sol no campo da praia. Em jogos de proximidade de sentido, identificar o campo semântico da palavra secreta é o passo mais importante: depois de achar o assunto, basta testar palavras desse grupo até chegar na resposta."
+   }
+  ]
+ },
+ "caca-palavras": {
+  "answer": "No Caça-Palavras, você acha na grade todas as palavras da lista do tema. Elas ficam em linha reta e cada uma aparece uma vez só. Para marcar, arraste da primeira à última letra ou toque nas duas. No fácil, a grade é 10×10 com duas direções; no difícil, 15×15 com as 8 direções. Não há derrota.",
+  "faq": [
+   {
+    "q": "Quais temas tem o Caça-Palavras?",
+    "a": "São 17 temas: Animais, Frutas, Países, Brasil, Profissões, Esportes, Cores, Corpo humano, Comidas, Cozinha, Casa, Instrumentos, Natureza, Transportes, Escola, Espaço e Roupas."
+   },
+   {
+    "q": "Posso escolher o tema do Caça-Palavras?",
+    "a": "Sim. Escolha um tema antes de começar a partida ou deixe na surpresa para o jogo sortear um."
+   },
+   {
+    "q": "Dá para perder no Caça-Palavras?",
+    "a": "Não. A partida termina quando você acha todas as palavras da lista; o que muda de uma partida para outra é o tempo que você levou."
+   },
+   {
+    "q": "Como funciona o tempo no Caça-Palavras?",
+    "a": "O relógio corre enquanto você joga e para quando você sai da aba. O melhor tempo de cada nível fica guardado para você tentar bater."
+   },
+   {
+    "q": "Posso marcar a palavra de trás para frente?",
+    "a": "Sim. Selecionar da última letra até a primeira também marca a palavra: LUA e AUL dão no mesmo."
+   },
+   {
+    "q": "Marcar uma palavra errada tem penalidade?",
+    "a": "Não. Uma seleção que não forma nenhuma palavra da lista não tira pontos nem soma erro; é só tentar de novo."
+   },
+   {
+    "q": "Uma palavra pode estar escondida dentro de outra?",
+    "a": "Não. O jogo não coloca na mesma grade palavras que contêm uma à outra, nem ao contrário, para que cada palavra tenha um lugar só."
+   },
+   {
+    "q": "Qual é a melhor estratégia para o Caça-Palavras?",
+    "a": "Procure primeiro as letras menos comuns da palavra, como Z, X e J, e depois confira as direções a partir delas. Nos níveis médio e difícil, lembre-se de olhar também as diagonais."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Sopa de letras",
+    "slug": "sopa-de-letras",
+    "definition": "Sopa de letras é outro nome para o caça-palavras: uma grade de letras com palavras escondidas em linha reta, misturadas a letras de enchimento. O objetivo é encontrar e marcar todas as palavras de uma lista. A dificuldade depende do tamanho da grade e das direções permitidas, que podem incluir diagonais e palavras escritas de trás para frente."
+   },
+   {
+    "term": "Palavra invertida",
+    "slug": "palavra-invertida",
+    "definition": "No caça-palavras, palavra invertida é a que está escrita de trás para frente na grade, da última letra para a primeira, como AUL para LUA. Ela é a mais difícil de enxergar porque o olho procura as palavras no sentido normal de leitura. No Caça-Palavras do site, palavras invertidas aparecem só no nível difícil."
+   }
+  ]
+ },
+ "sudoku": {
+  "answer": "Para jogar Sudoku, preencha a grade 9×9 com números de 1 a 9 sem repetir nenhum número na mesma linha, na mesma coluna ou no mesmo bloco 3×3. Os números que já vêm na grade são pistas fixas, e cada puzzle tem uma única solução, que dá para achar só com lógica, sem chutar.",
+  "faq": [
+   {
+    "q": "Quantos níveis tem o Sudoku?",
+    "a": "Quatro: Fácil, Médio, Difícil e Expert. O nível é definido pela técnica mais difícil que o puzzle exige: Fácil e Médio saem só com números únicos, o Difícil pede pares e linhas apontadas, e o Expert, triplas, X-Wing e Y-Wing."
+   },
+   {
+    "q": "Quantas pistas tem cada nível do Sudoku?",
+    "a": "Cerca de 38 números iniciais no Fácil, 31 no Médio, 27 no Difícil e 26 no Expert. Menos pistas não quer dizer sempre mais difícil: o que mais pesa é a técnica necessária."
+   },
+   {
+    "q": "Precisa saber matemática para jogar Sudoku?",
+    "a": "Não. O Sudoku não tem contas: os números funcionam só como símbolos diferentes, e o que resolve a grade é lógica e eliminação."
+   },
+   {
+    "q": "O que acontece quando erro um número no Sudoku?",
+    "a": "O número errado fica vermelho e conta 1 erro. Com 3 erros a partida para, e você escolhe entre continuar, com os erros zerados, ou começar outra."
+   },
+   {
+    "q": "Como funciona a dica do Sudoku?",
+    "a": "Se houver um número errado na grade, a dica corrige esse número primeiro. Se não houver, ela coloca a próxima casa que dá para deduzir e mostra o motivo, com a técnica usada."
+   },
+   {
+    "q": "O botão desfazer devolve os erros?",
+    "a": "Não. Desfazer volta números e anotações, mas não devolve os erros nem as dicas usadas."
+   },
+   {
+    "q": "Dá para apagar um número certo no Sudoku?",
+    "a": "Não. As pistas e os números colocados corretamente ficam fixos; só números errados e anotações podem ser apagados."
+   },
+   {
+    "q": "Tem Sudoku diário?",
+    "a": "Sim. Todo dia, à meia-noite de Brasília, sai um Sudoku novo no nível Expert, igual para todos. Os dias anteriores ficam no calendário para jogar depois."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Candidato",
+    "slug": "candidato",
+    "definition": "No Sudoku, candidato é cada número que ainda pode ocupar uma casa vazia sem repetir na linha, na coluna ou no bloco dela. Os candidatos costumam ser anotados em tamanho pequeno dentro da casa, como lembrete. Resolver um Sudoku difícil é, em grande parte, ir eliminando candidatos até sobrar uma única opção em cada casa."
+   },
+   {
+    "term": "Bloco",
+    "slug": "bloco",
+    "definition": "Bloco é cada um dos nove quadrados 3×3 em que a grade do Sudoku é dividida, marcados por linhas mais grossas. Assim como cada linha e cada coluna, todo bloco precisa conter os números de 1 a 9 uma única vez. Junto com linhas e colunas, os blocos formam as três unidades usadas em todas as técnicas de resolução."
+   },
+   {
+    "term": "Único",
+    "slug": "unico",
+    "definition": "Único é a técnica mais básica do Sudoku. Ele aparece de duas formas: quando uma casa só aceita um número, porque todos os outros já estão na linha, na coluna ou no bloco dela, ou quando um número só cabe em uma casa de uma linha, coluna ou bloco. Os níveis mais fáceis saem só com essa técnica."
+   },
+   {
+    "term": "Linha apontada",
+    "slug": "linha-apontada",
+    "definition": "Linha apontada é uma técnica de eliminação do Sudoku. Quando, dentro de um bloco, um candidato só pode estar em casas de uma mesma linha ou coluna, ele com certeza fica naquele trecho. Por isso, esse candidato pode ser riscado das outras casas dessa linha ou coluna, fora do bloco, o que costuma destravar a próxima jogada."
+   },
+   {
+    "term": "X-Wing",
+    "slug": "x-wing",
+    "definition": "X-Wing é uma técnica avançada do Sudoku. Ela acontece quando um candidato aparece exatamente em duas casas de cada uma de duas linhas, e essas casas estão nas mesmas duas colunas, formando um retângulo. O número fica em cantos opostos desse retângulo, então pode ser riscado das outras casas dessas duas colunas. Vale também trocando linhas por colunas."
+   }
+  ]
+ },
+ "sinuca": {
+  "answer": "Na sinuca bola 8, um lado fica com as lisas (1 a 7) e o outro com as listradas (9 a 15). Na sua vez, a branca precisa tocar primeiro numa bola sua e depois alguma bola cair ou bater na tabela. Encaçapou, joga de novo. Vence quem encaçapar todas as suas e depois a 8, na caçapa cantada.",
+  "faq": [
+   {
+    "q": "Quem quebra primeiro na sinuca?",
+    "a": "Na primeira partida, quem quebra é sorteado. Na revanche, na mesma sala, a quebra passa para o outro lado."
+   },
+   {
+    "q": "O que é uma quebra válida na bola 8?",
+    "a": "A quebra vale se alguma bola cair ou se pelo menos 4 bolas numeradas baterem na tabela. Se não, é falta e o adversário joga com bola na mão."
+   },
+   {
+    "q": "O que acontece se a bola 8 cair na quebra?",
+    "a": "Ela volta para a marca do pé da mesa e não decide a partida. Se não houve falta, quem quebrou continua jogando."
+   },
+   {
+    "q": "E se a branca cair na quebra?",
+    "a": "É falta. O adversário recebe a bola na mão, mas só pode colocar a branca na cozinha, atrás da linha de cabeceira, e precisa tocar primeiro numa bola que esteja fora dela."
+   },
+   {
+    "q": "O que acontece se acabar o tempo da tacada?",
+    "a": "Estourar os 45 segundos é falta, e o próximo joga com bola na mão. Se o tempo acabar na quebra, quem quebra passa a ser o outro lado."
+   },
+   {
+    "q": "Como funciona a sinuca em duplas?",
+    "a": "No 2×2, a vez gira entre os quatro jogadores e os times se alternam. Cada dupla fica com um grupo, lisas ou listradas, e as duas pessoas jogam pela mesma 8."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Caçapa",
+    "slug": "cacapa",
+    "definition": "Caçapa é cada um dos buracos da mesa de sinuca onde as bolas caem. A mesa tem seis: quatro nos cantos e duas no meio das tabelas compridas. Na bola 8, quem chega à vez da 8 precisa cantar a caçapa antes de bater; se a 8 cair em outra, a partida está perdida."
+   },
+   {
+    "term": "Mesa aberta",
+    "slug": "mesa-aberta",
+    "definition": "Mesa aberta é a situação da sinuca bola 8 logo depois da quebra, quando ninguém ainda tem grupo. Nela, a branca pode tocar primeiro em qualquer bola, menos na 8. O primeiro jogador que encaçapar uma bola numa tacada válida fica com o grupo dela, lisas ou listradas, e o adversário fica com o outro."
+   },
+   {
+    "term": "Bola na mão",
+    "slug": "bola-na-mao",
+    "definition": "Bola na mão é o direito de colocar a bola branca onde quiser antes de bater. Na sinuca bola 8, o jogador ganha bola na mão depois de uma falta do adversário e pode pôr a branca em qualquer lugar livre da mesa. Se a branca caiu na quebra, ela só pode ser colocada na cozinha."
+   },
+   {
+    "term": "Cozinha",
+    "slug": "cozinha",
+    "definition": "Cozinha é a faixa da mesa de sinuca atrás da linha de cabeceira. É dali que sai a quebra: quem quebra põe a branca em qualquer ponto dentro dela. Quando a branca volta para a cozinha, a primeira bola tocada precisa estar fora dessa faixa; tocar primeiro numa bola que também está nela é falta."
+   }
+  ]
+ },
+ "futebol-de-botao": {
+  "answer": "No Futebol de Botão, cada jogador controla um botão num campo visto de cima, em tempo real, de 1×1 a 3×3. Ande com as setas ou WASD e chute com Espaço ou X; no celular, arraste na metade esquerda da tela e toque na direita para chutar. Vence quem fizer 3 gols ou estiver na frente após 3 minutos.",
+  "faq": [
+   {
+    "q": "Quem dá a saída de bola?",
+    "a": "O time vermelho começa com a bola no centro do campo. Depois de cada gol, a saída é do time que sofreu o gol. Até alguém tocar na bola, cada time fica no seu campo, e o time sem a saída fica fora do círculo central."
+   },
+   {
+    "q": "Quando o gol vale?",
+    "a": "Quando a bola passa inteira da linha do gol, entre as traves. Se a bola bate na trave, ela quica e volta para o jogo."
+   },
+   {
+    "q": "A bola sai pela lateral ou pelo fundo?",
+    "a": "Não. A bola bate nas linhas do campo e volta, como se houvesse paredes em volta. Por isso não existe lateral, tiro de meta nem escanteio."
+   },
+   {
+    "q": "Existe gol contra no Futebol de Botão?",
+    "a": "Sim. Se o último toque antes de a bola entrar foi de alguém do time que sofreu o gol, ele conta para o adversário e fica marcado como gol contra."
+   },
+   {
+    "q": "O relógio para durante a partida?",
+    "a": "Sim, durante a comemoração do gol e o momento de preparação antes de cada saída de bola. No resto do tempo, os 3 minutos correm sem parar."
+   },
+   {
+    "q": "Para que lado o meu time ataca?",
+    "a": "O vermelho ataca para a direita e o azul, para a esquerda. Na sua tela, o seu time sempre aparece atacando para a frente."
+   },
+   {
+    "q": "Tem falta ou impedimento?",
+    "a": "Não. Os botões podem se trombar e se empurrar à vontade, e não há faltas, cartões nem impedimento."
+   },
+   {
+    "q": "Dá para conduzir a bola sem chutar?",
+    "a": "Sim. Sem segurar o chute, o botão só empurra a bola quando encosta nela, o que serve para conduzir e tocar de leve. A bola é mais leve que o botão."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Gol de ouro",
+    "slug": "gol-de-ouro",
+    "definition": "Gol de ouro é a regra de desempate em que o próximo gol encerra a partida. No Futebol de Botão, ele entra em jogo quando os 3 minutos de tempo normal acabam com o placar empatado: o relógio deixa de contar e o primeiro time que marcar vence na hora, sem prazo para terminar."
+   },
+   {
+    "term": "Saída de bola",
+    "slug": "saida-de-bola",
+    "definition": "Saída de bola é o reinício da partida com a bola parada no centro do campo. No Futebol de Botão, o time vermelho dá a primeira saída e, depois de cada gol, ela é de quem sofreu. Até alguém tocar na bola, cada time fica no seu campo e quem não tem a saída fica fora do círculo central."
+   },
+   {
+    "term": "Gol contra",
+    "slug": "gol-contra",
+    "definition": "Gol contra é o gol em que o último jogador a tocar na bola é do próprio time que sofreu o gol. No Futebol de Botão, ele vale normalmente para o adversário e aparece marcado como gol contra na lista de gols. Acontece, por exemplo, quando um defensor empurra a bola para dentro do próprio gol."
+   }
+  ]
+ },
+ "tijolada": {
+  "answer": "Na Tijolada, peças de 4 blocos caem uma por vez num campo de 10 colunas por 20 linhas. Mova, gire e encaixe cada peça para completar linhas, que somem e dão pontos; mais linhas de uma vez valem mais. Dá para guardar uma peça para depois. A partida acaba quando a peça nova não cabe mais no topo.",
+  "faq": [
+   {
+    "q": "Quantas peças diferentes tem a Tijolada?",
+    "a": "Sete, todas com 4 blocos. Elas são chamadas pelas letras que lembram o seu formato: I, O, T, S, Z, J e L."
+   },
+   {
+    "q": "Como as peças são sorteadas?",
+    "a": "Em sacos de 7: cada uma das sete peças aparece uma vez a cada 7, em ordem embaralhada. Assim nenhuma peça fica muito tempo sem aparecer, e as 3 próximas ficam sempre à vista."
+   },
+   {
+    "q": "Como funciona o guardar peça?",
+    "a": "Guardar tira a peça da vez do jogo e a deixa reservada, ou troca com a que já estava guardada. Dá para guardar uma vez por peça; depois que ela trava, o guardar libera de novo."
+   },
+   {
+    "q": "Quanto tempo a peça espera antes de travar?",
+    "a": "Ao encostar no chão ou em outros blocos, a peça trava depois de meio segundo. Mexer ou girar adia a trava, até 15 vezes por peça."
+   },
+   {
+    "q": "Até que nível a Tijolada vai?",
+    "a": "O nível vai até 20. No nível 1, a peça desce cerca de uma linha por segundo, e a velocidade aumenta a cada nível até o 20; dali em diante, não sobe mais."
+   },
+   {
+    "q": "Dá para girar a peça encostada na parede?",
+    "a": "Sim. Se a peça não couber girando no lugar, o jogo tenta deslocá-la um pouco para o lado ou para cima para o giro caber. Só não gira se nenhuma dessas posições estiver livre."
+   },
+   {
+    "q": "No 1×1, as linhas que eu limpo vão para o campo do outro?",
+    "a": "Não. Cada um joga no seu campo, sem mandar linhas para o adversário. Os dois recebem a mesma sequência de peças, e vence quem aguentar mais tempo."
+   },
+   {
+    "q": "O que acontece se os dois perderem ao mesmo tempo no 1×1?",
+    "a": "Se os dois campos enchem no mesmo instante, a partida termina empatada. Fora isso, perde quem acabar primeiro."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Saco de 7",
+    "slug": "saco-de-7",
+    "definition": "Saco de 7 é o jeito de sortear as peças em jogos de blocos que caem. Na Tijolada, as sete peças (I, O, T, S, Z, J e L) são embaralhadas em grupos de sete, e cada uma sai uma vez por grupo. Assim nenhuma peça fica de fora por muito tempo, e a sorte pesa menos na partida."
+   },
+   {
+    "term": "Sombra da peça",
+    "slug": "sombra-da-peca",
+    "definition": "Sombra da peça é o contorno que mostra onde a peça da vez vai parar se cair direto para baixo. Na Tijolada, ela acompanha cada movimento e cada giro, o que ajuda a mirar o encaixe antes de usar a queda instantânea, principalmente nos níveis altos, quando as peças descem rápido e não sobra tempo para conferir."
+   },
+   {
+    "term": "Combo",
+    "slug": "combo",
+    "definition": "Combo é a sequência de peças seguidas que limpam pelo menos uma linha cada. Na Tijolada, a partir da segunda peça seguida que limpa linhas, cada limpeza soma 50 × combo × nível pontos a mais. O combo zera quando uma peça trava sem completar nenhuma linha, então vale a pena planejar várias limpezas em sequência."
+   },
+   {
+    "term": "Queda instantânea",
+    "slug": "queda-instantanea",
+    "definition": "Queda instantânea é o comando que faz a peça cair de uma vez até o ponto mais baixo possível e travar ali na hora. Na Tijolada, ela é feita com a tecla Espaço e dá 2 pontos por linha descida. É mais rápida que a queda suave, que dá 1 ponto por linha, mas não permite ajustar a peça depois."
+   }
+  ]
+ },
+ "otrio": {
+  "answer": "No Otrio, para 2 a 4 pessoas, cada cor tem 9 anéis: 3 pequenos, 3 médios e 3 grandes. Na sua vez, ponha um anel no encaixe livre do seu tamanho numa casa do tabuleiro 3×3. Vence quem fizer trinca da sua cor: três do mesmo tamanho em linha, escada do menor ao maior ou três tamanhos na mesma casa.",
+  "faq": [
+   {
+    "q": "Quantas trincas são possíveis no Otrio?",
+    "a": "São 49 formas de vencer: 24 linhas de anéis do mesmo tamanho, 16 escadas e 9 alvos, um em cada casa do tabuleiro."
+   },
+   {
+    "q": "Posso mover ou tirar uma peça já colocada?",
+    "a": "Não. No Otrio, a peça colocada fica no lugar até o fim da partida."
+   },
+   {
+    "q": "Como funciona o Otrio com 3 jogadores?",
+    "a": "Cada pessoa joga com uma cor e a quarta cor fica de fora. A vez gira entre as três cores, e vence quem fizer a primeira trinca."
+   },
+   {
+    "q": "Quais são as cores do Otrio?",
+    "a": "Vermelho, azul, verde e roxo. Cada jogador fica com a cor do seu lugar na sala; com 2 jogadores, cada um leva também uma das cores que sobram."
+   },
+   {
+    "q": "Quem começa a partida de Otrio?",
+    "a": "Na primeira partida, quem começa é sorteado. Ao jogar de novo na mesma sala, quem começa passa para o próximo jogador e o placar continua somando."
+   },
+   {
+    "q": "A escada vale em qualquer direção?",
+    "a": "Sim. A escada é pequeno, médio e grande em sequência, em linha, e vale nos dois sentidos, na horizontal, na vertical ou na diagonal."
+   },
+   {
+    "q": "Tem dica quando jogo contra o computador?",
+    "a": "Sim. Contra a IA, com a lâmpada ligada, o tabuleiro marca os encaixes em que você fecha uma trinca e os que precisa bloquear. Entre pessoas não há dicas."
+   },
+   {
+    "q": "Dá para jogar Otrio pelo teclado?",
+    "a": "Sim. No teclado, as teclas 1, 2 e 3 escolhem o tamanho da peça; depois é só escolher a casa."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Trinca",
+    "slug": "trinca",
+    "definition": "Trinca, no Otrio, é o conjunto de três anéis da mesma cor que dá a vitória. Ela pode ser uma linha (três do mesmo tamanho em linha), uma escada (pequeno, médio e grande em linha) ou um alvo (os três tamanhos na mesma casa). Com 2 jogadores, cada um tem duas cores, mas a trinca precisa ser de uma cor só."
+   },
+   {
+    "term": "Escada",
+    "slug": "escada",
+    "definition": "Escada é uma das três formas de vencer no Otrio: três anéis da mesma cor em linha, crescendo de tamanho, com o pequeno numa ponta, o médio no meio e o grande na outra ponta. Vale na horizontal, na vertical e na diagonal, nos dois sentidos, o que dá 16 escadas possíveis no tabuleiro 3×3."
+   },
+   {
+    "term": "Alvo",
+    "slug": "alvo",
+    "definition": "Alvo é a forma de vencer no Otrio em que uma só casa recebe os três anéis da mesma cor: o pequeno, o médio e o grande, um dentro do outro. Como cada casa do tabuleiro 3×3 tem um encaixe de cada tamanho, existem 9 alvos possíveis, e vale bloquear quando um adversário já tem dois anéis na mesma casa."
+   },
+   {
+    "term": "Encaixe",
+    "slug": "encaixe",
+    "definition": "Encaixe é cada lugar do tabuleiro do Otrio onde cabe um anel. Cada uma das 9 casas tem três encaixes, um pequeno, um médio e um grande, somando 27 no tabuleiro. Cada anel só entra no encaixe do seu tamanho, e um encaixe ocupado não recebe outra peça até o fim da partida."
+   }
+  ]
+ },
+ "mahjong": {
+  "answer": "No Mahjong paciência, as 144 peças ficam empilhadas num formato. Toque em duas peças iguais e livres para tirá-las da mesa. Uma peça está livre quando não tem nada por cima e tem o lado esquerdo ou o direito vazio. Qualquer flor forma par com qualquer flor, e o mesmo vale para as estações. Vence quem limpar a mesa.",
+  "faq": [
+   {
+    "q": "Dá para perder no Mahjong paciência?",
+    "a": "Não existe derrota. Se acabarem os pares livres, você pode embaralhar as peças que sobraram ou desfazer lances até achar outro caminho."
+   },
+   {
+    "q": "Quantos tipos de peça tem o Mahjong?",
+    "a": "São 42 tipos: caracteres, círculos e bambus de 1 a 9, 4 ventos, 3 dragões, 4 flores e 4 estações. Os 34 tipos comuns têm 4 cópias cada; flores e estações têm uma de cada, somando 144 peças."
+   },
+   {
+    "q": "Quais são os ventos e os dragões do Mahjong?",
+    "a": "Os ventos são Leste, Sul, Oeste e Norte. Os dragões são o Vermelho, o Verde e o Branco. Cada um só forma par com uma peça igual."
+   },
+   {
+    "q": "Quais são as flores e as estações?",
+    "a": "As flores são ameixeira, orquídea, crisântemo e bambu em flor. As estações são primavera, verão, outono e inverno."
+   },
+   {
+    "q": "O que a dica mostra no Mahjong?",
+    "a": "A dica acende um par que leva à vitória, seguindo uma solução da mesa. Cada dica soma 30 segundos ao seu tempo."
+   },
+   {
+    "q": "Desfazer tem limite ou custo?",
+    "a": "Não. Desfazer devolve o último par à mesa quantas vezes você quiser, sem somar tempo no relógio."
+   },
+   {
+    "q": "Como ver quais peças estão presas?",
+    "a": "Toque no ícone de olho no topo da tela: as peças presas ficam mais escuras."
+   },
+   {
+    "q": "Quantos formatos de Mahjong existem no jogo?",
+    "a": "São 32 formatos, todos com 144 peças, como Tartaruga, Dragão, Pirâmide e Borboleta. O melhor tempo de cada formato fica guardado."
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Peça livre",
+    "slug": "peca-livre",
+    "definition": "Peça livre, no Mahjong paciência, é a peça que pode ser tirada da mesa. Para isso, ela não pode ter nenhuma peça por cima, nem encostando só num pedaço, e pelo menos um dos lados, o esquerdo ou o direito, precisa estar vazio. Uma peça com vizinhas dos dois lados ou com algo por cima está presa."
+   },
+   {
+    "term": "Flores e estações",
+    "slug": "flores-e-estacoes",
+    "definition": "Flores e estações são as oito peças especiais do Mahjong paciência. As flores são ameixeira, orquídea, crisântemo e bambu em flor; as estações, primavera, verão, outono e inverno. Cada uma aparece uma vez só, e qualquer flor forma par com qualquer outra flor, assim como qualquer estação forma par com qualquer outra estação."
+   },
+   {
+    "term": "Naipes do Mahjong",
+    "slug": "naipes-do-mahjong",
+    "definition": "Os naipes do Mahjong são os três conjuntos de peças numeradas: caracteres, círculos e bambus, cada um de 1 a 9. No Mahjong paciência, cada peça de naipe tem 4 cópias iguais, o que dá 108 das 144 peças, e só forma par com outra exatamente igual, do mesmo naipe e do mesmo número."
+   }
+  ]
+ }
+}

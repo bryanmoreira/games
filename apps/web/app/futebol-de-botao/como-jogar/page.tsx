@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/futebol-de-botao/HowToPlay";
 import { FUTEBOL_PATH } from "@/lib/futebol-de-botao/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">FUTEBOL DE BOTÃO</span>
         </header>
 
+        <QuickAnswer slug="futebol-de-botao" />
+
         <HowToPlay />
 
-        <GameFaq slug="futebol-de-botao" />
+        <GameFaq slug="futebol-de-botao" full />
+
+        <GameTerms slug="futebol-de-botao" />
 
         <Link
           href={FUTEBOL_PATH}

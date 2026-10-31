@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/jogo-da-velha/HowToPlay";
 import { VELHA_PATH } from "@/lib/jogo-da-velha/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">JOGO DA VELHA</span>
         </header>
 
+        <QuickAnswer slug="jogo-da-velha" />
+
         <HowToPlay />
 
-        <GameFaq slug="jogo-da-velha" />
+        <GameFaq slug="jogo-da-velha" full />
+
+        <GameTerms slug="jogo-da-velha" />
 
         <Link
           href={VELHA_PATH}

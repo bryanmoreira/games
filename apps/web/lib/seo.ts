@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HOWTO_UPDATED, howToExtra } from "@/lib/como-jogar";
 
 export const SITE_URL = "https://mesadejogos.com";
 export const SITE_NAME = "Mesa de Jogos";
@@ -732,12 +733,16 @@ export const noindex: Metadata = { robots: { index: false, follow: false } };
 
 const abs = (path: string) => `${SITE_URL}${path}`;
 
+/** Perfis do site nas redes: viram `sameAs` no JSON-LD (buscadores e IAs ligam tudo à mesma marca) e links no rodapé */
+export const SOCIAL: { name: string; url: string }[] = [{ name: "TikTok", url: "https://www.tiktok.com/@mesadejogos" }];
+
 const organizationLd = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
   name: SITE_NAME,
   url: SITE_URL,
   logo: abs("/icon.svg"),
+  ...(SOCIAL.length ? { sameAs: SOCIAL.map((s) => s.url) } : {}),
   areaServed: { "@type": "Country", name: "Brasil" },
 };
 
@@ -801,12 +806,18 @@ export function gameLd(slug: string) {
 
 export function howToLd(slug: string) {
   const g = getGame(slug);
+  const x = howToExtra(slug);
+  // a resposta direta entra como primeira pergunta; depois as do jogo e as a mais do "Como jogar"
+  const faq = [...(x ? [{ q: `Como jogar ${g.name}?`, a: x.answer }] : []), ...g.faq, ...(x?.faq ?? [])];
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "FAQPage",
-        mainEntity: g.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+        url: abs(`${g.path}/como-jogar`),
+        inLanguage: "pt-BR",
+        dateModified: HOWTO_UPDATED,
+        mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
       },
       breadcrumbLd([
         { name: SITE_NAME, path: "/" },

@@ -7,6 +7,7 @@ import { respostasPaths } from "@/lib/stop/respostas";
 import { palavrasPaths } from "@/lib/palavras";
 import { imprimirPaths } from "@/lib/imprimir";
 import { VARIATIONS } from "@/lib/variacoes";
+import { glossarioPaths } from "@/lib/glossario";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Posts vêm do banco: gera no pedido, não no build (no Docker não há banco)
@@ -22,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]),
     ...VARIATIONS.map((v) => ({ url: `${SITE_URL}${v.path}`, changeFrequency: "monthly" as const, priority: 0.8 })),
     ...imprimirPaths().map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...glossarioPaths().map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: 0.5 })),
     ...palavrasPaths().map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: 0.5 })),
     ...respostasPaths().map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: 0.5 })),
     ...(posts.length

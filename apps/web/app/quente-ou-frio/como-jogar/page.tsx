@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { HowToPlay } from "@/components/quente-ou-frio/HowToPlay";
 import { QUENTE_PATH } from "@/lib/quente-ou-frio/paths";
 import { howToLd, howToMetadata } from "@/lib/seo";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">QUENTE OU FRIO</span>
         </header>
 
+        <QuickAnswer slug="quente-ou-frio" />
+
         <HowToPlay />
 
-        <GameFaq slug="quente-ou-frio" />
+        <GameFaq slug="quente-ou-frio" full />
+
+        <GameTerms slug="quente-ou-frio" />
 
         <Link
           href={QUENTE_PATH}

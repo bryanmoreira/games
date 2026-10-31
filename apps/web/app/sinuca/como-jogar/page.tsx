@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/sinuca/HowToPlay";
 import { SINUCA_PATH } from "@/lib/sinuca/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">SINUCA</span>
         </header>
 
+        <QuickAnswer slug="sinuca" />
+
         <HowToPlay />
 
-        <GameFaq slug="sinuca" />
+        <GameFaq slug="sinuca" full />
+
+        <GameTerms slug="sinuca" />
 
         <Link
           href={SINUCA_PATH}

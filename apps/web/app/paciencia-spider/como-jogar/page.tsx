@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/spider/HowToPlay";
 import { SPIDER_PATH } from "@/lib/spider/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">PACIÊNCIA SPIDER</span>
         </header>
 
+        <QuickAnswer slug="paciencia-spider" />
+
         <HowToPlay />
 
-        <GameFaq slug="paciencia-spider" />
+        <GameFaq slug="paciencia-spider" full />
+
+        <GameTerms slug="paciencia-spider" />
 
         <Link
           href={SPIDER_PATH}

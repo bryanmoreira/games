@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/buraco/HowToPlay";
 import { BURACO_PATH } from "@/lib/buraco/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">BURACO</span>
         </header>
 
+        <QuickAnswer slug="buraco" />
+
         <HowToPlay />
 
-        <GameFaq slug="buraco" />
+        <GameFaq slug="buraco" full />
+
+        <GameTerms slug="buraco" />
 
         <Link
           href={BURACO_PATH}

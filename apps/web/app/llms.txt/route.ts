@@ -3,6 +3,7 @@ import { RESPOSTAS_PATH } from "@/lib/stop/respostas";
 import { PALAVRAS_PATH } from "@/lib/palavras";
 import { CACA_PRINT_PATH, SUDOKU_PRINT_PATH } from "@/lib/imprimir";
 import { VARIATIONS } from "@/lib/variacoes";
+import { GLOSSARIO_PATH, GLOSSARY, termPath } from "@/lib/glossario";
 
 // Resumo do site para assistentes de IA e buscadores generativos (https://llmstxt.org)
 export function GET() {
@@ -38,6 +39,9 @@ export function GET() {
     "",
     `- [Palavras de 5 letras](${SITE_URL}${PALAVRAS_PATH}): busca de palavras de 5 letras em português por letra em cada posição, letras que a palavra tem e que não tem, com listas fixas como ${SITE_URL}${PALAVRAS_PATH}/comecam-com-a e ${SITE_URL}${PALAVRAS_PATH}/terminam-com-o.`,
     "",
+    ...(GLOSSARY.length
+      ? ["## Glossário", "", `- [Glossário](${SITE_URL}${GLOSSARIO_PATH}): termos dos jogos explicados em poucas linhas.`, ...GLOSSARY.map((t) => `- [${t.term}](${SITE_URL}${termPath(t.slug)}): ${t.definition}`), ""]
+      : []),
     "## Regras e perguntas frequentes",
     "",
     ...GAMES.map((g) => `- [Como jogar ${g.name}](${SITE_URL}${g.path}/como-jogar): ${g.howTo.description}`),

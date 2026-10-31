@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/verbete/HowToPlay";
 import { VERBETE_PATH } from "@/lib/verbete/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">VERBETE</span>
         </header>
 
+        <QuickAnswer slug="verbete" />
+
         <HowToPlay />
 
-        <GameFaq slug="verbete" />
+        <GameFaq slug="verbete" full />
+
+        <GameTerms slug="verbete" />
 
         <Link
           href={VERBETE_PATH}

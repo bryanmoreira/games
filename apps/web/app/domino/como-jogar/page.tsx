@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/domino/HowToPlay";
 import { DOMINO_PATH } from "@/lib/domino/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">DOMINÓ</span>
         </header>
 
+        <QuickAnswer slug="domino" />
+
         <HowToPlay />
 
-        <GameFaq slug="domino" />
+        <GameFaq slug="domino" full />
+
+        <GameTerms slug="domino" />
 
         <Link
           href={DOMINO_PATH}

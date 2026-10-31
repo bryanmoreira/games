@@ -111,11 +111,11 @@ export const VARIATIONS: Variation[] = [
     "Médio",
     "Menos pistas na grade, mas ainda resolvido só com lógica direta.",
     [
-      "O Sudoku médio traz por volta de 30 números iniciais. As técnicas são as mesmas do fácil, mas as casas certas ficam mais escondidas e você precisa olhar a grade inteira.",
+      "O Sudoku médio traz por volta de 31 números iniciais. As técnicas são as mesmas do fácil, mas as casas certas ficam mais escondidas e você precisa olhar a grade inteira.",
       "As notas ajudam a anotar os candidatos de cada casa. É um bom treino antes do difícil.",
     ],
     [
-      { q: "Qual a diferença entre Sudoku fácil e médio?", a: "O médio começa com menos números (cerca de 30 contra 38 ou mais), então cada casa certa é mais difícil de achar, mesmo usando as mesmas técnicas." },
+      { q: "Qual a diferença entre Sudoku fácil e médio?", a: "O médio começa com menos números (cerca de 31 contra uns 38), então cada casa certa é mais difícil de achar, mesmo usando as mesmas técnicas." },
       { q: "Preciso usar notas no Sudoku médio?", a: "Não é obrigatório, mas anotar os candidatos de cada casa deixa o médio bem mais rápido." },
     ],
   ),
@@ -123,9 +123,9 @@ export const VARIATIONS: Variation[] = [
     "dificil",
     "hard",
     "Difícil",
-    "Poucas pistas e casas que só saem com técnicas de eliminação.",
+    "Menos pistas e casas que só saem com técnicas de eliminação.",
     [
-      "O Sudoku difícil começa com cerca de 26 números e pede pelo menos uma técnica de eliminação, como pares de candidatos que travam duas casas de uma linha ou de um bloco.",
+      "O Sudoku difícil começa com cerca de 27 números e pede pelo menos uma técnica de eliminação, como pares de candidatos que travam duas casas de uma linha ou de um bloco.",
       "Use as notas: anote os candidatos de cada casa e vá cortando os que não podem ficar. Quando uma casa ficar com um candidato só, ele é o número certo.",
     ],
     [
@@ -137,13 +137,13 @@ export const VARIATIONS: Variation[] = [
     "expert",
     "expert",
     "Expert",
-    "O nível mais difícil: cerca de 22 pistas e técnicas avançadas.",
+    "O nível mais difícil: pistas parecidas com o difícil, mas técnicas bem mais avançadas.",
     [
-      "O Sudoku expert começa com perto de 22 números, o menor número de pistas do site, e só sai com técnicas avançadas de eliminação. É o mesmo nível do Sudoku diário.",
+      "O Sudoku expert começa com cerca de 26 números, parecido com o difícil, mas só sai com técnicas avançadas que cruzam várias linhas e colunas. É o mesmo nível do Sudoku diário.",
       "Vá com calma, use as notas em todas as casas e, se travar, peça uma dica: ela mostra a próxima casa que dá para resolver e por quê.",
     ],
     [
-      { q: "Qual o nível mais difícil de Sudoku?", a: "No Mesa de Jogos é o expert, com cerca de 22 números iniciais e técnicas avançadas. O Sudoku diário usa esse nível." },
+      { q: "Qual o nível mais difícil de Sudoku?", a: "No Mesa de Jogos é o expert: começa com cerca de 26 números e pede técnicas avançadas que cruzam várias linhas. O Sudoku diário usa esse nível." },
       { q: "Sudoku expert tem solução única?", a: "Sim, como todos os níveis. A solução é única e sai por lógica." },
     ],
   ),

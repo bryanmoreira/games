@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ABOUT_PATH, CONTACT_PATH, INSTALL_PATH, PRIVACY_PATH, TERMS_PATH } from "@/lib/legal";
-import { DAILY_SEO, GAMES, SITE_NAME } from "@/lib/seo";
+import { DAILY_SEO, GAMES, SITE_NAME, SOCIAL } from "@/lib/seo";
 import { PALAVRAS_PATH } from "@/lib/palavras";
 import { RESPOSTAS_PATH } from "@/lib/stop/respostas";
 import { CACA_PRINT_PATH, SUDOKU_PRINT_PATH } from "@/lib/imprimir";
+import { GLOSSARIO_PATH } from "@/lib/glossario";
 import { AdSlot } from "@/components/AdSlot";
 
 /** O ícone do site (app/icon.svg) sem o fundo escuro: feltro, borda dourada e a carta de espadas. */
@@ -85,6 +86,11 @@ export function SiteFooter() {
             <Link href={TERMS_PATH} className="transition hover:text-gold">
               Termos de uso
             </Link>
+            {SOCIAL.map((s) => (
+              <a key={s.url} href={s.url} target="_blank" rel="noopener me" className="transition hover:text-gold">
+                {s.name}
+              </a>
+            ))}
           </div>
         </div>
 
@@ -100,6 +106,7 @@ export function SiteFooter() {
               { href: RESPOSTAS_PATH, label: "Respostas do Stop" },
               { href: SUDOKU_PRINT_PATH, label: "Sudoku para imprimir" },
               { href: CACA_PRINT_PATH, label: "Caça-palavras para imprimir" },
+              { href: GLOSSARIO_PATH, label: "Glossário" },
             ]}
           />
         </nav>

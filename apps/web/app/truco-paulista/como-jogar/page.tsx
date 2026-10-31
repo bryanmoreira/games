@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/truco/HowToPlay";
 import { TRUCO_PATH } from "@/lib/truco/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">TRUCO PAULISTA</span>
         </header>
 
+        <QuickAnswer slug="truco-paulista" />
+
         <HowToPlay />
 
-        <GameFaq slug="truco-paulista" />
+        <GameFaq slug="truco-paulista" full />
+
+        <GameTerms slug="truco-paulista" />
 
         <Link
           href={TRUCO_PATH}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import { GameFaq, JsonLd } from "@/components/seo";
+import { GameFaq, GameTerms, JsonLd, QuickAnswer } from "@/components/seo";
 import { howToLd, howToMetadata } from "@/lib/seo";
 import { HowToPlay } from "@/components/codenames/HowToPlay";
 import { CODENAMES_PATH } from "@/lib/codenames/paths";
@@ -20,9 +20,13 @@ export default function ComoJogar() {
           <span className="font-display text-xs tracking-[0.4em] text-white/60">CODENAMES</span>
         </header>
 
+        <QuickAnswer slug="codenames" />
+
         <HowToPlay />
 
-        <GameFaq slug="codenames" />
+        <GameFaq slug="codenames" full />
+
+        <GameTerms slug="codenames" />
 
         <Link
           href={CODENAMES_PATH}
