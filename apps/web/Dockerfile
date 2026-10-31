@@ -14,6 +14,7 @@ COPY packages/codenames/package.json packages/codenames/
 COPY packages/connect4/package.json packages/connect4/
 COPY packages/truco/package.json packages/truco/
 COPY packages/otrio/package.json packages/otrio/
+COPY packages/jogo-da-memoria/package.json packages/jogo-da-memoria/
 COPY packages/jogo-da-velha/package.json packages/jogo-da-velha/
 COPY packages/damas/package.json packages/damas/
 COPY packages/xadrez/package.json packages/xadrez/
@@ -39,6 +40,7 @@ COPY packages/codenames packages/codenames
 COPY packages/connect4 packages/connect4
 COPY packages/truco packages/truco
 COPY packages/otrio packages/otrio
+COPY packages/jogo-da-memoria packages/jogo-da-memoria
 COPY packages/jogo-da-velha packages/jogo-da-velha
 COPY packages/damas packages/damas
 COPY packages/xadrez packages/xadrez

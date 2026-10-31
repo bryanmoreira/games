@@ -22,6 +22,7 @@
         "@mesa/futebol-de-botao": "workspace:*",
         "@mesa/jogo-da-velha": "workspace:*",
         "@mesa/ludo": "workspace:*",
+        "@mesa/jogo-da-memoria": "workspace:*",
         "@mesa/otrio": "workspace:*",
         "@mesa/sinuca": "workspace:*",
         "@mesa/stop": "workspace:*",
@@ -48,6 +49,7 @@
         "@mesa/jogo-da-velha": "workspace:*",
         "@mesa/ludo": "workspace:*",
         "@mesa/mahjong": "workspace:*",
+        "@mesa/jogo-da-memoria": "workspace:*",
         "@mesa/otrio": "workspace:*",
         "@mesa/quente-ou-frio": "workspace:*",
         "@mesa/sinuca": "workspace:*",
@@ -112,6 +114,9 @@
     },
     "packages/mahjong": {
       "name": "@mesa/mahjong",
+    },
+    "packages/jogo-da-memoria": {
+      "name": "@mesa/jogo-da-memoria",
     },
     "packages/otrio": {
       "name": "@mesa/otrio",
@@ -320,6 +325,8 @@
     "@mesa/ludo": ["@mesa/ludo@workspace:packages/ludo"],
 
     "@mesa/mahjong": ["@mesa/mahjong@workspace:packages/mahjong"],
+
+    "@mesa/jogo-da-memoria": ["@mesa/jogo-da-memoria@workspace:packages/jogo-da-memoria"],
 
     "@mesa/otrio": ["@mesa/otrio@workspace:packages/otrio"],
 

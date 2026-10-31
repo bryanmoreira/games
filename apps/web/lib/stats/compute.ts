@@ -113,6 +113,13 @@ export function gameStats(game: StatGame, rs: ResultRow[]): GameStats {
   }
 
   switch (game) {
+    case "jogo-da-memoria": {
+      const solo = wins.filter(r => r.mode === "solo");
+      const time = minOf(solo.map(r => num(r, "timeMs")).filter(Number.isFinite));
+      chip("Melhor tempo solo", time === null ? null : formatMs(time));
+      chip("Menos tentativas solo", minOf(solo.map(r => num(r, "attempts")).filter(Number.isFinite)));
+      break;
+    }
     case "connect4":
       chip("Vitória mais rápida", ((n) => (n === null ? null : `${n} peças`))(minOf(wins.map((r) => num(r, "pieces")).filter(Number.isFinite))));
       break;

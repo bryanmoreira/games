@@ -1,5 +1,9 @@
 /** Texto "Sobre o jogo" no fim da página de cada jogo: história, o que tem de diferente e por que vale jogar. */
 export const GAME_ABOUT: Record<string, string[]> = {
+  "jogo-da-memoria": [
+    "O jogo da memória combina observação e lembrança das posições: duas cartas de cada fruta ficam escondidas no tabuleiro, e cada tentativa revela duas delas. No Mesa de Jogos são sempre 30 cartas e 15 pares, sem prévia inicial.",
+    "Jogue solo para melhorar seu tempo e número de tentativas, enfrente o computador ou dispute com um amigo em uma sala para dois jogadores. Nas disputas, acertar um par mantém a vez; ganha quem encontrar mais pares. A IA joga sempre no fácil e lembra as últimas quatro posições reveladas.",
+  ],
   "truco-paulista": [
     "O truco chegou ao Brasil com os imigrantes europeus e virou o jogo de cartas mais barulhento do país. Em São Paulo, Goiás, Mato Grosso do Sul e boa parte do Sul se joga a versão paulista, em que as manilhas mudam a cada mão: vira-se uma carta e a de valor logo acima vira a mais forte. Isso obriga todo mundo a prestar atenção na mesa, porque uma carta fraca na mão anterior pode ser a melhor da rodada seguinte.",
     "A graça do truco está no blefe. Pedir truco com a mão fraca, segurar o 6 com a manilha na mão ou correr na hora certa decide mais partidas do que a sorte das cartas. Aqui você joga em duplas, com o parceiro de frente, ou no mano a mano, e pode treinar contra o computador antes de chamar os amigos.",

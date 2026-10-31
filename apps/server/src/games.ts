@@ -14,6 +14,7 @@ import * as xadrez from "@mesa/xadrez";
 import * as futebol from "@mesa/futebol-de-botao";
 import * as tijolada from "@mesa/tijolada";
 import * as sinuca from "@mesa/sinuca";
+import * as memoria from "@mesa/jogo-da-memoria";
 import type { GameId, PlayerReport } from "@mesa/truco";
 
 type Result<S> = { ok: true; state: S } | { ok: false; error: string };
@@ -786,7 +787,31 @@ const blackjackAdapter: GameAdapter<bj.GameState, bj.Action, bj.PlayerView> = {
   },
 };
 
+const memoriaAdapter: GameAdapter<memoria.GameState, memoria.Action, memoria.PlayerView> = {
+  seats: 2,
+  minSeats: 2,
+  newGame: (prev, { seats, settings }) => memoria.newGame(Math.random, seats, memoria.parseSettings(settings), prev, Date.now()),
+  applyAction: (s, a) => memoria.applyAction(s, a, Date.now()),
+  viewFor: memoria.viewFor,
+  spectate: s => memoria.viewFor(s, -1),
+  decide: v => memoria.decide(v),
+  withSeat: (raw, seat) => ({ type: "flip", seat, index: (raw as memoria.ClientAction | null)?.type === "flip" ? (raw as memoria.ClientAction).index : NaN }),
+  actors: s => s.phase === "playing" ? [s.turn] : [],
+  pause: s => s.phase === "reveal" ? memoria.REVEAL_MS : null,
+  over: s => s.phase === "gameOver",
+  animMs: prev => prev ? 350 : memoria.DEAL_MS,
+  outcome: (s, seat) => {
+    const st = s.stats[seat];
+    return {
+      outcome: s.winners.includes(seat) ? s.winners.length > 1 ? "draw" : "win" : "loss",
+      placement: 1 + s.players.filter(p => s.stats[p].pairs > st.pairs).length,
+      data: { ...st, players: s.players.length, level: s.settings.level, timeMs: Math.max(0, (s.finishedAt ?? s.startedAt) - s.startedAt) },
+    };
+  },
+};
+
 export const GAMES: Record<GameId, GameAdapter> = {
+  "jogo-da-memoria": memoriaAdapter,
   "truco-paulista": trucoAdapter,
   connect4: connect4Adapter,
   stop: stopAdapter,

@@ -1,0 +1,1 @@
+{ "name": "@mesa/jogo-da-memoria", "private": true, "type": "module", "main": "src/index.ts", "types": "src/index.ts" }

@@ -1,4 +1,5 @@
 import type { GameId } from "@mesa/truco";
+import { MEMORIA_PATH } from "@/lib/jogo-da-memoria/paths";
 import { BATALHA_PATH } from "@/lib/batalha-naval/paths";
 import { CODENAMES_PATH } from "@/lib/codenames/paths";
 import { CONNECT4_PATH } from "@/lib/connect4/paths";
@@ -24,10 +25,10 @@ import { QUENTE_PATH } from "@/lib/quente-ou-frio/paths";
 
 /**
  * Jogos que guardam resultado no perfil. Online: o servidor de salas manda; solo: o navegador manda.
- * A Tijolada está nos online (1×1) e também manda as partidas solo pelo navegador.
+ * A Memória está nas duas listas. A Tijolada está nos online (1×1) e também manda solo pelo navegador.
  */
-export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras", "quente-ou-frio", "mahjong"] as const;
-export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "sinuca", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames", "buraco", "blackjack"] as const satisfies readonly GameId[];
+export const SOLO_GAMES = ["sudoku", "paciencia-spider", "verbete", "caca-palavras", "quente-ou-frio", "mahjong", "jogo-da-memoria"] as const;
+export const ONLINE_GAMES = ["truco-paulista", "connect4", "otrio", "jogo-da-velha", "xadrez", "sinuca", "damas", "ludo", "domino", "futebol-de-botao", "tijolada", "batalha-naval", "stop", "codenames", "buraco", "blackjack", "jogo-da-memoria"] as const satisfies readonly GameId[];
 
 export type SoloGame = (typeof SOLO_GAMES)[number];
 export type StatGame = SoloGame | GameId;
@@ -35,6 +36,7 @@ export type Mode = "solo" | "ai" | "online";
 export type Outcome = "win" | "loss" | "draw";
 
 export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
+  "jogo-da-memoria": { name: "Jogo da Memória", path: MEMORIA_PATH },
   "truco-paulista": { name: "Truco", path: TRUCO_PATH },
   connect4: { name: "Connect 4", path: CONNECT4_PATH },
   otrio: { name: "Otrio", path: OTRIO_PATH },
@@ -60,7 +62,7 @@ export const GAME_INFO: Record<StatGame, { name: string; path: string }> = {
 };
 
 /** Ordem na tela do perfil. */
-export const STAT_GAMES: StatGame[] = [...ONLINE_GAMES, ...SOLO_GAMES];
+export const STAT_GAMES: StatGame[] = [...new Set<StatGame>([...ONLINE_GAMES, ...SOLO_GAMES])];
 
 export const isOnlineGame = (g: string): g is (typeof ONLINE_GAMES)[number] => (ONLINE_GAMES as readonly string[]).includes(g);
 /** Jogo da página atual, pelo caminho (ex.: /connect-4/sala/ABCD → connect4). */

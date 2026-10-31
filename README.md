@@ -53,6 +53,7 @@
 | Xadrez | | Otrio |
 | Damas | | Jogo da Velha |
 | Connect 4 | | |
+| Jogo da Memória | | |
 
 A maioria tem **multiplayer online em salas privadas** (com lugares completados pelo computador) e **modo solo contra a IA**. Spider, Sudoku e Verbete rodam só no navegador.
 

@@ -7,7 +7,7 @@ export const SITE_NAME = "Mesa de Jogos";
 export const SITE_TAGLINE = "Jogos de cartas e de mesa para jogar com os amigos. Grátis e sem cadastro.";
 /** Descrição longa (meta tags, JSON-LD, llms.txt): leva os nomes dos jogos para busca */
 export const SITE_DESCRIPTION =
-  "Jogue Truco, Buraco, Blackjack, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider, Verbete, Caça-Palavras e Mahjong online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
+  "Jogue Truco, Buraco, Blackjack, Dominó, Damas, Xadrez, Ludo, Stop, Codenames, Batalha Naval, Futebol de Botão, Tijolada, Connect 4, Otrio, Jogo da Velha, Sudoku, Paciência Spider, Verbete, Caça-Palavras, Jogo da Memória e Mahjong online e grátis, com amigos ou contra o computador. Sem cadastro e sem instalar nada.";
 
 export type GameSeo = {
   slug: string;
@@ -31,6 +31,23 @@ export type GameSeo = {
 };
 
 export const GAMES: GameSeo[] = [
+  {
+    slug: "jogo-da-memoria", path: "/jogo-da-memoria", name: "Jogo da Memória",
+    title: "Jogo da Memória Online Grátis",
+    description: "Encontre 15 pares de frutas no jogo da memória grátis. Jogue solo, contra a IA ou dispute com um amigo em salas online para 2 jogadores, sem cadastro.",
+    tagline: "15 pares de frutas. Memorize, encontre e colha a vitória.",
+    keywords: ["jogo da memória", "memória de frutas", "jogo da memória online", "jogo da memória com amigos", "memória 15 pares"],
+    genre: "Jogo de memória", players: { min: 1, max: 2 },
+    modes: "Solo no navegador, contra uma IA no nível fácil, ou multiplayer online de 2 jogadores em salas privadas.",
+    howTo: { title: "Como jogar Jogo da Memória: pares, turnos e pontuação", description: "Aprenda a jogar memória com 30 cartas e 15 pares de frutas: acertar mantém a vez, errar passa ao próximo e quem encontra mais pares vence." },
+    faq: [
+      { q: "Quantas cartas tem o jogo da memória de frutas?", a: "O tabuleiro tem sempre 30 cartas, formando 15 pares de frutas. Não há variação de tamanho nem prévia inicial." },
+      { q: "Como funciona a vez no jogo da memória?", a: "Revele duas cartas. Se forem iguais, você guarda o par e joga novamente. Se forem diferentes, as cartas viram para baixo e a vez passa ao próximo jogador." },
+      { q: "Dá para jogar memória com amigos?", a: "Sim. Crie uma sala, compartilhe o código ou o link e dispute com um amigo. A sala tem dois lugares e o anfitrião pode colocar uma IA no lugar do adversário." },
+      { q: "Como a IA joga memória?", a: "A IA joga sempre no nível fácil: só conhece cartas já reveladas e lembra as últimas 4 posições." },
+      { q: "Como ganhar no solo e nas disputas?", a: "No solo, encontre os 15 pares com menos tentativas e melhor tempo. Nas disputas de dois jogadores, vence quem encontrar mais pares. Como há 15 pares, não há empate." },
+    ],
+  },
   {
     slug: "truco-paulista",
     path: "/truco-paulista",

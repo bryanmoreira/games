@@ -4,7 +4,7 @@ import { CARD, Meter, PageTitle, Stat, Tabs, icon } from "@/components/admin/ui"
 import { requireAdmin } from "@/lib/admin";
 import { WINS_ONLY, pct, type GameSummary } from "@/lib/admin-rules";
 import { getGameSummaries, isPeriod, type Period } from "@/lib/admin-stats";
-import { GAME_INFO, isSoloGame } from "@/lib/stats/games";
+import { GAME_INFO, isOnlineGame } from "@/lib/stats/games";
 
 export const metadata: Metadata = { title: "Jogos" };
 
@@ -21,7 +21,7 @@ const MODES = [
 ] as const;
 
 function GameRow({ s, max }: { s: GameSummary; max: number }) {
-  const solo = isSoloGame(s.game);
+  const solo = !isOnlineGame(s.game);
   const h = s.house;
   const played = h.win + h.loss + h.draw;
   const rate = pct(h.win, played);
@@ -83,7 +83,7 @@ export default async function AdminGames({ searchParams }: { searchParams: Promi
   const games = await getGameSummaries(period);
   const total = games.reduce((a, g) => a + g.matches, 0);
   const max = Math.max(1, ...games.map((g) => g.matches));
-  const ai = games.filter((g) => !isSoloGame(g.game)).map((g) => g.house);
+  const ai = games.filter((g) => isOnlineGame(g.game)).map((g) => g.house);
   const aiRate = pct(ai.reduce((a, h) => a + h.win, 0), ai.reduce((a, h) => a + h.win + h.loss + h.draw, 0));
 
   return (

@@ -149,6 +149,13 @@ const days = (n: number): AchievementDef => ({
 // ---------- lista ----------
 
 export const ACHIEVEMENTS: AchievementDef[] = [
+  { ...first("jogo-da-memoria"), title: "Primeira colheita", desc: "Concluir um solo ou vencer uma disputa" },
+  { code: "jogo-da-memoria:perfect", game: "jogo-da-memoria", title: "Memória perfeita", desc: "Concluir solo sem errar", icon: "target", tier: "hard", check: ({ results }) => results.some(r => isWin(r) && r.mode === "solo" && num(r, "mistakes") === 0) },
+  { code: "jogo-da-memoria:basket", game: "jogo-da-memoria", title: "Cesta cheia", desc: "Encontrar 10 pares consecutivos sem errar na mesma partida", icon: "flame", tier: "hard", check: ({ results }) => results.some(r => num(r, "bestStreak") >= 10) },
+  { code: "jogo-da-memoria:ai_win", game: "jogo-da-memoria", title: "Melhor que a máquina", desc: "Vencer uma partida contra a IA", icon: "bolt", check: ({ results }) => results.some(r => isWin(r) && r.mode === "ai") },
+  { code: "jogo-da-memoria:online", game: "jogo-da-memoria", title: "Dono da feira", desc: "Vencer uma partida online", icon: "crown", check: ({ results }) => results.some(r => isWin(r) && r.mode === "online") },
+  { ...wins("jogo-da-memoria", 10), title: "Pomar", desc: "Somar 10 conclusões solo ou vitórias" },
+  { ...wins("jogo-da-memoria", 50), title: "Grande colheita", desc: "Somar 50 conclusões solo ou vitórias" },
   days(7),
   days(30),
 

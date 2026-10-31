@@ -1,7 +1,7 @@
 import type { Action, PlayerView, Seat } from "./types";
 
 /** Jogos atendidos pelo servidor de salas. */
-export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames" | "otrio" | "jogo-da-velha" | "damas" | "ludo" | "domino" | "xadrez" | "futebol-de-botao" | "tijolada" | "buraco" | "blackjack" | "sinuca";
+export type GameId = "truco-paulista" | "connect4" | "stop" | "batalha-naval" | "codenames" | "otrio" | "jogo-da-velha" | "damas" | "ludo" | "domino" | "xadrez" | "futebol-de-botao" | "tijolada" | "buraco" | "blackjack" | "sinuca" | "jogo-da-memoria";
 
 export type ClientAction =
   | { type: "play"; index: number; hidden?: boolean }

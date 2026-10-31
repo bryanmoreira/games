@@ -66,6 +66,13 @@ const winsCase = (n: number): Case => ({
 });
 
 const CASES: Record<string, Case> = {
+  "jogo-da-memoria:first": firstCase,
+  "jogo-da-memoria:perfect": { ok: [win({ mistakes: 0 }, "solo")], almost: [win({ mistakes: 1 }, "solo"), win({ mistakes: 0 }, "ai"), loss({ mistakes: 0 }, "solo"), win({}, "solo")] },
+  "jogo-da-memoria:basket": { ok: [win({ bestStreak: 10 })], almost: [win({ bestStreak: 9 }), win({}), loss({ abandoned: true })] },
+  "jogo-da-memoria:ai_win": { ok: [win({ level: "easy" }, "ai")], almost: [loss({}, "ai"), win({}, "solo"), win({}, "online")] },
+  "jogo-da-memoria:online": { ok: [win({}, "online")], almost: [win({}, "solo"), win({}, "ai"), draw()] },
+  "jogo-da-memoria:wins_10": winsCase(10),
+  "jogo-da-memoria:wins_50": winsCase(50),
   days_7: { ok: [], almost: [], okDays: 7, almostDays: 6 },
   days_30: { ok: [], almost: [], okDays: 30, almostDays: 29 },
 

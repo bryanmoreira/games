@@ -11,6 +11,7 @@ import { Framed } from "@/components/shop/Art";
 
 /** Chamada da mensagem de convite de cada jogo online */
 const INVITE: Record<GameId, string> = {
+  "jogo-da-memoria": "Bora jogar Jogo da Memória? Quem encontra mais pares?",
   "truco-paulista": "Bora jogar um truco? 🃏",
   connect4: "Duvido você me ganhar no Connect 4! 🔴🟡",
   stop: "Bora jogar Stop (Adedonha)? ✋",

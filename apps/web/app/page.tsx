@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MemoryArt } from "@/components/jogo-da-memoria/Fruit";
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo";
@@ -77,6 +78,10 @@ const FELT: Record<string, string> = {
 
 /** Card de cada jogo na home: arte (posicionada sobre o feltro), título e subtítulo */
 const CARDS: { slug: string; title: string; sub: string; art: ReactNode }[] = [
+  {
+    slug: "jogo-da-memoria", title: "JOGO DA", sub: "MEMÓRIA",
+    art: <div className={`absolute left-1/2 top-[7%] w-[52%] -translate-x-1/2 -rotate-3 ${HOVER}`}><MemoryArt play className="w-full" /></div>,
+  },
   {
     slug: "truco-paulista",
     title: "TRUCO",

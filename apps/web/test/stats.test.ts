@@ -671,7 +671,7 @@ describe("rivalidade", () => {
 
 describe("jogos", () => {
   test("todo jogo aparece uma vez na tela: online primeiro, depois solo", () => {
-    expect(STAT_GAMES).toEqual([...ONLINE_GAMES, ...SOLO_GAMES]);
+    expect(STAT_GAMES).toEqual([...new Set([...ONLINE_GAMES, ...SOLO_GAMES])]);
     expect(new Set(STAT_GAMES).size).toBe(STAT_GAMES.length);
     expect(Object.keys(GAME_INFO).sort()).toEqual([...STAT_GAMES].sort());
   });
@@ -701,8 +701,8 @@ describe("jogos", () => {
     expect(gameFromPath(path)).toBe(game as never);
   });
 
-  test.each(STAT_GAMES.map((g) => [g]))("%s é online ou solo, nunca os dois", (g) => {
-    expect(isOnlineGame(g)).not.toBe(isSoloGame(g));
+  test.each(STAT_GAMES.map((g) => [g]))("%s tem ao menos uma modalidade", (g) => {
+    expect(isOnlineGame(g) || isSoloGame(g)).toBe(true);
   });
 
   test("nomes fora da lista não são jogo", () => {

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { ONLINE_GAMES } from "@/lib/stats/games";
 import { ONLINE_MS, isOnline } from "@/lib/friends-rules";
 import { DAILY_START } from "@/lib/daily/challenge";
 import { ACHIEVEMENTS, dayKey } from "@/lib/stats/achievements";
@@ -60,7 +61,8 @@ export async function getGameSummaries(period: Period) {
       FROM game_result WHERE "createdAt" >= ${since} GROUP BY game, mode`,
     prisma.$queryRaw<OutcomeRow[]>`
       SELECT game, outcome, COUNT(*)::int AS n
-      FROM game_result WHERE "createdAt" >= ${since} AND mode IN ('ai', 'solo') GROUP BY game, outcome`,
+      FROM game_result WHERE "createdAt" >= ${since}
+      AND (mode = 'ai' OR (mode = 'solo' AND game <> ALL(${[...ONLINE_GAMES]}::text[]))) GROUP BY game, outcome`,
     prisma.$queryRaw<PlayerRow[]>`
       SELECT game, COUNT(DISTINCT "userId")::int AS n FROM game_result WHERE "createdAt" >= ${since} GROUP BY game`,
   ]);

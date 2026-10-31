@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { MemoryArt } from "@/components/jogo-da-memoria/Fruit";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { HOME_CELLS, SAFE, TRACK_CELLS, startOf } from "@mesa/ludo";
@@ -41,6 +42,7 @@ async function card(name: string): Promise<string> {
 }
 
 const TITLES: Record<string, [string, string]> = {
+  "jogo-da-memoria": ["JOGO DA", "MEMÓRIA"],
   "truco-paulista": ["TRUCO", "PAULISTA"],
   buraco: ["BURACO", "CANASTRAS"],
   blackjack: ["BLACKJACK", "VINTE E UM"],
@@ -67,6 +69,7 @@ const TITLES: Record<string, [string, string]> = {
 
 async function art(slug: string) {
   switch (slug) {
+    case "jogo-da-memoria": return <div style={{ display: "flex", width: 420, height: 360, alignItems: "center" }}>{MemoryArt({width:420,height:294})}</div>;
     case "truco-paulista": {
       const cards = await Promise.all(["4_of_clubs", "7_of_hearts", "ace_of_spades"].map(card));
       return (

@@ -23,7 +23,8 @@
     "@mesa/otrio": "workspace:*",
     "@mesa/sinuca": "workspace:*",
     "@mesa/stop": "workspace:*",
-    "@mesa/xadrez": "workspace:*"
+    "@mesa/xadrez": "workspace:*",
+    "@mesa/jogo-da-memoria": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2"

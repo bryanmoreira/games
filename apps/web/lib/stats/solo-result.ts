@@ -1,4 +1,5 @@
 import { DIFFICULTIES } from "@mesa/sudoku";
+import { replay as replayMemoria, applyAction as applyMemoria } from "@mesa/jogo-da-memoria";
 import { isLevel, isTheme, wordsOf } from "@mesa/caca-palavras";
 import { isLayout, PENALTY_MS } from "@mesa/mahjong";
 import { isMode, MAX_GUESSES, replay, status } from "@mesa/verbete";
@@ -7,7 +8,7 @@ import type { Outcome } from "@/lib/stats/games";
 
 const int = (v: unknown, min: number, max: number) => (Number.isInteger(v) && (v as number) >= min && (v as number) <= max ? (v as number) : null);
 
-export type SoloGame = "sudoku" | "paciencia-spider" | "verbete" | "caca-palavras" | "mahjong" | "tijolada";
+export type SoloGame = "sudoku" | "paciencia-spider" | "verbete" | "caca-palavras" | "mahjong" | "tijolada" | "jogo-da-memoria";
 
 /**
  * Dados de uma partida solo mandados pelo navegador, validados. null = inválido.
@@ -19,6 +20,14 @@ export function parseSoloResult(game: unknown, raw: unknown): { game: SoloGame; 
   if (game === "tijolada") return parseTijolada(d);
   const timeMs = int(d.timeMs, 1000, 24 * 60 * 60 * 1000);
   if (timeMs === null) return null;
+  if (game === "jogo-da-memoria") {
+    const replayed = replayMemoria(d.deck, d.history);
+    if (!replayed || replayed.phase !== "reveal") return null;
+    const end = applyMemoria(replayed, { type: "advance" });
+    if (!end.ok || end.state.phase !== "gameOver") return null;
+    const { pairs, attempts, mistakes, bestStreak } = end.state.stats[0];
+    return { game, data: { timeMs, pairs, attempts, mistakes, bestStreak, players: 1 } };
+  }
   if (game === "sudoku") {
     const mistakes = int(d.mistakes, 0, 99);
     const hints = int(d.hints, 0, 81);

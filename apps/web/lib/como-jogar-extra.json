@@ -1,4 +1,18 @@
 {
+ "jogo-da-memoria": {
+  "answer": "No Jogo da Memória, revele duas das 30 cartas e procure frutas iguais. Acertar um par mantém sua vez; errar esconde as cartas e passa ao adversário. Encontre os 15 pares no solo ou termine com mais pares nas disputas de dois jogadores. Não há prévia nem limite de tempo.",
+  "faq": [
+   { "q": "O cronômetro do solo pausa?", "a": "Sim. Ele começa ao virar a primeira carta e pausa quando a aba fica oculta ou a ajuda é aberta. Recarregar a página retoma as cartas e o tempo salvo." },
+   { "q": "Posso virar a mesma carta duas vezes na tentativa?", "a": "Não. A segunda carta deve ser diferente da primeira e ainda estar em jogo. Cartas de pares já encontrados ficam abertas e não podem ser selecionadas novamente." },
+   { "q": "O que conta como uma tentativa?", "a": "Revelar duas cartas conta uma tentativa, tanto no acerto quanto no erro. No solo, o menor número possível é 15 tentativas, uma para cada par." },
+   { "q": "Posso jogar sem informar meu nome?", "a": "O solo começa sem pedir nome. Para jogar contra a IA ou entrar em uma sala, use seu nome de visitante ou o nome da conta logada." },
+   { "q": "Quantos adversários de IA posso enfrentar?", "a": "Você joga contra uma IA, sempre no nível fácil. Nas salas, o anfitrião pode colocar uma IA no lugar do adversário. A disputa tem no máximo dois jogadores." }
+  ],
+  "glossary": [
+   { "term": "Par de frutas", "slug": "par-de-frutas", "definition": "Par de frutas é o conjunto de duas cartas com a mesma ilustração no jogo da memória. Ao encontrar um par, o jogador recebe um ponto e continua com a vez. O tabuleiro tem 15 pares, cada um de uma fruta diferente." },
+   { "term": "Tentativa na memória", "slug": "tentativa-na-memoria", "definition": "Tentativa é a revelação de duas cartas diferentes ainda disponíveis no jogo da memória. Um par igual conta como acerto; frutas diferentes contam como erro. No solo, a partida perfeita termina em 15 tentativas e nenhum erro." }
+  ]
+ },
  "truco-paulista": {
   "answer": "O Truco Paulista é jogado em duplas, ou 1 contra 1, com baralho de 40 cartas. Cada um recebe 3 cartas e ganha a mão quem vencer 2 das 3 vazas. A carta acima da vira é a manilha, a mais forte. O truco faz a mão valer 3, podendo subir a 6, 9 e 12. Vence quem fizer 12 pontos.",
   "faq": [

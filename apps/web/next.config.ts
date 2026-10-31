@@ -17,7 +17,7 @@ const config: NextConfig = {
       { source: "/truco/:path*", destination: "/truco-paulista/:path*", permanent: true },
     ];
   },
-  transpilePackages: ["@mesa/batalha-naval", "@mesa/blackjack", "@mesa/buraco", "@mesa/caca-palavras", "@mesa/codenames", "@mesa/connect4", "@mesa/damas", "@mesa/domino", "@mesa/futebol-de-botao", "@mesa/truco", "@mesa/jogo-da-velha", "@mesa/ludo", "@mesa/mahjong", "@mesa/otrio", "@mesa/quente-ou-frio", "@mesa/sinuca", "@mesa/spider", "@mesa/stop", "@mesa/sudoku", "@mesa/tijolada", "@mesa/verbete", "@mesa/xadrez"],
+  transpilePackages: ["@mesa/jogo-da-memoria", "@mesa/batalha-naval", "@mesa/blackjack", "@mesa/buraco", "@mesa/caca-palavras", "@mesa/codenames", "@mesa/connect4", "@mesa/damas", "@mesa/domino", "@mesa/futebol-de-botao", "@mesa/truco", "@mesa/jogo-da-velha", "@mesa/ludo", "@mesa/mahjong", "@mesa/otrio", "@mesa/quente-ou-frio", "@mesa/sinuca", "@mesa/spider", "@mesa/stop", "@mesa/sudoku", "@mesa/tijolada", "@mesa/verbete", "@mesa/xadrez"],
 };
 
 export default config;
