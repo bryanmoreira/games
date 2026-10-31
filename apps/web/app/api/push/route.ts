@@ -1,14 +1,14 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import { isSubscription, saveSubscription } from "@/lib/push";
+import { DAILY_GAMES_PUSH, isSubscription, saveSubscription } from "@/lib/push";
 import { prisma } from "@/lib/db";
 
-/** Liga ou atualiza o lembrete do desafio do dia deste aparelho: { subscription, games } (games vazio desliga). */
+/** Liga ou desliga o lembrete dos desafios do dia deste aparelho: { subscription, on } (todos os jogos diários de uma vez). */
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  if (!isSubscription(body?.subscription) || !Array.isArray(body?.games)) return Response.json({ error: "inválido" }, { status: 400 });
+  if (!isSubscription(body?.subscription) || typeof body?.on !== "boolean") return Response.json({ error: "inválido" }, { status: 400 });
   const session = await auth.api.getSession({ headers: await headers() });
-  await saveSubscription(body.subscription, body.games.filter((g: unknown) => typeof g === "string"), session?.user.id ?? null);
+  await saveSubscription(body.subscription, body.on ? DAILY_GAMES_PUSH : [], session?.user.id ?? null);
   return Response.json({ ok: true });
 }
 

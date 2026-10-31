@@ -109,7 +109,7 @@ export function DailyHub({
                 {streak}
               </span>
             )}
-            <ReminderButton game={game} />
+            <ReminderButton from={game} />
           </span>
         </div>
         {t?.won || t?.lost ? (

@@ -2,8 +2,8 @@
 
 import { track } from "@/lib/analytics";
 
-// Lembrete do desafio do dia no navegador: pede permissão, assina o push do service worker e diz ao site
-// quais jogos este aparelho quer lembrar. Os jogos ficam guardados aqui também, para o sino mostrar o estado.
+// Lembrete dos desafios do dia no navegador: pede permissão, assina o push do service worker e avisa o site.
+// Um lembrete só, para todos os jogos diários; o estado fica guardado aqui também, para o sino mostrar.
 
 const GAMES_KEY = "mesa.push.games";
 
@@ -12,11 +12,13 @@ const vapidKey = () => window.__ENV__?.VAPID_PUBLIC_KEY;
 export const pushSupported = () =>
   typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window && !!vapidKey();
 
-export function remindedGames(): string[] {
+/** Lembrete ligado neste aparelho (a lista antiga, por jogo, também conta) */
+export function reminderOn(): boolean {
   try {
-    return JSON.parse(localStorage.getItem(GAMES_KEY) ?? "[]");
+    const v = JSON.parse(localStorage.getItem(GAMES_KEY) ?? "[]");
+    return (v === true || (Array.isArray(v) && v.length > 0)) && Notification.permission === "granted";
   } catch {
-    return [];
+    return false;
   }
 }
 
@@ -25,8 +27,8 @@ function keyBytes(base64: string): Uint8Array<ArrayBuffer> {
   return Uint8Array.from(b, (c) => c.charCodeAt(0));
 }
 
-/** Liga ou desliga o lembrete de um jogo; devolve se ficou ligado (false também quando a permissão foi negada) */
-export async function setReminder(game: string, on: boolean): Promise<boolean> {
+/** Liga ou desliga o lembrete; devolve se ficou ligado (false também quando a permissão foi negada). `from`: onde o sino estava. */
+export async function setReminder(on: boolean, from: string): Promise<boolean> {
   const reg = await navigator.serviceWorker.register("/sw.js");
   await navigator.serviceWorker.ready;
   let sub = await reg.pushManager.getSubscription();
@@ -34,15 +36,14 @@ export async function setReminder(game: string, on: boolean): Promise<boolean> {
     if ((await Notification.requestPermission()) !== "granted") return false;
     sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(vapidKey()!) });
   }
-  const games = on ? [...new Set([...remindedGames(), game])] : remindedGames().filter((g) => g !== game);
   if (sub) {
-    const r = await fetch("/api/push", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), games }) });
+    const r = await fetch("/api/push", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), on }) });
     if (!r.ok) throw new Error(`push: ${r.status}`);
-    if (!games.length) await sub.unsubscribe().catch(() => {});
+    if (!on) await sub.unsubscribe().catch(() => {});
   }
   try {
-    localStorage.setItem(GAMES_KEY, JSON.stringify(games));
+    localStorage.setItem(GAMES_KEY, JSON.stringify(on));
   } catch {}
-  track(on ? "lembrete-ligado" : "lembrete-desligado", { jogo: game });
+  track(on ? "lembrete-ligado" : "lembrete-desligado", { jogo: from });
   return on;
 }

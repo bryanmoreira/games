@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { pushSupported, remindedGames, setReminder } from "@/lib/push-client";
+import { pushSupported, reminderOn, setReminder } from "@/lib/push-client";
 
 function BellIcon({ on, className = "" }: { on: boolean; className?: string }) {
   return (
@@ -12,8 +12,11 @@ function BellIcon({ on, className = "" }: { on: boolean; className?: string }) {
   );
 }
 
-/** Sino do calendário do desafio: liga o lembrete diário (notificação de manhã) deste jogo neste aparelho. */
-export function ReminderButton({ game }: { game: string }) {
+/**
+ * Sino do lembrete dos desafios do dia (notificação de manhã, todos os jogos diários) neste aparelho.
+ * `from`: onde ele está (home ou o jogo), só para as métricas. `round`: botão redondo do trilho da home.
+ */
+export function ReminderButton({ from, round = false }: { from: string; round?: boolean }) {
   const [ready, setReady] = useState(false);
   const [on, setOn] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -22,23 +25,38 @@ export function ReminderButton({ game }: { game: string }) {
   useEffect(() => {
     if (!pushSupported()) return;
     setReady(true);
-    setOn(remindedGames().includes(game) && Notification.permission === "granted");
+    setOn(reminderOn());
     setDenied(Notification.permission === "denied");
-  }, [game]);
+  }, []);
 
   if (!ready) return null;
 
   const toggle = async () => {
     setBusy(true);
     try {
-      const now = await setReminder(game, !on);
+      const now = await setReminder(!on, from);
       setOn(now);
       setDenied(Notification.permission === "denied");
     } catch {}
     setBusy(false);
   };
 
-  const label = denied ? "Notificações bloqueadas no navegador" : on ? "Lembrete ligado: toque para desligar" : "Me lembrar todo dia";
+  const label = denied ? "Notificações bloqueadas no navegador" : on ? "Lembrete dos desafios ligado: toque para desligar" : "Me lembrar dos desafios todo dia";
+  if (round)
+    return (
+      <button
+        onClick={toggle}
+        disabled={busy || denied}
+        aria-pressed={on}
+        aria-label={label}
+        title={label}
+        className={`flex h-10 w-10 items-center justify-center rounded-full ring-1 transition disabled:opacity-50 ${
+          on ? "text-gold ring-gold/60" : "text-gold ring-gold/30 hover:ring-gold/60"
+        }`}
+      >
+        <BellIcon on={on} className="h-5 w-5" />
+      </button>
+    );
   return (
     <button
       onClick={toggle}

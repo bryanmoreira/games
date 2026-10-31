@@ -29,6 +29,7 @@ import { TableDecor } from "@/components/home/TableDecor";
 import { BackdropDecor } from "@/components/home/BackdropDecor";
 import { WoodRail, WoodSign } from "@/components/home/WoodTop";
 import { DailyRibbon } from "@/components/home/DailyRibbon";
+import { ReminderButton } from "@/components/daily/ReminderButton";
 import { HoverCard } from "@/components/home/HoverCard";
 import { ChessArt, Connect4Art, DamasArt, LudoArt, OtrioArt, VelhaArt } from "@/components/home/BoardArts";
 import { isDailyGame } from "@/lib/daily/challenge";
@@ -414,7 +415,7 @@ export default function Home() {
     <div className="table-texture relative isolate min-h-dvh bg-[#0f1813]">
       <BackdropDecor />
       <TableDecor />
-      <WoodRail>
+      <WoodRail left={<ReminderButton from="home" round />}>
         <ShopButton />
         <ChipBalance />
         <UserButton />

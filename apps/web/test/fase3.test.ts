@@ -17,13 +17,10 @@ describe("lembrete do desafio (push)", () => {
     expect(isSubscription({ endpoint: "https://fcm.googleapis.com/x" })).toBe(false);
   });
 
-  test("texto do lembrete: um jogo ou vários", () => {
-    const one = dailyMessage(["sudoku"], "2026-10-31");
-    expect(one.title).toContain("Sudoku");
-    expect(one.url).toBe("/sudoku/diario");
-    const many = dailyMessage(["sudoku", "verbete"], "2026-10-31");
-    expect(many.url).toBe("/");
-    expect(many.body).toContain(" e ");
+  test("texto do lembrete: um só para todos os desafios", () => {
+    const msg = dailyMessage("2026-10-31");
+    expect(msg.body).toBe("Os desafios diários estão prontos.");
+    expect(msg.url).toBe("/");
   });
 });
 

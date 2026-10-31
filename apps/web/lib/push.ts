@@ -52,34 +52,33 @@ export async function saveSubscription(s: SubscriptionInput, games: string[], us
   });
 }
 
-/** Texto do lembrete: um jogo diz qual é; vários, quantos */
-export function dailyMessage(games: string[], day: string): { title: string; body: string; url: string } {
-  const n = dayNumber(day);
-  if (games.length === 1) {
-    const g = getGame(games[0]);
-    return { title: `${g.name} do dia #${n}`, body: "O desafio de hoje já está no ar. Bora manter a sequência?", url: `${g.path}/diario` };
-  }
-  const names = games.map((s) => getGame(s).name);
-  return { title: `Desafios do dia #${n}`, body: `${names.slice(0, -1).join(", ")} e ${names[names.length - 1]} já estão no ar.`, url: "/" };
+/** Texto do lembrete: um só para todos os desafios do dia */
+export function dailyMessage(day: string): { title: string; body: string; url: string } {
+  return { title: `Desafios do dia #${dayNumber(day)}`, body: "Os desafios diários estão prontos.", url: "/" };
 }
 
 /** Manda o lembrete do dia para todos os aparelhos. Inscrição que o navegador desfez (404/410) é apagada. */
-export async function sendDailyPush(): Promise<{ sent: number; removed: number } | null> {
+export async function sendDailyPush(): Promise<{ sent: number; removed: number; failed: number } | null> {
   if (!configured()) return null;
   const day = dayKey(new Date());
+  const msg = dailyMessage(day);
   const subs = await prisma.pushSubscription.findMany();
   let sent = 0;
+  let failed = 0;
   const gone: string[] = [];
   for (const s of subs) {
-    const msg = dailyMessage(s.games, day);
     try {
       await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, JSON.stringify({ ...msg, tag: `diario-${day}` }), { TTL: 6 * 3600 });
       sent++;
     } catch (e) {
       const code = (e as { statusCode?: number }).statusCode;
       if (code === 404 || code === 410) gone.push(s.id);
+      else {
+        failed++;
+        console.warn(`push recusado (${code ?? "sem resposta"}): ${(e as { body?: string }).body ?? e}`);
+      }
     }
   }
   if (gone.length) await prisma.pushSubscription.deleteMany({ where: { id: { in: gone } } });
-  return { sent, removed: gone.length };
+  return { sent, removed: gone.length, failed };
 }
