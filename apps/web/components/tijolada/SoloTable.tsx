@@ -17,6 +17,7 @@ import { TouchPad, useKeyboard } from "./controls";
 import { HowToPlay } from "./HowToPlay";
 import { Fit, fmt, HoldBox, NextBox, Stats, TopStrip } from "./Panels";
 import { useRunner } from "./useRunner";
+import { trackStart } from "@/lib/analytics";
 
 const SAVE_KEY = "tijolada.solo";
 const BEST_KEY = "tijolada.best";
@@ -66,6 +67,7 @@ export function SoloTable() {
   useEffect(() => {
     const saved = load();
     game.current = saved ?? fresh();
+    if (!saved) trackStart("tijolada", { modo: "solo" });
     base.current = { tick: game.current.tick, at: performance.now() };
     setPaused(!!saved);
     setGameNo((n) => n + 1);
@@ -120,11 +122,12 @@ export function SoloTable() {
     }
     setEnd({ best: Math.max(best, g.score), record });
     (record ? playWinSound : playLoseSound)();
-    reportSoloResult("tijolada", { score: g.score, lines: g.lines, level: g.level, tetras: g.tetras, timeMs: playedMs(g), pieces: g.pieces });
+    reportSoloResult("tijolada", { score: g.score, lines: g.lines, level: g.level, tetras: g.tetras, timeMs: playedMs(g), pieces: g.pieces }, undefined, { resultado: "fim" });
   }, [g, g?.over, end]);
 
   const again = () => {
     game.current = fresh();
+    trackStart("tijolada", { modo: "solo" });
     base.current = { tick: 0, at: performance.now() };
     setEnd(null);
     setPaused(false);

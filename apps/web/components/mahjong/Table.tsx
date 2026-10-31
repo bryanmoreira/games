@@ -31,8 +31,11 @@ import { playBlockedSound, playHintSound, playMissSound, playPairSound, playSele
 import { isGame, loadGame, loadLayout, saveBest, saveGame } from "@/lib/mahjong/storage";
 import { loadDaily, saveDaily } from "@/lib/daily/storage";
 import type { DailyChallenge } from "@/lib/daily/challenge";
+import { useSoloStart } from "@/lib/analytics";
 import { reportSoloWin } from "@/lib/stats/report";
 import { useClock } from "@/lib/useClock";
+import { ShareResult } from "@/components/daily/ShareResult";
+import { dayNumber } from "@/lib/daily/challenge";
 import { MAHJONG_DAILY_PATH, MAHJONG_PATH } from "@/lib/mahjong/paths";
 import { Board, boardSize, tileWidth } from "./Board";
 import { formatTime } from "./common";
@@ -83,6 +86,7 @@ export function Table({ daily }: { daily?: MahjongChallenge }) {
   const home = daily ? MAHJONG_DAILY_PATH : MAHJONG_PATH;
   const save = (g: GameState) => (daily ? saveDaily("mahjong", daily.day, g) : saveGame(g));
   const [game, setGame] = useState<GameState | null>(null);
+  useSoloStart("mahjong", game && `${daily?.day ?? "livre"}:${game.layout}:${game.seed}`, game, { diario: !!daily, nivel: game?.layout });
   const [help, setHelp] = useState(false);
   const [visible, setVisible] = useState(true);
   const [selected, setSelected] = useState<number | null>(null);
@@ -192,6 +196,7 @@ export function Table({ daily }: { daily?: MahjongChallenge }) {
           "mahjong",
           { layout: next.layout, timeMs: Math.round(next.elapsed), hints: next.hints, shuffles: next.shuffles, undos: next.undos },
           daily && { day: daily.day, seed: daily.data.seed },
+          { nivel: next.layout },
         );
         setTimeout(playWinSound, 350);
         setTimeout(() => setShowEnd(true), 900);
@@ -379,7 +384,23 @@ export function Table({ daily }: { daily?: MahjongChallenge }) {
       </footer>
 
       {showEnd && game.won && (
-        <GameEnd won badge={<Badge game={game} day={daily?.day} />} onLeave={() => router.push(home)} onAgain={startNew} busy={busy}>
+        <GameEnd
+          won
+          badge={<Badge game={game} day={daily?.day} />}
+          onLeave={() => router.push(home)}
+          onAgain={startNew}
+          busy={busy}
+          actions={
+            daily && (
+              <ShareResult
+                game="mahjong"
+                path={MAHJONG_DAILY_PATH}
+                text={`Mahjong do dia #${dayNumber(daily.day)} ✅
+⏱️ ${formatTime(game.elapsed)} · 💡 ${game.hints} ${game.hints === 1 ? "dica" : "dicas"} · 🔀 ${game.shuffles} ${game.shuffles === 1 ? "embaralhada" : "embaralhadas"}`}
+              />
+            )
+          }
+        >
           <div className="flex flex-col items-center gap-3">
             <div className="flex gap-6">
               <EndStat label="TEMPO" value={formatTime(game.elapsed)} gold />

@@ -27,8 +27,11 @@ import { playFoundSound, playHintSound, playMissSound, playTickSound } from "@/l
 import { isGame, loadGame, loadTheme, saveBest, saveGame } from "@/lib/caca-palavras/storage";
 import { loadDaily, saveDaily } from "@/lib/daily/storage";
 import type { DailyChallenge } from "@/lib/daily/challenge";
+import { useSoloStart } from "@/lib/analytics";
 import { reportSoloWin } from "@/lib/stats/report";
 import { useClock } from "@/lib/useClock";
+import { ShareResult } from "@/components/daily/ShareResult";
+import { dayNumber } from "@/lib/daily/challenge";
 import { CACA_DAILY_PATH, CACA_PATH } from "@/lib/caca-palavras/paths";
 import { Capsule, colorOf, formatTime, LevelBars, LEVEL_LABEL } from "./common";
 import { HowToPlay } from "./HowToPlay";
@@ -62,6 +65,7 @@ export function Table({ daily }: { daily?: CacaChallenge }) {
   const home = daily ? CACA_DAILY_PATH : CACA_PATH;
   const save = (g: GameState) => (daily ? saveDaily("caca-palavras", daily.day, g) : saveGame(g));
   const [game, setGame] = useState<GameState | null>(null);
+  useSoloStart("caca-palavras", game && `${daily?.day ?? "livre"}:${game.level}:${game.theme}:${game.seed}`, game, { diario: !!daily, nivel: game?.level });
   const [help, setHelp] = useState(false);
   const [visible, setVisible] = useState(true);
   const [intro, setIntro] = useState(false);
@@ -154,6 +158,7 @@ export function Table({ daily }: { daily?: CacaChallenge }) {
           "caca-palavras",
           { level: next.level, theme: next.theme, timeMs: Math.round(next.elapsed), hints: next.hints, words: next.words.length },
           daily && { day: daily.day, seed: daily.data.seed },
+          { nivel: next.level },
         );
         const [end] = cellsOf(next, next.words[last.word]).slice(-1);
         setWave(end);
@@ -419,6 +424,16 @@ export function Table({ daily }: { daily?: CacaChallenge }) {
           onLeave={() => router.push(home)}
           onAgain={startNew}
           busy={busy}
+          actions={
+            daily && (
+              <ShareResult
+                game="caca-palavras"
+                path={CACA_DAILY_PATH}
+                text={`Caça-palavras do dia #${dayNumber(daily.day)} ✅
+⏱️ ${formatTime(game.elapsed)} · 🔤 ${game.words.length} palavras · 💡 ${game.hints} ${game.hints === 1 ? "dica" : "dicas"}`}
+              />
+            )
+          }
         >
           <div className="flex flex-col items-center gap-3">
             <div className="flex gap-6">

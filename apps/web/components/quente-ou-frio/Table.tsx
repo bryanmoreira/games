@@ -14,6 +14,7 @@ import type { GameRef, PlayRequest, Reveal } from "@/lib/quente-ou-frio/protocol
 import { playGuessSound, playHintSound, playInvalidSound } from "@/lib/quente-ou-frio/sound";
 import { addPlayed, loadDailyGame, loadFreeGame, newFreeId, saveDailyGame, saveFreeGame } from "@/lib/quente-ou-frio/storage";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
+import { trackEnd, useSoloStart } from "@/lib/analytics";
 import { End } from "./End";
 import { HowToPlay } from "./HowToPlay";
 import { WordBar } from "./WordBar";
@@ -49,6 +50,7 @@ export function Table({ day }: { day?: string }) {
 
   const [game, setGame] = useState<GameState | null>(null);
   const [freeId, setFreeId] = useState(0);
+  useSoloStart("quente-ou-frio", game && (day ?? `livre:${freeId}`), game, { diario: !!day });
   const [total, setTotal] = useState(TOTAL);
   const [input, setInput] = useState("");
   const [last, setLast] = useState<Move | null>(null);
@@ -108,6 +110,7 @@ export function Table({ day }: { day?: string }) {
 
   const finish = (g: GameState, reveal: Reveal) => {
     const won = status(g) === "won";
+    trackEnd("quente-ou-frio", won ? "vitoria" : "derrota", { modo: "solo", diario: !!day });
     setEnd(reveal);
     addPlayed({ won, attempts: attempts(g), ...(day ? { day } : {}) });
     setTimeout(won ? playWinSound : playLoseSound, won ? 350 : 100);

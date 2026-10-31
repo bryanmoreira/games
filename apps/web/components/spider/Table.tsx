@@ -25,9 +25,12 @@ import { isGame, loadGame, saveGame } from "@/lib/spider/storage";
 import { loadDaily, saveDaily, trimOthers } from "@/lib/daily/storage";
 import type { DailyChallenge } from "@/lib/daily/challenge";
 import { DailyBadge } from "@/components/daily/common";
+import { useSoloStart } from "@/lib/analytics";
 import { reportSoloWin } from "@/lib/stats/report";
 import { useClock } from "@/lib/useClock";
 import { formatTime } from "@/components/sudoku/common";
+import { ShareResult } from "@/components/daily/ShareResult";
+import { dayNumber } from "@/lib/daily/challenge";
 import { SPIDER_DAILY_PATH, SPIDER_PATH } from "@/lib/spider/paths";
 import { COMPACT_BELOW, SpiderCard, SuitIcon } from "./SpiderCard";
 import { DeckProvider } from "@/components/cards/Card";
@@ -212,6 +215,7 @@ export function Table({ daily }: { daily?: SpiderChallenge }) {
   const fresh = (c: SpiderChallenge) => dealGame(c.data.suits, c.data.seed, c.data.deck);
   const save = (g: GameState) => (daily ? saveDaily("paciencia-spider", daily.day, g) : saveGame(g));
   const [game, setGame] = useState<GameState | null>(null);
+  useSoloStart("paciencia-spider", game && `${daily?.day ?? "livre"}:${game.suits}:${game.seed}`, game, { diario: !!daily, nivel: game?.suits });
   const [intro, setIntro] = useState(false);
   const [anim, setAnim] = useState<Anim | null>(null);
   const [help, setHelp] = useState(false);
@@ -336,6 +340,7 @@ export function Table({ daily }: { daily?: SpiderChallenge }) {
         "paciencia-spider",
         { suits: next.suits, moves: next.moves, score: scoreOf(next), timeMs: Math.round(next.elapsed) },
         daily && { day: daily.day, seed: daily.data.seed },
+        { nivel: next.suits },
       );
     }
     return true;
@@ -624,6 +629,16 @@ function Victory({ game, day, onAgain, onLeave }: { game: GameState; day?: strin
       }
       onLeave={onLeave}
       onAgain={onAgain}
+      actions={
+        day && (
+          <ShareResult
+            game="paciencia-spider"
+            path={SPIDER_DAILY_PATH}
+            text={`Paciência Spider do dia #${dayNumber(day)} ✅
+⏱️ ${formatTime(game.elapsed)} · 🃏 ${game.moves} jogadas · ⭐ ${scoreOf(game)} pontos`}
+          />
+        )
+      }
     >
       <div className="flex gap-6">
         <EndStat label="PONTOS" value={scoreOf(game)} gold />

@@ -31,8 +31,11 @@ import { isGame, loadGame, saveBest, saveGame } from "@/lib/sudoku/storage";
 import { loadDaily, saveDaily, trimOthers } from "@/lib/daily/storage";
 import type { DailyChallenge } from "@/lib/daily/challenge";
 import { DailyBadge } from "@/components/daily/common";
+import { trackEnd, useSoloStart } from "@/lib/analytics";
 import { reportSoloWin } from "@/lib/stats/report";
 import { useClock } from "@/lib/useClock";
+import { ShareResult } from "@/components/daily/ShareResult";
+import { dayNumber } from "@/lib/daily/challenge";
 import { SUDOKU_DAILY_PATH, SUDOKU_PATH } from "@/lib/sudoku/paths";
 import { formatTime, LevelBars, LEVEL_LABEL, reasonLabel, TECHNIQUE_LABEL } from "./common";
 import { HowToPlay } from "./HowToPlay";
@@ -83,6 +86,7 @@ export function Table({ daily }: { daily?: SudokuChallenge }) {
   const fresh = (c: SudokuChallenge) => gameFrom(c.data.difficulty, c.data.seed, c.data);
   const save = (g: GameState) => (daily ? saveDaily("sudoku", daily.day, g) : saveGame(g));
   const [game, setGame] = useState<GameState | null>(null);
+  useSoloStart("sudoku", game && `${daily?.day ?? "livre"}:${game.difficulty}:${game.seed}`, game, { diario: !!daily, nivel: game?.difficulty });
   const [selected, setSelected] = useState<number | null>(null);
   const [focus, setFocus] = useState<number | null>(null);
   const [notesMode, setNotesMode] = useState(false);
@@ -174,6 +178,7 @@ export function Table({ daily }: { daily?: SudokuChallenge }) {
     if (last.type === "set" && last.wrong) {
       playErrorSound();
       setShake({ key: last.id, cell: last.cell });
+      if (next.lost) trackEnd("sudoku", "derrota", { modo: "solo", diario: !!daily, nivel: next.difficulty });
       if (next.lost) setTimeout(() => (playLoseSound(), setShowEnd(true)), 500);
     } else if (last.type === "set" || last.type === "hint") {
       if (last.type === "hint") {
@@ -188,6 +193,7 @@ export function Table({ daily }: { daily?: SudokuChallenge }) {
           "sudoku",
           { difficulty: next.difficulty, timeMs: Math.round(next.elapsed), mistakes: next.mistakes, hints: next.hints },
           daily && { day: daily.day, seed: daily.data.seed },
+          { nivel: next.difficulty },
         );
         setTimeout(playWinSound, 350);
         setTimeout(() => setShowEnd(true), 16 * WAVE_STEP + 900);
@@ -551,7 +557,23 @@ function Level({ game, day }: { game: GameState; day?: string }) {
 
 function Victory({ game, day, record, busy, onAgain, onLeave }: { game: GameState; day?: string; record: boolean; busy: boolean; onAgain: () => void; onLeave: () => void }) {
   return (
-    <GameEnd won badge={<Level game={game} day={day} />} onLeave={onLeave} onAgain={onAgain} busy={busy}>
+    <GameEnd
+      won
+      badge={<Level game={game} day={day} />}
+      onLeave={onLeave}
+      onAgain={onAgain}
+      busy={busy}
+      actions={
+        day && (
+          <ShareResult
+            game="sudoku"
+            path={SUDOKU_DAILY_PATH}
+            text={`Sudoku do dia #${dayNumber(day)} ✅
+⏱️ ${formatTime(game.elapsed)} · ❌ ${game.mistakes} ${game.mistakes === 1 ? "erro" : "erros"} · 💡 ${game.hints} ${game.hints === 1 ? "dica" : "dicas"}`}
+          />
+        )
+      }
+    >
       <div className="flex flex-col items-center gap-3">
         <div className="flex gap-6">
           <EndStat label="TEMPO" value={formatTime(game.elapsed)} gold />

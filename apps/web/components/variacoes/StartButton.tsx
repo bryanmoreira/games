@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { newGame as newSudoku } from "@mesa/sudoku";
 import { newGame as newSpider } from "@mesa/spider";
 import { PlayerName } from "@/components/ui/PlayerName";
-import { track } from "@/lib/analytics";
 import { clearCreated, clearError, connect, getName, send, setName, useRoom } from "@/lib/socket";
 import { saveGame as saveSudoku } from "@/lib/sudoku/storage";
 import { saveGame as saveSpider } from "@/lib/spider/storage";
@@ -23,11 +22,9 @@ export function StartButton({ start, cta, gamePath }: { start: Start; cta: strin
   const go = () => {
     if (start.kind === "sudoku") {
       saveSudoku(newSudoku(start.difficulty));
-      track("partida-iniciada", { jogo: "sudoku", modo: "solo", nivel: start.difficulty });
       router.push(SUDOKU_PLAY_PATH);
     } else {
       saveSpider(newSpider(start.suits));
-      track("partida-iniciada", { jogo: "paciencia-spider", modo: "solo", naipes: start.suits });
       router.push(SPIDER_PLAY_PATH);
     }
   };

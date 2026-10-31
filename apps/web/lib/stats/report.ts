@@ -1,6 +1,6 @@
 "use client";
 
-import { track } from "@/lib/analytics";
+import { trackEnd, type GameResult } from "@/lib/analytics";
 import type { AchievementIcon } from "@/lib/stats/achievements";
 import type { SoloGame } from "@/lib/stats/games";
 
@@ -15,9 +15,17 @@ export interface UnlockedAchievement {
 
 export const ACHIEVEMENTS_EVENT = "mesa:achievements";
 
-/** Partida terminada num jogo solo: vai para o perfil (só se estiver logado; senão o site ignora). `daily`: era o desafio deste dia. */
-export function reportSoloResult(game: SoloGame | "tijolada", data: Record<string, unknown>, daily?: { day: string; seed: number }) {
-  track("partida-terminada", { jogo: game, diario: !!daily });
+/**
+ * Partida terminada num jogo solo: vai para o perfil (só se estiver logado; senão o site ignora) e conta no Umami.
+ * `daily`: era o desafio deste dia. `nivel` e `resultado` só servem para o Umami.
+ */
+export function reportSoloResult(
+  game: SoloGame | "tijolada",
+  data: Record<string, unknown>,
+  daily?: { day: string; seed: number },
+  umami: { resultado?: GameResult; nivel?: string | number } = {},
+) {
+  trackEnd(game, umami.resultado ?? "vitoria", { modo: "solo", diario: !!daily, nivel: umami.nivel });
   const body = daily ? { game, data, daily: daily.day, seed: daily.seed } : { game, data };
   fetch("/api/results", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
     .then((r) => (r.ok ? r.json() : null))

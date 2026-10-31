@@ -99,13 +99,17 @@ const humanControlled = (room: Room, seat: Seat) => {
 
 function info(room: Room, token: string): RoomInfo {
   const seated = new Set(room.seats.map((s) => s.token).filter(Boolean));
+  const over = !!room.state && room.adapter.over(room.state);
+  const mySeat = seatOf(room, token);
   return {
     code: room.code,
     game: room.game,
     solo: room.solo,
     started: !!room.state,
     isHost: room.host === token,
-    mySeat: seatOf(room, token),
+    mySeat,
+    over,
+    ...(over && mySeat !== null ? { result: room.adapter.outcome(room.state, mySeat).outcome } : {}),
     seats: room.seats.map((s) => ({
       kind: s.kind,
       name: s.name,

@@ -48,6 +48,10 @@ export interface RoomInfo {
   game: GameId;
   solo: boolean;
   started: boolean;
+  /** A partida chegou ao fim (o placar final está na tela). */
+  over?: boolean;
+  /** Com `over`: como terminou para quem está vendo (sem lugar, não vem). */
+  result?: Outcome;
   isHost: boolean;
   mySeat: Seat | null;
   seats: SeatInfo[];

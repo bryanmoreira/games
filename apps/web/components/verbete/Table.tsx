@@ -26,6 +26,7 @@ import { BarsIcon, InfinityIcon } from "@/components/ui/icons";
 import type { VerbeteDaily } from "@/lib/daily/challenge";
 import { playLoseSound, playWinSound, useAudioUnlock } from "@/lib/sound";
 import { dayKey } from "@/lib/stats/achievements";
+import { useSoloStart } from "@/lib/analytics";
 import { reportSoloResult } from "@/lib/stats/report";
 import { VERBETE_DAILY_PATH, VERBETE_FREE_PATH, VERBETE_PATH } from "@/lib/verbete/paths";
 import { playEraseSound, playFlipSound, playInvalidSound, playKeySound, playSolveSound } from "@/lib/verbete/sound";
@@ -76,6 +77,7 @@ export function Table({ mode, daily }: { mode: Mode; daily?: DailyWords }) {
   const save = (g: GameState) => (daily ? saveDailyGame(daily.day, g) : saveFreeGame(g));
 
   const [game, setGame] = useState<GameState | null>(null);
+  useSoloStart("verbete", game && `${daily?.day ?? "livre"}:${game.mode}:${game.answers.join(",")}`, game, { diario: !!daily, nivel: mode });
   const [input, setInput] = useState<string[]>(EMPTY);
   const [cursor, setCursor] = useState(0);
   /** chutes já mostrados no teclado (o último só entra depois de virar) */
@@ -121,7 +123,7 @@ export function Table({ mode, daily }: { mode: Mode; daily?: DailyWords }) {
   const finish = (g: GameState) => {
     const won = status(g) === "won";
     const data = { mode, answers: g.answers, guesses: g.guesses };
-    reportSoloResult("verbete", data, daily && { day: daily.day, seed: daily.data.seed });
+    reportSoloResult("verbete", data, daily && { day: daily.day, seed: daily.data.seed }, { resultado: won ? "vitoria" : "derrota", nivel: mode });
     addPlayed({ mode, won, attempts: g.guesses.length, ...(daily ? { day: daily.day, onTime: daily.day === dayKey(new Date()) } : {}) });
     setTimeout(won ? playWinSound : playLoseSound, won ? 450 : 150);
     setTimeout(() => setShowEnd(true), won ? 1300 : 900);

@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { ClientMsg, RoomInfo, ServerMsg } from "@mesa/truco";
-import { track } from "@/lib/analytics";
+import { track, trackEnd, trackStart, type GameResult } from "@/lib/analytics";
 
 // Conexão única com o servidor de salas, compartilhada por todos os jogos online.
 // Uma identidade por aba (token em sessionStorage); o nome fica salvo no aparelho.
@@ -99,9 +99,7 @@ export function connect() {
       frameListeners.forEach((l) => l(msg.view));
       set({ view: msg.view });
     } else if (msg.t === "room") {
-      // a partida começou agora (conta uma vez por jogador na mesa)
-      if (msg.room.started && !(state.room?.code === msg.room.code && state.room.started))
-        track("partida-iniciada", { jogo: msg.room.game, modo: msg.room.solo ? "solo" : "online", humanos: msg.room.seats.filter((s) => s.kind === "human").length });
+      trackRoom(state.room, msg.room);
       set({ room: msg.room, view: msg.view, error: null });
     }
     else if (msg.t === "created") set({ created: msg.code });
@@ -129,8 +127,24 @@ export function onFrame<V>(listener: (view: V) => void) {
   };
 }
 
+const RESULT: Record<string, GameResult> = { win: "vitoria", loss: "derrota", draw: "empate" };
+
+/** Início e fim da partida, uma vez por jogador na mesa (revanche conta de novo) */
+function trackRoom(prev: RoomInfo | null, room: RoomInfo) {
+  const same = prev?.code === room.code;
+  const level = (room.settings as { level?: unknown } | null)?.level;
+  const info = {
+    modo: room.solo ? ("ia" as const) : ("online" as const),
+    humanos: room.seats.filter((s) => s.kind === "human").length,
+    ...(room.solo && typeof level === "string" ? { nivel: level } : {}),
+  };
+  const playing = room.started && !room.over;
+  if (playing && !(same && prev.started && !prev.over)) trackStart(room.game, info);
+  if (room.over && !(same && prev.over) && room.mySeat !== null) trackEnd(room.game, room.result ? RESULT[room.result] : "fim", info);
+}
+
 export function send<A>(msg: ClientMsg<A>) {
-  if (msg.t === "create") track("sala-criada", { jogo: msg.game ?? "truco-paulista", modo: msg.solo ? "solo" : "online" });
+  if (msg.t === "create") track("sala-criada", { jogo: msg.game ?? "truco-paulista", modo: msg.solo ? "ia" : "online" });
   const data = JSON.stringify(msg);
   if (ready && ws?.readyState === WebSocket.OPEN) ws.send(data);
   else {
